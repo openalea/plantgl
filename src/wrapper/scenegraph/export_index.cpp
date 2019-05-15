@@ -142,7 +142,7 @@ struct index_from_tuple {
     typedef boost::python::converter::rvalue_from_python_storage<Index> vector_storage_t;
     vector_storage_t* the_storage = reinterpret_cast<vector_storage_t*>( data );
     void* memory_chunk = the_storage->storage.bytes;
-    boost::python::object py_sequence( handle<PyObject>( borrowed( obj ) ) );
+    boost::python::object py_sequence( boost::python::handle<PyObject>( borrowed( obj ) ) );
     Index result = extract_vec<Index::element_type,extract,Index>(py_sequence);
     new (memory_chunk) Index (result);
     // delete result;

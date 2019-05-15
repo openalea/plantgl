@@ -55,7 +55,7 @@ RCPtr<T> extract_array2_from_list( boost::python::object l )
   if (l.ptr() == Py_None) return RCPtr<T>();
   boost::python::object row_iter_obj = boost::python::object( boost::python::handle<PyObject>( PyObject_GetIter( l.ptr() ) ) );
   uint_t rows= boost::python::extract<uint_t>(l.attr("__len__")());
-  boost::python::object col_obj= boost::python::object(handle<PyObject>(PyIter_Next(row_iter_obj.ptr())));
+  boost::python::object col_obj= boost::python::object(boost::python::handle<PyObject>(PyIter_Next(row_iter_obj.ptr())));
   uint_t cols= boost::python::extract<uint_t>(col_obj.attr("__len__")());
   boost::python::object col_iter_obj= boost::python::object( boost::python::handle<PyObject>( PyObject_GetIter( col_obj.ptr() ) ) );
   RCPtr<T> array= RCPtr<T>(new T(rows,cols));
@@ -63,7 +63,7 @@ RCPtr<T> extract_array2_from_list( boost::python::object l )
   for(uint_t i=0; i < rows; ++i )
      {
         if (i != 0) {
-            col_obj= boost::python::object(handle<PyObject>(PyIter_Next(row_iter_obj.ptr())));
+            col_obj= boost::python::object(boost::python::handle<PyObject>(PyIter_Next(row_iter_obj.ptr())));
             col_iter_obj= boost::python::object( boost::python::handle<PyObject>( PyObject_GetIter( col_obj.ptr() ) ) );
             uint_t c= boost::python::extract<uint_t>(col_obj.attr("__len__")());
             if( c != cols ) throw PythonExc_IndexError("Array2 has invalid number of element in a row.");
@@ -71,7 +71,7 @@ RCPtr<T> extract_array2_from_list( boost::python::object l )
         for(uint_t j=0; j < cols; ++j )
         {
             boost::python::object obj;
-            obj = boost::python::object(handle<PyObject>(PyIter_Next(col_iter_obj.ptr())));
+            obj = boost::python::object(boost::python::handle<PyObject>(PyIter_Next(col_iter_obj.ptr())));
             array->setAt(i,j,boost::python::extract<typename T::element_type>(obj));
         }
     }

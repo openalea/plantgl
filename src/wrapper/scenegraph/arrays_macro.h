@@ -318,7 +318,7 @@ T * py_subset(T * pts, boost::python::object subsetindices){
         while( true )
         {
             boost::python::object obj;
-            try  {  obj = boost::python::object(handle<PyObject>(PyIter_Next(iter_obj.ptr()))); }
+            try  {  obj = boost::python::object(boost::python::handle<PyObject>(PyIter_Next(iter_obj.ptr()))); }
             catch( boost::python::error_already_set ){ PyErr_Clear(); break; }
             int val = boost::python::extract<int>( obj )();
             if (val < 0) val += nbelem;
@@ -382,7 +382,7 @@ boost::python::object py_split_subset(T * pts, boost::python::object subsetindic
         while( true )
         {
             boost::python::object obj;
-            try  {  obj = boost::python::object(handle<PyObject>(PyIter_Next(iter_obj.ptr()))); }
+            try  {  obj = boost::python::object(boost::python::handle<PyObject>(PyIter_Next(iter_obj.ptr()))); }
             catch( boost::python::error_already_set ){ PyErr_Clear(); break; }
             int val = boost::python::extract<int>( obj )();
             if (val < 0) val += nbelem;

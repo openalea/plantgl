@@ -66,12 +66,12 @@ DEF_POINTEE(Scene)
 ScenePtr sc_fromlist( boost::python::list l )
 {
   ScenePtr scene = ScenePtr(new Scene());
-  object iter_obj = boost::python::object( handle<PyObject>( PyObject_GetIter( l.ptr() ) ) );
+  object iter_obj = boost::python::object( boost::python::handle<PyObject>( PyObject_GetIter( l.ptr() ) ) );
   while( 1 )
   {
         object obj;
         try {
-          obj = boost::python::object(handle<PyObject>(PyIter_Next(iter_obj.ptr())));
+          obj = boost::python::object(boost::python::handle<PyObject>(PyIter_Next(iter_obj.ptr())));
         } catch( error_already_set ) { PyErr_Clear(); break; }
         boost::python::extract<GeometryPtr> geom( obj );
         if(geom.check()){
