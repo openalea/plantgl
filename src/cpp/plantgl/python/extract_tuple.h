@@ -68,7 +68,7 @@ struct extract_tuple {
     result_type extract() const {
         result_type result;
         if (pylist.ptr() == Py_None) return result;
-        boost::python::object iter_obj = boost::python::object( boost::python::handle<>( PyObject_GetIter( pylist.ptr() ) ) );
+        boost::python::object iter_obj = boost::python::object( boost::python::handle<PyObject>( PyObject_GetIter( pylist.ptr() ) ) );
         for(size_t i = 0 ; i < result_type::SIZE ; ++i)
         {
             boost::python::object obj = iter_obj.attr( "next" )();

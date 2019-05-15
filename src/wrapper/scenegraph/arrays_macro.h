@@ -74,7 +74,7 @@ struct array_from_list {
    vector_storage_t* the_storage = reinterpret_cast<vector_storage_t*>( data );
    void* memory_chunk = the_storage->storage.bytes;
    if (obj != Py_None){
-        boost::python::list py_sequence( boost::python::handle<>( boost::python::borrowed( obj ) ) );
+        boost::python::list py_sequence( boost::python::handle<PyObject>( boost::python::borrowed( obj ) ) );
         RCPtr<T> result= extract_array_from_list<T>(py_sequence);
         new (memory_chunk) T (*result);
    }
@@ -98,7 +98,7 @@ struct array_ptr_from_list {
    void* memory_chunk = the_storage->storage.bytes;
    RCPtr<T> result;
    if (obj != Py_None){
-    boost::python::list py_sequence( boost::python::handle<>( boost::python::borrowed( obj ) ) );
+    boost::python::list py_sequence( boost::python::handle<PyObject>( boost::python::borrowed( obj ) ) );
     result = extract_array_from_list<T>(py_sequence);
    }
    new (memory_chunk) RCPtr<T> (result);
@@ -314,11 +314,11 @@ T * py_subset(T * pts, boost::python::object subsetindices){
         }
     }
     else {
-        boost::python::object iter_obj = boost::python::object( boost::python::handle<>( PyObject_GetIter( subsetindices.ptr() ) ) );
+        boost::python::object iter_obj = boost::python::object( boost::python::handle<PyObject>( PyObject_GetIter( subsetindices.ptr() ) ) );
         while( true )
         {
             boost::python::object obj;
-            try  {  obj = boost::python::object(handle<>(PyIter_Next(iter_obj.ptr()))); }
+            try  {  obj = boost::python::object(handle<PyObject>(PyIter_Next(iter_obj.ptr()))); }
             catch( boost::python::error_already_set ){ PyErr_Clear(); break; }
             int val = boost::python::extract<int>( obj )();
             if (val < 0) val += nbelem;
@@ -378,11 +378,11 @@ boost::python::object py_split_subset(T * pts, boost::python::object subsetindic
         }
     }
     else {
-        boost::python::object iter_obj = boost::python::object( boost::python::handle<>( PyObject_GetIter( subsetindices.ptr() ) ) );
+        boost::python::object iter_obj = boost::python::object( boost::python::handle<PyObject>( PyObject_GetIter( subsetindices.ptr() ) ) );
         while( true )
         {
             boost::python::object obj;
-            try  {  obj = boost::python::object(handle<>(PyIter_Next(iter_obj.ptr()))); }
+            try  {  obj = boost::python::object(handle<PyObject>(PyIter_Next(iter_obj.ptr()))); }
             catch( boost::python::error_already_set ){ PyErr_Clear(); break; }
             int val = boost::python::extract<int>( obj )();
             if (val < 0) val += nbelem;
