@@ -77,10 +77,10 @@ find_package(PNG REQUIRED)
 find_package(ZLIB REQUIRED)
 
 find_package(ANN)
-find_package(Bison)
+find_package(BISON)
 find_package(CGAL QUIET)
 find_package(Eigen)
-find_package(Flex)
+find_package(FLEX)
 find_package(GMP)
 find_package(Qhull)
 
