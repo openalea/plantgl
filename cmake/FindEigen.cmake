@@ -1,6 +1,14 @@
 # Include Directory
 find_path(EIGEN_INCLUDE_DIR "Eigen/Core" PATHS $ENV{PATH})
 
+if (NOT EIGEN_INCLUDE_DIR)
+    find_path(EIGEN_INCLUDE_DIR "eigen3/Eigen/Core" PATHS $ENV{PATH})
+    
+    if (EIGEN_INCLUDE_DIR)
+        set(EIGEN_INCLUDE_DIR "${EIGEN_INCLUDE_DIR}/eigen3")
+    endif()
+endif()
+
 if (EIGEN_INCLUDE_DIR)
     set(EIGEN_FOUND ON)
     set(EIGEN_INCLUDE_DIRS ${EIGEN_INCLUDE_DIR})
