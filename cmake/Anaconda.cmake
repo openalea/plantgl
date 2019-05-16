@@ -5,6 +5,11 @@ if (DEFINED ENV{CONDA_PREFIX})
     
     file(TO_CMAKE_PATH $ENV{CONDA_PREFIX} TMP_CONDA_ENV)
     
-    set(CONDA_ENV "${TMP_CONDA_ENV}/Library/")
+    if (WIN32)
+        set(CONDA_ENV "${TMP_CONDA_ENV}/Library/")
+    else()
+        set(CONDA_ENV "${TMP_CONDA_ENV}/")
+    endif()
+
     set(CONDA_PYTHON_ENV "${TMP_CONDA_ENV}/")
 endif()
