@@ -20,6 +20,16 @@ if (Qt5Core_FOUND AND Qt5OpenGL_FOUND AND Qt5Network_FOUND AND Qt5Widgets_FOUND 
     include_directories(${Qt5OpenGL_INCLUDE_DIRS})
     include_directories(${Qt5PrintSupport_INCLUDE_DIRS})
     
+    # X11Extras
+    if (UNIX AND NOT APPLE AND "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+        find_package(Qt5X11Extras CONFIG REQUIRED)
+        
+        if (Qt5X11Extras_FOUND)
+            set(USE_QT5_X11EXTRAS ON)
+            include_directories(${Qt5X11Extras_INCLUDE_DIRS})
+        endif()
+    endif()
+    
 else()
     set(QT5_FOUND OFF)
     message(STATUS "Building without Qt - Library not found.")
