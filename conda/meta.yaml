@@ -31,7 +31,7 @@ requirements:
    - bison [unix]
    - flex [unix]
    - gmp [unix]
-   # - cgal [unix]
+   - cgal [unix]
    - m2-bison [win]
    - m2-flex [win]
    - qhull
@@ -47,7 +47,7 @@ requirements:
    - qt =5
    - boost
    - gmp [unix]
-   # - cgal [unix]
+   - cgal [unix]
    - qhull
    - ann
    - pyqt
