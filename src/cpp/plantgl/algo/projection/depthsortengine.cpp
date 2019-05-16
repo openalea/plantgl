@@ -529,8 +529,11 @@ DepthSortEngine::_processTriangle( PolygonInfo polygon,
                     DepthSortEngine::PolygonInfoIteratorList newPol = appendPolygons(mrest2.begin(), mrest2.end());
                     polygonstotest.insert(it, newPol.begin(), newPol.end());
                     if (isbegin) { 
+                        begin = it;
                         std::size_t const distance = std::distance(newPol.begin(), newPol.end());
-                        begin = it - distance;
+                        for (std::size_t i = 0; i < distance; ++i) {
+                            --begin;
+                        }
                     }
                 }
                 else {
@@ -621,8 +624,11 @@ DepthSortEngine::_processTriangle( PolygonInfo polygon,
                     DepthSortEngine::PolygonInfoIteratorList newPol = appendPolygons(mrest2.begin(), mrest2.end());
                     polygonstotest.insert(it, newPol.begin(), newPol.end());
                     if (isbegin) {
+                        begin = it;
                         std::size_t const distance = std::distance(newPol.begin(), newPol.end());
-                        begin = it - distance;
+                        for (std::size_t i = 0; i < distance; ++i) {
+                            --begin;
+                        }
                         isbegin = false;
                     }
                 }
