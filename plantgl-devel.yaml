@@ -21,7 +21,6 @@ dependencies:
     - qhull
     - eigen
     - ann
-    - menuinst
     - patch
     - setuptools
     - openalea.deploy
