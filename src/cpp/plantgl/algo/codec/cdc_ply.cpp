@@ -120,7 +120,7 @@ ScenePtr PlyCodec::read(const std::string &fname) {
     fversion = toNumber<float>(sformat[2]);
   }
 
-  assert(std::find(this->fcodingTypes, fcoding) != this->fcodingTypes.end());
+  assert(std::find(this->fcodingTypes.begin(), this->fcodingTypes.end(), fcoding) != this->fcodingTypes.end());
   bool reversebytes = false;
   if (fcoding != "ascii") {
     std::string byteorder = split(fcoding, "_")[1];
