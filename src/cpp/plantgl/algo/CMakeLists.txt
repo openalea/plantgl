@@ -71,7 +71,10 @@ target_link_libraries(pglalgo ${ANN_LIBRARIES})
 target_link_libraries(pglalgo ${GMP_LIBRARIES})
 target_link_libraries(pglalgo ${QHULL_LIBRARIES})
 target_link_libraries(pglalgo OpenGL::GL OpenGL::GLU)
-target_link_libraries(pglalgo Boost::system Boost::thread)
+
+if (NOT MSVC)
+    target_link_libraries(pglalgo Boost::system Boost::thread)
+endif()
 
 # --- Dependencies
 
