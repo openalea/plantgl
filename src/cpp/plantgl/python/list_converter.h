@@ -64,7 +64,7 @@ struct pgllist_from_list {
   static void* convertible(PyObject* py_obj){
     if( !PySequence_Check( py_obj ) ) return 0;
     if( !PyObject_HasAttrString( py_obj, "__len__" ) ) return 0;
-    boost::python::object py_sequence( boost::python::handle<>( boost::python::borrowed( py_obj ) ) );
+    boost::python::object py_sequence( boost::python::handle<PyObject>( boost::python::borrowed( py_obj ) ) );
     return py_obj;
   }
 
@@ -72,7 +72,7 @@ struct pgllist_from_list {
     typedef boost::python::converter::rvalue_from_python_storage<T> vector_storage_t;
     vector_storage_t* the_storage = reinterpret_cast<vector_storage_t*>( data );
     void* memory_chunk = the_storage->storage.bytes;
-    boost::python::list py_sequence( boost::python::handle<>( boost::python::borrowed( obj ) ) );
+    boost::python::list py_sequence( boost::python::handle<PyObject>( boost::python::borrowed( obj ) ) );
     T * result = extract_pgllist_from_list_at<T>(py_sequence,memory_chunk);
     data->convertible = memory_chunk;
   }

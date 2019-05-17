@@ -29,6 +29,10 @@ add_dependencies(_pglalgo pglmath pgltool pglsg pglalgo)
 
 # --- Output Library
 
-set_target_properties(_pglalgo PROPERTIES SUFFIX ".pyd")
+set_target_properties(_pglalgo PROPERTIES PREFIX "")
+
+if (WIN32)
+    set_target_properties(_pglalgo PROPERTIES SUFFIX ".pyd")
+endif()
 
 install(TARGETS _pglalgo DESTINATION "${CMAKE_SOURCE_DIR}/src/plantgl/algo")

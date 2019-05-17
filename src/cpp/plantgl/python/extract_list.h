@@ -65,7 +65,7 @@ struct extract_vec {
         if (pylist.ptr() == Py_None) return result;
 
 #ifdef PYTHON_EXTRACT_WITH_EXCEPTION
-        boost::python::object iter_obj = boost::python::object( boost::python::handle<>( PyObject_GetIter( pylist.ptr() ) ) );
+        boost::python::object iter_obj = boost::python::object( boost::python::handle<PyObject>( PyObject_GetIter( pylist.ptr() ) ) );
         while( true )
           {
             boost::python::object obj;
@@ -119,7 +119,7 @@ struct extract_vec_pair {
         if (pylist.ptr() == Py_None) return result;
 
 #ifdef PYTHON_EXTRACT_WITH_EXCEPTION
-        boost::python::object iter_obj = boost::python::object( boost::python::handle<>( PyObject_GetIter( pylist.ptr() ) ) );
+        boost::python::object iter_obj = boost::python::object( boost::python::handle<PyObject>( PyObject_GetIter( pylist.ptr() ) ) );
         while( true )
           {
             boost::python::object obj;

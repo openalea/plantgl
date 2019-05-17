@@ -25,6 +25,10 @@ add_dependencies(_pglmath pglmath)
 
 # --- Output Library
 
-set_target_properties(_pglmath PROPERTIES SUFFIX ".pyd")
+set_target_properties(_pglmath PROPERTIES PREFIX "")
+
+if (WIN32)
+    set_target_properties(_pglmath PROPERTIES SUFFIX ".pyd")
+endif()
 
 install(TARGETS _pglmath DESTINATION "${CMAKE_SOURCE_DIR}/src/plantgl/math")

@@ -111,6 +111,7 @@ void DepthSortEngine::process(PointSetPtr pointset, MaterialPtr material, uint32
 #include <CGAL/Constrained_Delaunay_triangulation_2.h>
 #include <CGAL/Triangulation_face_base_with_info_2.h>
 #include <list>
+#include <iterator>
 
 
 struct FaceInfo2
@@ -526,8 +527,14 @@ DepthSortEngine::_processTriangle( PolygonInfo polygon,
                 if (mrest2.size() > 0) {
                     printf("rest2 : %lu\n", mrest2.size());
                     DepthSortEngine::PolygonInfoIteratorList newPol = appendPolygons(mrest2.begin(), mrest2.end());
-                    DepthSortEngine::PolygonInfoIteratorList::iterator it2 = polygonstotest.insert(it, newPol.begin(), newPol.end());
-                    if (isbegin) { begin = it2; }
+                    polygonstotest.insert(it, newPol.begin(), newPol.end());
+                    if (isbegin) { 
+                        begin = it;
+                        std::size_t const distance = std::distance(newPol.begin(), newPol.end());
+                        for (std::size_t i = 0; i < distance; ++i) {
+                            --begin;
+                        }
+                    }
                 }
                 else {
                     if (isbegin) { begin = it; }
@@ -615,8 +622,15 @@ DepthSortEngine::_processTriangle( PolygonInfo polygon,
                 if (mrest2.size() > 0) {
                     printf("rest2 : %lu\n", mrest2.size());
                     DepthSortEngine::PolygonInfoIteratorList newPol = appendPolygons(mrest2.begin(), mrest2.end());
-                    DepthSortEngine::PolygonInfoIteratorList::iterator it2 = polygonstotest.insert(it, newPol.begin(), newPol.end());
-                    if (isbegin) { begin = it2; isbegin = false; }
+                    polygonstotest.insert(it, newPol.begin(), newPol.end());
+                    if (isbegin) {
+                        begin = it;
+                        std::size_t const distance = std::distance(newPol.begin(), newPol.end());
+                        for (std::size_t i = 0; i < distance; ++i) {
+                            --begin;
+                        }
+                        isbegin = false;
+                    }
                 }
 
                 printf("rest1 : %lu\n", mrest1.size());

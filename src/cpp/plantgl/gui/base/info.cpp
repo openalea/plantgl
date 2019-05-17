@@ -106,7 +106,7 @@
 #if defined(__MINGW32__) || defined(__APPLE__)
 #else
 #include <GL/glx.h>
-#include <QtGui/QX11Info>
+#include <QX11Info>
 #endif
 #endif
 

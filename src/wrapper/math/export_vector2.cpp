@@ -71,12 +71,12 @@ object pgl_py_normSquared(object obj){
        return obj.attr( "__normSquared__" )();
     }
     catch( error_already_set ){ PyErr_Clear(); }
-    object iter_obj = boost::python::object( handle<>( PyObject_GetIter( obj.ptr() ) ) );
+    object iter_obj = boost::python::object( boost::python::handle<PyObject>( PyObject_GetIter( obj.ptr() ) ) );
     real_t val = 0;
     while( 1 )
        {
         object lobj;
-        try {  lobj = boost::python::object(handle<>(PyIter_Next(iter_obj.ptr()))); }
+        try {  lobj = boost::python::object(boost::python::handle<PyObject>(PyIter_Next(iter_obj.ptr()))); }
         catch( error_already_set ){ PyErr_Clear(); break; }
         real_t lval = boost::python::extract<real_t>( lobj );
         val += lval * lval;
@@ -129,12 +129,12 @@ object pgl_py_norm(object obj){
 object pgl_py_normL1(object obj){
     try { return obj.attr( "__normL1__" )(); }
     catch( error_already_set ){ PyErr_Clear(); }
-    object iter_obj = boost::python::object( handle<>( PyObject_GetIter( obj.ptr() ) ) );
+    object iter_obj = boost::python::object( boost::python::handle<PyObject>( PyObject_GetIter( obj.ptr() ) ) );
     real_t val = 0;
     while( 1 )
        {
         object lobj;
-        try {  lobj = boost::python::object(handle<>(PyIter_Next(iter_obj.ptr()))); }
+        try {  lobj = boost::python::object(boost::python::handle<PyObject>(PyIter_Next(iter_obj.ptr()))); }
         catch( error_already_set ){ PyErr_Clear(); break; }
         real_t lval = boost::python::extract<real_t>( lobj );
         val += abs(lval);
@@ -170,12 +170,12 @@ BOOST_PYTHON_FUNCTION_OVERLOADS(pgl_py_normL1List_overloads, pgl_py_normL1List, 
 object pgl_py_normLinf(object obj){
     try { return obj.attr( "__normLinf__" )(); }
     catch( error_already_set ){ PyErr_Clear(); }
-    object iter_obj = boost::python::object( handle<>( PyObject_GetIter( obj.ptr() ) ) );
+    object iter_obj = boost::python::object( boost::python::handle<PyObject>( PyObject_GetIter( obj.ptr() ) ) );
     real_t val = 0;
     while( 1 )
        {
         object lobj;
-        try {  lobj = boost::python::object(handle<>(PyIter_Next(iter_obj.ptr()))); }
+        try {  lobj = boost::python::object(boost::python::handle<PyObject>(PyIter_Next(iter_obj.ptr()))); }
         catch( error_already_set ){ PyErr_Clear(); break; }
         real_t lval = abs(boost::python::extract<real_t>( lobj ));
         if(val < lval) val = lval;
@@ -215,12 +215,12 @@ object pgl_py_dir(object obj){
     catch( error_already_set ){ PyErr_Clear(); }
     real_t f = extract<real_t>(pgl_py_norm(obj));
     boost::python::list l;
-    object iter_obj = boost::python::object( handle<>( PyObject_GetIter( obj.ptr() ) ) );
+    object iter_obj = boost::python::object( boost::python::handle<PyObject>( PyObject_GetIter( obj.ptr() ) ) );
     real_t val = 0;
     while( 1 )
        {
         object lobj;
-        try {  lobj = boost::python::object(handle<>(PyIter_Next(iter_obj.ptr()))); }
+        try {  lobj = boost::python::object(boost::python::handle<PyObject>(PyIter_Next(iter_obj.ptr()))); }
         catch( error_already_set ){ PyErr_Clear(); break; }
         lobj = lobj / f;
         l.append(lobj);
@@ -244,13 +244,13 @@ real_t pgl_py_dot(object p1, object p2){
     else {
         if (extract<int>(p1.attr("__len__")()) != extract<int>(p2.attr("__len__")()))
             throw PythonExc_IndexError();
-        object iter_obj1 = boost::python::object( handle<>( PyObject_GetIter( p1.ptr() ) ) );
-        object iter_obj2 = boost::python::object( handle<>( PyObject_GetIter( p2.ptr() ) ) );
+        object iter_obj1 = boost::python::object( boost::python::handle<PyObject>( PyObject_GetIter( p1.ptr() ) ) );
+        object iter_obj2 = boost::python::object( boost::python::handle<PyObject>( PyObject_GetIter( p2.ptr() ) ) );
         real_t val = 0;
         while( 1 )
          {
             object lobj1,lobj2;
-            try {  lobj1 = boost::python::object(handle<>(PyIter_Next(iter_obj1.ptr()))); lobj2 = boost::python::object(handle<>(PyIter_Next(iter_obj2.ptr()))); }
+            try {  lobj1 = boost::python::object(boost::python::handle<PyObject>(PyIter_Next(iter_obj1.ptr()))); lobj2 = boost::python::object(boost::python::handle<PyObject>(PyIter_Next(iter_obj2.ptr()))); }
             catch( error_already_set ){ PyErr_Clear(); break; }
             real_t lval1 = extract<real_t>( lobj1 )();
             real_t lval2 = extract<real_t>( lobj2 )();

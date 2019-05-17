@@ -25,6 +25,10 @@ add_dependencies(_pglsg pglmath pglsg pglalgo pgltool)
 
 # --- Output Library
 
-set_target_properties(_pglsg PROPERTIES SUFFIX ".pyd")
+set_target_properties(_pglsg PROPERTIES PREFIX "")
+
+if (WIN32)
+    set_target_properties(_pglsg PROPERTIES SUFFIX ".pyd")
+endif()
 
 install(TARGETS _pglsg DESTINATION "${CMAKE_SOURCE_DIR}/src/plantgl/scenegraph")

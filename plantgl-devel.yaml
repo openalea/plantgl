@@ -17,11 +17,11 @@ dependencies:
     - bison [unix]
     - flex [unix]
     - gmp [unix]
+    - mpfr [unix]
     - cgal [unix]
     - qhull
     - eigen
     - ann
-    - menuinst
     - patch
     - setuptools
     - openalea.deploy

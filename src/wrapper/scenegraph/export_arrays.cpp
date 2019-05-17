@@ -173,11 +173,11 @@ bool pgl_save_data(const boost::python::object& a, const std::string& fname)
         else {
             _bp.writeUint32(len(a));
 
-            boost::python::object iter_obj = boost::python::object( boost::python::handle<>( PyObject_GetIter( a.ptr() ) ) );
+            boost::python::object iter_obj = boost::python::object( boost::python::handle<PyObject>( PyObject_GetIter( a.ptr() ) ) );
             while( true )
             {
                 boost::python::object obj;
-                try  {  obj = boost::python::object(handle<>(PyIter_Next(iter_obj.ptr()))); }
+                try  {  obj = boost::python::object(boost::python::handle<PyObject>(PyIter_Next(iter_obj.ptr()))); }
                 catch( boost::python::error_already_set ){ PyErr_Clear(); break; }
                 pgl_save_one_data(obj,_bp);
             }

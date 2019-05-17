@@ -105,14 +105,14 @@ struct pglvec3_from_vec3 {
   }
 
   static void* convertible(PyObject* py_obj){
-    boost::python::object bpy_obj( boost::python::handle<>( boost::python::borrowed( py_obj ) ) );
+    boost::python::object bpy_obj( boost::python::handle<PyObject>( boost::python::borrowed( py_obj ) ) );
     if(boost::python::extract<Vector3::Cylindrical>(bpy_obj).check()||boost::python::extract<Vector3::Spherical>(bpy_obj).check())
         return py_obj;
     else return 0;
   }
 
   static void construct( PyObject* py_obj, boost::python::converter::rvalue_from_python_stage1_data* data){
-      boost::python::object bpy_obj( boost::python::handle<>( boost::python::borrowed( py_obj ) ) );
+      boost::python::object bpy_obj( boost::python::handle<PyObject>( boost::python::borrowed( py_obj ) ) );
       boost::python::extract<Vector3::Cylindrical> cyl(bpy_obj);
       Vector3 res;
       if(cyl.check())
