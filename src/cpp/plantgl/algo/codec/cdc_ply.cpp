@@ -246,7 +246,7 @@ ScenePtr PlyCodec::read(const std::string &fname) {
             ielement[*cni][0].apply_visitor(v);
             rgba[index] = v.get_value();
           }
-          if (colorprops[3] == "alpha")
+          if (colorprops.size() >= 4 && colorprops[3] == "alpha")
             rgba[3] = 255 - rgba[3];
           else
             rgba[3] = 0;
