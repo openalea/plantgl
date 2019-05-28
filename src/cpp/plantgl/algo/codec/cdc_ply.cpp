@@ -103,7 +103,7 @@ SceneFormatList PlyCodec::formats() const {
 }
 
 ScenePtr PlyCodec::read(const std::string &fname) {
-  std::ifstream file(fname.c_str());
+  std::ifstream file(fname.c_str(), std::ios::binary);
   if (!file)
     return ScenePtr();
 
