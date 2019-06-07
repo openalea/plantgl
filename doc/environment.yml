@@ -1,6 +1,9 @@
 name: openalea-doc
 channels:
   - openalea
+  - defaults
 dependencies:
+  - python=2.7
+  - mpfr=3.1.4
   - openalea.misc
-  - vplants.plantgl
+  - openalea.plantgl
