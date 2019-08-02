@@ -38,57 +38,86 @@
  *  ----------------------------------------------------------------------------
  */
 
-/*
-** util_progress.cpp for plantgl in
-**
-** Made by julien1.benoit@epitech.eu
-** Login   <julien1.benoit@epitech.eu>
-**
-** Started on  lun. juil. 11:00 2018 Julien Benoit
-** Last update lun. juil. 11:00 2018 Julien Benoit
-*/
-
 #include "util_progress.h"
+#include <boost/thread.hpp>
 
 PGL_USING_NAMESPACE
 
-static void progressprint(const char *msg, float percent) { printf(msg, percent); }
+static void progressprint(const char *msg, float percent) {
+	printf(msg, percent);
+}
 
 static progressstatusfunction PSFUNC = progressprint;
 
 void PGL::register_progressstatus_func(progressstatusfunction func) {
-  PSFUNC = func;
+	PSFUNC = func;
 }
 
 void PGL::unregister_progressstatus_func() {
-  PSFUNC = progressprint;
+	PSFUNC = progressprint;
 }
 
-ProgressStatus::ProgressStatus(uint32_t _nbsteps, const std::string &_message, float _percenttoprint)
-        : nbsteps(_nbsteps),
-          percenttoprint(_percenttoprint),
-          message(_message),
-          current(1),
-          cpercent(-_percenttoprint) {
+ProgressStatus::ProgressStatus(uint32_t _nbsteps, const std::string &_message, float _percenttoprint) :
+	nbsteps(_nbsteps),
+	percenttoprint(_percenttoprint),
+	message("\x0d" + _message),
+	current(0),
+	cpercent(-_percenttoprint) {
+}
 
+void ProgressStatus::setMaximum(uint32_t max) {
+	nbsteps = max;
+	forceSet(current);
 }
 
 void ProgressStatus::increment(uint32_t inc) {
-  current += inc;
-  if (current <= nbsteps) {
-    if (current == nbsteps) {
-      std::string msg("\x0d");
-      msg += message;
-      msg += "\n";
-      PSFUNC(msg.c_str(), 100.0);
-    } else {
-      real_t ncpercent = 100 * current / float(nbsteps);
-      if (cpercent + percenttoprint <= ncpercent) {
-        std::string msg("\x0d");
-        msg += message;
-        PSFUNC(msg.c_str(), ncpercent);
-        cpercent = ncpercent;
-      }
-    }
-  }
+	set(current + inc);
+}
+
+void ProgressStatus::set(uint32_t value) {
+	if (current != value) {
+		forceSet(value);
+	}
+}
+
+void ProgressStatus::set(uint32_t value, uint32_t waitMs) {
+	set(value);
+	boost::this_thread::sleep_for(boost::chrono::milliseconds(waitMs));
+}
+
+void ProgressStatus::forceSet(uint32_t value) {
+	current = value;
+	
+	if (current > nbsteps) {
+		current = nbsteps;
+	}
+	
+	if (current == nbsteps) {
+		PSFUNC(message.c_str(), 100.0);
+	}
+	else {
+		real_t const ncpercent = 100.0 * current / real_t(nbsteps);
+		
+		if (cpercent + percenttoprint <= ncpercent) {
+			PSFUNC(message.c_str(), ncpercent);
+			cpercent = ncpercent;
+		}
+	}
+}
+
+void ProgressStatus::forceSet(uint32_t value, uint32_t waitMs) {
+	forceSet(value);
+	boost::this_thread::sleep_for(boost::chrono::milliseconds(waitMs));
+}
+
+void ProgressStatus::refresh() {
+	PSFUNC(message.c_str(), (cpercent > 0.0f) ? cpercent : 0.0f);
+}
+
+uint32_t ProgressStatus::get() const {
+	return current;
+}
+
+bool ProgressStatus::isCompleted() const {
+	return !(current < nbsteps);
 }

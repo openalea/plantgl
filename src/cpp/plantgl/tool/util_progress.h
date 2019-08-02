@@ -38,16 +38,6 @@
  *  ----------------------------------------------------------------------------
  */
 
-/*
-** util_progress.h for plantgl in
-**
-** Made by julien1.benoit@epitech.eu
-** Login   <julien1.benoit@epitech.eu>
-**
-** Started on  lun. juil. 10:58 2018 Julien Benoit
-** Last update lun. juil. 10:58 2018 Julien Benoit
-*/
-
 #ifndef __util_progress_h__
 #define __util_progress_h__
 
@@ -67,14 +57,27 @@ PGL_BEGIN_NAMESPACE
 
   class TOOLS_API ProgressStatus {
   public:
-    ProgressStatus(uint32_t _nbsteps, const std::string &_message = " %.2f processed.", float _percenttoprint = 1);
+    ProgressStatus(uint32_t _nbsteps, const std::string &_message = " %.2f processed.", float _percenttoprint = 1.0f);
 
     inline ProgressStatus &operator++() {
       increment();
       return *this;
     }
 
-    void increment(uint32_t inc = 1);
+	void setMaximum(uint32_t max);
+    
+	void increment(uint32_t inc = 1);
+	
+	void set(uint32_t value);
+	void set(uint32_t value, uint32_t waitMs);
+
+	void forceSet(uint32_t value);
+	void forceSet(uint32_t value, uint32_t waitMs);
+
+	void refresh();
+	
+	uint32_t get() const;
+	bool isCompleted() const;
 
   protected:
     uint32_t current;
@@ -82,6 +85,7 @@ PGL_BEGIN_NAMESPACE
     real_t cpercent;
     real_t percenttoprint;
     std::string message;
+	bool update;
   };
 
 PGL_END_NAMESPACE
