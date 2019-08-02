@@ -129,10 +129,13 @@ PGL_BEGIN_NAMESPACE
   ALGO_API Index filter_max_densities(const RealArrayPtr densities, const real_t &densityratio);
 
   ALGO_API std::pair<Index, real_t>
-  select_pole_points(const Point3ArrayPtr &point, const real_t &radius, const uint_t &iterations, const real_t &tolerance = -1.0);
+  select_pole_from_point(const Point3ArrayPtr &points, const Vector3 &startPoint, std::size_t iterations, real_t maxAngle);
+  
+  ALGO_API std::pair<Index, real_t>
+  select_pole_points(const Point3ArrayPtr &point, real_t radius, uint_t iterations, real_t tolerance = -1.0);
 
   ALGO_API std::pair<Index, real_t>
-  select_pole_points_mt(const Point3ArrayPtr &point, const real_t &radius, const uint_t &iterations, const real_t &tolerance = -1.0);
+  select_pole_points_mt(const Point3ArrayPtr &point, real_t radius, uint_t iterations, real_t tolerance = -1.0);
 
 // typedef std::vector<std::vector<uint32_t> > AdjacencyMap;
 
@@ -164,7 +167,7 @@ PGL_BEGIN_NAMESPACE
 
 /// R-Neighborhood computation
   ALGO_API Index
-  r_neighborhood(uint32_t pid, const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const real_t radius);
+  r_neighborhood(uint32_t pid, const Point3ArrayPtr &points, const IndexArrayPtr &adjacencies, const real_t radius);
 
   ALGO_API IndexArrayPtr
   r_neighborhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const RealArrayPtr radii);
