@@ -58,6 +58,7 @@ void export_ZBufferEngine()
       .def("setLight", (void(ZBufferEngine::*)(const Vector3&, const Color3&, const Color3&, const Color3&))&ZBufferEngine::setLight)
       .def("getImage", &ZBufferEngine::getImage)
       .def("getDepthBuffer", &ZBufferEngine::getDepthBuffer)
+      .add_property("multithreaded",&ZBufferEngine::isMultiThreaded, &ZBufferEngine::setMultiThreaded)
 
 
       .def("duplicateBuffer", (void(ZBufferEngine::*)(const Vector3&, const Vector3&, bool, const Color3&))&ZBufferEngine::duplicateBuffer,(bp::arg("from"), bp::arg("to")=600, bp::arg("useDefaultColor")=true, bp::arg("defaultcolor")=Color3(0,0,0)))

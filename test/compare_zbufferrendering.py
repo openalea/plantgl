@@ -75,6 +75,7 @@ class PglViewer (QGLViewer):
         self.setAnimation(eAnimatedPrimitives)
         self.bufferDuplication = False
         self.renderingStyle = eColorBased
+        self.renderingMultithreaded = False
 
     def init(self):
         self.showEntireScene()
@@ -84,9 +85,11 @@ class PglViewer (QGLViewer):
         self.setKeyDescription(Qt.Key_P, 'Periodize Buffer')
         self.setKeyDescription(Qt.Key_D, 'Render depths')
         self.setKeyDescription(Qt.Key_I, 'Render Ids')
+        self.setKeyDescription(Qt.Key_M, 'Toogle Multithread')
         pos = ogl.glGetLightfv(ogl.GL_LIGHT0, ogl.GL_POSITION)
         self.lighManipulator.setPosition(pos[0], pos[1], pos[2])
         self.lighManipulator.manipulated.connect(self.setLightPosition)
+        self.setBackgroundColor(QColor(255,255,255))
         #self.restoreStateFromFile()
 
     def setLightPosition(self):
@@ -115,6 +118,9 @@ class PglViewer (QGLViewer):
                 self.renderingStyle = eIdBased
             else:
                 self.renderingStyle = eColorBased                
+            self.updateGL()
+        elif event.key() == Qt.Key_M:
+            self.renderingMultithreaded = not self.renderingMultithreaded
             self.updateGL()
         else:
             QGLViewer.keyPressEvent(self, event)
@@ -218,6 +224,7 @@ class PglViewer (QGLViewer):
             z = ZBufferEngine(self.width(),self.height(), toC4(self.backgroundColor()).toUint(eABGR), eABGR)
         else:
             z = ZBufferEngine(self.width(),self.height(), toC3(self.backgroundColor()), renderingStyle=self.renderingStyle)
+        z.multithreaded = self.renderingMultithreaded
         znear, zfar = camera.zNear(), camera.zFar()
         if self.camera().type() == Camera.PERSPECTIVE:
             z.setPerspectiveCamera(degrees(camera.fieldOfView()),self.width()/float(self.height()),znear,zfar)
@@ -226,18 +233,20 @@ class PglViewer (QGLViewer):
             z.setOrthographicCamera(-halfWidth, halfWidth, -halfHeight, halfHeight, znear,zfar)
         z.lookAt(camera.position(),camera.position()+camera.viewDirection(),camera.upVector())
         self.import_light_config(z)
+        #print z.getBoundingBoxView()
+        #print camera.position(),camera.position()+camera.viewDirection(),camera.upVector()
         #if self.idBasedRendering:
         #    z.setIdRendering()
         #z.setLight((0,0,100),(255,255,255))
         z.process(self.scene)
         if self.bufferDuplication:
-            z.periodizeBuffer(self.bbx.getCenter(), self.bbx.getCenter()+Vector3(self.bbx.getSize().x*2,0,0), False)
+            z.periodizeBuffer(self.bbx.getCenter(), self.bbx.getCenter()+Vector3(self.bbx.getSize().x*2,0,0)) #, False)
             z.periodizeBuffer(self.bbx.getCenter(), self.bbx.getCenter()+Vector3(0,self.bbx.getSize().y*2,0))
             z.periodizeBuffer(self.bbx.getCenter(), self.bbx.getCenter()+Vector3(self.bbx.getSize().x*2,0,0))
             z.periodizeBuffer(self.bbx.getCenter(), self.bbx.getCenter()+Vector3(0,self.bbx.getSize().y*2,0))
 
         if self.renderingStyle == eDepthOnly:
-            print 'draw depth img'
+            #print 'draw depth img'
             import qimage2ndarray as qn
             minz, maxz = znear, zfar
             db = z.getDepthBuffer()
@@ -248,7 +257,8 @@ class PglViewer (QGLViewer):
         else:
             self.label.setPixmap(QPixmap(z.getImage().toQImage()))
         dtime = time.time()  - t
-        print 'done in', dtime,'sec.'
+        if self.renderingMultithreaded : print 'MT',
+        print 'Rendering done in', dtime,'sec.'
         self.timeout = dtime * 1000
 
 
@@ -265,12 +275,13 @@ def main():
     qapp = QApplication([])
     hSplit  = QSplitter(Qt.Vertical)
     
-    #scene = Scene([Shape(Sphere(10),Material((200,50,100),2))])
+    scene = Scene([Shape(Sphere(10),Material((200,50,100),2))])
     #scene = Scene([Shape(Cylinder(1,10),Material((100,25,50),4))])
     #scene = Scene([Shape(TriangleSet([(0,0,0),(0,20,0),(0,0,10)], [range(3)], colorList=[(255,0,0,0),(0,255,0,0),(0,0,255,0)],colorPerVertex=True))])
     #scene = Scene('data/cow.obj')
     #scene = Scene('../share/plantgl/database/advancedgraphics/tulipa.geom')
-    scene = Scene('../share/plantgl/database/advancedgraphics/mango.bgeom')
+    #scene = Scene('../share/plantgl/database/advancedgraphics/mango.bgeom')
+    #scene = Scene('/Users/fboudon/Dropbox/mtpellier_training/project/benchmark_data/GDR_12_r1.txt')
     h = 600/2
     w = 800/2
 

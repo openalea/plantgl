@@ -57,7 +57,7 @@ DepthSortEngine::~DepthSortEngine()
 }
 
 
-void DepthSortEngine::process(TriangleSetPtr triangles, AppearancePtr appearance, uint32_t id)
+void DepthSortEngine::iprocess(TriangleSetPtr triangles, AppearancePtr appearance, uint32_t id, ProjectionCameraPtr camera, uint32_t threadid )
 {
     /*
     const Point3ArrayPtr points(triangles->getPointList());
@@ -82,21 +82,22 @@ void DepthSortEngine::process(TriangleSetPtr triangles, AppearancePtr appearance
     }    
 }
 
-void DepthSortEngine::process(PolylinePtr polyline, MaterialPtr material, uint32_t id)
+void DepthSortEngine::iprocess(PolylinePtr polyline, MaterialPtr material, uint32_t id, ProjectionCameraPtr camera, uint32_t threadid )
 {
 
 }
 
-void DepthSortEngine::process(PointSetPtr pointset, MaterialPtr material, uint32_t id)
+void DepthSortEngine::iprocess(PointSetPtr pointset, MaterialPtr material, uint32_t id, ProjectionCameraPtr camera, uint32_t threadid )
 {
 
 }
 
 
-#include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
+#include <CGAL/Exact_predicates_exact_constructions_kernel.h>
 #include <CGAL/Boolean_set_operations_2.h>
 #include <CGAL/Constrained_Delaunay_triangulation_2.h>
 #include <CGAL/Triangulation_face_base_with_info_2.h>
+#include <CGAL/intersections.h>
 #include <list>
 
 
@@ -109,9 +110,10 @@ struct FaceInfo2
   }
 };
 
-typedef CGAL::Exact_predicates_inexact_constructions_kernel Kernel;
+typedef CGAL::Exact_predicates_exact_constructions_kernel Kernel;
 typedef Kernel::Point_2                                   Point_2;
 typedef CGAL::Polygon_2<Kernel>                           Polygon_2;
+typedef CGAL::Triangle_2<Kernel>                          Triangle_2;
 typedef CGAL::Polygon_with_holes_2<Kernel>                Polygon_with_holes_2;
 typedef std::list<Polygon_with_holes_2>                   Pwh_list_2;
 
@@ -124,7 +126,7 @@ typedef CGAL::Constrained_Delaunay_triangulation_2<Kernel, TDS, Itag>  CDT;
 
 
 inline Point_2 toPoint2(const Vector3& v) { return Point_2(v.x(),v.y()); }
-inline Vector2 toVector2(const Point_2& v) { return Vector2(v.x(),v.y()); }
+inline Vector2 toVector2(const Point_2& v) { return Vector2(CGAL::to_double(v.x()),CGAL::to_double(v.y())); }
 
 
 Polygon_2 toPolygon(Point3ArrayPtr polygon) {
@@ -132,6 +134,11 @@ Polygon_2 toPolygon(Point3ArrayPtr polygon) {
     for (Point3Array::const_iterator it = polygon->begin(); it != polygon->end(); ++it){
         pol.push_back(toPoint2(*it));
     }
+    return pol;
+}
+
+Triangle_2 toTriangle(Point3ArrayPtr polygon) {
+    Triangle_2 pol(toPoint2(polygon->getAt(0)),toPoint2(polygon->getAt(1)),toPoint2(polygon->getAt(2)));
     return pol;
 }
 
@@ -295,10 +302,19 @@ bool intersect(Point3ArrayPtr polygon1, Point3ArrayPtr polygon2,
 {
     Polygon_2 p1 = toPolygon(polygon1);
     Polygon_2 p2 = toPolygon(polygon2);
+    assert( p1.is_counterclockwise_oriented ());
+    assert( p2.is_counterclockwise_oriented ());
     print_polygon(p1);
     print_polygon(p2);
+    printf("intersect: %s\n",CGAL::do_intersect(p1, p2)?"True":"False");
     Pwh_list_2 result;
     CGAL::intersection(p1, p2, std::back_inserter(result));
+
+    // Triangle_2 p1 = toTriangle(polygon1);
+    // Triangle_2 p2 = toTriangle(polygon2);
+
+    // CGAL::cpp11::result_of<Kernel::Intersect_2(Triangle_2, Triangle_2)>::type
+    // result = intersection(p1, p2);
 
     printf("intersect:%lu\n",result.size());
     if (result.size() == 0) return false;

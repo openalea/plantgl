@@ -31,40 +31,68 @@
  *  ----------------------------------------------------------------------------
  */             
 
+/*! \file ZBufferEngine.h
+    \brief Definition of Rendering Engine based on ZBuffer.
+*/
+
+
+
+#ifndef __ImageMutex_h__
+#define __ImageMutex_h__
 
 /* ----------------------------------------------------------------------- */
 
-#include "projectionengine.h"
-#include <plantgl/math/util_math.h>
-#include "projectionrenderer.h"
-
+#include <plantgl/tool/util_array2.h>
+#include <plantgl/tool/rcobject.h>
+#include <plantgl/tool/util_mutex.h>
+#include "../algo_config.h"
+#include <list>
 
 /* ----------------------------------------------------------------------- */
 
-PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
+PGL_BEGIN_NAMESPACE
+
+/* ----------------------------------------------------------------------- */
+
+/** 
+    \class ImageMutex
+    \brief An utility to lock access to pixel of an image.
+*/
+
+/* ----------------------------------------------------------------------- */
+typedef TOOLS(Array2<PglMutex>) MutexArray2;
+typedef RCPtr<MutexArray2> MutexArray2Ptr;
+
+class ImageMutex : public TOOLS(RefCountObject) {
+public :
+    ImageMutex(uint16_t imageWidth, uint16_t imageHeight);
+    virtual ~ImageMutex() ;
+    
+    void lock(uint_t x, uint_t y);
+    void unlock(uint_t x, uint_t y);
+    bool tryLock(uint_t x, uint_t y);
 
 
+    inline uint16_t width() const  { return __imageWidth; }
+    inline uint16_t height() const { return __imageHeight; }
 
-ProjectionEngine::ProjectionEngine():
-    __camera(0)
-{
-    setOrthographicCamera(-1, 1, -1, 1, -1, 1);
-    lookAt(Vector3(0,1,0),Vector3(0,0,0),Vector3(0,0,1));
+protected:
+    
+    uint16_t __imageWidth;
+    uint16_t __imageHeight;
+    MutexArray2 __mutexarray;
 
-}
+};
 
-ProjectionEngine::~ProjectionEngine()
-{
+/* ----------------------------------------------------------------------- */
 
-}
+typedef RCPtr<ImageMutex> ImageMutexPtr;
 
-void ProjectionEngine::process(ScenePtr scene)
-{
-    Discretizer d;
-    Tesselator t;
-    ProjectionRenderer r(*this, t, d);
-    beginProcess();
-    scene->apply(r);
-    endProcess();
-}
+/* ----------------------------------------------------------------------- */
+
+PGL_END_NAMESPACE
+
+/* ----------------------------------------------------------------------- */
+#endif
+
+

@@ -70,6 +70,8 @@ void export_ProjectionCamera()
 
 }
 
+ProjectionCameraPtr get_camera(ProjectionEngine * engine) { return engine->camera(); }
+
 void export_ProjectionEngine()
 {
 
@@ -81,12 +83,12 @@ void export_ProjectionEngine()
       .def("setOrthographicCamera", &ProjectionEngine::setOrthographicCamera)
       .def("lookAt", &ProjectionEngine::lookAt)
       .def("getBoundingBoxView", &ProjectionEngine::getBoundingBoxView)
-      .def("camera", &ProjectionEngine::camera)
+      .def("camera", &get_camera)
       
-      .def("process", (void(ProjectionEngine::*)(TriangleSetPtr, AppearancePtr, uint32_t))&ProjectionEngine::process)
-      .def("process", (void(ProjectionEngine::*)(PolylinePtr, MaterialPtr, uint32_t))&ProjectionEngine::process)
-      .def("process", (void(ProjectionEngine::*)(PointSetPtr, MaterialPtr, uint32_t))&ProjectionEngine::process)
-      .def("process", (void(ProjectionEngine::*)(ScenePtr))&ProjectionEngine::process)
+      .def("process", (void(ProjectionEngine::*)(TriangleSetPtr, AppearancePtr, uint32_t))&ProjectionEngine::process, (bp::arg("triangleset"),bp::arg("appearance"),bp::arg("id")))
+      .def("process", (void(ProjectionEngine::*)(PolylinePtr, MaterialPtr, uint32_t))&ProjectionEngine::process, (bp::arg("polyline"),bp::arg("appearance"),bp::arg("id")))
+      .def("process", (void(ProjectionEngine::*)(PointSetPtr, MaterialPtr, uint32_t))&ProjectionEngine::process, (bp::arg("pointset"),bp::arg("appearance"),bp::arg("id")))
+      .def("process", (void(ProjectionEngine::*)(ScenePtr))&ProjectionEngine::process, (bp::arg("scene")))
 
       /*.def("worldToCamera", &ProjectionEngine::worldToCamera)
       .def("cameraToNDC", &ProjectionEngine::cameraToNDC)

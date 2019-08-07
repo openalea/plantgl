@@ -83,12 +83,12 @@ template<class T>
 bool ProjectionRenderer::transform_and_process(T * geom)
 {
   GEOM_ASSERT_OBJ(geom);
-   __engine.pushModelTransformation(); 
+   __camera->pushModelTransformation(); 
    Matrix4TransformationPtr _basis = dynamic_pointer_cast<Matrix4Transformation>(geom->getTransformation());
    GEOM_ASSERT(_basis);
-   __engine.transformModel(_basis->getMatrix());
+   __camera->transformModel(_basis->getMatrix());
    bool b = geom->getGeometry()->apply(*this);
-   __engine.popModelTransformation();
+   __camera->popModelTransformation();
    return b;
 }
 
@@ -96,13 +96,29 @@ bool ProjectionRenderer::transform_and_process(T * geom)
 /* ----------------------------------------------------------------------- */
 
 
-ProjectionRenderer::ProjectionRenderer(ProjectionEngine& engine, Tesselator& tesselator, Discretizer &discretizer) :
+ProjectionRenderer::ProjectionRenderer(ProjectionEngine& engine, Tesselator& tesselator, Discretizer &discretizer, uint32_t threadid) :
         Action(),
         __engine(engine),
+        __camera(engine.camera()),
         __tesselator(tesselator),
         __discretizer(discretizer),
         __appearance(),
-        __id(Shape::NOID)
+        __id(Shape::NOID),
+        __threadid(threadid)
+{
+}
+
+
+
+ProjectionRenderer::ProjectionRenderer(ProjectionEngine& engine, ProjectionCameraPtr camera, Tesselator& tesselator, Discretizer &discretizer, uint32_t threadid) :
+        Action(),
+        __engine(engine),
+        __camera(camera),
+        __tesselator(tesselator),
+        __discretizer(discretizer),
+        __appearance(),
+        __id(Shape::NOID),
+        __threadid(threadid)
 {
 }
 
@@ -146,11 +162,11 @@ bool ProjectionRenderer::process(Inline *geomInline) {
   __id = geomInline->getId();
   if (geomInline->getScene()) {
     if (!geomInline->isTranslationToDefault() || !geomInline->isScaleToDefault()) {
-       __engine.pushModelTransformation(); 
+       __camera->pushModelTransformation(); 
       const Vector3 _trans = geomInline->getTranslation();
-      __engine.translateModel(_trans);
+      __camera->translateModel(_trans);
       const Vector3 _scale = geomInline->getScale();
-      __engine.scaleModel(_scale);
+      __camera->scaleModel(_scale);
     }
     bool _result = true;
     for (Scene::iterator _i = geomInline->getScene()->begin();
@@ -159,7 +175,7 @@ bool ProjectionRenderer::process(Inline *geomInline) {
         if (!(*_i)->apply(*this)) _result = false;
     };
     if (!geomInline->isTranslationToDefault() || !geomInline->isScaleToDefault()) {
-       __engine.popModelTransformation(); 
+       __camera->popModelTransformation(); 
     }
 
     return _result;
@@ -299,10 +315,10 @@ bool ProjectionRenderer::process(IFS *ifs) {
   bool res = true;
   
   for (Matrix4Array::const_iterator itmatrix = matrixList->begin(); itmatrix != matrixList->end(); ++itmatrix) {
-    __engine.pushModelTransformation(); 
-    __engine.transformModel(*itmatrix);
+    __camera->pushModelTransformation(); 
+    __camera->transformModel(*itmatrix);
     res = res && ifs->getGeometry()->apply(*this);
-    __engine.popModelTransformation();   
+    __camera->popModelTransformation();   
   }
 
   return res;
@@ -397,10 +413,10 @@ bool ProjectionRenderer::process(Paraboloid *paraboloid) {
 bool ProjectionRenderer::process(PointSet *pointSet) {
   GEOM_ASSERT_OBJ(pointSet);
   if (__appearance->isTexture()){
-    __engine.process(PointSetPtr(pointSet), dynamic_pointer_cast<Material>(Material::DEFAULT_MATERIAL),__id);    
+    __engine.iprocess(PointSetPtr(pointSet), dynamic_pointer_cast<Material>(Material::DEFAULT_MATERIAL),__id, __camera, __threadid);    
   }
   else {
-    __engine.process(PointSetPtr(pointSet), dynamic_pointer_cast<Material>(__appearance),__id);    
+    __engine.iprocess(PointSetPtr(pointSet), dynamic_pointer_cast<Material>(__appearance),__id, __camera, __threadid);    
   }
   return true;
 }
@@ -411,10 +427,10 @@ bool ProjectionRenderer::process(PointSet *pointSet) {
 bool ProjectionRenderer::process(Polyline *polyline) {
   GEOM_ASSERT_OBJ(polyline);
   if (__appearance->isTexture()){
-    __engine.process(PolylinePtr(polyline), dynamic_pointer_cast<Material>(Material::DEFAULT_MATERIAL),__id);    
+    __engine.iprocess(PolylinePtr(polyline), dynamic_pointer_cast<Material>(Material::DEFAULT_MATERIAL),__id, __camera, __threadid);    
   }
   else {
-    __engine.process(PolylinePtr(polyline), dynamic_pointer_cast<Material>(__appearance), __id);
+    __engine.iprocess(PolylinePtr(polyline), dynamic_pointer_cast<Material>(__appearance), __id, __camera, __threadid);
   }
   return true;
 }
@@ -493,7 +509,7 @@ bool ProjectionRenderer::process(Translated *translated) {
 
 bool ProjectionRenderer::process(TriangleSet *triangleSet) {
   GEOM_ASSERT_OBJ(triangleSet);
-  __engine.process(TriangleSetPtr(triangleSet), __appearance, __id);    
+  __engine.iprocess(TriangleSetPtr(triangleSet), __appearance, __id, __camera, __threadid);    
   return true;
 }
 

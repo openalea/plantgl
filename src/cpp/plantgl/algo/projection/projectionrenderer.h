@@ -70,7 +70,9 @@ class ALGO_API ProjectionRenderer : public Action
 public:
 
   /** Constructs a GLRenderer with the Discretizer \e discretizer. */
-  ProjectionRenderer( ProjectionEngine&, Tesselator& tesselator, Discretizer& discretizer);
+  ProjectionRenderer( ProjectionEngine&, Tesselator& tesselator, Discretizer& discretizer, uint32_t threadid = 0);
+
+  ProjectionRenderer( ProjectionEngine&, ProjectionCameraPtr, Tesselator& tesselator, Discretizer& discretizer, uint32_t threadid = 0);
 
 
   /// Destructor
@@ -209,11 +211,17 @@ protected:
   // The engine used to render
   ProjectionEngine& __engine;
 
+  // The camera used to render
+  ProjectionCameraPtr __camera;
+
   /// The current material
   AppearancePtr __appearance;
 
   /// The current id;
   uint32_t __id;
+  
+  /// The current threadid;
+  uint32_t __threadid;
   
 private:
   template<class T> 

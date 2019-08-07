@@ -79,9 +79,9 @@ public :
     ScenePtr getResult(Color4::eColor4Format format = Color4::eARGB, bool cameraCoordinates = true) const;
     ScenePtr getProjectionResult(Color4::eColor4Format format = Color4::eARGB, bool cameraCoordinates = true) const;
 
-    virtual void process(TriangleSetPtr triangles, AppearancePtr appearance, uint32_t id);
-    virtual void process(PolylinePtr polyline, MaterialPtr material, uint32_t id);
-    virtual void process(PointSetPtr pointset, MaterialPtr material, uint32_t id);
+    virtual void iprocess(TriangleSetPtr triangles, AppearancePtr appearance, uint32_t id, ProjectionCameraPtr camera = ProjectionCameraPtr(), uint32_t threadid = 0);
+    virtual void iprocess(PolylinePtr polyline, MaterialPtr material, uint32_t id, ProjectionCameraPtr camera = ProjectionCameraPtr(), uint32_t threadid = 0);
+    virtual void iprocess(PointSetPtr pointset, MaterialPtr material, uint32_t id, ProjectionCameraPtr camera = ProjectionCameraPtr(), uint32_t threadid = 0);
 
     struct PolygonInfo {
         Point3ArrayPtr points;

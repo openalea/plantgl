@@ -9,7 +9,7 @@ def checkorientation(tr1, tr2):
     return dot(normal(tr1), normal(tr2)) > 0   
 
 
-def process_tris_basic(pts, pts2, visual = False, translation = 2):
+def process_tris_basic(pts, pts2, visual = False, translation = 2, model = None):
     cam = (-2,0,0)
     if visual : 
         Viewer.display(Shape(Translated(cam,Sphere(0.1)), Material((0,0,0))))
@@ -29,14 +29,34 @@ def process_tris_basic(pts, pts2, visual = False, translation = 2):
         print sh.geometry.pointList
     if visual : Viewer.add(s)
 
+def process_triset_basic(listpts, visual = False, translation = 2, model = None):
+    cam = (-2,0,0)
+    if visual : 
+        Viewer.display(Shape(Translated(cam,Sphere(0.1)), Material((0,0,0))))
 
-def process_tris_full(pts, pts2, visual = False, translation = 2):
+        for pts2 in listpts:
+            tr2 = TriangleSet(pts2, [range(3)])
+            Viewer.add(Shape(Translated(0,0,translation,tr2), Material((0,0,200))))
+    
+    e = DepthSortEngine()
+    e.setPerspectiveCamera(60,1,1,1000)
+    e.lookAt(cam,(0,0,0),(0,0,1))
+    for i, pts2 in enumerate(listpts):
+        e.processTriangle(*(pts2+[100*i]))
+    s = e.getResult(eABGR, False)
+    for sh in s:
+        print sh.geometry.pointList
+    if visual : Viewer.add(s)
+
+
+def process_tris_full(pts, pts2, visual = False, translation = 2, model = None):
     if visual : 
         tr = TriangleSet(pts, [range(3)])
         Viewer.display(Shape(tr, Material((0,200,0))))
         tr2 = TriangleSet(pts2, [range(3)])
         Viewer.add(Shape(tr2, Material((0,0,200))))
-    for alpha in xrange(0,360, 30):
+    for mid, alpha in enumerate(xrange(0,360, 30)):
+      if model is None or model == mid:
         dir = Vector3(Vector3.Spherical(1,radians(alpha),pi/2))
         cam = 5*dir
         e = DepthSortEngine()
@@ -71,11 +91,19 @@ def process_tris_full(pts, pts2, visual = False, translation = 2):
 process_tris = process_tris_full
 
 def process_scene_basic(sc, visual = False, translation = 1):
+    if not isinstance(sc, Scene):
+        sc = Scene([Shape(sc,id=100)])
+
+    t = Tesselator() 
+    sc.apply(t)
+    for tr in t.result.indexList:
+        print [tuple(t.result.pointList[tid]) for tid in tr]
+
+    cam = (-2,0,0)
     if visual : 
         Viewer.display(Shape(Translated(cam,Sphere(0.1)), Material((0,0,0))))
         Viewer.add(Scene([Shape(Translated(0,0,translation,sh.geometry), sh.appearance, sh.id) for sh in sc]) )
 
-    cam = (-2,0,0)
     e = DepthSortEngine()
     e.setPerspectiveCamera(60,1,1,1000)
     e.lookAt(cam,(0,0,0),(0,0,1))
@@ -137,50 +165,86 @@ def process_scene_full(sc, visual = False, nbView = 1):
         if visual : Viewer.add(Scene([Shape(Translated(cam,sh.geometry), sh.appearance, sh.id) for sh in s]))
 
 
-process_scene = process_scene_full
+process_scene = process_scene_basic
 
 
-def test_tri1(visual = False):
+def test_tri1(visual = False, model = None):
     pts = [[0,0,0.],[0,0,0.5],[0,1,0]]
     pts2 = [[0.1,-0.5,0.0],[0.1,1,1],[0.1,1,0.5]]
     #print normal(pts), normal(pts2)
     #assert checkorientation(pts,pts2)
-    process_tris(pts, pts2, visual)
+    process_tris(pts, pts2, visual, model=model)
 
 
-def test_tri2(visual = False):
+def test_tri2(visual = False, model = None):
     pts = [[0,0,0.],[0,0,0.5],[0,1,0]]
     pts2 = [[0.1,0.1,0.0],[0.1,0.3,0.3],[0.1,0.3,0.1]]
     print normal(pts), normal(pts2)
     assert checkorientation(pts,pts2)
-    process_tris(pts, pts2, visual)
+    process_tris(pts, pts2, visual, model=model)
 
 
-def test_tri3(visual = False):
+def test_tri3(visual = False, model = None):
     pts = [[0,0,0.],[0,0,0.5],[0,1,0]]
     pts2 = [[-0.1,0.1,0.0],[-0.1,0.3,0.1],[-0.1,0.3,0.3]]
-    process_tris(pts, pts2, visual)
+    process_tris(pts, pts2, visual, model=model)
 
 
-def test_tri4(visual = False):
+def test_tri4(visual = False, model = None):
     pts = [[0,0,0.],[0,0,0.5],[0,1,0]]
     pts2 = [[-0.1,0.1,0.0],[-0.1,0.3,0.1],[0.1,0.3,0.3]]
-    process_tris(pts, pts2, visual)
+    process_tris(pts, pts2, visual, model=model)
 
-def test_tri5(visual = False):
+def test_tri5(visual = False, model = None):
     pts = [[0,0,0.],[0,0,0.5],[0,1,0]]
     pts2 = [[0.1,0.1,0.0],[0.1,0.3,0.1],[-0.1,0.3,0.3]]
-    process_tris(pts, pts2, visual)
+    process_tris(pts, pts2, visual, model=model)
 
-def test_tri6(visual = False):
+def test_tri6(visual = False, model = None):
     pts = [[0,0,0.],[0,0,0.5],[0,1,0]]
     pts2 = [[0,0,0.0],[0,0,0.5],[0,-1,0]]
-    process_tris(pts, pts2, visual)
+    process_tris(pts, pts2, visual, model=model)
 
-def test_tri7(visual = False):
+def test_tri7(visual = False, model = None):
     pts = [[0,0,0.],[0,0,0.5],[0,1,0]]
     pts2 = [[0,0,0.0],[0,0,0.5],[-1,0,0]]
-    process_tris(pts, pts2, visual)
+    process_tris(pts, pts2, visual, model=model)
+
+def test_triset(visual = False, model = None):
+    pts = [[0,0,0.],[0,0,0.5],[0,1,0]]
+    pts2 = [[0.1,1,0],[0.1,1,0.5],[0.1,0,0]]
+    pts3 = [[0.2,1,0.5],[0.2,1,0],[0.2,0,0.5]]
+    pts4 = [[0.3,0,0.5],[0.3,0,0],[0.3,1,0.5]]
+    pts5 = [[-0.1,0,0.5],[-0.1,0,0],[-0.1,1,0.5]]
+    pts5 = [[-0.2,0.5,0.5],[-0.2,0,0],[-0.2,1,0]]
+    process_triset_basic([pts, pts2, pts3, pts4, pts5], visual, model=model)
+
+
+def test_triset2(visual = False, model = None):
+    pts = [[0,0,0.],[0,0,0.5],[0,1,0]]
+    pts2 = [[0.2,1,0],[0.1,1,0.5],[0.3,0,0]]
+    pts3 = [[0.1,1,0.5],[0.3,1,0],[0.2,0,0.5]]
+    pts4 = [[0.3,0,0.5],[0.0,0,0],[-0.3,1,0.5]]
+    pts5 = [[-0.1,0,0.5],[0.2,0,0],[-0.2,1,0.5]]
+    pts5 = [[0,0.5,0.5],[0.3,0,0],[-0.2,1,0]]
+    process_triset_basic([pts, pts2, pts3, pts4, pts5], visual, model=model)
+
+def test_triset3(visual = False, model = None):
+    pts = [[0,0,0.],    [0,0,0.5],[0,1,0]]
+    pts2 = [[0.0,1,0],  [0.0,1,0.5],[0.0,0,0]]
+    pts3 = [[0.0,1,0.5],[0.0,1,0],[0.0,0,0.5]]
+    pts4 = [[0.0,0,0.5],[0.0,0,0],[0.0,1,0.5]]
+    pts5 = [[0.0,0,0.5],[0.0,0,0],[0.0,1,0.5]]
+    pts5 = [[0,0.5,0.5],[0.0,0,0],[0.0,1,0]]
+    process_triset_basic([pts, pts2, pts3, pts4, pts5]*10, visual, model=model)
+
+def test_triset4(visual = False, model = None):
+    t = Tesselator() 
+    Sphere().apply(t)
+    triangles = [[tuple(t.result.pointList[tid]) for tid in tr]for tr in t.result.indexList]
+    triangles = triangles[:30]
+    process_triset_basic(triangles, visual, model=model)
+
 
 
 def test_sphere(visual = False):
@@ -213,7 +277,11 @@ if __name__ == '__main__':
             i = int(i)
         except:
             pass
+    mid = None
+    if len(argv) > 1 :
+        mid = int(argv[1])
+        print 'Model', mid
     if type(i) == int:
-        globals()['test_tri'+str(i)](visual)
+        globals()['test_tri'+str(i)](visual, model = mid)
     else:
         globals()['test_'+str(i)](visual)

@@ -83,7 +83,7 @@ public :
       inline void lookAt(const TOOLS(Vector3)& eyePosition3D, const TOOLS(Vector3)& center3D, const TOOLS(Vector3)& upVector3D)
       { __camera->lookAt(eyePosition3D, center3D, upVector3D); }
 
-      ProjectionCameraPtr camera() const { return __camera; }
+      const ProjectionCameraPtr& camera() const { return __camera; }
 
       inline void transformModel(const TOOLS(Matrix4)& transform)
       {  __camera->transformModel(transform); }
@@ -107,11 +107,18 @@ public :
       BoundingBoxPtr getBoundingBoxView() const
       {  return __camera->getBoundingBoxView();  }
 
-      void process(ScenePtr scene);
+      virtual void process(ScenePtr scene);
 
-      virtual void process(TriangleSetPtr triangles, AppearancePtr appearance, uint32_t id) = 0;
-      virtual void process(PolylinePtr polyline, MaterialPtr material, uint32_t id) = 0;
-      virtual void process(PointSetPtr pointset, MaterialPtr material, uint32_t id) = 0;
+      void process(TriangleSetPtr triangles, AppearancePtr appearance, uint32_t id) { iprocess(triangles, appearance,id,__camera); }
+      void process(PolylinePtr polyline, MaterialPtr material, uint32_t id)  { iprocess(polyline, material, id, __camera); }
+      void process(PointSetPtr pointset, MaterialPtr material, uint32_t id)  { iprocess(pointset, material, id, __camera); }
+
+      virtual void iprocess(TriangleSetPtr triangles, AppearancePtr appearance, uint32_t id, ProjectionCameraPtr camera = ProjectionCameraPtr(), uint32_t threadid = 0) = 0;
+      virtual void iprocess(PolylinePtr polyline, MaterialPtr material, uint32_t id, ProjectionCameraPtr camera = ProjectionCameraPtr(), uint32_t threadid = 0) = 0;
+      virtual void iprocess(PointSetPtr pointset, MaterialPtr material, uint32_t id, ProjectionCameraPtr camera = ProjectionCameraPtr(), uint32_t threadid = 0) = 0;
+
+      virtual void beginProcess() {}
+      virtual void endProcess() {}
 
 
 protected:

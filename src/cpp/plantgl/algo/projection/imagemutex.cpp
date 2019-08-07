@@ -31,40 +31,39 @@
  *  ----------------------------------------------------------------------------
  */             
 
-
-/* ----------------------------------------------------------------------- */
-
-#include "projectionengine.h"
-#include <plantgl/math/util_math.h>
-#include "projectionrenderer.h"
-
+#include "imagemutex.h"
 
 /* ----------------------------------------------------------------------- */
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
-
-
-ProjectionEngine::ProjectionEngine():
-    __camera(0)
+ImageMutex::ImageMutex(uint16_t imageWidth, uint16_t imageHeight):
+    RefCountObject(), 
+    __imageWidth(imageWidth), 
+    __imageHeight(imageHeight), 
+    __mutexarray(imageWidth, imageHeight)
 {
-    setOrthographicCamera(-1, 1, -1, 1, -1, 1);
-    lookAt(Vector3(0,1,0),Vector3(0,0,0),Vector3(0,0,1));
+    printf("ImageMutex\n");
 
 }
 
-ProjectionEngine::~ProjectionEngine()
+ImageMutex::~ImageMutex() 
 {
-
+}
+    
+void ImageMutex::lock(uint_t x, uint_t y)
+{
+    // printf("lock %i %i\n",x,y);
+    __mutexarray.getAt(x,y).lock();
 }
 
-void ProjectionEngine::process(ScenePtr scene)
+void ImageMutex::unlock(uint_t x, uint_t y)
 {
-    Discretizer d;
-    Tesselator t;
-    ProjectionRenderer r(*this, t, d);
-    beginProcess();
-    scene->apply(r);
-    endProcess();
+    __mutexarray.getAt(x,y).unlock();
 }
+
+bool ImageMutex::tryLock(uint_t x, uint_t y)
+{
+    return __mutexarray.getAt(x,y).tryLock();
+}
+
