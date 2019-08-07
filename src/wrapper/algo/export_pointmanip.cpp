@@ -232,6 +232,10 @@ boost::python::object py_select_pole_points_mt(const Point3ArrayPtr &point, cons
   return make_pair_tuple(select_pole_points_mt(point, radius, iterations, tolerance));
 }
 
+boost::python::object py_select_pole_from_point(const Point3ArrayPtr& points, const Vector3 &startPoint, std::size_t iterations, real_t maxAngle) {
+	return make_pair_tuple(select_pole_from_point(points, startPoint, iterations, maxAngle));
+}
+
 #ifdef WITH_CGAL
 boost::python::object py_pointset_plane(const Point3ArrayPtr points, const Index &group) {
   return make_pair_tuple(pointset_plane(points, group));
@@ -254,6 +258,7 @@ void export_PointManip() {
   def("filter_max_densities", &filter_max_densities, args("densities", "densityratio"));
   def("select_pole_points", &py_select_pole_points, (bp::arg("point"), bp::arg("radius"), bp::arg("iterations"), bp::arg("tolerance") = -1.0));
   def("select_pole_points_mt", &py_select_pole_points_mt, (bp::arg("point"), bp::arg("radius"), bp::arg("iterations"), bp::arg("tolerance") = -1.0));
+  def("select_pole_from_point", &py_select_pole_from_point, (bp::arg("points"), bp::arg("startPoint"), bp::arg("iterations"), bp::arg("maxAngle")));
 
 #ifdef WITH_CGAL
   def("delaunay_point_connection", &delaunay_point_connection, args("points"));

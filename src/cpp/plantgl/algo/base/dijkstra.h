@@ -187,7 +187,7 @@ public:
 
 #ifdef PGL_USE_FIBONACCI_HEAP
     void allocate(size_t nbnodes, dijkstrahandle *& handles)  const {
-        if (__cache->parents == NULL){
+        if (__cache->handles == NULL){
             __cache->handles = new dijkstrahandle[nbnodes];
         }
         handles = __cache->handles;
@@ -232,6 +232,7 @@ NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections,
 
      struct nodecompare comp(distances);
      dijkstraheap Q(comp);
+
 
 #ifdef PGL_USE_FIBONACCI_HEAP
      dijkstrahandle * handles = NULL;

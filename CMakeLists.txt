@@ -8,7 +8,6 @@ project(plantgl CXX)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 include("Anaconda")
-# include("CXX14")
 
 # --- Define a Preprocessor Macro
 
@@ -130,7 +129,9 @@ include_directories(${OPENGL_INCLUDE_DIR})
 
 # --- Library Directory
 
-link_directories("${CONDA_ENV}/lib")
+if (DEFINED CONDA_ENV)
+    link_directories("${CONDA_ENV}/lib")
+endif()
 
 # --- Source Directories
 
