@@ -52,9 +52,9 @@
 #include "projectionengine.h"
 #include "framebuffermanager.h"
 #include "imagemutex.h"
-#include <boost/thread/condition_variable.hpp>
+#include <condition_variable>
 // #include <boost/fiber/mutex.hpp>
-#include <boost/atomic.hpp>
+#include <atomic>
 
 /* ----------------------------------------------------------------------- */
 
@@ -62,6 +62,44 @@
 namespace boost { namespace asio { class thread_pool; };};
 
 PGL_BEGIN_NAMESPACE
+
+class ThreadManager;
+
+class ThreadManager {
+public:
+    ~ThreadManager();
+
+    void new_task(std::function<void()> task);
+    void join();
+    size_t nb_threads() { return __nb_threads; }
+
+    // Singleton access
+    static ThreadManager& get();
+protected:
+
+
+    ThreadManager();
+    boost::asio::thread_pool * getPool();
+
+    bool hasActiveTasks() const { return __nb_tasks > 0; }
+    bool hasCompletedTasks() const ;
+
+    void process_task(std::function<void()> task);
+
+    boost::asio::thread_pool * __pool;
+    size_t __nb_threads;
+
+    std::atomic<uint32_t> __nb_tasks;
+    std::condition_variable  __condition;
+    std::mutex   __condition_mutex;
+    std::unique_lock< std::mutex > __condition_lock ;
+    std::mutex   __threadend_mutex;
+
+    static ThreadManager THREADMANAGER;
+};
+
+
+
 
 /* ----------------------------------------------------------------------- */
 
@@ -218,52 +256,14 @@ protected :
   TriangleShaderPtr * __triangleshaderset;
 
   bool __multithreaded;
-  boost::asio::thread_pool * __pool;
   ImageMutexPtr __imageMutex;
 
 
+  static ImageMutexPtr getImageMutex(uint16_t imageWidth, uint16_t imageHeight);
 
-public:
-    class ZbufferEngineThreadManager {
-    public:
-        friend class ZBufferEngine;
-        boost::asio::thread_pool * getPool();
-        ImageMutexPtr getImageMutex(uint16_t imageWidth, uint16_t imageHeight);
-        ~ZbufferEngineThreadManager();
-
-        void init_tasks();
-
-        template<typename Task> void new_task(Task&& task);
-
-        void end_task();
-
-        void join();
-
-        size_t nb_threads() { return __nb_threads; }
-
-    protected:
-
-        ZbufferEngineThreadManager();
-
-        bool hasActiveTasks() const { return __nb_tasks > 0; }
-        bool hasCompletedTasks() const ;
-
-        boost::asio::thread_pool * __pool;
-        size_t __nb_threads;
-        ImageMutexPtr __imageMutex;
-
-        boost::atomic<uint32_t> __nb_tasks;
-        boost::condition_variable  __condition;
-        boost::mutex   __condition_mutex;
-        boost::unique_lock< boost::mutex > __condition_lock ;
-
-    };
-
-    // Singleton access
-    static ZbufferEngineThreadManager& threadmanager();
 
 private:
-    static ZbufferEngineThreadManager THREADMANAGER;
+    static ImageMutexPtr IMAGEMUTEX;
   
 };
 

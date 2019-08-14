@@ -275,12 +275,12 @@ def main():
     qapp = QApplication([])
     hSplit  = QSplitter(Qt.Vertical)
     
-    scene = Scene([Shape(Sphere(10),Material((200,50,100),2))])
+    #scene = Scene([Shape(Sphere(10),Material((200,50,100),2))])
     #scene = Scene([Shape(Cylinder(1,10),Material((100,25,50),4))])
     #scene = Scene([Shape(TriangleSet([(0,0,0),(0,20,0),(0,0,10)], [range(3)], colorList=[(255,0,0,0),(0,255,0,0),(0,0,255,0)],colorPerVertex=True))])
     #scene = Scene('data/cow.obj')
     #scene = Scene('../share/plantgl/database/advancedgraphics/tulipa.geom')
-    #scene = Scene('../share/plantgl/database/advancedgraphics/mango.bgeom')
+    scene = Scene('../share/plantgl/database/advancedgraphics/mango.bgeom')
     #scene = Scene('/Users/fboudon/Dropbox/mtpellier_training/project/benchmark_data/GDR_12_r1.txt')
     h = 600/2
     w = 800/2

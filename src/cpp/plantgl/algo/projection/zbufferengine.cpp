@@ -41,6 +41,7 @@
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
 #include <queue>
+#include <chrono>
 /* ----------------------------------------------------------------------- */
 
 PGL_USING_NAMESPACE
@@ -137,8 +138,7 @@ void ZBufferEngine::beginProcess()
 
     if (__multithreaded){
         // printf("begin rendering : create thread pool\n");
-        threadmanager().init_tasks();
-        __imageMutex = threadmanager().getImageMutex(__imageWidth, __imageHeight);
+        __imageMutex = getImageMutex(__imageWidth, __imageHeight);
     }
 
 }
@@ -147,7 +147,7 @@ void ZBufferEngine::endProcess()
 {
 
     if(__multithreaded){
-        threadmanager().join();
+        ThreadManager::get().join();
         // __pool->join();
         // printf("end rendering : %u\n", uint32_t(__nb_tasks));
         //printf("end rendering done\n");
@@ -256,7 +256,7 @@ void ZBufferEngine::iprocess(TriangleSetPtr triangles, AppearancePtr appearance,
 
     TriangleShaderPtr shader;
     if (threadid != 0) {
-        assert(threadid <= threadmanager().nb_threads());
+        assert(threadid <= ThreadManager::get().nb_threads());
         //printf("session %u\n", threadid);
         shader = __triangleshaderset[threadid-1];
     }
@@ -276,21 +276,12 @@ void ZBufferEngine::iprocess(TriangleSetPtr triangles, AppearancePtr appearance,
             shader->init(appearance, triangles, itidx, id, _camera);
         }
       
-        // shader->initEnv(_camera);
+        shader->initEnv(_camera);
         renderShadedTriangle(v0, v1, v2, ccw, shader, _camera);
 
     }
 
 }
-
-void ZBufferEngine::renderShadedTriangleMT(const TOOLS(Vector3)& v0, const TOOLS(Vector3)& v1, const TOOLS(Vector3)& v2, bool ccw, const TriangleShaderPtr& shader, const ProjectionCameraPtr& camera)
-{
-    shader->initEnv(camera);
-    renderShadedTriangle(v0, v1, v2, ccw, shader, camera);
-    // printf("- rendering nb task : %u\n", uint32_t(__nb_tasks));
-    threadmanager().end_task();
-}
-
 
 void ZBufferEngine::renderShadedTriangle(const TOOLS(Vector3)& v0, const TOOLS(Vector3)& v1, const TOOLS(Vector3)& v2, bool ccw, const TriangleShaderPtr& shader,  const ProjectionCameraPtr& camera)
 {
@@ -337,7 +328,7 @@ void ZBufferEngine::renderShadedTriangle(const TOOLS(Vector3)& v0, const TOOLS(V
     int32_t y1 = pglMin(int32_t(__imageHeight) - 1, (int32_t)(std::floor(ymax)));
 
     if (__multithreaded && (x1-x0+1)*(y1-y0+1) > 20) {
-        threadmanager().new_task(boost::bind(&ZBufferEngine::rasterizeMT, this, Index4(x0,x1,y0,y1), v0Raster, v1Raster, v2Raster, ccw, TriangleShaderPtr(shader->copy()), ProjectionCameraPtr(camera->copy())));
+        ThreadManager::get().new_task(boost::bind(&ZBufferEngine::rasterizeMT, this, Index4(x0,x1,y0,y1), v0Raster, v1Raster, v2Raster, ccw, TriangleShaderPtr(shader->copy()), ProjectionCameraPtr(camera->copy())));
     }
     else {
         rasterize(x0,x1,y0,y1,v0Raster,v1Raster,v2Raster,ccw,shader,camera);
@@ -358,9 +349,7 @@ void ZBufferEngine::rasterizeMT(const Index4& rect,
                               const TOOLS(Vector3)& v0Raster, const TOOLS(Vector3)& v1Raster, const TOOLS(Vector3)& v2Raster, bool ccw, 
                               const TriangleShaderPtr& shader, const ProjectionCameraPtr& camera)
 {
-    rasterize(rect[0],rect[1],rect[2],rect[3],v0Raster,v1Raster,v2Raster,ccw,shader,camera);
-    // printf("- rendering nb task : %u\n", uint32_t(__nb_tasks));
-    threadmanager().end_task();    
+    rasterize(rect[0],rect[1],rect[2],rect[3],v0Raster,v1Raster,v2Raster,ccw,shader,camera);  
 }
 
 void ZBufferEngine::rasterize(int32_t x0, int32_t x1, int32_t y0, int32_t y1,
@@ -534,7 +523,7 @@ void ZBufferEngine::process(ScenePtr scene)
     beginProcess();
     size_t msize = scene->size();
     if(__multithreaded && msize > 100){
-        size_t nbthreads = threadmanager().nb_threads();
+        size_t nbthreads = ThreadManager::get().nb_threads();
         size_t nbShapePerThread = (msize / nbthreads);
         if (nbShapePerThread * nbthreads < msize) { nbShapePerThread += 1; }
 
@@ -551,7 +540,7 @@ void ZBufferEngine::process(ScenePtr scene)
             Scene::const_iterator itbegin = scene->begin() + i ;
             Scene::const_iterator itend = scene->begin() + pglMin(msize, i + nbShapePerThread);
 
-            threadmanager().new_task(boost::bind(&ZBufferEngine::processSceneMT, this, itbegin, itend, ProjectionCameraPtr(__camera->copy()),threadid));
+            ThreadManager::get().new_task(boost::bind(&ZBufferEngine::processScene, this, itbegin, itend, ProjectionCameraPtr(__camera->copy()),threadid));
 
             
         }
@@ -560,12 +549,6 @@ void ZBufferEngine::process(ScenePtr scene)
         processScene(scene->begin(), scene->end(), __camera);
     }
     endProcess();
-}
-
-void ZBufferEngine::processSceneMT(Scene::const_iterator scene_begin, Scene::const_iterator scene_end, ProjectionCameraPtr camera, uint32_t threadid)
-{
-    processScene(scene_begin, scene_end, camera, threadid);
-    threadmanager().end_task();
 }
 
 void ZBufferEngine::processScene(Scene::const_iterator scene_begin, Scene::const_iterator scene_end, ProjectionCameraPtr camera, uint32_t threadid)
@@ -697,70 +680,67 @@ void ZBufferEngine::_bufferPeriodizationStep(int32_t xDiff, int32_t yDiff, real_
 
 
 boost::asio::thread_pool * 
-ZBufferEngine::ZbufferEngineThreadManager::getPool()
+ThreadManager::getPool()
 {
     if(__pool == NULL) __pool = new boost::asio::thread_pool(__nb_threads);
     return __pool;
 }
 
-ImageMutexPtr ZBufferEngine::ZbufferEngineThreadManager::getImageMutex(uint16_t imageWidth, uint16_t imageHeight)
-{
-    if (is_null_ptr(__imageMutex) ||  imageWidth > __imageMutex->width() || imageHeight > __imageMutex->height()){
-        __imageMutex = ImageMutexPtr(new ImageMutex(uint_t(imageWidth), uint_t(imageHeight)));
-    }
-   return __imageMutex;
-}
-
-ZBufferEngine::ZbufferEngineThreadManager::ZbufferEngineThreadManager(): 
-    __pool(NULL), __imageMutex(),
+ThreadManager::ThreadManager(): 
+    __pool(NULL),
     __condition_lock(__condition_mutex),
-    __nb_threads(boost::thread::hardware_concurrency()+1)
+    __nb_threads(boost::thread::hardware_concurrency()+1),
+    __nb_tasks(0)
 {}
 
-ZBufferEngine::ZbufferEngineThreadManager::~ZbufferEngineThreadManager()
+ThreadManager::~ThreadManager()
 {
     if(__pool != NULL) delete __pool;
 }
 
-void ZBufferEngine::ZbufferEngineThreadManager::init_tasks()
-{ 
-    getPool();
-    __nb_tasks = 0;
-}
-
-template<typename Task> 
-void process_task(Task&& task){
-    task();
-    ZBufferEngine::threadmanager().end_task();
-};
-
-template<typename Task> 
-void ZBufferEngine::ZbufferEngineThreadManager::new_task(Task&& task){
+void ThreadManager::new_task(std::function<void()> task){
     ++__nb_tasks;
-    // boost::asio::post(*__pool, boost::bind(&process_task<Task>,task));    
-    boost::asio::post(*__pool, task);    
+    boost::asio::post(*getPool(), boost::bind(&ThreadManager::process_task, this, task));    
+    //boost::asio::post(*__pool, task);    
 }
 
-void ZBufferEngine::ZbufferEngineThreadManager::end_task()
+void ThreadManager::process_task(std::function<void()> task)
 {
+    task();
+    __threadend_mutex.lock();
     --__nb_tasks;
     __condition.notify_one();
+    __threadend_mutex.unlock();
 }
 
-void ZBufferEngine::ZbufferEngineThreadManager::join()
+void ThreadManager::join()
 {
-    __condition.wait(__condition_lock, boost::bind(&ZBufferEngine::ZbufferEngineThreadManager::hasCompletedTasks, this));
+    while(!hasCompletedTasks()){
+        __condition.wait_for(__condition_lock, std::chrono::milliseconds(10), std::bind(&ThreadManager::hasCompletedTasks, this));
+    }
+    // __condition.wait(__condition_lock, std::bind(&ThreadManager::hasCompletedTasks, this));
 }
 
 
-bool ZBufferEngine::ZbufferEngineThreadManager::hasCompletedTasks() const { 
+bool ThreadManager::hasCompletedTasks() const { 
     // printf("rendering nb task : %u\n", uint32_t(__nb_tasks));
     return __nb_tasks == 0; 
 }
 
-
-
 // Singleton access
-ZBufferEngine::ZbufferEngineThreadManager& ZBufferEngine::threadmanager() { return ZBufferEngine::THREADMANAGER; }
+ThreadManager& ThreadManager::get() { return ThreadManager::THREADMANAGER; }
 
-ZBufferEngine::ZbufferEngineThreadManager ZBufferEngine::THREADMANAGER;
+ThreadManager ThreadManager::THREADMANAGER;
+
+
+ImageMutexPtr ZBufferEngine::IMAGEMUTEX;
+
+
+ImageMutexPtr ZBufferEngine::getImageMutex(uint16_t imageWidth, uint16_t imageHeight)
+{
+    if (is_null_ptr(IMAGEMUTEX) ||  imageWidth > IMAGEMUTEX->width() || imageHeight > IMAGEMUTEX->height()){
+        IMAGEMUTEX = ImageMutexPtr(new ImageMutex(pglMax<uint_t>(imageWidth, is_valid_ptr(IMAGEMUTEX)?IMAGEMUTEX->width():0), 
+                                                  pglMax<uint_t>(imageHeight,is_valid_ptr(IMAGEMUTEX)?IMAGEMUTEX->height():0)));
+    }
+   return IMAGEMUTEX;
+}
