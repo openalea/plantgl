@@ -29,7 +29,7 @@ def test_projpershape():
     assert len(pixpershape) == len(sc)
     keys1 = [sh.id for sh in sc]
     keys1.sort()
-    keys2 = pixpershape.keys()
+    keys2 = list(pixpershape.keys())
     keys2.sort()
     assert keys1 == keys2
 
@@ -38,8 +38,8 @@ def test_projpershape_nullid():
     s.id = 0
     Viewer.display(s)    
     pixpershape, pixsize = Viewer.frameGL.getProjectionPerShape()    
-    print pixpershape
-    print pixsize
+    print(pixpershape)
+    print(pixsize)
     assert len(pixpershape) == 1
     assert pixpershape[0][0] == s.id
     
@@ -48,8 +48,8 @@ def test_projpershape_bigid():
     s.id = 0x0f0f0f0f
     Viewer.display(s)    
     pixpershape, pixsize = Viewer.frameGL.getProjectionPerShape()    
-    print s.id,pixpershape
-    print pixsize
+    print(s.id,pixpershape)
+    print(pixsize)
     assert len(pixpershape) == 1
     assert pixpershape[0][0] == s.id
 
@@ -69,14 +69,14 @@ def test_projpershape_2bigid():
     sc += s
     Viewer.display(sc)
     pixpershape, pixsize = Viewer.frameGL.getProjectionPerShape()    
-    print pixpershape, pixsize
+    print(pixpershape, pixsize)
     pixpershape = dict(pixpershape)
     assert len(pixpershape) == len(sc)
     keys1 = [sh.id for sh in sc]
     keys1.sort()
-    keys2 = pixpershape.keys()
+    keys2 = list(pixpershape.keys())
     keys2.sort()
-    print keys1 , keys2
+    print(keys1 , keys2)
     assert keys1 == keys2
     
 if __name__ == '__main__':

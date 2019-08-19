@@ -7,8 +7,8 @@ Basic module init file.
 :version: ro mar 14 10:41:35 CET 2007
 :author:  szymon stoma
 """
-from material import *
-from absolute_shapes import *
-from interactive_mode import *
-#from color import *
+from .material import *
+from .absolute_shapes import *
+from .interactive_mode import *
+#from .color import *
 __docformat__="restructuredtext en"

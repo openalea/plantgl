@@ -3,31 +3,41 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon et al.
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 /*! \file geom_text.h
     \brief Definition of the geometry class Text.
@@ -49,9 +59,9 @@ PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-/** 
+/**
     \class Text
-    \brief Some text with font 
+    \brief Some text with font
 */
 
 /* ----------------------------------------------------------------------- */
@@ -59,17 +69,17 @@ PGL_BEGIN_NAMESPACE
 class SG_API Font : public SceneObject
 {
   public:
-  /// A structure which helps to build a Text when parsing. 
+  /// A structure which helps to build a Text when parsing.
   struct SG_API Builder : public SceneObject::Builder {
 
     /// A pointer to the \b String field.
-	std::string * Family;
+    std::string * Family;
 
-	uint_t * Size;
+    uint_t * Size;
 
-	bool * Bold;
+    bool * Bold;
 
-	bool * Italic;
+    bool * Italic;
 
     /// Constructor.
     Builder( );
@@ -80,7 +90,7 @@ class SG_API Font : public SceneObject
     virtual SceneObjectPtr build( ) const;
 
     virtual void destroy( );
-    
+
     virtual bool isValid( ) const;
 
   };
@@ -89,10 +99,10 @@ class SG_API Font : public SceneObject
   static const bool   DEFAULT_BOLD;
   static const bool   DEFAULT_ITALIC;
 
-  Font(const std::string& family ="", 
-	   uint_t size = DEFAULT_SIZE,
-	   bool   bold = DEFAULT_BOLD,
-	   bool italic = DEFAULT_ITALIC);
+  Font(const std::string& family ="",
+       uint_t size = DEFAULT_SIZE,
+       bool   bold = DEFAULT_BOLD,
+       bool italic = DEFAULT_ITALIC);
 
   ~Font();
 
@@ -157,22 +167,22 @@ public:
 
   static bool DEFAULT_SCREEN_COORDINATES;
 
-  static TOOLS(Vector3) DEFAULT_POSITION;
+  static Vector3 DEFAULT_POSITION;
 
-  /// A structure which helps to build a Text when parsing. 
+  /// A structure which helps to build a Text when parsing.
   struct SG_API Builder : public Geometry::Builder {
 
     /// A pointer to the \b String field.
-	std::string * String;
+    std::string * String;
 
     /// A pointer to the \b Position field.
-	TOOLS(Vector3) * Position;	
+    Vector3 * Position;
 
     /// A pointer to the \b ScreenCoordinates field.
-	bool * ScreenCoordinates;	
+    bool * ScreenCoordinates;
 
     /// A pointer to the \b FontStyle field.
-	FontPtr * FontStyle;
+    FontPtr * FontStyle;
 
     /// Constructor.
     Builder( );
@@ -183,7 +193,7 @@ public:
     virtual SceneObjectPtr build( ) const;
 
     virtual void destroy( );
-    
+
     virtual bool isValid( ) const;
 
   };
@@ -193,9 +203,9 @@ public:
 
   /// Constructs a Box with \e size.
   Text( const std::string& s = "",
-	    const TOOLS(Vector3)& position = DEFAULT_POSITION,
-		const bool screenCoordinates = DEFAULT_SCREEN_COORDINATES,
-		const FontPtr& font = DEFAULT_FONT);
+        const Vector3& position = DEFAULT_POSITION,
+        const bool screenCoordinates = DEFAULT_SCREEN_COORDINATES,
+        const FontPtr& font = DEFAULT_FONT);
 
   /// Destructor
   virtual ~Text( );
@@ -210,7 +220,7 @@ public:
   std::string& getString()
   { return __String; }
 
-  const FontPtr& getFontStyle() const 
+  const FontPtr& getFontStyle() const
   { return __fontStyle; }
 
   FontPtr& getFontStyle()
@@ -219,16 +229,16 @@ public:
   bool isFontStyleToDefault() const
   { return __fontStyle == DEFAULT_FONT; }
 
-  bool isACurve() const 
+  bool isACurve() const
   { return false; }
 
-  bool isASurface() const 
+  bool isASurface() const
   { return false; }
 
-  bool isAVolume() const 
+  bool isAVolume() const
   { return false; }
 
-  bool isExplicit() const 
+  bool isExplicit() const
   { return false; }
 
   bool hasDynamicRendering() const { return true; }
@@ -237,8 +247,8 @@ public:
   inline bool& getScreenCoordinates() { return __screenCoordinates; }
   inline bool isScreenCoordinatesToDefault() { return __screenCoordinates == DEFAULT_SCREEN_COORDINATES; }
 
-  inline const TOOLS(Vector3)& getPosition() const { return __position; }
-  inline TOOLS(Vector3)& getPosition() { return __position; }
+  inline const Vector3& getPosition() const { return __position; }
+  inline Vector3& getPosition() { return __position; }
   inline bool isPositionToDefault() { return __position == DEFAULT_POSITION; }
 
 protected:
@@ -248,10 +258,10 @@ protected:
 
   bool __screenCoordinates;
 
-  TOOLS(Vector3) __position;
+  Vector3 __position;
 
   FontPtr __fontStyle;
-  
+
 };
 
 /// Text Pointer

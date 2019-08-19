@@ -94,7 +94,7 @@ class PglViewer (QGLViewer):
 
     def setLightPosition(self):
         position = list(self.lighManipulator.position())+[0]
-        print 'Set Light Position to', position
+        print('Set Light Position to', position)
         ogl.glLightfv(ogl.GL_LIGHT0, ogl.GL_POSITION, position)
 
     def keyPressEvent(self, event):
@@ -140,7 +140,7 @@ class PglViewer (QGLViewer):
             bbx = self.bboxcomputer.result                
             if bbx : 
                 self.camera().setSceneBoundingBox(*bbx2qgl(bbx))
-            else: print 'error computing bbox'
+            else: print('error computing bbox')
 
     def display(self,scene = None):
         self.setScene(scene)
@@ -186,10 +186,10 @@ class PglViewer (QGLViewer):
     def toogleLightManipulation(self):
         self.lightManip = not self.lightManip
         if self.lightManip:
-            print 'Set Light Manipulation'
+            print('Set Light Manipulation')
             self.setManipulatedFrame(self.lighManipulator)
         else:
-            print 'Set Camera Manipulation'
+            print('Set Camera Manipulation')
             self.setManipulatedFrame(self.camera().frame())
 
     def import_light_config(self, z, lightId = ogl.GL_LIGHT0):
@@ -200,23 +200,23 @@ class PglViewer (QGLViewer):
                 toCol3(ogl.glGetLightfv(lightId, ogl.GL_AMBIENT)),
                 toCol3(ogl.glGetLightfv(lightId, ogl.GL_DIFFUSE)),
                 toCol3(ogl.glGetLightfv(lightId, ogl.GL_SPECULAR)))
-        except Exception, ie:
-            print ie
+        except Exception as ie:
+            print(ie)
             pass
 
     def determine_light_config(self):
         for i in range(ogl.GL_MAX_LIGHTS):
             lightId = ogl.__dict__.get('GL_LIGHT'+str(i))
             if lightId:
-                print 'Light', i, '(',lightId,') :', 'Enabled' if ogl.glIsEnabled(lightId) else 'Disabled'
+                print('Light', i, '(',lightId,') :', 'Enabled' if ogl.glIsEnabled(lightId) else 'Disabled')
                 if ogl.glIsEnabled(lightId):
-                    print 'Position', ogl.glGetLightfv(lightId, ogl.GL_POSITION)
-                    print 'Ambient', ogl.glGetLightfv(lightId, ogl.GL_AMBIENT)
-                    print 'Diffuse', ogl.glGetLightfv(lightId, ogl.GL_DIFFUSE)
-                    print 'Specular', ogl.glGetLightfv(lightId, ogl.GL_SPECULAR)
+                    print('Position', ogl.glGetLightfv(lightId, ogl.GL_POSITION))
+                    print('Ambient', ogl.glGetLightfv(lightId, ogl.GL_AMBIENT))
+                    print('Diffuse', ogl.glGetLightfv(lightId, ogl.GL_DIFFUSE))
+                    print('Specular', ogl.glGetLightfv(lightId, ogl.GL_SPECULAR))
 
     def drawCPU(self):
-        print 'drawCPU', self.width(),self.height()
+        print('drawCPU', self.width(),self.height())
         import time
         t = time.time()  
         camera = self.camera()
@@ -246,7 +246,7 @@ class PglViewer (QGLViewer):
             z.periodizeBuffer(self.bbx.getCenter(), self.bbx.getCenter()+Vector3(0,self.bbx.getSize().y*2,0))
 
         if self.renderingStyle == eDepthOnly:
-            #print 'draw depth img'
+            print('draw depth img')
             import qimage2ndarray as qn
             minz, maxz = znear, zfar
             db = z.getDepthBuffer()
@@ -257,8 +257,7 @@ class PglViewer (QGLViewer):
         else:
             self.label.setPixmap(QPixmap(z.getImage().toQImage()))
         dtime = time.time()  - t
-        if self.renderingMultithreaded : print 'MT',
-        print 'Rendering done in', dtime,'sec.'
+        print('done in', dtime,'sec.')
         self.timeout = dtime * 1000
 
 

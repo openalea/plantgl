@@ -3,34 +3,44 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon et al.
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
 
 
- 
+
+
 
 #include "nurbscurve.h"
 #include <plantgl/scenegraph/core/pgl_messages.h>
@@ -45,7 +55,6 @@
 #endif
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 using namespace std;
 
@@ -194,8 +203,8 @@ NurbsCurve::NurbsCurve(  ) :
 NurbsCurve::NurbsCurve(  const Point4ArrayPtr& ctrlPoints,
                          const RealArrayPtr  knots,
                          uint_t degree,
-                         uint_t stride, 
-		                 uchar_t width ) :
+                         uint_t stride,
+                         uchar_t width ) :
   BezierCurve(ctrlPoints, stride, width),
   __degree(degree),
   __knotList(knots)
@@ -208,8 +217,8 @@ NurbsCurve::NurbsCurve(  const Point4ArrayPtr& ctrlPoints,
 NurbsCurve::NurbsCurve(  const Point4ArrayPtr& ctrlPoints,
                          uint_t degree,
                          const RealArrayPtr  knots,
-                         uint_t stride, 
-		                 uchar_t width ) :
+                         uint_t stride,
+                         uchar_t width ) :
   BezierCurve(ctrlPoints, stride, width),
   __degree(degree),
   __knotList(knots)
@@ -222,8 +231,8 @@ NurbsCurve::NurbsCurve(  const Point4ArrayPtr& ctrlPoints,
 NurbsCurve::NurbsCurve(  const Point3ArrayPtr& ctrlPoints,
                          uint_t degree,
                          const RealArrayPtr  knots,
-                         uint_t stride, 
-		                 uchar_t width ) :
+                         uint_t stride,
+                         uchar_t width ) :
   BezierCurve(ctrlPoints, stride, width),
   __degree(degree),
   __knotList(knots)
@@ -280,7 +289,7 @@ bool NurbsCurve::setKnotListToDefault( ){
     return true;
 }
 
-TOOLS(RealArrayPtr) NurbsCurve::defaultKnotList( uint_t nbCtrlPoints, uint_t degree)
+RealArrayPtr NurbsCurve::defaultKnotList( uint_t nbCtrlPoints, uint_t degree)
 {
     uint_t _size = nbCtrlPoints + degree + 1;
     RealArrayPtr knotList = RealArrayPtr(new RealArray(_size));
@@ -299,7 +308,7 @@ bool NurbsCurve::isKnotListToDefault( ) const {
     return defaultKnotListTest(getKnotList(),__ctrlPointList->size(),__degree);
 }
 
-bool NurbsCurve::defaultKnotListTest(const TOOLS(RealArrayPtr)& knots, uint_t nbCtrlPoints, uint_t degree )
+bool NurbsCurve::defaultKnotListTest(const RealArrayPtr& knots, uint_t nbCtrlPoints, uint_t degree )
 {
     if( !knots ) return true;
     uint_t _size=knots->size();
@@ -473,7 +482,7 @@ Vector3 NurbsCurve::getNormalAt(real_t u) const{
   \brief project a point onto the curve
 
   It finds the closest point in the curve to a point $p$.
-  For more information, see A6.4 and A6.5 on p 231 of the 
+  For more information, see A6.4 and A6.5 on p 231 of the
   NURBS book
 
   \param p  the point \a p being projected
@@ -484,12 +493,12 @@ Vector3 NurbsCurve::getNormalAt(real_t u) const{
   \param e2  the maximal error
   \param maxTry  the maximum number of times to try before returning from the function
 
-  \author Philippe Lavoie 
+  \author Philippe Lavoie
   \date 24 January 1997
 */
-Vector3 NurbsCurve::projectTo(const Vector3& p, 
-								real_t guess, real_t& u,
-								real_t e1, real_t e2,int maxTry) const{
+Vector3 NurbsCurve::projectTo(const Vector3& p,
+                                real_t guess, real_t& u,
+                                real_t e1, real_t e2,int maxTry) const{
   Vector3 r;
   real_t un ;
   real_t c1, c2;
@@ -511,8 +520,8 @@ Vector3 NurbsCurve::projectTo(const Vector3& p,
  /*   getDerivativeAt(u,2,Cd) ;
     cd = Cd[1] ;
     cdd = Cd[2] ;*/
-	cd = getDerivativeAt(u,1).project();
-	cdd = getDerivativeAt(u,2).project();
+    cd = getDerivativeAt(u,1).project();
+    cdd = getDerivativeAt(u,2).project();
     c1 = normSquared(c-p) ;
     if(c1<e1*e1){
       r = c ;
@@ -527,9 +536,9 @@ Vector3 NurbsCurve::projectTo(const Vector3& p,
       r =c ;
       return r;
     }
-    
+
     un = u- cd*(c-p)/(cdd*(c-p)+normSquared(cd)) ;
-    
+
     if(un<getFirstKnot()) un = getFirstKnot() ;
     if(un>getLastKnot()) un = getLastKnot() ;
 
@@ -543,10 +552,10 @@ Vector3 NurbsCurve::projectTo(const Vector3& p,
 }
 
 
-uint_t 
-PGL(findSpan)(real_t u,  
-	 uint_t _degree, 
-	 const RealArrayPtr& _knotList ){
+uint_t
+PGL(findSpan)(real_t u,
+     uint_t _degree,
+     const RealArrayPtr& _knotList ){
     uint_t n = _knotList->size()-_degree -1;
 
   if( u >= _knotList->getAt( n ) )return ( n -1 );
@@ -1052,6 +1061,6 @@ Vector2 NurbsCurve2D::getNormalAt(real_t u) const{
         _normal2 = Vector2(_derivate.x(),_derivate.y());
     else _normal2 = _derivate.project();
     Vector3 nml3 = cross(cross(Vector3(_tangent,0),Vector3(_normal2,0)),Vector3(_tangent,0))/pow(norm(_tangent),real_t(4));
-	return Vector2(nml3[0],nml3[1]);
+    return Vector2(nml3[0],nml3[1]);
 }
 /* ----------------------------------------------------------------------- */

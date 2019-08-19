@@ -1,35 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al.
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 
 
@@ -57,172 +65,172 @@ ScenePtr readDtaFile(const string& fileName,  const string& symbol_path){
     ScenePtr result(new Scene());
     ifstream stream(fileName.c_str());
     if(stream){
-	char c = ' ';
-	//while(c ==' ' || c == '\t' || c == '\n')stream >> c;
-	int num = 0;
-	stream >> num;
-	char buf[101];
-	stream.getline(buf,100);
-	// while(c !='\n')stream >> c;
-//	(*SceneObject::commentStream) << "Must Find " << num << " symbol(s)" << endl;
-	for(int a1=0;a1<num;a1++){
-	    string name;
-	    stream >> name;
-	    int id;
-	    stream >> id;
-	    string file;
-	    stream >> file;
-		stream.getline(buf,100);
-		size_t pos = file.find("_T_");
-		if (pos != string::npos)
-			file = string(file.begin(),file.begin()+pos);
-		if(*(symbol_path.end()-1) == '/' || *(symbol_path.end()-1) == '\\')
-			file = symbol_path+file+".smb";
-	    else file = symbol_path+'/'+file+".smb";
-	    AmapSymbol::Builder b;
-	    b.FileName = &file;
-	    if (b.isValid()){
-			GeometryPtr s(new AmapSymbol(file));
-			result->add(Shape3DPtr(new Shape(s,AppearancePtr(),id)));
-	    }
-		else { 		
-		  pglWarning("Cannot find symbol %s in %s. Default Geometry will be used." , name.c_str() , file.c_str() );
-  		  result->add(Shape3DPtr(new Shape(GeometryPtr(),AppearancePtr(),id)));
-		}
+    char c = ' ';
+    //while(c ==' ' || c == '\t' || c == '\n')stream >> c;
+    int num = 0;
+    stream >> num;
+    char buf[101];
+    stream.getline(buf,100);
+    // while(c !='\n')stream >> c;
+//  (*SceneObject::commentStream) << "Must Find " << num << " symbol(s)" << endl;
+    for(int a1=0;a1<num;a1++){
+        string name;
+        stream >> name;
+        int id;
+        stream >> id;
+        string file;
+        stream >> file;
+        stream.getline(buf,100);
+        size_t pos = file.find("_T_");
+        if (pos != string::npos)
+            file = string(file.begin(),file.begin()+pos);
+        if(*(symbol_path.end()-1) == '/' || *(symbol_path.end()-1) == '\\')
+            file = symbol_path+file+".smb";
+        else file = symbol_path+'/'+file+".smb";
+        AmapSymbol::Builder b;
+        b.FileName = &file;
+        if (b.isValid()){
+            GeometryPtr s(new AmapSymbol(file));
+            result->add(Shape3DPtr(new Shape(s,AppearancePtr(),id)));
+        }
+        else {      
+          pglWarning("Cannot find symbol %s in %s. Default Geometry will be used." , name.c_str() , file.c_str() );
+          result->add(Shape3DPtr(new Shape(GeometryPtr(),AppearancePtr(),id)));
+        }
 
-	}
-	for(uint_t a=0;a < (uint_t) num;a++){
-	    string name;
-	    stream >> name;
-		while(name != "Symbole") {
-			pglError("Error with Token '%s' when parsing '%s'.", name.c_str(), fileName.c_str());
-		    stream >> name;
-		}
-	    int id;
-	    stream >> id;
-	    Color3 emission;
-	    Color3 ambient;
-	    Color3 specular;
-	    real_t diffuse;
-	    real_t shininess;
-		int interpol = -1;
+    }
+    for(uint_t a=0;a < (uint_t) num;a++){
+        string name;
+        stream >> name;
+        while(name != "Symbole") {
+            pglError("Error with Token '%s' when parsing '%s'.", name.c_str(), fileName.c_str());
+            stream >> name;
+        }
+        int id;
+        stream >> id;
+        Color3 emission;
+        Color3 ambient;
+        Color3 specular;
+        real_t diffuse;
+        real_t shininess;
+        int interpol = -1;
 
-	    for(int m=0 ; m<5 ; m++){
-		string field;
-		stream >> field;
-		if(field == "INTERPOLATION"){
-		    stream >> interpol;
-			m--;
-		}
-		else if(field == "EMISSION"){
-		    real_t a,b,c;
-		    stream >> a >> b >> c;
-		    emission = Color3(uchar_t(a*255),uchar_t(b*255),uchar_t(c*255));
-		}
-		else if(field == "AMBIENT"){
-		    real_t a,b,c;
-		    stream >> a >> b >> c;
-		    ambient = Color3(uchar_t(a*255),uchar_t(b*255),uchar_t(c*255));
-		}
-		else if(field == "SPECULAR"){
-		    real_t a,b,c;
-		    stream >> a >> b >> c;
-		    specular = Color3(uchar_t(a*255),uchar_t(b*255),uchar_t(c*255));
-		}
-		else if(field == "DIFFUSE"){
-		    real_t a,b,c;
-		    stream >> a >> b >> c;
-		    if(ambient.getRed() !=0 && 
-			   ambient.getGreen() !=0 && 
-			   ambient.getBlue() !=0)
-		       diffuse = ((uchar_t(a*255)/ambient.getRed())+(uchar_t(b*255)/ambient.getGreen())+(uchar_t(c*255)/ambient.getBlue()))/3;
-			else {
-				real_t r1 = 0, r2 = 0, r3 = 0;
-				int d = 0;
-				if(ambient.getRed() !=0) {
-					r1 = (uchar_t(a*255)/ambient.getRed());d++;
-				}
-				if(ambient.getGreen() !=0) {
-					r2 = (uchar_t(b*255)/ambient.getGreen());d++;
-				}
-				if(ambient.getBlue() !=0) {
-					r3 = (uchar_t(c*255)/ambient.getBlue());d++;
-				}
-				if(d == 0) diffuse = 1;
-				else diffuse = (r1+r2+r3)/d;
-			}
-		}
-		else if(field == "SHININESS"){
-		    real_t a;
-		    stream >> a;
-		    shininess = a / 20;
-		}
-		else pglError("Error with Token field '%s' when parsing %s.",field.c_str(),fileName.c_str());
-	    }
-		if(interpol != -1){
-		    Color3 emission2;
-		    Color3 ambient2;
-			Color3 specular2;
-			real_t diffuse2;
-			real_t shininess2;
+        for(int m=0 ; m<5 ; m++){
+        string field;
+        stream >> field;
+        if(field == "INTERPOLATION"){
+            stream >> interpol;
+            m--;
+        }
+        else if(field == "EMISSION"){
+            real_t a,b,c;
+            stream >> a >> b >> c;
+            emission = Color3(uchar_t(a*255),uchar_t(b*255),uchar_t(c*255));
+        }
+        else if(field == "AMBIENT"){
+            real_t a,b,c;
+            stream >> a >> b >> c;
+            ambient = Color3(uchar_t(a*255),uchar_t(b*255),uchar_t(c*255));
+        }
+        else if(field == "SPECULAR"){
+            real_t a,b,c;
+            stream >> a >> b >> c;
+            specular = Color3(uchar_t(a*255),uchar_t(b*255),uchar_t(c*255));
+        }
+        else if(field == "DIFFUSE"){
+            real_t a,b,c;
+            stream >> a >> b >> c;
+            if(ambient.getRed() !=0 && 
+               ambient.getGreen() !=0 && 
+               ambient.getBlue() !=0)
+               diffuse = ((uchar_t(a*255)/ambient.getRed())+(uchar_t(b*255)/ambient.getGreen())+(uchar_t(c*255)/ambient.getBlue()))/3;
+            else {
+                real_t r1 = 0, r2 = 0, r3 = 0;
+                int d = 0;
+                if(ambient.getRed() !=0) {
+                    r1 = (uchar_t(a*255)/ambient.getRed());d++;
+                }
+                if(ambient.getGreen() !=0) {
+                    r2 = (uchar_t(b*255)/ambient.getGreen());d++;
+                }
+                if(ambient.getBlue() !=0) {
+                    r3 = (uchar_t(c*255)/ambient.getBlue());d++;
+                }
+                if(d == 0) diffuse = 1;
+                else diffuse = (r1+r2+r3)/d;
+            }
+        }
+        else if(field == "SHININESS"){
+            real_t a;
+            stream >> a;
+            shininess = a / 20;
+        }
+        else pglError("Error with Token field '%s' when parsing %s.",field.c_str(),fileName.c_str());
+        }
+        if(interpol != -1){
+            Color3 emission2;
+            Color3 ambient2;
+            Color3 specular2;
+            real_t diffuse2;
+            real_t shininess2;
 
-		    for(int m=0 ; m<5 ; m++){
-			string field;
-			stream >> field;
-			if(field == "EMISSION"){
-				real_t a,b,c;
-				stream >> a >> b >> c;
-				emission2 = Color3(uchar_t(a*255),uchar_t(b*255),uchar_t(c*255));
-				COLMULT(emission,emission2,interpol);
-			}
-			else if(field == "AMBIENT"){
-				real_t a,b,c;
-				stream >> a >> b >> c;
-				ambient2 = Color3(uchar_t(a*255),uchar_t(b*255),uchar_t(c*255));
-				COLMULT(ambient,ambient2,interpol);
-			}
-			else if(field == "SPECULAR"){
-				real_t a,b,c;
-				stream >> a >> b >> c;
-				specular2 = Color3(uchar_t(a*255),uchar_t(b*255),uchar_t(c*255));
-				COLMULT(specular,specular2,interpol);
-			}
-			else if(field == "DIFFUSE"){
-				real_t a,b,c;
-				stream >> a >> b >> c;
-				if(ambient2.getRed() !=0 && ambient2.getGreen() !=0 && ambient2.getBlue() !=0)
-					diffuse2 = ((uchar_t(a*255)/ambient2.getRed())+(uchar_t(b*255)/ambient2.getGreen())+(uchar_t(c*255)/ambient2.getBlue()))/3;
-				else diffuse2 = 0;
-				diffuse = (diffuse * interpol + diffuse2 * (100-interpol))/100;
-			}
-			else if(field == "SHININESS"){
-				real_t a;
-				stream >> a;
-				shininess2 = a / 20;
-				shininess = (shininess * interpol + shininess2 * (100-interpol))/100;
-			}
-			else pglError("Error with Token field '%s' when parsing %s.",field.c_str(),fileName.c_str());
-			}
-		}
+            for(int m=0 ; m<5 ; m++){
+            string field;
+            stream >> field;
+            if(field == "EMISSION"){
+                real_t a,b,c;
+                stream >> a >> b >> c;
+                emission2 = Color3(uchar_t(a*255),uchar_t(b*255),uchar_t(c*255));
+                COLMULT(emission,emission2,interpol);
+            }
+            else if(field == "AMBIENT"){
+                real_t a,b,c;
+                stream >> a >> b >> c;
+                ambient2 = Color3(uchar_t(a*255),uchar_t(b*255),uchar_t(c*255));
+                COLMULT(ambient,ambient2,interpol);
+            }
+            else if(field == "SPECULAR"){
+                real_t a,b,c;
+                stream >> a >> b >> c;
+                specular2 = Color3(uchar_t(a*255),uchar_t(b*255),uchar_t(c*255));
+                COLMULT(specular,specular2,interpol);
+            }
+            else if(field == "DIFFUSE"){
+                real_t a,b,c;
+                stream >> a >> b >> c;
+                if(ambient2.getRed() !=0 && ambient2.getGreen() !=0 && ambient2.getBlue() !=0)
+                    diffuse2 = ((uchar_t(a*255)/ambient2.getRed())+(uchar_t(b*255)/ambient2.getGreen())+(uchar_t(c*255)/ambient2.getBlue()))/3;
+                else diffuse2 = 0;
+                diffuse = (diffuse * interpol + diffuse2 * (100-interpol))/100;
+            }
+            else if(field == "SHININESS"){
+                real_t a;
+                stream >> a;
+                shininess2 = a / 20;
+                shininess = (shininess * interpol + shininess2 * (100-interpol))/100;
+            }
+            else pglError("Error with Token field '%s' when parsing %s.",field.c_str(),fileName.c_str());
+            }
+        }
 
-	    AppearancePtr app(new Material(ambient,diffuse,specular,emission,shininess));
-	    if(app->isValid()){
-		Scene::iterator _it=result->begin();
-		bool ok = false;
-		ShapePtr * pt;
-		while(_it!=result->end() && !ok){
-		    pt = (ShapePtr *)&(*(_it));
-		    if((*pt)->getId() == (uint_t)id){
-			(*pt)->appearance = app;
-			ok = true;
-		    }
-		    _it++;
-		}
-		if(!ok) pglError("The Appearance '%s' cannot be attributed.",a);
-	    }
-	    else pglError("An appearance is not valid.");
-	}
-	return result;
+        AppearancePtr app(new Material(ambient,diffuse,specular,emission,shininess));
+        if(app->isValid()){
+        Scene::iterator _it=result->begin();
+        bool ok = false;
+        ShapePtr * pt;
+        while(_it!=result->end() && !ok){
+            pt = (ShapePtr *)&(*(_it));
+            if((*pt)->getId() == (uint_t)id){
+            (*pt)->appearance = app;
+            ok = true;
+            }
+            _it++;
+        }
+        if(!ok) pglError("The Appearance '%s' cannot be attributed.",a);
+        }
+        else pglError("An appearance is not valid.");
+    }
+    return result;
     }
     else return ScenePtr();
 }

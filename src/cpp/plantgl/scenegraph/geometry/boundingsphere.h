@@ -3,31 +3,41 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon et al.
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 /*! \file geom_boundingsphere.h
     \brief Definition of the class BoundingSphere.
@@ -46,9 +56,9 @@
 
 /* ----------------------------------------------------------------------- */
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 class Matrix4;
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -66,28 +76,28 @@ typedef RCPtr<BoundingSphere> BoundingSpherePtr;
     \brief A sphere used to give the bound of GEOM object.
 */
 
-class SG_API BoundingSphere : public TOOLS(RefCountObject)
+class SG_API BoundingSphere : public RefCountObject
 {
 
 public:
 
   /// Constructs a degenerate BoundingSphere reduced to the point \e point.
-  BoundingSphere( const TOOLS(Vector3)& point );
+  BoundingSphere( const Vector3& point );
 
   /// Constructs a degenerate BoundingSphere reduced to the point \e point.
-  BoundingSphere( const TOOLS(Vector2)& point );
+  BoundingSphere( const Vector2& point );
 
   /** Constructs a BoundingSphere with the 2 opposing corners \e lowLeft and
       \e upRight.
       \pre
       - \e lowLeft must be, coordinate by coordinate, less than \e upRight. */
-  BoundingSphere( const TOOLS(Vector3)& center, const real_t& radius );
+  BoundingSphere( const Vector3& center, const real_t& radius );
 
   /** Constructs a BoundingSphere with the 2 opposing corners \e lowLeft and
       \e upRight.
       \pre
       - \e lowLeft must be, coordinate by coordinate, less than \e upRight. */
-  BoundingSphere( const TOOLS(Vector3)& point1, const TOOLS(Vector3)& point2 );
+  BoundingSphere( const Vector3& point1, const Vector3& point2 );
 
   /// Destructor
   virtual ~BoundingSphere( ) ;
@@ -108,13 +118,13 @@ public:
       \pre
       - \e self must be valid;
       - \e point must be valid. */
-   BoundingSphere& extend( const TOOLS(Vector3)& point );
+   BoundingSphere& extend( const Vector3& point );
 
   /** Extends \e self in order to bound \e point.
       \pre
       - \e self must be valid;
       - \e point must be valid. */
-   BoundingSphere& extend( const TOOLS(Vector2)& point );
+   BoundingSphere& extend( const Vector2& point );
 
   /** Extends \e self in order to bound \e bsphere.
       \pre
@@ -132,13 +142,13 @@ public:
       \pre
       - \e self must be valid;
       - \e point must be valid. */
-   BoundingSphere& operator+=( const TOOLS(Vector3)& point );
+   BoundingSphere& operator+=( const Vector3& point );
 
    /** Extends \e self in order to bound \e point.
       \pre
       - \e self must be valid;
       - \e point must be valid. */
-   BoundingSphere& operator+=( const TOOLS(Vector2)& point );
+   BoundingSphere& operator+=( const Vector2& point );
 
    /** Intersection between \e self and \e bsphere.
       \pre
@@ -157,26 +167,26 @@ public:
       \pre
       - \e self must be valid;
       - \e point must be valid. */
-   bool intersect( const TOOLS(Vector3)& point ) const;
+   bool intersect( const Vector3& point ) const;
 
   /** Intersection between \e self and a segment defined by [ \e point1 , \e point2 ].
       \pre
       - \e self must be valid;
       - \e point1 and point2 must be valid. */
-   bool intersect( const TOOLS(Vector3)& point1, const TOOLS(Vector3)& point2 ) const;
+   bool intersect( const Vector3& point1, const Vector3& point2 ) const;
 
    /// Change values.
-  void change( const TOOLS(Vector3)& center, const real_t& size );
+  void change( const Vector3& center, const real_t& size );
 
    /** Returns the center of \e self.
        \pre
       - \e self must be valid. */
-  const TOOLS(Vector3)& getCenter( ) const ;
+  const Vector3& getCenter( ) const ;
 
    /** Returns the center of \e self.
        \pre
       - \e self must be valid. */
-  TOOLS(Vector3)& getCenter( );
+  Vector3& getCenter( );
 
   /** Returns the radius of \e self.
       \pre
@@ -193,26 +203,26 @@ public:
 
   /** Transform a bounding sphere by an affine transformation.
   */
-  void transform(const TOOLS(Matrix4)& matrix);
+  void transform(const Matrix4& matrix);
 
   /// Returns the result of the addition of \e b1 and \e b2.
   friend SG_API BoundingSphere operator+( const BoundingSphere& b1, const BoundingSphere& b2);
 
   /// Returns the result of the addition of \e b1 and \e v2.
-  friend SG_API BoundingSphere operator+( const BoundingSphere& b1, const TOOLS(Vector3)& v2);
+  friend SG_API BoundingSphere operator+( const BoundingSphere& b1, const Vector3& v2);
 
   /// Returns whether \e b1 intersect \e b2.
   friend SG_API bool intersection( const BoundingSphere& b1, const BoundingSphere& b2) ;
 
   /// Returns whether \e b1 intersect \e v2.
-  friend SG_API bool intersection( const BoundingSphere& b1, const TOOLS(Vector3)& v2);
+  friend SG_API bool intersection( const BoundingSphere& b1, const Vector3& v2);
 
 //  friend std::ostream& operator<<( std::ostream& stream, BoundingSphere& b );
 
 protected:
 
   /// The center.
-  TOOLS(Vector3) __center;
+  Vector3 __center;
 
   /// The radius.
   real_t __radius;
@@ -223,9 +233,9 @@ protected:
 typedef RCPtr<BoundingSphere> BoundingSpherePtr;
 
 SG_API BoundingSphere operator+( const BoundingSphere& b1, const BoundingSphere& b2);
-SG_API BoundingSphere operator+( const BoundingSphere& b1, const TOOLS(Vector3)& v2);
+SG_API BoundingSphere operator+( const BoundingSphere& b1, const Vector3& v2);
 SG_API bool intersection( const BoundingSphere& b1, const BoundingSphere& b2) ;
-SG_API bool intersection( const BoundingSphere& b1, const TOOLS(Vector3)& v2);
+SG_API bool intersection( const BoundingSphere& b1, const Vector3& v2);
 
 /* ----------------------------------------------------------------------- */
 

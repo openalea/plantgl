@@ -188,9 +188,9 @@ def leaf(**kwds):
   color = kwds.get('color', __niceGreen)
   if not size:
     size = 10.0
-    print "length is None, using 10 instead : small leaf"
+    print("length is None, using 10 instead : small leaf")
   v = pgl.Vector3( x, y, z )
-  #print "leaf size : ", size
+  #print("leaf size : ", size)
   #sx = pgl.Vector3(4,1,1) * size/40.
   #scaled_geometry = pgl.Scaled(sx, pgl.Translated(pgl.Vector3(0.5,0,0), pgl.Disc(0.5, 6)) )
   sx = pgl.Vector3(1,1,1) * size/10.
@@ -200,7 +200,7 @@ def leaf(**kwds):
   return pgl.Shape( tr, color )
 
 def genericLeaf(allo_length, allo_surf, **kwds):
-  if kwds.has_key('surface'):
+  if 'surface' in kwds:
     surface = kwds['surface']
     length = math.sqrt(surface / (allo_length*allo_surf) )
   else:  
@@ -276,7 +276,7 @@ def V3toAngles( dir ):
   zero = pgl.Vector3( 0,0,0 )
   inv_dir = zero - dir
   spherical = pgl.Vector3.Spherical(inv_dir)
-  print "theta :",spherical.theta,"   phi :",spherical.phi
+  print("theta :",spherical.theta,"   phi :",spherical.phi)
   return (-spherical.theta ,  math.pi/2-spherical.phi )
 
 def gridIndex(point,step):
@@ -348,7 +348,7 @@ def pointsByShape(scene): #aka ptdiscretize
 def centerByShape(pointsbyshape):#aka centers
   """dictionnaire id:centre"""
   cbs = {}
-  for id, points in pointsbyshape.iteritems():
+  for id, points in pointsbyshape.items():
     cbs[id] = center(points)
   return cbs
 
@@ -356,7 +356,7 @@ def ptUnion(pointsbyshape,idList=None):#aka ptsum
   """union des points de la liste ids"""
   union = pgl.Point3Array()
   if idList is None:
-    idList = pointsbyshape.keys()
+    idList = list(pointsbyshape.keys())
   for id in idList:
     union += pointsbyshape[id]
   return union

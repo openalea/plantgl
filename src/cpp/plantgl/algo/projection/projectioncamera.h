@@ -1,35 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2018 - Cirad/Inra/Inria
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al.
- *
- *       Development site : https://github.com/openalea/plantgl
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
- * 
- *                      GNU General Public Licence
- *           
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
+ *
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
- */             
+ */
+             
 
 /*! \file ProjectionCamera.h
     \brief Definition of Rendering Engine based on ZBuffer.
@@ -67,48 +75,48 @@ class ProjectionCamera;
 typedef RCPtr<ProjectionCamera> ProjectionCameraPtr;
 
 
-class ProjectionCamera : public TOOLS(RefCountObject){
+class ALGO_API ProjectionCamera : public RefCountObject{
 public:
     enum eProjectionType {
         eOrthographic,
         ePerspective
     };
 
-    ProjectionCamera(real_t left, real_t right, real_t bottom, real_t top, real_t near, real_t far, eProjectionType projection = eOrthographic);
+   ProjectionCamera(real_t left, real_t right, real_t bottom, real_t top, real_t near, real_t far, eProjectionType projection = eOrthographic);
 
    virtual ~ProjectionCamera();
 
-   TOOLS(Vector3) worldToRaster(const TOOLS(Vector3)& vertexWorld, const uint16_t imageWidth, const uint16_t imageHeight) const;
+   Vector3 worldToRaster(const Vector3& vertexWorld, const uint16_t imageWidth, const uint16_t imageHeight) const;
 
-   TOOLS(Vector3) worldToCamera(const TOOLS(Vector3)& vertexWorld) const;
-   TOOLS(Vector3) cameraToNDC(const TOOLS(Vector3)& vertexCamera) const;
-   TOOLS(Vector3) ndcToRaster(const TOOLS(Vector3)& vertexNDC, const uint16_t imageWidth, const uint16_t imageHeight) const;
-   TOOLS(Vector3) cameraToRaster(const TOOLS(Vector3)& vertexCamera, const uint16_t imageWidth, const uint16_t imageHeight) const;
+   Vector3 worldToCamera(const Vector3& vertexWorld) const;
+   Vector3 cameraToNDC(const Vector3& vertexCamera) const;
+   Vector3 ndcToRaster(const Vector3& vertexNDC, const uint16_t imageWidth, const uint16_t imageHeight) const;
+   Vector3 cameraToRaster(const Vector3& vertexCamera, const uint16_t imageWidth, const uint16_t imageHeight) const;
 
-   TOOLS(Vector3) rasterToWorld(const TOOLS(Vector3)& raster, const uint16_t imageWidth, const uint16_t imageHeight) const;
-   TOOLS(Vector3) cameraToWorld(const TOOLS(Vector3)& vertexCamera) const;
+   Vector3 rasterToWorld(const Vector3& raster, const uint16_t imageWidth, const uint16_t imageHeight) const;
+   Vector3 cameraToWorld(const Vector3& vertexCamera) const;
 
-   TOOLS(Vector3) ndcToCamera(const TOOLS(Vector3)& vertexCamera) const ;
+   Vector3 ndcToCamera(const Vector3& vertexCamera) const ;
 
    BoundingBoxPtr getBoundingBoxView() const;
 
-   TOOLS(Matrix4) getWorldToCameraMatrix() const { return __worldToCamera; }
-   TOOLS(Matrix4) getCameraToWorldMatrix() const { return __cameraToWorld; }
+   Matrix4 getWorldToCameraMatrix() const { return __worldToCamera; }
+   Matrix4 getCameraToWorldMatrix() const { return __cameraToWorld; }
 
-   void transformModel(const TOOLS(Matrix4)& transform);
+   void transformModel(const Matrix4& transform);
    void pushModelTransformation();
    void popModelTransformation();
    void transformModelIdentity();
 
-   void translateModel(const TOOLS(Vector3)& v);
-   void scaleModel(const TOOLS(Vector3)& v);
+   void translateModel(const Vector3& v);
+   void scaleModel(const Vector3& v);
 
-   TOOLS(Matrix4) getModelTransformationMatrix() const { return __currentModelMatrix; }
+   Matrix4 getModelTransformationMatrix() const { return __currentModelMatrix; }
 
    bool isInZRange(real_t z) const ;
    bool isInZRange(real_t zmin, real_t zmax) const;
 
-   void lookAt(const TOOLS(Vector3)& eyePosition3D, const TOOLS(Vector3)& center3D, const TOOLS(Vector3)& upVector3D);
+   void lookAt(const Vector3& eyePosition3D, const Vector3& center3D, const Vector3& upVector3D);
 
 
    real_t left;
@@ -123,46 +131,46 @@ public:
    static ProjectionCameraPtr frustumCamera(real_t left, real_t right, real_t bottom, real_t top, real_t near, real_t far);
    static ProjectionCameraPtr orthographicCamera(real_t left, real_t right, real_t bottom, real_t top, real_t near, real_t far);
 
-   const TOOLS(Vector3)& position() const { return __position; }
+   const Vector3& position() const { return __position; }
 
 
     ProjectionCameraPtr copy();
 
 protected:
-   TOOLS(Vector3) screen2NDC(const real_t& xScreen, const real_t& yScreen, const real_t z) const ;
-   TOOLS(Vector3) NDC2screen(const real_t& xNDC, const real_t& yNDC, const real_t z) const;
+   Vector3 screen2NDC(const real_t& xScreen, const real_t& yScreen, const real_t z) const ;
+   Vector3 NDC2screen(const real_t& xNDC, const real_t& yNDC, const real_t z) const;
 
    real_t __xscale;
    real_t __xconstant;
    real_t __yscale;
    real_t __yconstant;
 
-   TOOLS(Vector3) __position;
+   Vector3 __position;
 
-   TOOLS(Matrix4) __cameraToWorld;
-   TOOLS(Matrix4) __worldToCamera;
-   std::stack<TOOLS(Matrix4)> __modelMatrixStack;
-   TOOLS(Matrix4) __currentModelMatrix;
-   TOOLS(Matrix4) __currentWorldToCamera;
+   Matrix4 __cameraToWorld;
+   Matrix4 __worldToCamera;
+   std::stack<Matrix4> __modelMatrixStack;
+   Matrix4 __currentModelMatrix;
+   Matrix4 __currentWorldToCamera;
 
 
 };
 
 
-inline TOOLS(Vector3) toRasterSpace(const TOOLS(Vector3)& vertexNDC, const uint16_t imageWidth, const uint16_t imageHeight)
+inline Vector3 toRasterSpace(const Vector3& vertexNDC, const uint16_t imageWidth, const uint16_t imageHeight)
 {
     // convert to raster space
-    TOOLS(Vector3) vertexRaster( 
+    Vector3 vertexRaster( 
                           ((vertexNDC.x() + 1) / 2.) * imageWidth, 
                           ((1 - vertexNDC.y()) / 2.) * imageHeight,
                           vertexNDC.z());
     return vertexRaster;
 }
 
-inline TOOLS(Vector3) rasterToNDC(const TOOLS(Vector3)& raster, const uint16_t imageWidth, const uint16_t imageHeight)
+inline Vector3 rasterToNDC(const Vector3& raster, const uint16_t imageWidth, const uint16_t imageHeight)
 {
     // convert raster to NDC space
-    TOOLS(Vector3) vertexNDC(  (raster.x()*2/imageWidth) - 1,
+    Vector3 vertexNDC(  (raster.x()*2/imageWidth) - 1,
                         1 - (raster.y()*2/imageWidth),
                         raster.z());
     return vertexNDC;

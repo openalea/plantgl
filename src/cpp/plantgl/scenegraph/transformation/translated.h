@@ -3,37 +3,47 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon et al.
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
 
 
 
+
 /*! \file geom_translated.h
     \brief Definition of the transformation class Translation, Translation2D
-	and the transformed class Translated.
+    and the transformed class Translated.
 */
 
 #ifndef __geom_translated_h__
@@ -66,18 +76,18 @@ public:
       - \e v must be valid.
       \post
       - \e self is valid. */
-  Translation( const TOOLS(Vector3)& v );
+  Translation( const Vector3& v );
 
   /// Destructor.
   virtual ~Translation( );
 
   /// Return Matrix4(1,0,0,__vector.x(),  0,1,0,__vector.y(),  0,0,1,__vector.z(),  0,0,0,1);
-  virtual TOOLS(Matrix4) getMatrix( ) const;
+  virtual Matrix4 getMatrix( ) const;
 
   virtual bool isValid( ) const;
 
   /// Returns the displacement \e self represents.
-  const TOOLS(Vector3)& getVector( ) const;
+  const Vector3& getVector( ) const;
 
   virtual Point3ArrayPtr transform( const Point3ArrayPtr& points ) const;
 
@@ -90,7 +100,7 @@ public:
 protected:
 
   /// The translation vector.
-  TOOLS(Vector3) __vector;
+  Vector3 __vector;
 };
 
 /// Translation Pointer
@@ -111,14 +121,14 @@ class SG_API Translated : public MatrixTransformed
 public:
 
   /// The Translation field default value
-  static const TOOLS(Vector3) DEFAULT_TRANSLATION;
+  static const Vector3 DEFAULT_TRANSLATION;
 
 
   /// A structure which helps to build a Translated when parsing.
   struct SG_API Builder : public MatrixTransformed::Builder {
 
     /// A pointer to the \b Translation field.
-    TOOLS(Vector3) * Translation;
+    Vector3 * Translation;
 
     /// Constructor.
     Builder( );
@@ -142,7 +152,7 @@ public:
       \pre
       - \e translation must be valid,
       - \e geometry must be non null and valid. */
-  explicit Translated( const TOOLS(Vector3)& translation,
+  explicit Translated( const Vector3& translation,
                        const GeometryPtr& geometry );
 
   /// Destructor
@@ -153,10 +163,10 @@ public:
   virtual Transformation3DPtr getTransformation( ) const ;
 
   /// Returns Translation value.
-  const TOOLS(Vector3)& getTranslation( ) const ;
+  const Vector3& getTranslation( ) const ;
 
   /// Returns Translation field.
-  TOOLS(Vector3)& getTranslation( ) ;
+  Vector3& getTranslation( ) ;
 
   /// Returns whether Translation is set to its default value.
   bool isTranslationToDefault( ) const ;
@@ -166,7 +176,7 @@ public:
 protected:
 
   /// The Translation field.
-  TOOLS(Vector3) __translation;
+  Vector3 __translation;
 
 };
 
@@ -191,18 +201,18 @@ public:
       - \e v must be valid.
       \post
       - \e self is valid. */
-  Translation2D( const TOOLS(Vector2)& v );
+  Translation2D( const Vector2& v );
 
   /// Destructor.
   virtual ~Translation2D( );
 
   /// Return Matrix3(1,0,__vector.x(), 0,1,__vector.y(),  0,0,1);
-  virtual TOOLS(Matrix3) getMatrix( ) const;
+  virtual Matrix3 getMatrix( ) const;
 
   virtual bool isValid( ) const;
 
   /// Returns the displacement \e self represents.
-  const TOOLS(Vector2)& getVector( ) const ;
+  const Vector2& getVector( ) const ;
 
   virtual Point2ArrayPtr transform( const Point2ArrayPtr& points ) const;
 
@@ -215,7 +225,7 @@ public:
 protected:
 
   /// The translation vector.
-  TOOLS(Vector2) __vector;
+  Vector2 __vector;
 };
 
 /// Translation2D Pointer

@@ -1,36 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2018 - Cirad/Inra/Inria
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al.
- *
- *       Development site : https://github.com/openalea/plantgl
- *
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 #define cimg_use_cpp11 0
 #define cimg_display 0
@@ -42,7 +49,6 @@
 /* ----------------------------------------------------------------------- */
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -82,7 +88,7 @@ void Image::setPixelAt(uint_t x, uint_t y, const Color4 & pixel)
     if (__nbchannels>1){++itCol; *itCol = pixel.getGreen();}
     if (__nbchannels>2){++itCol; *itCol = pixel.getBlue();}
     if (__nbchannels>3){++itCol; *itCol = pixel.getAlpha();}
-    
+
 }
 
 void Image::setPixelAt(uint_t x, uint_t y, const Color3 & pixel, uchar_t alpha ){
@@ -113,7 +119,7 @@ Color4 Image::getPixelAtUV(real_t u, real_t v, bool repeatu, bool repeatv) const
             u = fmod(u, 1.0);
             if (u < 0) u += 1.0;
         }
-        else if (u < 0) u = 0; 
+        else if (u < 0) u = 0;
         else u = 1;
     }
     if (v < 0 || v > 1) {
@@ -121,7 +127,7 @@ Color4 Image::getPixelAtUV(real_t u, real_t v, bool repeatu, bool repeatv) const
             v = fmod(v, 1.0);
             if (v < 0) v += 1.0;
         }
-        else if (v < 0) v = 0; 
+        else if (v < 0) v = 0;
         else v = 1;
     }
     uint_t x = (__width - 1) * u;
@@ -138,11 +144,11 @@ const uchar_t * Image::getPixelDataAt(uint_t x, uint_t y) const {
     return &(*itCol);
 }
 
-void Image::fill(const Color4 & color) 
+void Image::fill(const Color4 & color)
 {
     uint8_t i = 0;
     for (std::vector<uchar_t>::iterator itCol = __data.begin(); itCol != __data.end(); ++itCol, i = (i+1)%__nbchannels){
-        *itCol = color[i];        
+        *itCol = color[i];
     }
 
 }
@@ -180,9 +186,9 @@ bool Image::read(const std::string& fname)
 
         for (uint_t i = 0 ; i < cimg.width() ; ++i){
             for (uint_t j = 0 ; j < cimg.height() ;  ++j){
-                setPixelAt(i,j, Color4((uchar_t)*cimg.data(i,j,0), 
-                                       (uchar_t)(__nbchannels>1?*cimg.data(i,j,1):0), 
-                                       (uchar_t)(__nbchannels>2?*cimg.data(i,j,2):0), 
+                setPixelAt(i,j, Color4((uchar_t)*cimg.data(i,j,0),
+                                       (uchar_t)(__nbchannels>1?*cimg.data(i,j,1):0),
+                                       (uchar_t)(__nbchannels>2?*cimg.data(i,j,2):0),
                                        (uchar_t)(__nbchannels>3?*cimg.data(i,j,3):0)));
             }
         }
@@ -220,7 +226,7 @@ const uchar_t * Image::toNonInterlacedData() const
 
 }
 
-void Image::fromNonInterlacedData(const uchar_t * input, uint_t width, uint_t height, uchar_t nbChannels) 
+void Image::fromNonInterlacedData(const uchar_t * input, uint_t width, uint_t height, uchar_t nbChannels)
 {
         __width = width;
         __height = height;
@@ -241,7 +247,7 @@ void Image::fromNonInterlacedData(const uchar_t * input, uint_t width, uint_t he
 const uchar_t * Image::toInterlacedData() const
 { return __data.data(); }
 
-void Image::fromInterlacedData(const uchar_t * data, uint_t width, uint_t height, uchar_t nbChannels) 
+void Image::fromInterlacedData(const uchar_t * data, uint_t width, uint_t height, uchar_t nbChannels)
 {
     __width = width;
     __height = height;
@@ -262,7 +268,7 @@ ImagePtr Image::transpose() const
     return result;
 }
 
-void Image::fromData(const uchar_t * data, uint_t width, uint_t height, uchar_t nbChannels, uint_t stridewidth, uint_t strideheight, uchar_t stridechannels) 
+void Image::fromData(const uchar_t * data, uint_t width, uint_t height, uchar_t nbChannels, uint_t stridewidth, uint_t strideheight, uchar_t stridechannels)
 {
     __width = width;
     __height = height;

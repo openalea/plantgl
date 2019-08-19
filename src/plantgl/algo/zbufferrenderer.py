@@ -87,15 +87,15 @@ class ZBufferRenderer:
 
     def renderPoint(self, position, color = (255,255,255), pointsize = 1):
         raster = self.projectPointToImage(position)
-        print 'Raster', raster
+        print('Raster', raster)
         if raster:
             self._renderRaster(raster[0],raster[1],raster[2], color, pointsize)
 
 
     def _renderRaster(self, x,y,z, color = (255,255,255), pointsize = 1):
-            print x,y,z,color,pointsize
-            for xv in xrange(max(0,x-pointsize+1), min(self.width,x+pointsize)):
-                for yv in xrange(max(0,y-pointsize+1), min(self.height,y+pointsize)):
+            print(x,y,z,color,pointsize)
+            for xv in range(max(0,x-pointsize+1), min(self.width,x+pointsize)):
+                for yv in range(max(0,y-pointsize+1), min(self.height,y+pointsize)):
                     if z < self.depths[yv,xv]:
                         self.image[yv,xv,:] = color
                         self.depths[yv,xv] = z
@@ -184,18 +184,18 @@ def nZ(z, znear, zfar):
 
 def test():
     renderer = ZBufferRenderer(10, 10)
-    print renderer.setPerspective(30, 1, 0.1, 100)
-    print renderer.lookAt(Vector3(1,0,1), (0,0,0),(0,0,1))
-    print renderer.projectionMatrix
-    print renderer.renderPoint((0,0,0))
+    print(renderer.setPerspective(30, 1, 0.1, 100))
+    print(renderer.lookAt(Vector3(1,0,1), (0,0,0),(0,0,1)))
+    print(renderer.projectionMatrix)
+    print(renderer.renderPoint((0,0,0)))
     renderer.view()
 
 
 if __name__ == '__main__':
     renderer = ZBufferRenderer(100, 100)
-    print renderer.setPerspective(30, 1, 0.1, 100)
-    print renderer.lookAt(Vector3(5,0,1), (0,0,0),(0,0,1))
-    print renderer.projectionMatrix
+    print(renderer.setPerspective(30, 1, 0.1, 100))
+    print(renderer.lookAt(Vector3(5,0,1), (0,0,0),(0,0,1)))
+    print(renderer.projectionMatrix)
     renderer.renderPoint((0,0,0), (255,0,0), 3)
     renderer.renderLine((0,0,-1), (0,0,1), (0,255,0) )
     renderer.view()

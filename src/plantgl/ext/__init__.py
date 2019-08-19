@@ -7,9 +7,9 @@ Basic module init file.
 :version: sro mar 14 10:41:35 CET 2007
 :author:  szymon stoma
 """
-import absolute_shapes
-import material
-import interactive_mode
-import color
+from . import absolute_shapes
+from . import material
+from . import interactive_mode
+from . import color
 
 __docformat__="restructuredtext en"

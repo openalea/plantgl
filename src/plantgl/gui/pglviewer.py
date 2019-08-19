@@ -1,5 +1,5 @@
 from openalea.plantgl.all import *
-from openalea.vpltk.qt import qt
+from openalea.plantgl.gui.qt import qt
 from PyQGLViewer import QGLViewer, Vec
 from openalea.plantgl.gui.pglnqgl import *
 
@@ -27,7 +27,7 @@ class PglViewer (QGLViewer):
             bbx = self.bboxcomputer.result                
             if bbx : 
                 self.camera().setSceneBoundingBox(*bbx2qgl(bbx))
-            else: print 'error computing bbox'
+            else: print('error computing bbox')
 
     def display(self,scene = None):
         self.setScene(scene)

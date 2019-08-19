@@ -1,7 +1,7 @@
 import openalea.plantgl.all as pgl
 from math import radians, degrees, sin 
 from scipy import around
-import sunPositions as sp
+from . import sunPositions as sp
 
 elevations = [9.23, 9.23, 9.23, 9.23, 9.23, 9.23, 9.23, 9.23, 9.23, 9.23, 10.81, 10.81, 10.81, 10.81, 10.81, 26.57, 26.57, 26.57, 26.57, 26.57, 31.08, 31.08, 31.08,31.08, 31.08, 31.08, 31.08, 31.08, 31.08, 31.08, 47.41, 47.41, 47.41, 47.41, 47.41, 52.62, 52.62, 52.62, 52.62, 52.62, 69.16, 69.16, 69.16, 69.16,69.16, 90]
 
@@ -56,7 +56,7 @@ def getDirectLight( latitude, longitude, jourJul, startH, stopH, step=30, decalS
   for s in w:
     tot+= s
   if round(tot,1) != 1.0:
-    print "sum weight : ", tot 
+    print("sum weight : ", tot) 
   return [ ( around(degrees(az[i]),2), around(degrees(el[i]), 2), w[i] ) for i in range(len(az)) ]
 
 

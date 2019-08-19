@@ -12,7 +12,7 @@ A cardinal spline is a spline passing through a set of points.
 """
 
 import os, math
-import _pglsg as pgl
+from . import _pglsg as pgl
 from openalea.plantgl.math import norm
 
 __metaclass__ = type
@@ -77,7 +77,7 @@ class CSpline:
 
         self.der = [d0]
 
-        for i in xrange(1,n-1):
+        for i in range(1,n-1):
             p, q, r = self.points[i-1], self.points[i], self.points[i+1]
             dx1, dx2 = self.dist[i-1], self.dist[i]
             der = self._derivative1(p,q,r,dx1,dx2)
@@ -103,7 +103,7 @@ class CSpline:
 
         n = len(self)
         self.ctrl_pts = [0]*(3*n-2)
-        for i in xrange(0,n-1):
+        for i in range(0,n-1):
             p, q = self.points[i:i+2]
             dp, dq = self.der[i:i+2]
             self.ctrl_pts[i*3]   = p
@@ -133,7 +133,7 @@ class CSpline:
         param = [p]
 
         if is_linear:
-            param = map(float,range(nb_arc+1))
+            param = list(map(float,list(range(nb_arc+1))))
             self.kv= [ param[ 0 ] ]*(degree+1)
             step = (param[-1]-param[0]) / float(nb_arc)
             for i in range(1,nb_arc):
@@ -154,7 +154,7 @@ class CSpline:
 
     def add_point( self, pt ):
         if self.is_closed:
-            raise "Unable to add a point to a closed curve"
+            raise Exception("Unable to add a point to a closed curve")
 
         self.points.append(pt)
         # TODO: Compute incrementally the curve.
@@ -162,7 +162,7 @@ class CSpline:
 
     def move_point( self, i, pt ):
         if i >= len(self):
-            raise "Index %d out of range [0,%d[" % (i, len(self))
+            raise Exception("Index %d out of range [0,%d[" % (i, len(self)))
 
         self.points[i] = pt
         # TODO: Compute incrementally the curve.

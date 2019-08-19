@@ -3,31 +3,41 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon et al.
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 
 /*! \file geom_pointmatrix.h
@@ -55,7 +65,7 @@ PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-class SG_API Point2Matrix : public TOOLS(Array2)<TOOLS(Vector2)>
+class SG_API Point2Matrix : public Array2<Vector2>
 {
 
 public:
@@ -68,14 +78,14 @@ public:
   /** Constructs a Point2Matrix of size of \e size.
       \post
       - \e self is valid. */
-  Point2Matrix( uint_t rows, uint_t cols, const TOOLS(Vector2)& value);
+  Point2Matrix( uint_t rows, uint_t cols, const Vector2& value);
 
   /** Constructs a PointMatrix with the range of points [\e first, \e last).
       \post
       - \e self is valid. */
   template <class InIterator>
       Point2Matrix( InIterator first, InIterator last, uint_t rows ) :
-    TOOLS(Array2)<TOOLS(Vector2)>(first,last,rows) {
+    Array2<Vector2>(first,last,rows) {
     GEOM_ASSERT(isValid());
   }
 
@@ -83,13 +93,13 @@ public:
   virtual ~Point2Matrix( );
 
   /// Returns the mimimum and maximum points bounding \e self.
-  std::pair<TOOLS(Vector2),TOOLS(Vector2)> getBounds( ) const;
+  std::pair<Vector2,Vector2> getBounds( ) const;
 
   /// Returns the center of \e self.
-  TOOLS(Vector2) getCenter( ) const;
+  Vector2 getCenter( ) const;
 
   /// Returns the extent along the \c axis and \c y axis of \e self.
-  TOOLS(Vector2) getExtent( ) const;
+  Vector2 getExtent( ) const;
 
   /** Returns the total length of the segments formed adjacent points.
       It takes sense in the case that \e self denotes a polyline. */
@@ -138,7 +148,7 @@ PGL_DECLARE_TYPE(Point2Matrix)
 */
 
 
-class SG_API Point3Matrix : public TOOLS(Array2)<TOOLS(Vector3)>
+class SG_API Point3Matrix : public Array2<Vector3>
 {
 
 public:
@@ -151,14 +161,14 @@ public:
   /** Constructs a Point3Matrix of rows \e rows and columns \e cols.
       \post
       - \e self is valid. */
-  Point3Matrix( uint_t rows, uint_t cols, const  TOOLS(Vector3)& value);
+  Point3Matrix( uint_t rows, uint_t cols, const  Vector3& value);
 
   /** Constructs a Point3Matrix with the range of points [\e first, \e last).
       \post
       - \e self is valid. */
   template <class InIterator>
   Point3Matrix( InIterator first, InIterator last, uint_t rows ) :
-    TOOLS(Array2)<TOOLS(Vector3)>(first,last,rows) {
+    Array2<Vector3>(first,last,rows) {
     GEOM_ASSERT(isValid());
   }
 
@@ -175,13 +185,13 @@ public:
   virtual ~Point3Matrix( );
 
   /// Returns the mimimum and maximum points bounding \e self.
-  std::pair<TOOLS(Vector3),TOOLS(Vector3)> getBounds( ) const;
+  std::pair<Vector3,Vector3> getBounds( ) const;
 
   /// Returns the center of \e self.
-  TOOLS(Vector3) getCenter( ) const;
+  Vector3 getCenter( ) const;
 
   /// Returns the extent along the \c axis and \c y axis of \e self.
-  TOOLS(Vector3) getExtent( ) const;
+  Vector3 getExtent( ) const;
 
   /// Returns an iterator at the point with the maximum \c x coordinate.
   const_iterator getXMax( ) const;
@@ -242,7 +252,7 @@ PGL_DECLARE_TYPE(Point3Matrix)
 */
 
 
-class SG_API Point4Matrix : public TOOLS(Array2)<TOOLS(Vector4)>
+class SG_API Point4Matrix : public Array2<Vector4>
 {
 
 public:
@@ -255,14 +265,14 @@ public:
   /** Constructs a Point4Matrix with \e rows rows and \e cols columns.
       \post
       - \e self is valid. */
-  Point4Matrix( uint_t rows, uint_t cols, const TOOLS(Vector4)& value);
+  Point4Matrix( uint_t rows, uint_t cols, const Vector4& value);
 
   /** Constructs a Point4Matrix with the range of points [\e first, \e last).
       \post
       - \e self is valid. */
   template <class InIterator>
   Point4Matrix( InIterator first, InIterator last ,uint_t rows) :
-    TOOLS(Array2)<TOOLS(Vector4)>(first,last,rows) {
+    Array2<Vector4>(first,last,rows) {
     GEOM_ASSERT(isValid());
   }
 
@@ -280,13 +290,13 @@ public:
   virtual ~Point4Matrix( );
 
   /// Returns the mimimum and maximum points bounding \e self.
-  std::pair<TOOLS(Vector4),TOOLS(Vector4)> getBounds( ) const;
+  std::pair<Vector4,Vector4> getBounds( ) const;
 
   /// Returns the center of \e self.
-  TOOLS(Vector4) getCenter( ) const;
+  Vector4 getCenter( ) const;
 
   /// Returns the extent along the \c axis and \c y axis of \e self.
-  TOOLS(Vector4) getExtent( ) const;
+  Vector4 getExtent( ) const;
 
   /** Returns the total length of the segments formed adjacent points.
       It takes sense in the case that \e self denotes a polyline. */

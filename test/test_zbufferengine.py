@@ -13,10 +13,10 @@ def test_teapot():
     z = ZBufferEngine(800,800)
     z.setPerspectiveCamera(60,1,0.1,1000)
     z.lookAt(cam,(0,0,0),(0,0,1))
-    print z.getBoundingBoxView()
-    print 'render'
+    print(z.getBoundingBoxView())
+    print('render')
     z.process(tr, Material((0,0,200)),2)
-    print 'getImage'
+    print('getImage')
     i = z.getImage()
 
     plt.imshow(i.to_array())
@@ -31,10 +31,10 @@ def test_sphere():
     z = ZBufferEngine(800,600)
     z.setPerspectiveCamera(60,4/3.,0.1,1000)
     z.lookAt(cam,(0,0,0),(0,0,1))
-    print z.getBoundingBoxView()
-    print 'render'
+    print(z.getBoundingBoxView())
+    print('render')
     z.process(tr, Material((100,50,200)),2)
-    print 'getImage'
+    print('getImage')
     i = z.getImage()
 
     plt.imshow(i.to_interlaced_array())
@@ -49,10 +49,10 @@ def test_cylinder():
     z = ZBufferEngine(800,600)
     z.setPerspectiveCamera(60,1,1,1000)
     z.process(cam,(0,0,-5),(0,0,1))
-    print z.getBoundingBoxView()
-    print 'render'
+    print(z.getBoundingBoxView())
+    print('render')
     z.render(tr, Material((100,50,200)),2)
-    print 'getImage'
+    print('getImage')
     i = z.getImage()
 
     plt.imshow(i.to_array())
@@ -64,35 +64,35 @@ def test_point():
     z.setPerspectiveCamera(60,1,1,1000)
     cam = (300,0,0)
     z.lookAt(cam,(0,0,0),(0,0,1))
-    print z.getBoundingBoxView()
-    print z.getWorldToCameraMatrix()
-    print
-    print 'World : \t', Vector3(a)
+    print(z.getBoundingBoxView())
+    print(z.getWorldToCameraMatrix())
+    print()
+    print('World : \t', Vector3(a))
     b = z.worldToCamera(a)    
-    print 'Camera : \t', b
+    print('Camera : \t', b)
     c = z.cameraToNDC(b)
-    print 'NDC :   \t', c
+    print('NDC :   \t', c)
     d = z.ndcToRaster(c)    
-    print 'Raster : \t', d
+    print('Raster : \t', d)
     e = z.cameraToRaster(b)
-    print 'Raster : \t', e
+    print('Raster : \t', e)
 
 def test_tri():
     z = ZBufferEngine(800,800)
     z.setPerspectiveCamera(60,1,1,1000)
     cam = (300,0,0)
     z.lookAt(cam,(0,0,0),(0,0,1))
-    print z.getWorldToCameraMatrix()
+    print(z.getWorldToCameraMatrix())
     pts = [[0,0,0.],[0,0,0.5],[0,1,0]]
-    tr = TriangleSet(pts, [range(3)])
+    tr = TriangleSet(pts, [list(range(3))])
     for p in pts:
-        print z.worldToCamera(p)
+        print(z.worldToCamera(p))
     for p in pts:
-        print z.worldToRaster(p)
+        print(z.worldToRaster(p))
 
-    print 'render'
+    print('render')
     z.process(tr, Material((0,0,200)),2)
-    print 'getImage'
+    print('getImage')
     i = z.getImage()
 
     plt.imshow(i.to_array())

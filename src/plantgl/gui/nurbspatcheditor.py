@@ -1,13 +1,13 @@
-from openalea.vpltk.qt import QtCore, QtGui
+from openalea.plantgl.gui.qt import QtCore, QtGui
 from openalea.plantgl.all import *
 from PyQGLViewer import *
 import OpenGL.GL as ogl
-from editablectrlpoint import * 
+from .editablectrlpoint import * 
 from math import cos,sin,sqrt,fabs,pi
 
 
-from openalea.vpltk.qt.QtCore import QObject, QRect, Qt, pyqtSignal
-from openalea.vpltk.qt.QtWidgets import QApplication
+from openalea.plantgl.gui.qt.QtCore import QObject, QRect, Qt, pyqtSignal
+from openalea.plantgl.gui.qt.QtWidgets import QApplication
 
 helpstr = """<h2>N u r b s P a t c h E d i t o r</h2>
 This application allows the user to edit a nurbsPatch dynamically.
@@ -41,7 +41,7 @@ def addColumnToPatch(patch,col,decal):
 class NurbsPatchEditor(QGLViewer):
     """ The class NurbsPatchEditor is the viewer of the scene, it contains all the informations about the NurbsPatch, that's why a getter and a setter have been created, the NubrsPatch is defined by a 2 dimensional Array of 3d Vectors"""
    
-    Edit,Rotate = range(2)
+    Edit,Rotate = list(range(2))
     valueChanged = pyqtSignal()
     
     def __init__(self,parent):
@@ -214,10 +214,10 @@ class NurbsPatchEditor(QGLViewer):
                 if selection >= nbcolumn:
                     row = selection-nbcolumn
                     newpatch = addRowToPatch(self.nurbsPatch,row,Vector4(diff,0))
-                    selectedPoints = [(row,i) for i in xrange(nbcolumn)]
+                    selectedPoints = [(row,i) for i in range(nbcolumn)]
                 else:
                     newpatch = addColumnToPatch(self.nurbsPatch,selection,Vector4(diff,0))
-                    selectedPoints = [(i,selection) for i in xrange(self.nurbsPatch.ctrlPointMatrix.getRowNb())]
+                    selectedPoints = [(i,selection) for i in range(self.nurbsPatch.ctrlPointMatrix.getRowNb())]
                 self.setNurbsPatch(newpatch)
                 self.createSelectionManipulator()
                 for index in selectedPoints:
@@ -335,9 +335,9 @@ class NurbsPatchEditor(QGLViewer):
         lines = []
         m =Material()
         maxcolumn = pointmatrix.getColumnNb()
-        for colid in xrange(maxcolumn):
+        for colid in range(maxcolumn):
             lines.append(Shape(Polyline(Point4Array(pointmatrix.getColumn(colid)).project(),width=3),m,colid))
-        for rowid in xrange(pointmatrix.getRowNb()):
+        for rowid in range(pointmatrix.getRowNb()):
             lines.append(Shape(Polyline(Point4Array(pointmatrix.getRow(rowid)).project(),width=3),m,maxcolumn+rowid))
         for sh in lines:
           ogl.glPushName(sh.id)

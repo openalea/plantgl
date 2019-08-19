@@ -44,7 +44,7 @@ if PGL_QT_VERSION == 4:
         try :
             import PySide
             os.environ[QT_API] = PYSIDE_API[0]
-        except ImportError, ie:
+        except ImportError as ie:
             os.environ[QT_API] = PYQT4_API[0]
             os.environ.setdefault('QT_API_VERSION', '2')
 else :
@@ -54,7 +54,7 @@ else :
         try :
             import PySide2
             os.environ[QT_API] = PYSIDE2_API[0]
-        except ImportError, ie:
+        except ImportError as ie:
             os.environ[QT_API] = 'pyqt'+str(PGL_QT_VERSION)
 
 

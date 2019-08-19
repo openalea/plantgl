@@ -1,35 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2018 - Cirad/Inra/Inria
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al.
- *
- *       Development site : https://github.com/openalea/plantgl
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
- * 
- *                      GNU General Public Licence
- *           
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
+ *
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
- */             
+ */
+             
 
 /*! \file ZBufferEngine.h
     \brief Definition of Rendering Engine based on ZBuffer.
@@ -66,15 +74,15 @@ PGL_BEGIN_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 
-Color4 phong(const TOOLS(Vector3)& v, const TOOLS(Vector3)& n, 
-             const TOOLS(Vector3)& cameraPosition, 
-             const TOOLS(Vector3)& lightPosition, 
+Color4 phong(const Vector3& v, const Vector3& n, 
+             const Vector3& cameraPosition, 
+             const Vector3& lightPosition, 
              const Color3& lightAmbient, const Color3& lightDiffuse, const Color3& lightSpecular,
              MaterialPtr material);
 
 class ZBufferEngine;
 
-class Shader : public TOOLS(RefCountObject) {
+class Shader : public RefCountObject {
 public:
     Shader(ZBufferEngine * engine);
     virtual ~Shader();
@@ -83,8 +91,8 @@ public:
 
     void initEnv(const ProjectionCameraPtr& camera);
 
-    const TOOLS(Vector3)& cameraPosition() const ;
-    const TOOLS(Vector3)& lightPosition() const ;
+    const Vector3& cameraPosition() const ;
+    const Vector3& lightPosition() const ;
     const Color3& lightAmbient() const ;
     const Color3& lightDiffuse() const ;
     const Color3& lightSpecular() const ;
@@ -139,9 +147,9 @@ public:
     virtual TriangleShader * copy(bool deep = false) const;
 
     ImagePtr image;
-    TOOLS(Vector2) uv0;
-    TOOLS(Vector2) uv1;
-    TOOLS(Vector2) uv2;
+    Vector2 uv0;
+    Vector2 uv1;
+    Vector2 uv2;
     bool repeatu;
     bool repeatv;
 };
@@ -187,9 +195,9 @@ public:
     virtual void process(int32_t x, int32_t y, int32_t z, float w0, float w1, float w2) ;
     virtual TriangleShader * copy(bool deep = false) const;
 
-    TOOLS(Vector3) n0;
-    TOOLS(Vector3) n1;
-    TOOLS(Vector3) n2;
+    Vector3 n0;
+    Vector3 n1;
+    Vector3 n2;
 
     MaterialPtr material;
 

@@ -20,15 +20,15 @@ __license__ = "CeCILL V2"
 __revision__ = " $Id: gui_catalog.py 2244 2010-02-08 17:10:17Z cokelaer $"
 
 
-from openalea.vpltk.qt import QtCore, QtGui
+from openalea.plantgl.gui.qt import QtCore, QtGui
 from openalea.core.interface import * #IGNORE:W0614,W0401
 from openalea.core.observer import lock_notify
 from openalea.visualea.node_widget import NodeWidget
 from openalea.plantgl.gui.curve2deditor import Curve2DEditor, Curve2DConstraint, FuncConstraint
 from openalea.plantgl.gui.nurbspatcheditor import NurbsPatchEditor
 from openalea.plantgl.scenegraph import NurbsCurve2D
-from pgl_interface import ICurve2D, INurbsPatch
-from cPickle import loads
+from .pgl_interface import ICurve2D, INurbsPatch
+from pickle import loads
 
 '''
 class ICurve2DWidget(IInterfaceWidget, Curve2DEditor):

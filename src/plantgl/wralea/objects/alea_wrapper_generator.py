@@ -1,5 +1,5 @@
 from openalea.core import *
-import objectgenerator
+from . import objectgenerator
 from openalea.core.path import path
 
 
