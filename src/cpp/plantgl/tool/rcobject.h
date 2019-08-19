@@ -54,6 +54,7 @@
 #include "tools_config.h"
 #include "util_assert.h" // For #include <assert.h>
 #include "util_types.h"  // For #include <stddef.h> and typedef long int32_t;
+#include <atomic>
 
 #ifdef RCOBJECT_DEBUG
 #include <typeinfo>
@@ -497,7 +498,7 @@ public:
   /// Decrements the reference counter.
   inline void removeReference( )
   {
-    --_ref_count;
+    size_t refcount = --_ref_count;
 #ifdef RCOBJECT_DEBUG
     std::cerr << this << " ref-- => " << getReferenceCount();
     std::cerr << "\t(" << typeid(*this).name() << ")" << std::endl;
@@ -505,7 +506,7 @@ public:
 #ifdef WITH_REFCOUNTLISTENER
   if(_ref_count_listener) _ref_count_listener->referenceRemoved(this);
 #endif
-    if (_ref_count == 0) delete this;
+    if (refcount == 0) delete this;
   }
 
   //@}
@@ -524,7 +525,8 @@ public:
 
 private:
 
-  size_t _ref_count;
+  std::atomic<size_t> _ref_count;
+
 #ifdef WITH_REFCOUNTLISTENER
   RefCountListener * _ref_count_listener;
 #endif

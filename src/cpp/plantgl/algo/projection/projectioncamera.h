@@ -134,6 +134,8 @@ public:
    const Vector3& position() const { return __position; }
 
 
+    ProjectionCameraPtr copy();
+
 protected:
    Vector3 screen2NDC(const real_t& xScreen, const real_t& yScreen, const real_t z) const ;
    Vector3 NDC2screen(const real_t& xNDC, const real_t& yNDC, const real_t z) const;

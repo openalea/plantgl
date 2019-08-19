@@ -439,6 +439,7 @@ bool PlyCodec::isBytesReverseNeeded(std::string const &fcoding) const
 	return (byteorder == "little" && __BYTE_ORDER == __BIG_ENDIAN) || (byteorder == "big" && __BYTE_ORDER == __LITTLE_ENDIAN);
 }
 
+
 ScenePtr PlyCodec::createScene(Point3ArrayPtr points, Color4ArrayPtr colors, IndexArrayPtr faces) const
 {
 	ScenePtr const scene = new Scene;

@@ -71,5 +71,7 @@ void ProjectionEngine::process(ScenePtr scene)
     Discretizer d;
     Tesselator t;
     ProjectionRenderer r(*this, t, d);
+    beginProcess();
     scene->apply(r);
+    endProcess();
 }

@@ -50,6 +50,7 @@
 
 #include "../algo_config.h"
 
+# define GL_SILENCE_DEPRECATION
 
 #ifndef PGL_WITHOUT_QT
 

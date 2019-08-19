@@ -85,6 +85,9 @@ void ProjectionCamera::lookAt(const Vector3& eyePosition3D, const Vector3& cente
 
 }
 
+ProjectionCameraPtr ProjectionCamera::copy() { return ProjectionCameraPtr(new ProjectionCamera(*this));}
+
+
 Vector3 ProjectionCamera::screen2NDC(const real_t& xScreen, const real_t& yScreen, const real_t z) const {
     // now convert point from screen space to NDC space (in range [-1,1])
     Vector3 vertexNDC(__xscale * xScreen  - __xconstant, __yscale * yScreen  - __yconstant,  -z);

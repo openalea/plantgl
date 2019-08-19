@@ -59,7 +59,7 @@
 #include <plantgl/scenegraph/appearance/texture.h>
 #include <plantgl/scenegraph/appearance/util_image.h>
 #include "../algo_config.h"
-// #include "zbufferengine.h"
+#include "projectioncamera.h"
 /* ----------------------------------------------------------------------- */
 
 PGL_BEGIN_NAMESPACE
@@ -87,6 +87,9 @@ public:
     Shader(ZBufferEngine * engine);
     virtual ~Shader();
     ZBufferEngine * __engine;
+    ProjectionCameraPtr __camera;
+
+    void initEnv(const ProjectionCameraPtr& camera);
 
     const Vector3& cameraPosition() const ;
     const Vector3& lightPosition() const ;
@@ -98,18 +101,20 @@ public:
 typedef RCPtr<Shader> ShaderPtr;
 
 
+class TriangleShader;
+typedef RCPtr<TriangleShader> TriangleShaderPtr;
 
 class TriangleShader : public Shader {
 public:
     TriangleShader(ZBufferEngine * engine);
     virtual ~TriangleShader();
 
-    virtual void init(AppearancePtr appearance, TriangleSetPtr triangles, uint32_t trid, uint32_t shapeid) = 0;
+    virtual void init(AppearancePtr appearance, TriangleSetPtr triangles, uint32_t trid, uint32_t shapeid, const ProjectionCameraPtr& camera) = 0;
     virtual void process(int32_t x, int32_t y, int32_t z, float w0, float w1, float w2) = 0;
+    virtual TriangleShader * copy(bool deep = false) const = 0;
 
 };
 
-typedef RCPtr<TriangleShader> TriangleShaderPtr;
 
 enum eShadingStyle {
     eTextureBased,
@@ -123,8 +128,9 @@ public:
                   Color4::eColor4Format conversionformat = Color4::eARGB);
     virtual ~IdBasedShader();
 
-    virtual void init(AppearancePtr appearance, TriangleSetPtr triangles, uint32_t trid, uint32_t shapeid);
+    virtual void init(AppearancePtr appearance, TriangleSetPtr triangles, uint32_t trid, uint32_t shapeid, const ProjectionCameraPtr& camera);
     virtual void process(int32_t x, int32_t y, int32_t z, float w0, float w1, float w2) ;
+    virtual TriangleShader * copy(bool deep = false) const;
 
     uint32_t shapeid;
     uint32_t defaultid;
@@ -136,8 +142,9 @@ public:
     TextureShader(ZBufferEngine * engine);
     virtual ~TextureShader();
 
-    virtual void init(AppearancePtr appearance, TriangleSetPtr triangles, uint32_t trid, uint32_t shapeid);
+    virtual void init(AppearancePtr appearance, TriangleSetPtr triangles, uint32_t trid, uint32_t shapeid, const ProjectionCameraPtr& camera);
     virtual void process(int32_t x, int32_t y, int32_t z, float w0, float w1, float w2) ;
+    virtual TriangleShader * copy(bool deep = false) const;
 
     ImagePtr image;
     Vector2 uv0;
@@ -153,8 +160,9 @@ public:
     ColorBasedShader(ZBufferEngine * engine);
     virtual ~ColorBasedShader();
 
-    virtual void init(AppearancePtr appearance, TriangleSetPtr triangles, uint32_t trid, uint32_t shapeid);
+    virtual void init(AppearancePtr appearance, TriangleSetPtr triangles, uint32_t trid, uint32_t shapeid, const ProjectionCameraPtr& camera);
     virtual void process(int32_t x, int32_t y, int32_t z, float w0, float w1, float w2) ;
+    virtual TriangleShader * copy(bool deep = false) const;
 
     void setColors(const Color4& _c0, const Color4& _c1, const Color4& _c2) { c0 = _c0; c1 = _c1; c2 = _c2; }
     Color4 c0;
@@ -168,8 +176,9 @@ public:
     GouraudInterpolation(ZBufferEngine * engine);
     virtual ~GouraudInterpolation();
 
-    virtual void init(AppearancePtr appearance, TriangleSetPtr triangles, uint32_t trid, uint32_t shapeid);
+    virtual void init(AppearancePtr appearance, TriangleSetPtr triangles, uint32_t trid, uint32_t shapeid, const ProjectionCameraPtr& camera);
     virtual void process(int32_t x, int32_t y, int32_t z, float w0, float w1, float w2) ;
+    virtual TriangleShader * copy(bool deep = false) const;
 
     Color4 c0;
     Color4 c1;
@@ -182,8 +191,9 @@ public:
     PhongInterpolation(ZBufferEngine * engine);
     virtual ~PhongInterpolation();
 
-    virtual void init(AppearancePtr appearance, TriangleSetPtr triangles, uint32_t trid, uint32_t shapeid);
+    virtual void init(AppearancePtr appearance, TriangleSetPtr triangles, uint32_t trid, uint32_t shapeid, const ProjectionCameraPtr& camera);
     virtual void process(int32_t x, int32_t y, int32_t z, float w0, float w1, float w2) ;
+    virtual TriangleShader * copy(bool deep = false) const;
 
     Vector3 n0;
     Vector3 n1;
@@ -200,8 +210,9 @@ public:
 
     void registerShader(eShadingStyle, TriangleShaderPtr);
 
-    virtual void init(AppearancePtr appearance, TriangleSetPtr triangles, uint32_t trid, uint32_t shapeid);
+    virtual void init(AppearancePtr appearance, TriangleSetPtr triangles, uint32_t trid, uint32_t shapeid, const ProjectionCameraPtr& camera);
     virtual void process(int32_t x, int32_t y, int32_t z, float w0, float w1, float w2) ;
+    virtual TriangleShader * copy(bool deep = false) const;
 
     pgl_hash_map<int32_t, TriangleShaderPtr> __shadermap;
     TriangleShaderPtr __current;

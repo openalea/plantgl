@@ -3,7 +3,7 @@ Provides QtCore classes and functions.
 """
 import os
 
-from openalea.plantgl.gui.qt import QT_API, PYQT5_API, PYQT4_API, PYSIDE_API
+from openalea.plantgl.gui.qt import QT_API, PYQT5_API, PYQT4_API, PYSIDE_API, PYSIDE2_API
 from openalea.plantgl.config import PGL_QT_VERSION
 
 
