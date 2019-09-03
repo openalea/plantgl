@@ -928,8 +928,8 @@ private:
 
 		// Random rotation of the cylinder
 		Vector3 const p2(
-			center.x() + std::tanf(randomFloat(-m_maxAngle, m_maxAngle)),
-			center.y() + std::tanf(randomFloat(-m_maxAngle, m_maxAngle)),
+			center.x() + std::tan(randomFloat(-m_maxAngle, m_maxAngle)),
+			center.y() + std::tan(randomFloat(-m_maxAngle, m_maxAngle)),
 			center.z() + 1.0f
 		);
 

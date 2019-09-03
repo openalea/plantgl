@@ -63,6 +63,7 @@
 #include <condition_variable>
 // #include <boost/fiber/mutex.hpp>
 #include <atomic>
+#include <functional>
 
 /* ----------------------------------------------------------------------- */
 

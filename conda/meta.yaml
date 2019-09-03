@@ -42,7 +42,7 @@ requirements:
    - setuptools
    - openalea.deploy
    - cmake >=3.12.0
-   - {{ compiler('cxx') }}
+   #- {{ compiler('cxx') }}
   run:
    - python
    - qt =5

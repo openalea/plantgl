@@ -162,7 +162,7 @@ template_html = """
 """
 
 def generate_html(scene):
-    scripts = '\n'.join(map(lambda l : '\t\t<script src="%s"></script' % l, get_jslibs()))
+    scripts = '\n'.join(['\t\t<script src="%s"></script' % l for l in get_jslibs()])
     return template_html % (scripts, to_js(scene))
 
 def plot_js(scene):
@@ -170,7 +170,7 @@ def plot_js(scene):
     handle, fname = tempfile.mkstemp(suffix='.html', text=True)
     file = os.fdopen(handle, 'w')
     file.write(generate_html(scene))
-    print fname
+    print(fname)
     import webbrowser
     webbrowser.open(fname)
     return fname
