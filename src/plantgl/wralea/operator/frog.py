@@ -10,7 +10,7 @@ def load( fn ):
 def sample( x_size= 20,y_size= 20, nb= 20 ):
     """ return a list of transformation """ 
     import random
-    l=random.sample( xrange(x_size*y_size), nb )
+    l=random.sample( range(x_size*y_size), nb )
     return ( math.Vector3(t%y_size,t/x_size, 0.) for t in l )
 
 def regular_sample( nx= 4, ny= 5, space_x= 5, space_y= 4 ):

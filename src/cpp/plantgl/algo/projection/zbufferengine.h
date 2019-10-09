@@ -1,35 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2018 - Cirad/Inra/Inria
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al.
- *
- *       Development site : https://github.com/openalea/plantgl
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
- * 
- *                      GNU General Public Licence
- *           
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
+ *
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
- */             
+ */
+             
 
 /*! \file ZBufferEngine.h
     \brief Definition of Rendering Engine based on ZBuffer.
@@ -55,6 +63,7 @@
 #include <condition_variable>
 // #include <boost/fiber/mutex.hpp>
 #include <atomic>
+#include <functional>
 
 /* ----------------------------------------------------------------------- */
 
@@ -127,21 +136,21 @@ public :
 
   /*! Default constructor. 
   */
-  ZBufferEngine(uint16_t imageWidth = 800, 
-                uint16_t imageHeight = 600, 
-                const Color3& backGroundColor = Color3(0,0,0),
-                eRenderingStyle style = eColorBased);
+  ZBufferEngine(uint16_t imageWidth, 
+                uint16_t imageHeight, 
+                const Color3& backGroundColor,
+                eRenderingStyle style);
     
     
-  ZBufferEngine(uint16_t imageWidth = 800, 
-                uint16_t imageHeight = 600, 
-                const Color4& backGroundColor = Color4::fromUint(Shape::NOID),
-                eRenderingStyle style = eIdBased);
+  ZBufferEngine(uint16_t imageWidth, 
+                uint16_t imageHeight, 
+                const Color4& backGroundColor,
+                eRenderingStyle style);
     
-  ZBufferEngine(uint16_t imageWidth = 800, 
-                uint16_t imageHeight = 600, 
-                uint32_t defaultid = Shape::NOID,
-                Color4::eColor4Format conversionformat = Color4::eARGB);
+  ZBufferEngine(uint16_t imageWidth, 
+                uint16_t imageHeight, 
+                uint32_t defaultid,
+                Color4::eColor4Format conversionformat);
 
   ZBufferEngine(uint16_t imageWidth = 800, 
                 uint16_t imageHeight = 600);    
@@ -149,8 +158,8 @@ public :
   /// Destructor
   virtual ~ZBufferEngine();
   
-  void setLight(const TOOLS(Vector3)& lightPosition, const Color3& lightColor = Color3(255,255,255));
-  void setLight(const TOOLS(Vector3)& lightPosition, const Color3& lightAmbient = Color3(255,255,255), const Color3& lightDiffuse = Color3(255,255,255), const Color3& lightSpecular = Color3(255,255,255));
+  void setLight(const Vector3& lightPosition, const Color3& lightColor = Color3(255,255,255));
+  void setLight(const Vector3& lightPosition, const Color3& lightAmbient = Color3(255,255,255), const Color3& lightDiffuse = Color3(255,255,255), const Color3& lightSpecular = Color3(255,255,255));
   
   void iprocess(TriangleSetPtr triangles, AppearancePtr appearance, uint32_t id, ProjectionCameraPtr camera = ProjectionCameraPtr(), uint32_t threadid = 0);
   void iprocess(PolylinePtr polyline, MaterialPtr material, uint32_t id, ProjectionCameraPtr camera = ProjectionCameraPtr(), uint32_t threadid = 0);
@@ -159,23 +168,22 @@ public :
   void beginProcess();
   void endProcess();
 
-
   void renderTriangle(const TOOLS(Vector3)& v0, const TOOLS(Vector3)& v1, const TOOLS(Vector3)& v2, const Color4& c0, const Color4& c1, const Color4& c2, bool ccw = true, ProjectionCameraPtr camera = ProjectionCameraPtr());
   void renderPoint(const TOOLS(Vector3)& v, const Color4& c0, const uint32_t width = 1, ProjectionCameraPtr camera = ProjectionCameraPtr());
   void renderSegment(const TOOLS(Vector3)& v0, const TOOLS(Vector3)& v1, const Color4& c0, const Color4& c1, const uint32_t width = 1, ProjectionCameraPtr camera = ProjectionCameraPtr());
 
   /*
-  TOOLS(Vector3) worldToCamera(const TOOLS(Vector3)& vertexWorld) const;
-  TOOLS(Vector3) cameraToNDC(const TOOLS(Vector3)& vertexCamera) const;
-  TOOLS(Vector3) ndcToRaster(const TOOLS(Vector3)& vertexNDC) const;
-  TOOLS(Vector3) cameraToRaster(const TOOLS(Vector3)& vertexCamera) const;
-  TOOLS(Vector3) cameraToWorld(const TOOLS(Vector3)& vertexCamera) const;
+  Vector3 worldToCamera(const Vector3& vertexWorld) const;
+  Vector3 cameraToNDC(const Vector3& vertexCamera) const;
+  Vector3 ndcToRaster(const Vector3& vertexNDC) const;
+  Vector3 cameraToRaster(const Vector3& vertexCamera) const;
+  Vector3 cameraToWorld(const Vector3& vertexCamera) const;
   */
 
-  TOOLS(Vector3) worldToRaster(const TOOLS(Vector3)& vertexWorld) const 
+  Vector3 worldToRaster(const Vector3& vertexWorld) const 
   { return __camera->worldToRaster(vertexWorld, __imageWidth, __imageHeight); }
 
-  TOOLS(Vector3) rasterToWorld(const TOOLS(Vector3)& raster) const 
+  Vector3 rasterToWorld(const Vector3& raster) const 
   { return __camera->rasterToWorld(raster, __imageWidth, __imageHeight); }
   
    void setFrameBufferAt(uint32_t x, uint32_t y, const Color3& rasterColor);
@@ -183,13 +191,13 @@ public :
    Color3 getFrameBufferAt(uint32_t x, uint32_t y);
 
    ImagePtr getImage() const;
-   TOOLS(RealArray2Ptr) getDepthBuffer() const { return __depthBuffer; }
+   RealArray2Ptr getDepthBuffer() const { return __depthBuffer; }
 
    inline bool isTotallyTransparent(const Color4& c) const { return isTotallyTransparent(c.getAlpha()); }
    bool isTotallyTransparent(const real_t alpha) const ;
 
    bool isVisible(int32_t x, int32_t y, real_t z) const;
-   bool isVisible(const TOOLS(Vector3)& pos) const;
+   bool isVisible(const Vector3& pos) const;
 
    bool renderRaster(uint32_t x, uint32_t y, real_t z, const Color4& rasterColor);
 
@@ -204,10 +212,10 @@ public :
   void setShader(TriangleShaderPtr shader) { __triangleshader = shader; }
   void setIdRendering(uint32_t defaultid = Shape::NOID) { setShader(TriangleShaderPtr(new IdBasedShader(this, defaultid)));}
 
-  void duplicateBuffer(const TOOLS(Vector3)& from, const TOOLS(Vector3)& to, bool useDefaultColor = true, const Color3& defaultcolor = Color3(0,0,0));
+  void duplicateBuffer(const Vector3& from, const Vector3& to, bool useDefaultColor = true, const Color3& defaultcolor = Color3(0,0,0));
   void duplicateBuffer(int32_t xDiff, int32_t yDiff, real_t zDiff, bool useDefaultColor = true, const Color3& defaultcolor = Color3(0,0,0));
 
-  void periodizeBuffer(const TOOLS(Vector3)& from, const TOOLS(Vector3)& to, bool useDefaultColor = true, const Color3& defaultcolor = Color3(0,0,0));
+  void periodizeBuffer(const Vector3& from, const Vector3& to, bool useDefaultColor = true, const Color3& defaultcolor = Color3(0,0,0));
   void periodizeBuffer(int32_t xDiff, int32_t yDiff, real_t zDiff, bool useDefaultColor = true, const Color3& defaultcolor = Color3(0,0,0));
 
   void setFrameBuffer(FrameBufferManagerPtr fb) { __frameBuffer = fb; }
@@ -240,17 +248,17 @@ protected :
   uint16_t __imageWidth;
   uint16_t __imageHeight;
 
-  TOOLS(Vector3) __lightPosition;
+  Vector3 __lightPosition;
   Color3 __lightAmbient;
   Color3 __lightDiffuse;
   Color3 __lightSpecular;
 
-  TOOLS(RealArray2Ptr) __depthBuffer;
+  RealArray2Ptr __depthBuffer;
   FrameBufferManagerPtr __frameBuffer;
 
   real_t __alphathreshold;
 
-  TOOLS(Cache)<ImagePtr> __cachetexture;
+  Cache<ImagePtr> __cachetexture;
 
   TriangleShaderPtr __triangleshader;
   TriangleShaderPtr * __triangleshaderset;

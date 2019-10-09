@@ -3,31 +3,41 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon et al.
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 #ifndef __extract_list_h__
 #define __extract_list_h__
@@ -39,8 +49,8 @@
 
 /* ----------------------------------------------------------------------- */
 
-template<class T, 
-    template < typename > class extractor_t = boost::python::extract, 
+template<class T,
+    template < typename > class extractor_t = boost::python::extract,
     class result_type = std::vector<T> >
 struct extract_vec {
 
@@ -53,15 +63,34 @@ struct extract_vec {
     result_type extract() const {
         result_type result;
         if (pylist.ptr() == Py_None) return result;
-        boost::python::object iter_obj = boost::python::object( boost::python::handle<>( PyObject_GetIter( pylist.ptr() ) ) );
+
+#ifdef PYTHON_EXTRACT_WITH_EXCEPTION
+        boost::python::object iter_obj = boost::python::object( boost::python::handle<PyObject>( PyObject_GetIter( pylist.ptr() ) ) );
         while( true )
           {
-            boost::python::object obj; 
+            boost::python::object obj;
             try {  obj = iter_obj.attr( "next" )(); }
             catch( boost::python::error_already_set ){ PyErr_Clear(); break; }
             element_type val = extractor_type( obj )();
             result.push_back( val );
           }
+
+#else
+        PyObject *seq = PyObject_GetIter(pylist.ptr());
+
+        if(!seq)
+            return result;
+
+        PyObject *item;
+        while( (item=PyIter_Next(seq))) {
+            element_type val = extractor_type( item )();
+            result.push_back( val );
+
+            Py_DECREF(item);
+        }
+        Py_DECREF(seq);        
+#endif
+
         return result;
     }
 
@@ -72,8 +101,8 @@ struct extract_vec {
 /* ----------------------------------------------------------------------- */
 
 template<class T, class U = T,
-    template < typename > class extractor_t0 = boost::python::extract, 
-    template < typename > class extractor_t1 = boost::python::extract, 
+    template < typename > class extractor_t0 = boost::python::extract,
+    template < typename > class extractor_t1 = boost::python::extract,
     class result_type = std::vector<std::pair<T,U> > >
 struct extract_vec_pair {
 
@@ -88,16 +117,35 @@ struct extract_vec_pair {
     result_type extract() const {
         result_type result;
         if (pylist.ptr() == Py_None) return result;
-        boost::python::object iter_obj = boost::python::object( boost::python::handle<>( PyObject_GetIter( pylist.ptr() ) ) );
+
+#ifdef PYTHON_EXTRACT_WITH_EXCEPTION
+        boost::python::object iter_obj = boost::python::object( boost::python::handle<PyObject>( PyObject_GetIter( pylist.ptr() ) ) );
         while( true )
           {
-            boost::python::object obj; 
+            boost::python::object obj;
             try {  obj = iter_obj.attr( "next" )(); }
             catch( boost::python::error_already_set ){ PyErr_Clear(); break; }
             element_type0 val0 = extractor_type0( obj[0] )();
             element_type1 val1 = extractor_type1( obj[1] )();
             result.push_back( std::pair<element_type0,element_type1>(val0,val1) );
           }
+#else
+       PyObject *seq = PyObject_GetIter(pylist.ptr());
+
+        if(!seq)
+            return result;
+
+        PyObject *item;
+        while( (item=PyIter_Next(seq)) )  {
+            if ( PyTuple_Check(item) ) {
+                element_type0 val0 = extractor_type0( PyTuple_GetItem(item, 0) )();
+                element_type1 val1 = extractor_type1( PyTuple_GetItem(item, 1) )();
+                result.push_back( std::pair<element_type0,element_type1>(val0,val1) );
+            }
+            Py_DECREF(item);
+        }
+        Py_DECREF(seq);
+#endif
         return result;
     }
 
@@ -108,8 +156,8 @@ struct extract_vec_pair {
 /* ----------------------------------------------------------------------- */
 
 template<class T, class U = T,
-    template < typename > class extractor_t0 = boost::python::extract, 
-    template < typename > class extractor_t1 = boost::python::extract, 
+    template < typename > class extractor_t0 = boost::python::extract,
+    template < typename > class extractor_t1 = boost::python::extract,
     class result_type = std::pair<T,U> >
 struct extract_pair {
 
@@ -134,41 +182,41 @@ struct extract_pair {
 
 /* ----------------------------------------------------------------------- */
 
-template<class key,  class value, 
-	 template < typename> class key_extractor_t = boost::python::extract, 
-	 template < typename> class value_extractor_t = boost::python::extract,
-	 class result_type = std::map<key,value> >
+template<class key,  class value,
+     template < typename> class key_extractor_t = boost::python::extract,
+     template < typename> class value_extractor_t = boost::python::extract,
+     class result_type = std::map<key,value> >
 struct extract_dict {
 
-	typedef key key_type;
-	typedef value value_type;
-	typedef key_extractor_t<key>  key_extractor_type;
-	typedef value_extractor_t<value>  value_extractor_type;
+    typedef key key_type;
+    typedef value value_type;
+    typedef key_extractor_t<key>  key_extractor_type;
+    typedef value_extractor_t<value>  value_extractor_type;
 
         extract_dict(boost::python::object _pydict):
-	  pydict(boost::python::extract<boost::python::dict>(_pydict)) {}
+      pydict(boost::python::extract<boost::python::dict>(_pydict)) {}
 
-	extract_dict(boost::python::dict _pydict):
-	  pydict(_pydict) {}
+    extract_dict(boost::python::dict _pydict):
+      pydict(_pydict) {}
 
-	boost::python::dict pydict;
+    boost::python::dict pydict;
 
-	result_type extract() const {
-		result_type result;
-		boost::python::object iter_obj =  pydict.iteritems();
-		while( true )
-		{
-			boost::python::object obj; 
-			try {  obj = iter_obj.attr( "next" )(); }
-			catch( boost::python::error_already_set ){ PyErr_Clear(); break; }
-			key_type k = key_extractor_type( obj[0] );
-			value_type v = value_extractor_type( obj[1] );
-			result[k] = v ;
-		}
-		return result;
-	}
-	inline result_type operator()() const { return extract(); }
-	inline operator result_type () const { return extract(); }
+    result_type extract() const {
+        result_type result;
+        boost::python::object iter_obj =  pydict.iteritems();
+        while( true )
+        {
+            boost::python::object obj;
+            try {  obj = iter_obj.attr( "next" )(); }
+            catch( boost::python::error_already_set ){ PyErr_Clear(); break; }
+            key_type k = key_extractor_type( obj[0] );
+            value_type v = value_extractor_type( obj[1] );
+            result[k] = v ;
+        }
+        return result;
+    }
+    inline result_type operator()() const { return extract(); }
+    inline operator result_type () const { return extract(); }
 };
 
 

@@ -3,45 +3,55 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon et al.
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
 
 
 
+
 #ifndef __geom_matrix_h__
 #define __geom_matrix_h__
 
-/*! 
+/*!
 	\file util_matrix.h
     \brief Definition of Matrix2, Matrix3, Matrix4.
 */
 
 #include "util_vector.h"
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /*  --------------------------------------------------------------------- */
 
@@ -189,12 +199,12 @@ public:
   /// Prints \e m to the output stream \e stream.
   friend PGLMATH_API std::ostream& operator<<( std::ostream& stream, const Matrix2& m );
 
-  /** Returns the rotation matrix corresponding to angle \e angle. 
+  /** Returns the rotation matrix corresponding to angle \e angle.
       \warning angle must be in radians.
   */
   static Matrix2 diagonal(const real_t val1, const real_t val2);
 
-  /** Returns the rotation matrix corresponding to angle \e angle. 
+  /** Returns the rotation matrix corresponding to angle \e angle.
       \warning angle must be in radians.
   */
   static Matrix2 rotation(const real_t angle);
@@ -429,7 +439,7 @@ public:
       Rz(a)Ry(b)Rx(c) in this order,
       where each matrix Ru(i) is a rotation about an axis u by angle i.
       \warning the decomposition is not unique.
-      \warning angles are in radians. 
+      \warning angles are in radians.
       \return a vector made of the 3 euler angles a, b, c in this order. */
   Vector3 eulerAnglesZYX() const;
 
@@ -473,7 +483,7 @@ public:
   static Matrix3 eulerRotationXYZ( const Vector3& angle );
 
   /** Returns the rotation matrix corresponding to a axis rotation with axis \e v.
-      and angle \e angle. 
+      and angle \e angle.
       \warning angle must be in radians.
   */
   static Matrix3 axisRotation( const Vector3& axis, const real_t& angle );
@@ -725,7 +735,7 @@ public:
 
   /** Computes a decomposition of the matrix into
       R(rotate) * S(scale) + T(translate) where
-      R( rotate=(az,ay,ax) ) is the product of 3 matrices Rz(az)Ry(ay)Rx(ax). 
+      R( rotate=(az,ay,ax) ) is the product of 3 matrices Rz(az)Ry(ay)Rx(ax).
       \warning angles are in radians.
   */
   void getTransformation( Vector3& scale,
@@ -744,7 +754,7 @@ public:
 
   /** Computes a decomposition of the matrix into
       S(scale) * R(rotate) + T(translate) where
-      R( rotate=(az,ay,ax) ) is the product of 3 matrices Rz(az)Ry(ay)Rx(ax). 
+      R( rotate=(az,ay,ax) ) is the product of 3 matrices Rz(az)Ry(ay)Rx(ax).
       \warning angles are in radians.
   */
   void getTransformation2( Vector3& scale,
@@ -753,7 +763,7 @@ public:
 
   /** Computes a decomposition of the matrix into
       R(rotate) * S(scale) + T(translate) where
-      R( rotate=(az,ay,ax) ) is the product of 3 matrices Rz(az)Ry(ay)Rx(ax). 
+      R( rotate=(az,ay,ax) ) is the product of 3 matrices Rz(az)Ry(ay)Rx(ax).
       \warning angles are in radians.
   */
   void getTransformationB( Vector3& scale,
@@ -797,7 +807,7 @@ PGLMATH_API Matrix4 transpose( const Matrix4& m );
 
 /*  --------------------------------------------------------------------- */
 
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 // __geom_matrix_h__
 #endif

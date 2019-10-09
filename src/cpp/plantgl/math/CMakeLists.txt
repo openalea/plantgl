@@ -1,8 +1,16 @@
-file(GLOB SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
+# --- Source Files
+
+file(GLOB_RECURSE SRC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
 
 add_library(pglmath SHARED ${SRC_FILES})
-target_link_libraries(pglmath ${PGL_LIBRARIES})
-target_compile_definitions(pglmath PRIVATE ${PGL_DEFINE_VARIABLES} PGLMATH_MAKEDLL)
 
-install(TARGETS pglmath
-        LIBRARY DESTINATION lib)
+# --- Preprocessor
+
+if (WIN32)
+    # Export DLL on Windows
+    target_compile_definitions(pglmath PRIVATE PGLMATH_MAKEDLL)
+endif()
+
+# --- Output Library
+
+install(TARGETS pglmath LIBRARY DESTINATION "lib")

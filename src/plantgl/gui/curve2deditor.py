@@ -3,11 +3,11 @@ from openalea.plantgl.algo import *
 from openalea.plantgl.math import *
 from math import pow,log
 
-from openalea.vpltk.qt import QtCore, QtGui, QtOpenGL
-from openalea.vpltk.qt.QtCore import QEvent, QObject, QPoint, Qt, pyqtSignal, qWarning
-from openalea.vpltk.qt.QtGui import QColor, QImage
-from openalea.vpltk.qt.QtOpenGL import QGLWidget
-from openalea.vpltk.qt.QtWidgets import QFileDialog, QApplication
+from openalea.plantgl.gui.qt import QtCore, QtGui, QtOpenGL
+from openalea.plantgl.gui.qt.QtCore import QEvent, QObject, QPoint, Qt, pyqtSignal, qWarning
+from openalea.plantgl.gui.qt.QtGui import QColor, QImage
+from openalea.plantgl.gui.qt.QtOpenGL import QGLWidget
+from openalea.plantgl.gui.qt.QtWidgets import QFileDialog, QApplication
 
 class Curve2DConstraint:
     def __init__(self):
@@ -26,7 +26,7 @@ class Curve2DConstraint:
             return nbPoints,newpoint
     @staticmethod
     def defaultCurve(nbP=4):
-        return NurbsCurve2D(Point3Array([(-0.5+float(i)/(nbP-1),0) for i in xrange(nbP)],1) )
+        return NurbsCurve2D(Point3Array([(-0.5+float(i)/(nbP-1),0) for i in range(nbP)],1) )
 
 class FuncConstraint:
     def __init__(self,bounds=(0,1)):
@@ -61,7 +61,7 @@ class FuncConstraint:
             return None
     @staticmethod
     def defaultCurve(nbP=4):
-        return NurbsCurve2D(Point3Array([(float(i)/(nbP-1),0) for i in xrange(nbP)],1) )
+        return NurbsCurve2D(Point3Array([(float(i)/(nbP-1),0) for i in range(nbP)],1) )
 
 class Curve2DAccessor:
     def __init__(self):
@@ -407,20 +407,20 @@ class Curve2DEditor (QGLViewer):
         glColor4fv(self.gridColor2)
         glLineWidth(1)
         glBegin(GL_LINES)
-        for i in xrange(nbiter+1):
+        for i in range(nbiter+1):
             self.drawVLine(cxval,self.start[1],self.end[1])
             cxval += xdelta
         glEnd()
         cxval = fxval*xdelta
         glColor4fv(self.textColor)
-        for i in xrange(nbiter+1):
+        for i in range(nbiter+1):
             self.mRenderText(cxval,self.start[1],'%.1f' % cxval)
             cxval += xdelta
         glLineWidth(2)
         glColor4fv(self.gridColor)
         cxval = round(self.start[0]/(10*xdelta))*(10*xdelta)
         glBegin(GL_LINES)
-        for i in xrange((nbiter/10)+1):
+        for i in range((nbiter/10)+1):
             self.drawVLine(cxval,self.start[1],self.end[1])
             cxval += (10*xdelta)
         glEnd()
@@ -433,13 +433,13 @@ class Curve2DEditor (QGLViewer):
         glColor4fv(self.gridColor2)
         glLineWidth(1)
         glBegin(GL_LINES)
-        for i in xrange(nbiter+1):
+        for i in range(nbiter+1):
             self.drawHLine(self.start[0],self.end[0], cyval)
             cyval += xdelta
         glEnd()
         cyval = firstcyval
         glColor4fv(self.textColor)
-        for i in xrange(nbiter+1):
+        for i in range(nbiter+1):
             glVertex3f(self.end[0],cyval,0)
             self.mRenderText(self.start[0],cyval,'%.1f' % cyval)
             cyval += xdelta
@@ -447,7 +447,7 @@ class Curve2DEditor (QGLViewer):
         glColor4fv(self.gridColor)
         cyval = round(self.start[1]/(10*xdelta))*(10*xdelta)
         glBegin(GL_LINES)
-        for i in xrange((nbiter/10)+1):
+        for i in range((nbiter/10)+1):
             self.drawHLine(self.start[0],self.end[0], cyval)
             cyval += (10*xdelta)
         glEnd()

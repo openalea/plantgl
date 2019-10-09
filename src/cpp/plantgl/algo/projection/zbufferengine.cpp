@@ -1,35 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2018 - Cirad/Inra/Inria
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al.
- *
- *       Development site : https://github.com/openalea/plantgl
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
- * 
- *                      GNU General Public Licence
- *           
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
+ *
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
- */             
+ */
+             
 
 
 /* ----------------------------------------------------------------------- */
@@ -45,7 +53,6 @@
 /* ----------------------------------------------------------------------- */
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 #define DEFAULT_MULTITHREAD true
 
@@ -111,7 +118,20 @@ ZBufferEngine::ZBufferEngine(uint16_t imageWidth, uint16_t imageHeight,uint32_t 
     __multithreaded(DEFAULT_MULTITHREAD)
 {
 }    
-    
+
+ZBufferEngine::ZBufferEngine(uint16_t imageWidth, uint16_t imageHeight) :
+	ProjectionEngine(),
+	__imageWidth(imageWidth),
+	__imageHeight(imageHeight),
+	__lightPosition(0, 0, 1),
+	__lightAmbient(255, 255, 255),
+	__lightDiffuse(255, 255, 255),
+	__lightSpecular(255, 255, 255),
+	__alphathreshold(0.99),
+	__depthBuffer(new RealArray2(uint_t(imageWidth), uint_t(imageHeight), REAL_MAX)),
+	__frameBuffer(),
+	__triangleshader(NULL)
+{}  
     
 ZBufferEngine::~ZBufferEngine()
 {
@@ -198,7 +218,7 @@ bool ZBufferEngine::isVisible(int32_t x, int32_t y, real_t z) const
     return (z < cz && (cz-z) > GEOM_EPSILON); 
 }
 
-bool ZBufferEngine::isVisible(const TOOLS(Vector3)& pos) const
+bool ZBufferEngine::isVisible(const Vector3& pos) const
 {
     Vector3 raster = worldToRaster(pos);
     return isVisible(raster.x(), raster.y(), raster.z());
@@ -222,7 +242,7 @@ bool ZBufferEngine::renderRaster(uint32_t x, uint32_t y, real_t z, const Color4&
 
 }
 
-void ZBufferEngine::setLight(const TOOLS(Vector3)& lightPosition, const Color3& lightColor)
+void ZBufferEngine::setLight(const Vector3& lightPosition, const Color3& lightColor)
 {
     // printf("Set Light Color : %u %u %u\n", lightColor.getRed(), lightColor.getGreen(), lightColor.getBlue());
     __lightPosition = lightPosition;
@@ -231,7 +251,7 @@ void ZBufferEngine::setLight(const TOOLS(Vector3)& lightPosition, const Color3& 
     __lightSpecular = lightColor;
 }
 
-void ZBufferEngine::setLight(const TOOLS(Vector3)& lightPosition, const Color3& lightAmbient, const Color3& lightDiffuse, const Color3& lightSpecular)
+void ZBufferEngine::setLight(const Vector3& lightPosition, const Color3& lightAmbient, const Color3& lightDiffuse, const Color3& lightSpecular)
 {
     // printf("Set Light Ambient : %u %u %u\n", lightAmbient.getRed(), lightAmbient.getGreen(), lightAmbient.getBlue());
     __lightPosition = lightPosition;
@@ -518,6 +538,7 @@ ImagePtr ZBufferEngine::getTexture(const ImageTexturePtr imgdef)
     }
 }
 
+
 void ZBufferEngine::process(ScenePtr scene)
 {
     beginProcess();
@@ -613,7 +634,7 @@ void ZBufferEngine::duplicateBuffer(int32_t xDiff, int32_t yDiff, real_t zDiff, 
 
 }
 
-void ZBufferEngine::periodizeBuffer(const TOOLS(Vector3)& from, const TOOLS(Vector3)& to, bool useDefaultColor, const Color3& defaultcolor)
+void ZBufferEngine::periodizeBuffer(const Vector3& from, const Vector3& to, bool useDefaultColor, const Color3& defaultcolor)
 {
     Vector3 vRasterFrom = __camera->worldToRaster(from,__imageWidth, __imageHeight);
     Vector3 vRasterTo = __camera->worldToRaster(to,__imageWidth, __imageHeight);

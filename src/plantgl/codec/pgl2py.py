@@ -13,7 +13,7 @@ def read(fname, macro):
     try:
         txt = file(basename,'r').read()
         txt = preprocess(txt, macro)
-    except Exception, e:
+    except Exception as e:
         os.chdir(cwd)
         raise e
     os.chdir(cwd)
@@ -124,11 +124,11 @@ def lex(txt):
 
     markers = { '{' : '}', '<' : '>', '(' : ')', '[' : ']'}
     builders = { '<' : buildvector, '[' : buildlist }
-    for bm, em in markers.items():
+    for bm, em in list(markers.items()):
         txt = txt.replace(bm,' '+bm+' ')
         txt = txt.replace(em,' '+em+' ')
     txt = txt.replace(',',' , ')
-    print txt
+    print(txt)
     tokens = txt.split()
     nbtokens = len(tokens)
 
@@ -180,7 +180,7 @@ class PglObj:
         import openalea.plantgl.all as pgl
         attributes = self.get_attributes(objmap)
         self.fix(attributes)
-        print attributes
+        print(attributes)
         try:
             result = pgl.__dict__[self.class_](**attributes)
         except:
@@ -190,7 +190,7 @@ class PglObj:
 
     def get_attributes(self, objmap):
         res = {}
-        for aname, aval in self.attributes.items():
+        for aname, aval in list(self.attributes.items()):
             aname = aname[0].lower()+aname[1:]
             if type(aval) == str:
                 try :
@@ -220,12 +220,12 @@ class PglObj:
             ctrlPointList = attributes['ctrlPointList']
             def todim3(pt):
                 if len(pt) == 2 : return (pt[0], pt[1], 1)
-            attributes['ctrlPointList'] = map(todim3, ctrlPointList)
+            attributes['ctrlPointList'] = list(map(todim3, ctrlPointList))
         if self.class_ == 'BezierCurve' or self.class_ == 'NurbsCurve':
             ctrlPointList = attributes['ctrlPointList']
             def todim4(pt):
                 if len(pt) == 3 : return (pt[0], pt[1], pt[2], 1)
-            attributes['ctrlPointList'] = map(todim4, ctrlPointList)
+            attributes['ctrlPointList'] = list(map(todim4, ctrlPointList))
         if self.class_ == 'BezierCurve2D' or self.class_ == 'BezierCurve':
             if 'degree' in attributes:
                 assert attributes['degree'] == len(attributes['ctrlPointList'])-1
@@ -238,17 +238,17 @@ class PglObj:
         import openalea.plantgl.all as pgl
         import math
         m = pgl.Matrix4()
-        print self.attributes
+        print(self.attributes)
         def fixtransfoname(t):
             if t == 'Scale' : return 'Scaling'
             else : return t
 
-        for t,p in self.attributes.items():
-            print '*',t,p
+        for t,p in list(self.attributes.items()):
+            print('*',t,p)
             if t == 'EulerRotation':
                 p = parse_attributes(p, {})
                 p = (p.get('Elevation',0.),p.get('Azimuth',0.),p.get('Roll',0.))
-                p = map(lambda v : math.radians(float(v)), p) 
+                p = [math.radians(float(v)) for v in p] 
                 transf = pgl.EulerRotation(*p)
             else:
                 transf = pgl.__dict__[fixtransfoname(t)]( p)
@@ -264,7 +264,7 @@ class PglObj:
 
 def parse_attributes(cmds, objmap):
     assert cmds[0] == '{' and cmds[-1] == '}'
-    print cmds
+    print(cmds)
     state = 0
     attributes = {}
     value = []
@@ -284,7 +284,7 @@ def parse_attributes(cmds, objmap):
                 if type(att) == str and is_pgl_class(att):
                     currentid, att = parse_object(cmds, currentid, objmap)
                 elif type(att) == list and type(att[0]) == str and is_pgl_class(att[0]):
-                    print att
+                    print(att)
                     att = parse_objectlist(att, objmap)
                     currentid += 1
                 else:
@@ -314,7 +314,7 @@ def parse_object(cmds, currentid, objmap):
             else:
                 state = 2
         if state == 2:
-            print currentobj.class_, currentobj.name
+            print(currentobj.class_, currentobj.name)
             assert type(cmd) == list
             currentobj.attributes = parse_attributes(cmd, objmap)
             result = currentobj.create(objmap)
@@ -352,7 +352,7 @@ def parse(cmds):
 def parse_file(fname):
     txt = read(fname, {})
     tree = lex(txt)
-    print tree
+    print(tree)
     return parse(tree)
 
 
@@ -361,7 +361,7 @@ if __name__ == '__main__':
     import glob
     testfiles = glob.glob('../../../share/plantgl/database/exemples/*.geom')
     for f in testfiles:
-        print f
+        print(f)
         parse_file(f)
 
     from openalea.plantgl.all import Viewer

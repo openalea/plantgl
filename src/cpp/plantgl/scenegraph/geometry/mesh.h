@@ -3,31 +3,41 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon et al.
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 
 /*! \file geom_mesh.h
@@ -43,9 +53,9 @@
 #include "polyline.h"
 /* ----------------------------------------------------------------------- */
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 class bofstream;
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -80,7 +90,7 @@ public:
   static const PolylinePtr DEFAULT_SKELETON;
 
   /// The default normal value
-  static const TOOLS(Vector3) DEFAULT_NORMAL_VALUE;
+  static const Vector3 DEFAULT_NORMAL_VALUE;
 
   /// A structure which helps to build an object of type of Mesh.
   struct SG_API Builder : public ExplicitModel::Builder {
@@ -97,7 +107,7 @@ public:
     /// A pointer to the \b Solid field.
     bool * Solid;
 
-	/// A pointer to the \b NormalList field.
+    /// A pointer to the \b NormalList field.
     Point3ArrayPtr * NormalList;
 
     /// A pointer to the \b TexCoordList field.
@@ -146,7 +156,7 @@ public:
 
   /// Destructor
   virtual ~Mesh( );
-  
+
   /// Returns \b CCW value.
   const bool getCCW( ) const;
 
@@ -220,19 +230,19 @@ public:
   /** Writes \e self to the output binary stream \e stream.
       \pre
       - \e stream must be valid. */
-  // virtual TOOLS(bofstream)& write( TOOLS(bofstream)& stream ) const = 0;
+  // virtual bofstream& write( bofstream& stream ) const = 0;
 
   /// Returns the size of \b IndexList i.e. the number of polygon.
   virtual uint_t getIndexListSize( ) const =0;
 
   /** Returns the \e j-th point in the point list.
       \warning
-	  - \e PointList should be set
+      - \e PointList should be set
       - \e i must be belong to the range [0,size of \b PointList[. */
-  inline const TOOLS(Vector3)& getPointAt( uint_t i ) const {
-	GEOM_ASSERT(__pointList.isValid());
-	GEOM_ASSERT(i < __pointList->size());
-	return __pointList->getAt(i);
+  inline const Vector3& getPointAt( uint_t i ) const {
+    GEOM_ASSERT(__pointList.isValid());
+    GEOM_ASSERT(i < __pointList->size());
+    return __pointList->getAt(i);
   }
 
   /// Returns the nb of points of the \b i-th face.
@@ -240,115 +250,115 @@ public:
 
   /** Returns the index of the \e j-th point of the i-th face.
       \warning
-      - \e i must be belong to the range [0,size of \b IndexList]. 
-	  - \e j must belong to the range [0,getFaceSize(i)]. */
+      - \e i must be belong to the range [0,size of \b IndexList].
+      - \e j must belong to the range [0,getFaceSize(i)]. */
   virtual uint_t getFacePointIndexAt( uint_t i, uint_t j ) const = 0;
 
   /** Returns the index of the \e j-th point of the i-th face.
       \warning
-      - \e i must be belong to the range [0,size of \b IndexList]. 
-	  - \e j must belong to the range [0,getFaceSize(i)]. */
+      - \e i must be belong to the range [0,size of \b IndexList].
+      - \e j must belong to the range [0,getFaceSize(i)]. */
   virtual uint_t getFaceNormalIndexAt( uint_t i, uint_t j ) const = 0;
 
-   
+
   /** Returns the index of the \e j-th point of the i-th face.
       \warning
-      - \e i must be belong to the range [0,size of \b IndexList]. 
-	  - \e j must belong to the range [0,getFaceSize(i)]. */
+      - \e i must be belong to the range [0,size of \b IndexList].
+      - \e j must belong to the range [0,getFaceSize(i)]. */
   virtual uint_t getFaceTexCoordIndexAt( uint_t i, uint_t j ) const = 0;
 
   /** Returns the index of the \e j-th point of the i-th face.
       \warning
-      - \e i must be belong to the range [0,size of \b IndexList]. 
-	  - \e j must belong to the range [0,getFaceSize(i)]. */
+      - \e i must be belong to the range [0,size of \b IndexList].
+      - \e j must belong to the range [0,getFaceSize(i)]. */
   virtual uint_t getFaceColorIndexAt( uint_t i, uint_t j ) const = 0;
 
   /** Returns the \e j-th point of the \e i-th face.
       \warning
-	  - \e PointList should be set
+      - \e PointList should be set
       - \e i must belong to the range [0,size of \b IndexList[;
       - \e j must belong to the range [0,getFaceSize(i)]. */
-  inline const TOOLS(Vector3)& getFacePointAt( uint_t i, uint_t j ) const  {
-	GEOM_ASSERT(__pointList.isValid());
-	GEOM_ASSERT(i < getIndexListSize());
-	GEOM_ASSERT(j < getFaceSize(i));
-	return __pointList->getAt(getFacePointIndexAt(i,j));
+  inline const Vector3& getFacePointAt( uint_t i, uint_t j ) const  {
+    GEOM_ASSERT(__pointList.isValid());
+    GEOM_ASSERT(i < getIndexListSize());
+    GEOM_ASSERT(j < getFaceSize(i));
+    return __pointList->getAt(getFacePointIndexAt(i,j));
   }
 
   /// Returns the center of the \b i-th face.
-  TOOLS(Vector3) getFaceCenter( uint_t i ) const ;
+  Vector3 getFaceCenter( uint_t i ) const ;
 
   /** Returns the \e i-th normal to (normally correxponding to the \e i-th face).
       \pre
-	  - \e NormalList should be set
+      - \e NormalList should be set
       - \e i must be belong to the range [0,size of \b NormalList]. */
-  inline const TOOLS(Vector3)& getNormalAt( uint_t i )  const  {
-	GEOM_ASSERT(is_valid_ptr(__normalList));
-	GEOM_ASSERT(i < __normalList->size());
-	return __normalList->getAt(i);
+  inline const Vector3& getNormalAt( uint_t i )  const  {
+    GEOM_ASSERT(is_valid_ptr(__normalList));
+    GEOM_ASSERT(i < __normalList->size());
+    return __normalList->getAt(i);
   }
 
   /** Returns the normal at the \e j-th point of the \e i-th face.
       \pre
-      - \e i must be belong to the range [0,size of \b IndexList[. 
+      - \e i must be belong to the range [0,size of \b IndexList[.
       - \e j must belong to the range [0,2]. */
-  inline const TOOLS(Vector3)& getFaceNormalAt( uint_t i, uint_t j ) const {
-	GEOM_ASSERT(is_valid_ptr(__normalList));
-	GEOM_ASSERT(i < __indexList->size());
-	GEOM_ASSERT(j < getFaceSize(i));
-	return __normalList->getAt(getFaceNormalIndexAt(i,j));
+  inline const Vector3& getFaceNormalAt( uint_t i, uint_t j ) const {
+    GEOM_ASSERT(is_valid_ptr(__normalList));
+    GEOM_ASSERT(i < __indexList->size());
+    GEOM_ASSERT(j < getFaceSize(i));
+    return __normalList->getAt(getFaceNormalIndexAt(i,j));
   }
 
   /** Returns the \e j-th texture coordinates of the \e i-th face.
       \warning
-	  - \e TexCoordList should be set
+      - \e TexCoordList should be set
       - \e i must be belong to the range [0,size of \b TexCoordList[. */
-  const TOOLS(Vector2)& getTexCoordAt( uint_t i ) const  {
-	GEOM_ASSERT(is_valid_ptr(__texCoordList));
-	GEOM_ASSERT(i < __texCoordList->size());
-	return __texCoordList->getAt(i);
+  const Vector2& getTexCoordAt( uint_t i ) const  {
+    GEOM_ASSERT(is_valid_ptr(__texCoordList));
+    GEOM_ASSERT(i < __texCoordList->size());
+    return __texCoordList->getAt(i);
   }
 
   /** Returns the \e j-th texture coordinates of the \e i-th face.
       \warning
-	  - \e TexCoordList should be set
+      - \e TexCoordList should be set
       - \e i must belong to the range [0,size of \b IndexList[;
       - \e j must belong to the range [0,2]. */
-  const TOOLS(Vector2)& getFaceTexCoordAt( uint_t i, uint_t j ) const {
-	GEOM_ASSERT(is_valid_ptr(__texCoordList));
-	GEOM_ASSERT(i < __indexList->size());
-	GEOM_ASSERT(j < getFaceSize(i));
-	return __texCoordList->getAt(getFaceTexCoordIndexAt(i,j));
-	}
-   
+  const Vector2& getFaceTexCoordAt( uint_t i, uint_t j ) const {
+    GEOM_ASSERT(is_valid_ptr(__texCoordList));
+    GEOM_ASSERT(i < __indexList->size());
+    GEOM_ASSERT(j < getFaceSize(i));
+    return __texCoordList->getAt(getFaceTexCoordIndexAt(i,j));
+    }
+
   /** Returns the \e j-th colors of the \e i-th face.
       \warning
       - \e i must be belong to the range [0,size of \b ColorList[. */
   const Color4& getColorAt( uint_t i ) const {
-	GEOM_ASSERT(is_valid_ptr(__colorList));
-	GEOM_ASSERT(i < __indexList->size());
-	return __colorList->getAt(i);
+    GEOM_ASSERT(is_valid_ptr(__colorList));
+    GEOM_ASSERT(i < __indexList->size());
+    return __colorList->getAt(i);
   }
-    
+
   /** Returns the \e j-th colors of the \e i-th face.
       \warning
       - \e i must belong to the range [0,size of \b IndexList[;
       - \e j must belong to the range [0,2]. */
   const Color4& getFaceColorAt( uint_t i, uint_t j ) const {
-	GEOM_ASSERT(is_valid_ptr(__colorList));
-	GEOM_ASSERT(i < __indexList->size());
-	GEOM_ASSERT(j < getFaceSize(i));
-	return __colorList->getAt(getFaceColorIndexAt(i,j));
+    GEOM_ASSERT(is_valid_ptr(__colorList));
+    GEOM_ASSERT(i < __indexList->size());
+    GEOM_ASSERT(j < getFaceSize(i));
+    return __colorList->getAt(getFaceColorIndexAt(i,j));
   }
 
 #ifndef PGL_NO_DEPRECATED
-  inline attribute_deprecated const TOOLS(Vector3)& getNormalAt( uint_t i, uint_t j ) const 
+  inline attribute_deprecated const Vector3& getNormalAt( uint_t i, uint_t j ) const
   { return getFaceNormalAt(i,j); }
 
-  inline attribute_deprecated const TOOLS(Vector2)& getTexCoordAt( uint_t i, uint_t j ) const 
+  inline attribute_deprecated const Vector2& getTexCoordAt( uint_t i, uint_t j ) const
   { return getFaceTexCoordAt(i,j); }
 
-  inline attribute_deprecated const Color4& getColorAt( uint_t i, uint_t j ) const 
+  inline attribute_deprecated const Color4& getColorAt( uint_t i, uint_t j ) const
   { return getFaceColorAt(i,j); }
 #endif
 
@@ -406,13 +416,13 @@ public:
   typedef typename IndexArray::element_type IndexType;
   typedef RCPtr<IndexArray> IndexArrayPtr;
 
-  /// A structure which helps to build a TriangleSet when parsing. 
+  /// A structure which helps to build a TriangleSet when parsing.
   template <class InstanciedMesh>
   struct Builder : public Mesh::Builder {
 
     typedef InstanciedMesh MeshType;
-	typedef typename MeshType::IndexArray IndexArray;
-	typedef RCPtr<IndexArray> IndexArrayPtr;
+    typedef typename MeshType::IndexArray IndexArray;
+    typedef RCPtr<IndexArray> IndexArrayPtr;
 
     /// A pointer to the IndexList field.
     IndexArrayPtr * IndexList;
@@ -428,55 +438,55 @@ public:
 
     /// Constructor.
     Builder( ):
-		Mesh::Builder(), IndexList(0), NormalIndexList(0),
-		ColorIndexList(0), TexCoordIndexList(0) {}
+        Mesh::Builder(), IndexList(0), NormalIndexList(0),
+        ColorIndexList(0), TexCoordIndexList(0) {}
 
     /// Destructor.
-	virtual ~Builder( ) { }
+    virtual ~Builder( ) { }
 
-    virtual SceneObjectPtr build( ) const 
-		{
-			if (isValid()){
-				return SceneObjectPtr(new InstanciedMesh(*PointList,
-									  *IndexList,
-									  NormalList?*NormalList:Point3ArrayPtr(),
-									  NormalIndexList?*NormalIndexList:IndexArrayPtr(),
-									  ColorList?*ColorList:Color4ArrayPtr(),
-									  ColorIndexList?*ColorIndexList:IndexArrayPtr(),
-									  TexCoordList?*TexCoordList:Point2ArrayPtr(),
-									  TexCoordIndexList?*TexCoordIndexList:IndexArrayPtr(),
-									  NormalPerVertex? *NormalPerVertex : DEFAULT_NORMALPERVERTEX,
-									  ColorPerVertex? *ColorPerVertex: DEFAULT_COLORPERVERTEX,
-									  CCW ? *CCW : DEFAULT_CCW,
-									  Solid ? *Solid : DEFAULT_SOLID,
-									  Skeleton ? *Skeleton : DEFAULT_SKELETON));
-			}
-			return SceneObjectPtr();
-		}
+    virtual SceneObjectPtr build( ) const
+        {
+            if (isValid()){
+                return SceneObjectPtr(new InstanciedMesh(*PointList,
+                                      *IndexList,
+                                      NormalList?*NormalList:Point3ArrayPtr(),
+                                      NormalIndexList?*NormalIndexList:IndexArrayPtr(),
+                                      ColorList?*ColorList:Color4ArrayPtr(),
+                                      ColorIndexList?*ColorIndexList:IndexArrayPtr(),
+                                      TexCoordList?*TexCoordList:Point2ArrayPtr(),
+                                      TexCoordIndexList?*TexCoordIndexList:IndexArrayPtr(),
+                                      NormalPerVertex? *NormalPerVertex : DEFAULT_NORMALPERVERTEX,
+                                      ColorPerVertex? *ColorPerVertex: DEFAULT_COLORPERVERTEX,
+                                      CCW ? *CCW : DEFAULT_CCW,
+                                      Solid ? *Solid : DEFAULT_SOLID,
+                                      Skeleton ? *Skeleton : DEFAULT_SKELETON));
+            }
+            return SceneObjectPtr();
+        }
 
     void indexedMeshDestroy( ){
-		MeshDestroy();
-		if (IndexList)         { delete IndexList; IndexList = NULL; }
-		if (NormalIndexList)   { delete NormalIndexList; NormalIndexList = NULL; }
-		if (ColorIndexList)    { delete ColorIndexList; ColorIndexList = NULL; }
-		if (TexCoordIndexList) { delete TexCoordIndexList; TexCoordIndexList = NULL; };
-	}
+        MeshDestroy();
+        if (IndexList)         { delete IndexList; IndexList = NULL; }
+        if (NormalIndexList)   { delete NormalIndexList; NormalIndexList = NULL; }
+        if (ColorIndexList)    { delete ColorIndexList; ColorIndexList = NULL; }
+        if (TexCoordIndexList) { delete TexCoordIndexList; TexCoordIndexList = NULL; };
+    }
 
-	virtual void destroy( ){ indexedMeshDestroy(); }
+    virtual void destroy( ){ indexedMeshDestroy(); }
 
     bool IndexedMeshValidity( ) const;
 
-	virtual bool isValid( ) const { return IndexedMeshValidity(); }
+    virtual bool isValid( ) const { return IndexedMeshValidity(); }
 
   };
 
 
   /// Default Constructor. Build object is invalid.
   IndexedMesh<IndexArrayType>():
-	Mesh(), __indexList(), __normalIndexList(), __texCoordIndexList(), __colorIndexList(){}
+    Mesh(), __indexList(), __normalIndexList(), __texCoordIndexList(), __colorIndexList(){}
 
-  /** Constructs a TriangleSet with the points \e points, the triangles 
-      indices \e indices, the face ordering \e ccw, the solid flag \e solid 
+  /** Constructs a TriangleSet with the points \e points, the triangles
+      indices \e indices, the face ordering \e ccw, the solid flag \e solid
       and the skeleton \e skeleton.
       \pre
       - \e points must contain a minimum of 3 points;
@@ -486,17 +496,17 @@ public:
       \post
       - \e self is valid. */
   IndexedMesh<IndexArrayType>( const Point3ArrayPtr& points,
-	           const IndexArrayPtr& indices,
-			   bool normalPerVertex = DEFAULT_NORMALPERVERTEX,
-			   bool ccw = DEFAULT_CCW,
-			   bool solid = DEFAULT_SOLID,
-			   const PolylinePtr& skeleton = DEFAULT_SKELETON ) :
+               const IndexArrayPtr& indices,
+               bool normalPerVertex = DEFAULT_NORMALPERVERTEX,
+               bool ccw = DEFAULT_CCW,
+               bool solid = DEFAULT_SOLID,
+               const PolylinePtr& skeleton = DEFAULT_SKELETON ) :
     Mesh(points,normalPerVertex,ccw,solid,skeleton),
     __indexList(indices), __normalIndexList(), __texCoordIndexList(), __colorIndexList()
-	{ GEOM_ASSERT(isValid()); }
+    { GEOM_ASSERT(isValid()); }
 
 
-  /** Constructs a Mesh with the points \e points, the triangles 
+  /** Constructs a Mesh with the points \e points, the triangles
       indices \e indices, the face ordering \e ccw, the solid flag \e solid,
       the skeleton \e skeleton and the normals \e normals.
       normals don't have to be normalized.
@@ -510,21 +520,21 @@ public:
       \post
       - \e self is valid. */
   IndexedMesh<IndexArrayType>( const Point3ArrayPtr& points,
-	           const IndexArrayPtr& indices,
-			   const Point3ArrayPtr& normals ,
-	           const IndexArrayPtr& nomalIndices = IndexArrayPtr(),
-			   const Color4ArrayPtr& colors  = Color4ArrayPtr(),
-	           const IndexArrayPtr& colorIndices = IndexArrayPtr(),
-			   const Point2ArrayPtr& texCoord = Point2ArrayPtr(),
-	           const IndexArrayPtr& texCoordIndices = IndexArrayPtr(),
-			   bool normalPerVertex = DEFAULT_NORMALPERVERTEX,
-			   bool colorPerVertex = DEFAULT_COLORPERVERTEX,
-			   bool ccw = DEFAULT_CCW,
-			   bool solid = DEFAULT_SOLID,
-			   const PolylinePtr& skeleton = DEFAULT_SKELETON) :
+               const IndexArrayPtr& indices,
+               const Point3ArrayPtr& normals ,
+               const IndexArrayPtr& nomalIndices = IndexArrayPtr(),
+               const Color4ArrayPtr& colors  = Color4ArrayPtr(),
+               const IndexArrayPtr& colorIndices = IndexArrayPtr(),
+               const Point2ArrayPtr& texCoord = Point2ArrayPtr(),
+               const IndexArrayPtr& texCoordIndices = IndexArrayPtr(),
+               bool normalPerVertex = DEFAULT_NORMALPERVERTEX,
+               bool colorPerVertex = DEFAULT_COLORPERVERTEX,
+               bool ccw = DEFAULT_CCW,
+               bool solid = DEFAULT_SOLID,
+               const PolylinePtr& skeleton = DEFAULT_SKELETON) :
     Mesh(points,normals,colors,texCoord,normalPerVertex,colorPerVertex,ccw,solid,skeleton),
     __indexList(indices), __normalIndexList(nomalIndices), __colorIndexList(colorIndices),
-	__texCoordIndexList(texCoordIndices){ GEOM_ASSERT(isValid()); }
+    __texCoordIndexList(texCoordIndices){ GEOM_ASSERT(isValid()); }
 
   /// Destructor
   virtual ~IndexedMesh<IndexArrayType>( ) { }
@@ -536,67 +546,67 @@ public:
   void setTexCoordIndexListAsIndexList();
 
   /// Returns the size of \b IndexList.
-  virtual uint_t getIndexListSize( ) const 
+  virtual uint_t getIndexListSize( ) const
   { return (__indexList?__indexList->size():0); }
 
   /// Returns the nb of points of the \b i-th face.
-  virtual uint_t getFaceSize( uint_t i ) const 
+  virtual uint_t getFaceSize( uint_t i ) const
   { return __indexList->getIndexSizeAt(i); }
 
   /** Returns the index of the \e j-th point of the i-th face.
       \warning
-      - \e i must be belong to the range [0,size of \b IndexList]. 
-	  - \e j must belong to the range [0,getFaceSize(i)]. */
+      - \e i must be belong to the range [0,size of \b IndexList].
+      - \e j must belong to the range [0,getFaceSize(i)]. */
   virtual uint_t getFacePointIndexAt( uint_t i, uint_t j ) const
   { GEOM_ASSERT(i < __indexList->size());
-	GEOM_ASSERT(j < getFaceSize(i));
-	return __indexList->getAt(i).getAt(j); }
+    GEOM_ASSERT(j < getFaceSize(i));
+    return __indexList->getAt(i).getAt(j); }
 
   /** Returns the index of the \e j-th point of the i-th face.
       \warning
-      - \e i must be belong to the range [0,size of \b IndexList]. 
-	  - \e j must belong to the range [0,getFaceSize(i)]. */
-  virtual uint_t getFaceNormalIndexAt( uint_t i, uint_t j ) const 
+      - \e i must be belong to the range [0,size of \b IndexList].
+      - \e j must belong to the range [0,getFaceSize(i)]. */
+  virtual uint_t getFaceNormalIndexAt( uint_t i, uint_t j ) const
   {
-	GEOM_ASSERT(i < __indexList->size());
-	GEOM_ASSERT(j < getFaceSize(i));
+    GEOM_ASSERT(i < __indexList->size());
+    GEOM_ASSERT(j < getFaceSize(i));
     if (!__normalPerVertex) return i;
-	if ( __normalIndexList) return __normalIndexList->getAt(i).getAt(j);
-	else  return __indexList->getAt(i).getAt(j);
+    if ( __normalIndexList) return __normalIndexList->getAt(i).getAt(j);
+    else  return __indexList->getAt(i).getAt(j);
    }
 
   /** Returns the index of the \e j-th point of the i-th face.
       \warning
-      - \e i must be belong to the range [0,size of \b IndexList]. 
-	  - \e j must belong to the range [0,getFaceSize(i)]. */
-  virtual uint_t getFaceTexCoordIndexAt( uint_t i, uint_t j ) const 
+      - \e i must be belong to the range [0,size of \b IndexList].
+      - \e j must belong to the range [0,getFaceSize(i)]. */
+  virtual uint_t getFaceTexCoordIndexAt( uint_t i, uint_t j ) const
   {
-	GEOM_ASSERT(i < __indexList->size());
-	GEOM_ASSERT(j < getFaceSize(i));
-	if( __texCoordIndexList) return __texCoordIndexList->getAt(i).getAt(j);
-	else  return __indexList->getAt(i).getAt(j);
+    GEOM_ASSERT(i < __indexList->size());
+    GEOM_ASSERT(j < getFaceSize(i));
+    if( __texCoordIndexList) return __texCoordIndexList->getAt(i).getAt(j);
+    else  return __indexList->getAt(i).getAt(j);
    }
 
   /** Returns the index of the \e j-th point of the i-th face.
       \warning
-      - \e i must be belong to the range [0,size of \b IndexList]. 
-	  - \e j must belong to the range [0,getFaceSize(i)]. */
-  virtual uint_t getFaceColorIndexAt( uint_t i, uint_t j ) const 
+      - \e i must be belong to the range [0,size of \b IndexList].
+      - \e j must belong to the range [0,getFaceSize(i)]. */
+  virtual uint_t getFaceColorIndexAt( uint_t i, uint_t j ) const
   {
-	GEOM_ASSERT(i < __indexList->size());
-	GEOM_ASSERT(j < getFaceSize(i));
+    GEOM_ASSERT(i < __indexList->size());
+    GEOM_ASSERT(j < getFaceSize(i));
     if (!__colorPerVertex) return i;
-	if ( __colorIndexList) return __colorIndexList->getAt(i).getAt(j);
-	else  return __indexList->getAt(i).getAt(j);
+    if ( __colorIndexList) return __colorIndexList->getAt(i).getAt(j);
+    else  return __indexList->getAt(i).getAt(j);
    }
 
   /// Returns \b IndexList values.
-  inline const IndexArrayPtr& getIndexList( ) const 
-  { return __indexList; } 
+  inline const IndexArrayPtr& getIndexList( ) const
+  { return __indexList; }
 
   /// Returns \b IndexList field.
-  inline IndexArrayPtr& getIndexList( ) 
-  { return __indexList; } 
+  inline IndexArrayPtr& getIndexList( )
+  { return __indexList; }
 
   /** Returns the \e i-th value of \b IndexList.
       \pre
@@ -611,43 +621,43 @@ public:
   { GEOM_ASSERT(i < __indexList->size()); return __indexList->getAt(i); }
 
   /// Returns \b NormalIndexList values.
-  inline const IndexArrayPtr& getNormalIndexList( ) const 
+  inline const IndexArrayPtr& getNormalIndexList( ) const
   { return __normalIndexList; }
 
   /// Returns \b NormalIndexList field.
-  inline IndexArrayPtr& getNormalIndexList( )  
+  inline IndexArrayPtr& getNormalIndexList( )
   { return __normalIndexList; }
 
   /** Returns the \e i-th value of \b NormalIndexList.
       \pre
       - \e i must belong to the range [0,size of \b IndexList). */
-  inline const IndexType& getNormalIndexListAt( uint_t i ) const 
-  { GEOM_ASSERT(is_valid_ptr(__normalIndexList) && i < __normalIndexList->size()); 
+  inline const IndexType& getNormalIndexListAt( uint_t i ) const
+  { GEOM_ASSERT(is_valid_ptr(__normalIndexList) && i < __normalIndexList->size());
     return __normalIndexList->getAt(i); }
 
   /** Returns the \e i-th value of \b IndexList.
       \pre
       - \e i must belong to the range [0,size of \b IndexList). */
   inline IndexType& getNormalIndexListAt( uint_t i )
-  { GEOM_ASSERT(is_valid_ptr(__normalIndexList) && i < __normalIndexList->size()); 
+  { GEOM_ASSERT(is_valid_ptr(__normalIndexList) && i < __normalIndexList->size());
     return __normalIndexList->getAt(i); }
 
   /// Returns the size of \b NormalIndexList.
-  inline uint_t getNormalIndexListSize( ) const 
+  inline uint_t getNormalIndexListSize( ) const
   { return (__normalIndexList?__normalIndexList->size():0); }
 
   /// Returns \b ColorIndexList values.
-  inline const IndexArrayPtr& getColorIndexList( ) const 
+  inline const IndexArrayPtr& getColorIndexList( ) const
   { return __colorIndexList; }
 
   /// Returns \b ColorIndexList field.
-  inline IndexArrayPtr& getColorIndexList( )  
+  inline IndexArrayPtr& getColorIndexList( )
   { return __colorIndexList; }
 
   /** Returns the \e i-th value of \b ColorIndexList.
       \pre
       - \e i must belong to the range [0,size of \b IndexList). */
-  inline const IndexType& getColorIndexListAt( uint_t i ) const 
+  inline const IndexType& getColorIndexListAt( uint_t i ) const
   { GEOM_ASSERT(is_valid_ptr(__colorIndexList) && i < __colorIndexList->size());
     return __colorIndexList->getAt(i); }
 
@@ -659,11 +669,11 @@ public:
     return __colorIndexList->getAt(i); }
 
   /// Returns the size of \b ColorIndexList.
-  inline uint_t getColorIndexListSize( ) const 
+  inline uint_t getColorIndexListSize( ) const
   { return (__colorIndexList?__colorIndexList->size():0); }
 
   /// Returns \b TexCoordIndexList values.
-  inline const IndexArrayPtr& getTexCoordIndexList( ) const 
+  inline const IndexArrayPtr& getTexCoordIndexList( ) const
   { return __texCoordIndexList; }
 
   /// Returns \b TexCoordIndexList field.
@@ -673,7 +683,7 @@ public:
   /** Returns the \e i-th value of \b TexCoordIndexList.
       \pre
       - \e i must belong to the range [0,size of \b IndexList). */
-  inline const IndexType& getTexCoordIndexListAt( uint_t i ) const 
+  inline const IndexType& getTexCoordIndexListAt( uint_t i ) const
   { GEOM_ASSERT(is_valid_ptr(__texCoordIndexList) && i < __texCoordIndexList->size());
     return __texCoordIndexList->getAt(i); }
 
@@ -685,20 +695,20 @@ public:
     return __texCoordIndexList->getAt(i); }
 
   /// Returns the size of \b TexCoordIndexList.
-  inline uint_t getTexCoordIndexListSize( ) const 
+  inline uint_t getTexCoordIndexListSize( ) const
   { return (__texCoordIndexList?__texCoordIndexList->size():0); }
 
 
    /// Returns whether \b NormalIndexList is set to its default value.
-  inline bool isNormalIndexListToDefault() const 
+  inline bool isNormalIndexListToDefault() const
   { return (!__normalIndexList); }
 
    /// Returns whether \b ColorIndexList is set to its default value.
-  inline bool isColorIndexListToDefault() const 
+  inline bool isColorIndexListToDefault() const
   { return (!__colorIndexList); }
 
    /// Returns whether \b TexCoordIndexList is set to its default value.
-  inline bool isTexCoordIndexListToDefault() const 
+  inline bool isTexCoordIndexListToDefault() const
   { return (!__texCoordIndexList); }
 
   protected:
@@ -717,8 +727,8 @@ public:
 
 
   template<class MeshType>
-  static ExplicitModelPtr mesh_transform(const MeshType& mesh, 
-							             const Transformation3DPtr& transformation )  ;
+  static ExplicitModelPtr mesh_transform(const MeshType& mesh,
+                                         const Transformation3DPtr& transformation )  ;
 
   template<class MeshType>
   static RCPtr<MeshType> mesh_copy(const MeshType& mesh, DeepCopier& copier);

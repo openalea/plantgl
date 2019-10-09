@@ -1,35 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr)
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 #ifdef __GNUC__
 #include <getopt.h>
 #else
@@ -47,7 +55,7 @@
 #include <QtGui/QDragEnterEvent>
 #include <QtGui/qclipboard.h>
 
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtCore/QMimeData>
     #include <QtWidgets/qapplication.h>
     #include <QtWidgets/qstatusbar.h>
@@ -98,7 +106,7 @@
 #include "configuration.h"
 #include "util_qwidget.h"
 
-#include "interface/frameglsizedialog.h"
+#include "interface/ui_frameglsizedialog.h"
 
 #include <plantgl/tool/util_enviro.h>
 
@@ -120,7 +128,7 @@ Viewer::Viewer( QWidget * parent, const char * name, ViewRendererGL * r , Qt::Wi
       __service(0),
       __toolbarsvisibility(0),
       __trayIcon(0),
-	  __aborter(0)
+      __aborter(0)
 {
     setObjectName(name);
   if(TOOLS(getLanguage()) == "French")
@@ -142,7 +150,7 @@ Viewer::Viewer( int argc, char ** argv, ViewRendererGL * r)
       __service(0),
       __toolbarsvisibility(0),
       __trayIcon(0),
-	  __aborter(0)
+      __aborter(0)
 {
   // if(QMessageBox::information(this,"Language","Select Language","English","French")==1)
   if(TOOLS(getLanguage()) == "French")
@@ -678,10 +686,10 @@ void  Viewer::customEvent(QEvent *e){
     // QApplication::postEvent(__GLFrame->getSceneRenderer(),k->copy());
     __GLFrame->getSceneRenderer()->sceneChangeEvent(k);
     if(!isHidden()&&__GLFrame->isRedrawEnabled()){
-		if(__focusAtRefresh) {
-			activateWindow();
-			raise();
-		}
+        if(__focusAtRefresh) {
+            activateWindow();
+            raise();
+        }
     }
   }
   else if(etype == ViewEvent::eEnd){
@@ -699,27 +707,27 @@ void  Viewer::customEvent(QEvent *e){
     __GLFrame->getSceneRenderer()->selectionIdEvent(k->arg1);
   }
   else if(etype == ViewEvent::eWaitSelection){
-	  ViewWaitSelection * k = (ViewWaitSelection *)e;
-	  if( !__GLFrame->getSceneRenderer()->isEmpty() ) {
-		  if(!k->arg1.isEmpty()){
-			  __GLFrame->showMessage(k->arg1,0);
-			  statusBar()->showMessage(k->arg1);
-		  }
-		  SelectionListener s;
-		  QObject::connect(__GLFrame,SIGNAL(selectedShape(uint_t)),&s,SLOT(selectionMade(uint_t)));
-		  QObject::connect(this,SIGNAL(closing()),&s,SLOT(finalize()));
-		  bool aborted = false;
-		  while(!s.done && !(aborted = shouldAbortDialog())){
-			  if(!isVisible())show();
-			  qApp->processEvents();
-		  }
-		  QObject::disconnect(__GLFrame,SIGNAL(selectedShape(uint_t)),&s,SLOT(selectionMade(uint_t)));
-		  QObject::disconnect(this,SIGNAL(closing()),&s,SLOT(finalize()));
-		  __GLFrame->showMessage(k->arg1,600);
-		  if (!aborted) *k->result = s.selection;
-		  else *k->result = UINT32_MAX;
-	  }
-	  else *k->result = UINT32_MAX;
+      ViewWaitSelection * k = (ViewWaitSelection *)e;
+      if( !__GLFrame->getSceneRenderer()->isEmpty() ) {
+          if(!k->arg1.isEmpty()){
+              __GLFrame->showMessage(k->arg1,0);
+              statusBar()->showMessage(k->arg1);
+          }
+          SelectionListener s;
+          QObject::connect(__GLFrame,SIGNAL(selectedShape(uint_t)),&s,SLOT(selectionMade(uint_t)));
+          QObject::connect(this,SIGNAL(closing()),&s,SLOT(finalize()));
+          bool aborted = false;
+          while(!s.done && !(aborted = shouldAbortDialog())){
+              if(!isVisible())show();
+              qApp->processEvents();
+          }
+          QObject::disconnect(__GLFrame,SIGNAL(selectedShape(uint_t)),&s,SLOT(selectionMade(uint_t)));
+          QObject::disconnect(this,SIGNAL(closing()),&s,SLOT(finalize()));
+          __GLFrame->showMessage(k->arg1,600);
+          if (!aborted) *k->result = s.selection;
+          else *k->result = UINT32_MAX;
+      }
+      else *k->result = UINT32_MAX;
   }
   else if(etype == ViewEvent::eGetRedrawPolicy){
     ViewGetRedrawEvent * k = ( ViewGetRedrawEvent * )e;
@@ -735,7 +743,7 @@ void  Viewer::customEvent(QEvent *e){
   }
   else if(etype == ViewEvent::eShowMessage){
     ViewShowMessageEvent * k = ( ViewShowMessageEvent * )e;
-	__GLFrame->showMessage(k->arg1,k->arg2);
+    __GLFrame->showMessage(k->arg1,k->arg2);
   }
   else if(etype == ViewEvent::eQuestion){
     ViewQuestionEvent * k = ( ViewQuestionEvent * )e;
@@ -1180,18 +1188,18 @@ Viewer::question(const QString& caption, const QString& text,
   ViewerMessageBox->show();
   bool aborting = false;
   while(!ViewerMessageBox.isNull() && ViewerMessageBox->isVisible()) {
-	  assert(qApp != NULL);
-	  qApp->processEvents();
-	  if (!aborting){
-		  aborting = shouldAbortDialog();
-		  if(aborting) {
-			  ViewerMessageBox->reject();
-			  qApp->processEvents();
-		  }
-	  }
+      assert(qApp != NULL);
+      qApp->processEvents();
+      if (!aborting){
+          aborting = shouldAbortDialog();
+          if(aborting) {
+              ViewerMessageBox->reject();
+              qApp->processEvents();
+          }
+      }
   }
   if(!ViewerMessageBox.isNull()){
-	  delete ViewerMessageBox;
+      delete ViewerMessageBox;
   }
 }
 

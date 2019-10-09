@@ -1,33 +1,44 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Plant Graphic Library
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR Cirad/Inria/Inra Dap - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
+
 
 
 #include <plantgl/scenegraph/appearance/util_image.h>
@@ -53,7 +64,7 @@ np::ndarray img_to_array(Image * img)
     size_t s = sizeof(uint8_t);
 
     ImagePtr tr = img->transpose();
-    np::ndarray array = np::from_data(tr->toNonInterlacedData(), 
+    np::ndarray array = np::from_data(tr->toNonInterlacedData(),
                                       dt,
                                       bp::make_tuple(tr->width(), tr->height(), tr->nbChannels()),
                                       bp::make_tuple(s, tr->width()*s, tr->width()*tr->height()*s),
@@ -66,8 +77,8 @@ np::ndarray img_to_interlaced_array(Image * img)
     np::dtype dt = np::dtype::get_builtin<uint8_t>();
     size_t s = sizeof(uint8_t);
 
-    ImagePtr tr = img; 
-    np::ndarray array = np::from_data(tr->toInterlacedData(), 
+    ImagePtr tr = img;
+    np::ndarray array = np::from_data(tr->toInterlacedData(),
                                       dt,
                                       bp::make_tuple(tr->width(), tr->height(), tr->nbChannels()),
                                       bp::make_tuple(tr->height()*tr->nbChannels()*s, tr->nbChannels()*s, s),
@@ -81,8 +92,8 @@ bool  from_array(Image * img,  np::ndarray array) {
     np::dtype dt = np::dtype::get_builtin<uint8_t>();
     if (array.get_dtype() != dt) { return false;}
 
-    img->fromData((const uchar_t *)array.get_data(), 
-                  array.shape(1),   array.shape(0),    array.shape(2), 
+    img->fromData((const uchar_t *)array.get_data(),
+                  array.shape(1),   array.shape(0),    array.shape(2),
                   array.strides(1), array.strides(0),  array.strides(2));
     return true;
 }
@@ -107,7 +118,7 @@ boost::python::object py_histogram(Image * img){
 void export_Image()
 {
   class_< Image, ImagePtr, bases< RefCountObject > , boost::noncopyable >
-    ("Image", "An image represented as a matrix of Color4.", 
+    ("Image", "An image represented as a matrix of Color4.",
                  init< optional< uint_t,  uint_t, uint_t, const Color4&> >
                  ("Image(width, height, defaultColor)",
                  (bp::arg("width")=800,
@@ -115,14 +126,14 @@ void export_Image()
                   bp::arg("nbChannels")=4,
                   bp::arg("defaultColor")=Color4(0,0,0,0))))
         .def(init< const std::string& >("Image(filename)",(boost::python::arg("filename"))))
-        .def( "__init__", make_constructor( img_from_array ) ) 
-        .def( "setPixelAt", (void (Image::*)(uint_t , uint_t, const Color4 &))&Image::setPixelAt ) 
-        .def( "getPixelAt", &Image::getPixelAt ) 
-        .def( "width", &Image::width ) 
-        .def( "height", &Image::height ) 
-        .def( "nbChannels", &Image::nbChannels ) 
-        .def( "fill", &Image::fill ) 
-        .def( "read", &Image::read ) 
+        .def( "__init__", make_constructor( img_from_array ) )
+        .def( "setPixelAt", (void (Image::*)(uint_t , uint_t, const Color4 &))&Image::setPixelAt )
+        .def( "getPixelAt", &Image::getPixelAt )
+        .def( "width", &Image::width )
+        .def( "height", &Image::height )
+        .def( "nbChannels", &Image::nbChannels )
+        .def( "fill", &Image::fill )
+        .def( "read", &Image::read )
         .def( "save", &Image::save )
         .def( "to_array", &img_to_array )
         .def( "to_interlaced_array", &img_to_interlaced_array )

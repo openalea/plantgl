@@ -3,36 +3,46 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon et al.
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
 
 
+
 /*! \file geom_scaled.h
     \brief Definition of the transformation class Scaling, Scaling2D
-	and the transformed class Scaled.
+    and the transformed class Scaled.
 */
 
 
@@ -67,16 +77,16 @@ public:
       from 0.
       \post
       - \e self is valid. */
-  Scaling( const TOOLS(Vector3)& factors );
+  Scaling( const Vector3& factors );
 
   /// Destructor.
   virtual ~Scaling( );
 
   /// Return Matrix4(__factors.x(),0,0,0, 0,__factors.y(),0,0, 0,0,__factors.z(),0, 0,0,0,1);
-  virtual TOOLS(Matrix4) getMatrix( ) const ;
+  virtual Matrix4 getMatrix( ) const ;
 
   /// Returns the scaling factors of \e self.
-  const TOOLS(Vector3)& getFactors( ) const ;
+  const Vector3& getFactors( ) const ;
 
   virtual bool isValid( ) const;
 
@@ -91,7 +101,7 @@ public:
 protected:
 
   /// The scaling factors.
-  TOOLS(Vector3) __factors;
+  Vector3 __factors;
 
 };
 
@@ -115,14 +125,14 @@ class SG_API Scaled : public MatrixTransformed
 public:
 
   /// The Scale field default value
-  static const TOOLS(Vector3) DEFAULT_SCALE;
+  static const Vector3 DEFAULT_SCALE;
 
 
   /// A structure which helps to build a Translated when parsing.
   struct SG_API Builder : public MatrixTransformed::Builder {
 
     /// A pointer to the \b Scale field.
-    TOOLS(Vector3) * Scale;
+    Vector3 * Scale;
 
     /// Constructor.
     Builder( );
@@ -147,7 +157,7 @@ public:
       \warning
       - \e scale must be valid and each components different from 0,
       - \e geometry must be non null and valid. */
-  explicit Scaled( const TOOLS(Vector3)& scale,
+  explicit Scaled( const Vector3& scale,
                    const GeometryPtr& geometry );
 
   /// Destructor
@@ -156,10 +166,10 @@ public:
   PGL_OBJECT(Scaled)
 
   /// Returns Scale value.
-  const TOOLS(Vector3)& getScale( ) const ;
+  const Vector3& getScale( ) const ;
 
   /// Returns Scale field.
-  TOOLS(Vector3)& getScale( );
+  Vector3& getScale( );
 
   virtual Transformation3DPtr getTransformation( ) const;
 
@@ -171,7 +181,7 @@ public:
 protected:
 
   /// The Scale field.
-  TOOLS(Vector3) __scale;
+  Vector3 __scale;
 
 };
 
@@ -200,16 +210,16 @@ public:
       from 0.
       \post
       - \e self is valid. */
-  Scaling2D( const TOOLS(Vector2)& factors );
+  Scaling2D( const Vector2& factors );
 
   /// Destructor.
   virtual ~Scaling2D( );
 
   /// Return Matrix3(__factors.x(),0,0, 0,__factors.y(),0, 0,0,1);
-  virtual TOOLS(Matrix3) getMatrix( ) const ;
+  virtual Matrix3 getMatrix( ) const ;
 
   /// Returns the scaling factors of \e self.
-  const TOOLS(Vector2)& getFactors( ) const;
+  const Vector2& getFactors( ) const;
 
   virtual bool isValid( ) const;
 
@@ -224,7 +234,7 @@ public:
 protected:
 
   /// The scaling factors.
-  TOOLS(Vector2) __factors;
+  Vector2 __factors;
 
 };
 

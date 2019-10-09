@@ -18,7 +18,7 @@ This module generates the full documentation of the scenegraph objects.
 
 .. testsetup::
 
-    from openalea.vpltk.qt import QtGui
+    from openalea.plantgl.gui.qt import QtGui
     app = QtGui.QApplication([])
     Viewer.start()
 
@@ -26,7 +26,7 @@ This module generates the full documentation of the scenegraph objects.
 __license__= "Cecill-C"
 __revision__=" $Id$ "
 
-from _pglsg import *
+from ._pglsg import *
 
 
 AmapSymbolDoc = """AmapSymbol

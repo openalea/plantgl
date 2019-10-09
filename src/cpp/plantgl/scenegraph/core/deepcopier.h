@@ -3,31 +3,41 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon et al.
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 /*! \file deepcopier.h
     \brief Definition of DeepCopier.
@@ -62,13 +72,13 @@ typedef RCPtr<SceneObject> SceneObjectPtr;
 
 /* ----------------------------------------------------------------------- */
 
-class SG_API DeepCopier 
+class SG_API DeepCopier
 {
 
 public:
-  // typedef const TOOLS(RefCountObject) * KeyType;
+  // typedef const RefCountObject * KeyType;
   typedef size_t KeyType;
-  typedef TOOLS(RefCountObjectPtr) ValueType;
+  typedef RefCountObjectPtr ValueType;
   typedef pgl_hash_map<KeyType,ValueType> RCObjectMap;
 
   /** Default constructor.  */
@@ -79,106 +89,106 @@ public:
 
   inline void clear() { __map.clear(); }
 
-  inline KeyType to_key(const TOOLS(RefCountObject) * ptr) { return (size_t)ptr; }
+  inline KeyType to_key(const RefCountObject * ptr) { return (size_t)ptr; }
 
   template<class T>
-  inline void set(const TOOLS(RefCountObject) * source, 
-	              const RCPtr<T> target) 
-  { __map[to_key(source)] = TOOLS(RefCountObjectPtr)(target);  }
+  inline void set(const RefCountObject * source,
+                  const RCPtr<T> target)
+  { __map[to_key(source)] = RefCountObjectPtr(target);  }
 
-  inline void set(const TOOLS(RefCountObject) * source,
-	              TOOLS(RefCountObject) * target) 
-  { __map[to_key(source)] = TOOLS(RefCountObjectPtr)(target);  }
+  inline void set(const RefCountObject * source,
+                  RefCountObject * target)
+  { __map[to_key(source)] = RefCountObjectPtr(target);  }
 
-  inline TOOLS(RefCountObjectPtr) get(const TOOLS(RefCountObject) * source) 
-  { 
-	  RCObjectMap::const_iterator it = __map.find(to_key(source));
-	  if(it != __map.end()) return it->second;
-	  else return TOOLS(RefCountObjectPtr)(0);
+  inline RefCountObjectPtr get(const RefCountObject * source)
+  {
+      RCObjectMap::const_iterator it = __map.find(to_key(source));
+      if(it != __map.end()) return it->second;
+      else return RefCountObjectPtr(0);
   }
 
-  inline bool remove(const TOOLS(RefCountObject) * source) 
-  { 
-	  RCObjectMap::iterator it = __map.find(to_key(source));
-	  if(it != __map.end()) { __map.erase(it); return true; }
-	  else return false;
+  inline bool remove(const RefCountObject * source)
+  {
+      RCObjectMap::iterator it = __map.find(to_key(source));
+      if(it != __map.end()) { __map.erase(it); return true; }
+      else return false;
   }
 
   template<class T>
   SceneObjectPtr copy(const T * obj){
-	  if(obj == NULL)return SceneObjectPtr();
-	  RCObjectMap::const_iterator it = __map.find(to_key(obj));
-	  if(it != __map.end()) return dynamic_pointer_cast<SceneObject>(it->second);
-	  else{
-		  SceneObjectPtr newobj = obj->copy(*this);
-	      if(!obj->unique())set(obj,newobj);
-		  return newobj;
-	  }
+      if(obj == NULL)return SceneObjectPtr();
+      RCObjectMap::const_iterator it = __map.find(to_key(obj));
+      if(it != __map.end()) return dynamic_pointer_cast<SceneObject>(it->second);
+      else{
+          SceneObjectPtr newobj = obj->copy(*this);
+          if(!obj->unique())set(obj,newobj);
+          return newobj;
+      }
   }
 
   template<class T>
   void copy_attribute(RCPtr<T>& att) {
-	  att = get_attribute_copy(att);
+      att = get_attribute_copy(att);
   }
 
   template<class T>
   void copy_recursive_attribute(RCPtr<T>& att) {
-	  att = get_recursive_copy(att);
+      att = get_recursive_copy(att);
   }
 
   template<class T>
   void copy_object_attribute(RCPtr<T>& att) {
-	  if(!is_null_ptr(att)){
-		att = dynamic_pointer_cast<T>(att->deepcopy(*this));
-	  }
+      if(!is_null_ptr(att)){
+        att = dynamic_pointer_cast<T>(att->deepcopy(*this));
+      }
   }
 
   template<class T>
   void copy_recursive_object_attribute(RCPtr<T>& att) {
-	  att = get_recursive_object_copy(att);
+      att = get_recursive_object_copy(att);
   }
 
   template<class T>
   RCPtr<T> get_attribute_copy(const RCPtr<T>& att) {
-	  if(is_null_ptr(att))return att;
-	  if(att->unique()) return RCPtr<T>(new T(*att));
-	  RCObjectMap::const_iterator it = __map.find(to_key(att.get()));
-	  if(it != __map.end()) return dynamic_pointer_cast<T>(it->second);
-	  else {
-		T * ptr = new T(*att);
-		set(att.get(),ptr);
-		return RCPtr<T>(ptr);
-	  }
+      if(is_null_ptr(att))return att;
+      if(att->unique()) return RCPtr<T>(new T(*att));
+      RCObjectMap::const_iterator it = __map.find(to_key(att.get()));
+      if(it != __map.end()) return dynamic_pointer_cast<T>(it->second);
+      else {
+        T * ptr = new T(*att);
+        set(att.get(),ptr);
+        return RCPtr<T>(ptr);
+      }
   }
 
   template<class T>
-  RCPtr<T> get_recursive_copy(const RCPtr<T>& att) {	  
-	  typedef typename T::iterator TIterator;
-	  if(is_null_ptr(att))return att;
-	  if(!att->unique()) {
-		RCObjectMap::const_iterator it = __map.find(to_key(att.get()));
-		if(it != __map.end()) return dynamic_pointer_cast<T>(it->second);
-	  }
-	  T * ptr = new T(*att);
-	  for(TIterator itGeom = att->begin();itGeom != att->end(); ++itGeom)
-		   { copy_attribute(*itGeom); }
-	  if(!att->unique())set(att.get(),ptr);
-	  return RCPtr<T>(ptr);
+  RCPtr<T> get_recursive_copy(const RCPtr<T>& att) {
+      typedef typename T::iterator TIterator;
+      if(is_null_ptr(att))return att;
+      if(!att->unique()) {
+        RCObjectMap::const_iterator it = __map.find(to_key(att.get()));
+        if(it != __map.end()) return dynamic_pointer_cast<T>(it->second);
+      }
+      T * ptr = new T(*att);
+      for(TIterator itGeom = att->begin();itGeom != att->end(); ++itGeom)
+           { copy_attribute(*itGeom); }
+      if(!att->unique())set(att.get(),ptr);
+      return RCPtr<T>(ptr);
   }
 
   template<class T>
-  RCPtr<T> get_recursive_object_copy(const RCPtr<T>& att) {	  
-	  typedef typename T::iterator TIterator;
-	  if(is_null_ptr(att))return att;
-	  if(!att->unique()){
-		RCObjectMap::const_iterator it = __map.find(to_key(att.get()));
-		if(it != __map.end()) return dynamic_pointer_cast<T>(it->second);
-	  }
-	  T * ptr = new T(*att);
-	  for(TIterator itGeom = att->begin();itGeom != att->end(); ++itGeom)
-		   { copy_object_attribute(*itGeom); }
-	  if(!att->unique())set(att.get(),ptr);
-	  return RCPtr<T>(ptr);
+  RCPtr<T> get_recursive_object_copy(const RCPtr<T>& att) {
+      typedef typename T::iterator TIterator;
+      if(is_null_ptr(att))return att;
+      if(!att->unique()){
+        RCObjectMap::const_iterator it = __map.find(to_key(att.get()));
+        if(it != __map.end()) return dynamic_pointer_cast<T>(it->second);
+      }
+      T * ptr = new T(*att);
+      for(TIterator itGeom = att->begin();itGeom != att->end(); ++itGeom)
+           { copy_object_attribute(*itGeom); }
+      if(!att->unique())set(att.get(),ptr);
+      return RCPtr<T>(ptr);
   }
 
 protected:

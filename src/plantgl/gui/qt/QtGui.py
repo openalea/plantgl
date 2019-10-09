@@ -14,7 +14,7 @@ from openalea.plantgl.gui.qt import PYSIDE_API
 
 if os.environ[QT_API] in PYQT5_API:
     from PyQt5.QtGui import *
-    from PyQt5.QtWidgets import QTabWidget
+    from PyQt5.QtWidgets import *
     _tab_position = {
         0: QTabWidget.North,
         1: QTabWidget.South,
@@ -37,7 +37,7 @@ elif os.environ[QT_API] in PYSIDE_API:
         2: QTabWidget.TabPosition.West,
         3: QTabWidget.TabPosition.East,
     }
-    for idx, position in _tab_position.items():
+    for idx, position in list(_tab_position.items()):
         setattr(QTabWidget, position.name, position)
 elif os.environ[QT_API] in PYSIDE2_API:
     from PySide2.QtGui import *
@@ -47,5 +47,5 @@ elif os.environ[QT_API] in PYSIDE2_API:
         2: QTabWidget.TabPosition.West,
         3: QTabWidget.TabPosition.East,
     }
-    for idx, position in _tab_position.items():
+    for idx, position in list(_tab_position.items()):
         setattr(QTabWidget, position.name, position)

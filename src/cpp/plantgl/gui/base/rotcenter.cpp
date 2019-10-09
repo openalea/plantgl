@@ -1,38 +1,46 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr)
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
- * 
- *                      GNU General Public Licence
- *           
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
+ *
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
+
 
 #include "rotcenter.h"
-#include "interface/rotcenteredit.h"
+#include "interface/ui_rotcenteredit.h"
 #include "icons.h"
 #include "glframe.h"
 #include "scenegl.h"
@@ -43,7 +51,7 @@
 
 #include <QtCore/qfile.h>
 
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/qlineedit.h>
     #include <QtWidgets/qslider.h>
     #include <QtWidgets/qpushbutton.h>
@@ -64,14 +72,13 @@
 #include <QtOpenGL/qgl.h>
 #include <plantgl/algo/opengl/util_glut.h>
 
-TOOLS_USING_NAMESPACE
 PGL_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
 ViewRotCenterGL::ViewRotCenterGL(ViewCameraGL *camera,
-				 QGLWidget * parent, 
-				 const char * name):
+                 QGLWidget * parent,
+                 const char * name):
   ViewRelativeObjectGL(camera,parent,name),
   __active(false),
   __visible(false),
@@ -121,7 +128,7 @@ ViewRotCenterGL::~ViewRotCenterGL()
 }
 
 
-void 
+void
 ViewRotCenterGL::setSliderStep(const int step)
 {
   __editor->XSlider->setRange(-150*step,150*step);
@@ -152,25 +159,25 @@ ViewRotCenterGL::isActive() const
   return __active;
 }
 
-int 
+int
 ViewRotCenterGL::x() const
 {
   return int(__position.x());
 }
 
-int 
+int
 ViewRotCenterGL::y() const
 {
   return int(__position.y());
 }
 
-int 
+int
 ViewRotCenterGL::z() const
 {
   return int(__position.z());
 }
 
-QDockWidget * 
+QDockWidget *
 ViewRotCenterGL::getSliders() const
 {
   return __sliders;
@@ -178,12 +185,12 @@ ViewRotCenterGL::getSliders() const
 
 /* ----------------------------------------------------------------------- */
 
-void 
+void
 ViewRotCenterGL::init()
 {
   if(__position != Vector3::ORIGIN){
     __position = Vector3::ORIGIN;
-	float step = getStep();
+    float step = getStep();
     emit XvalueChanged(int(__position.x()/step));
     emit XvalueChanged(__position.x());
     emit YvalueChanged(int(__position.y()/step));
@@ -194,7 +201,7 @@ ViewRotCenterGL::init()
   }
 }
 
-void 
+void
 ViewRotCenterGL::show()
 {
   if(!__visible){
@@ -205,7 +212,7 @@ ViewRotCenterGL::show()
   }
 }
 
-void 
+void
 ViewRotCenterGL::hide()
 {
   if(__visible){
@@ -216,17 +223,17 @@ ViewRotCenterGL::hide()
   }
 }
 
-void 
+void
 ViewRotCenterGL::changeVisibility()
 {
   __visible = ! __visible;
   if(__visible  && !__sliders->isVisible())__sliders->show();
   else if(!__visible && __sliders->isVisible())__sliders->hide();
   emit visibilityChanged(__visible);
-  emit valueChanged();  
+  emit valueChanged();
 }
 
-void 
+void
 ViewRotCenterGL::changeVisibility(bool b)
 {
   if(__visible != b){
@@ -238,7 +245,7 @@ ViewRotCenterGL::changeVisibility(bool b)
   }
 }
 
-void 
+void
 ViewRotCenterGL::activate()
 {
   if(!__active){
@@ -250,19 +257,19 @@ ViewRotCenterGL::activate()
 
 void ViewRotCenterGL::center()
 {
-	if(__frame){
-		ViewGLFrame * f = dynamic_cast<ViewGLFrame *>(__frame);
-		if(f){
-			BoundingBoxPtr bbx = f->getSceneRenderer()->getGlobalBoundingBox();
-			Vector3 center = bbx->getCenter();
-			__position = center;
-			if(!__active)activate();
-			else emit valueChanged();
-		}
-	}
+    if(__frame){
+        ViewGLFrame * f = dynamic_cast<ViewGLFrame *>(__frame);
+        if(f){
+            BoundingBoxPtr bbx = f->getSceneRenderer()->getGlobalBoundingBox();
+            Vector3 center = bbx->getCenter();
+            __position = center;
+            if(!__active)activate();
+            else emit valueChanged();
+        }
+    }
 }
 
-void 
+void
 ViewRotCenterGL::desactivate()
 {
   if(__active){
@@ -272,7 +279,7 @@ ViewRotCenterGL::desactivate()
   }
 }
 
-void 
+void
 ViewRotCenterGL::changeActivation()
 {
   __active = ! __active;
@@ -280,7 +287,7 @@ ViewRotCenterGL::changeActivation()
   emit valueChanged();
 }
 
-void 
+void
 ViewRotCenterGL::changeActivation(bool b)
 {
   if(__active != b){
@@ -290,7 +297,7 @@ ViewRotCenterGL::changeActivation(bool b)
   }
 }
 
-void 
+void
 ViewRotCenterGL::setX(int x)
 {
   __position.x() = x;
@@ -298,7 +305,7 @@ ViewRotCenterGL::setX(int x)
   emit valueChanged();
 }
 
-void 
+void
 ViewRotCenterGL::setY(int y)
 {
   __position.y() = y;
@@ -306,7 +313,7 @@ ViewRotCenterGL::setY(int y)
   emit valueChanged();
 }
 
-void 
+void
 ViewRotCenterGL::setZ(int z)
 {
   __position.z() = z;
@@ -314,32 +321,32 @@ ViewRotCenterGL::setZ(int z)
   emit valueChanged();
 }
 
-void 
+void
 ViewRotCenterGL::setX(double x)
 {
   __position.x() = x;
   emit XvalueChanged(int(__position.x()));
   emit valueChanged();
-  
+
 }
 
-void 
+void
 ViewRotCenterGL::setY(double y)
 {
   __position.y() = y;
   emit YvalueChanged(int(__position.y()));
   emit valueChanged();
-  
+
 }
-void 
+void
 ViewRotCenterGL::setZ(double z)
 {
   __position.z() = z;
   emit ZvalueChanged(int(__position.z()));
-  emit valueChanged();  
+  emit valueChanged();
 }
 
-void 
+void
 ViewRotCenterGL::initializeGL()
 {
   if (__displayList) {
@@ -367,10 +374,10 @@ ViewRotCenterGL::initializeGL()
   glEndList();
 
   GEOM_GL_ERROR;
-  
+
 }
 
-void 
+void
 ViewRotCenterGL::paintGL()
 {
   if(__active)
@@ -385,7 +392,7 @@ ViewRotCenterGL::paintGL()
   if(__active || __visible)  GEOM_GL_ERROR;
 }
 
-void 
+void
 ViewRotCenterGL::changeStepEvent(double newStep, double oldStep)
 {
   real_t r = real_t(newStep)/real_t(oldStep);
@@ -394,14 +401,14 @@ ViewRotCenterGL::changeStepEvent(double newStep, double oldStep)
   setSliderStep(newStep);
 }
 
-QMenu * 
+QMenu *
 ViewRotCenterGL::createToolsMenu(QWidget * parent)
 {
-	QMenu * menu = new QMenu(parent);
-	QPixmap wheel(ViewerIcon::getPixmap(ViewerIcon::wheel));
+    QMenu * menu = new QMenu(parent);
+    QPixmap wheel(ViewerIcon::getPixmap(ViewerIcon::wheel));
     QPixmap home(ViewerIcon::getPixmap(ViewerIcon::home));
     menu->addAction(home,tr("&Home"),this,SLOT(init()));
-	menu->addSeparator();
+    menu->addSeparator();
 
     QPixmap visible(ViewerIcon::getPixmap(ViewerIcon::rcvisible));
     QPixmap active(ViewerIcon::getPixmap(ViewerIcon::rcactive));
@@ -417,12 +424,12 @@ ViewRotCenterGL::createToolsMenu(QWidget * parent)
     idActive->setCheckable( isActive() );
     QObject::connect(this,SIGNAL(activationChanged(bool)),idActive,SLOT(setChecked(bool)));
 
-	menu->addSeparator();
+    menu->addSeparator();
     menu->addAction(centered,tr("&Center"),this,SLOT(center()));
     //QAction * idControl = menu->addAction(wheel,tr("&Control"),getSliders(),SLOT(show()));
     //idControl->setCheckable( true );
     //idControl->setChecked( getSliders()->isVisible() );
-    //QObject::connect(getSliders(),SIGNAL(visibilityChanged(bool)),idControl,SLOT(setChecked(bool)));    
+    //QObject::connect(getSliders(),SIGNAL(visibilityChanged(bool)),idControl,SLOT(setChecked(bool)));
 
     QAction * idControl = getSliders()->toggleViewAction();
     menu->addAction(idControl);
@@ -434,7 +441,7 @@ ViewRotCenterGL::createToolsMenu(QWidget * parent)
     return menu;
 }
 
-void 
+void
 ViewRotCenterGL::fillToolBar(QToolBar * toolBar)
 {
   QPixmap visible(ViewerIcon::getPixmap(ViewerIcon::rcvisible));
@@ -449,7 +456,7 @@ ViewRotCenterGL::fillToolBar(QToolBar * toolBar)
   QObject::connect(this,SIGNAL(activationChanged(bool)), __Active,SLOT(setChecked(bool)));
 
   QAction * __Centered = toolBar->addAction(centered, tr("Center Rotating Center"), this, SLOT(center()));
-  toolBar->addSeparator();  
+  toolBar->addSeparator();
 }
 
 /* ----------------------------------------------------------------------- */

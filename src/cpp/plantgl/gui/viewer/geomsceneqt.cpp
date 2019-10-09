@@ -1,35 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr)
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 #include "geomscenegl.h"
 
@@ -49,18 +57,18 @@
 /// Viewer
 #include "util_qstring.h"
 #include "../base/util_qwidget.h"
-#include "interface/codecview.h"
+#include "interface/ui_codecview.h"
 
 #include <plantgl/tool/util_string.h>
 
 /// Qt
 #include <QtGlobal>
-#include <QtCore/qmimedata.h> 
+#include <QtCore/qmimedata.h>
 #include <QtCore/qurl.h>
-#include <QtCore/qmap.h> 
+#include <QtCore/qmap.h>
 #include <QtGui/qclipboard.h>
-#include <QtCore/qfileinfo.h> 
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#include <QtCore/qfileinfo.h>
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/qmenu.h>
     #include <QtWidgets/qframe.h>
     #include <QtWidgets/qlineedit.h>
@@ -69,7 +77,7 @@
     #include <QtWidgets/qslider.h>
     #include <QtWidgets/qmessagebox.h>
     #include <QtWidgets/qapplication.h>
-    #include <QtWidgets/qmainwindow.h> 
+    #include <QtWidgets/qmainwindow.h>
 #else
     #include <QtGui/qmenu.h>
     #include <QtGui/qframe.h>
@@ -79,7 +87,7 @@
     #include <QtGui/qslider.h>
     #include <QtGui/qmessagebox.h>
     #include <QtGui/qapplication.h>
-    #include <QtGui/qmainwindow.h> 
+    #include <QtGui/qmainwindow.h>
 #endif
 
 #ifdef QT_THREAD_SUPPORT
@@ -89,7 +97,6 @@
 #endif
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 using namespace std;
 using namespace STDEXT;
 
@@ -124,8 +131,8 @@ ViewGeomSceneGL::getSelectionSurface()
   real_t surface = 0;
   for(SelectionCache::iterator _it = __selectedShapes.begin();
   _it !=__selectedShapes.end(); _it++)
-	  if(get_item_value(_it)->apply(_sfc))
-		surface += _sfc.getSurface();
+      if(get_item_value(_it)->apply(_sfc))
+        surface += _sfc.getSurface();
   return surface;
 }
 
@@ -136,8 +143,8 @@ real_t ViewGeomSceneGL::getSelectionVolume()
   real_t volume = 0;
   for(SelectionCache::iterator _it = __selectedShapes.begin();
   _it !=__selectedShapes.end(); _it++)
-	  if(get_item_value(_it)->apply(_vfc))
-		volume += _vfc.getVolume();
+      if(get_item_value(_it)->apply(_vfc))
+        volume += _vfc.getVolume();
   return volume;
 }
 
@@ -148,7 +155,7 @@ bool
 ViewGeomSceneGL::addEditEntries(QMenu * menu)
 {
   menu->addAction( tr("Remove Selection"),
-	  this,SLOT(removeSelection()),Qt::Key_Delete);
+      this,SLOT(removeSelection()),Qt::Key_Delete);
   menu->addAction( tr("Keep Selection Only"),
                     this,SLOT(keepSelectionOnly()));
   menu->addSeparator();
@@ -303,158 +310,158 @@ ViewGeomSceneGL::addProperties(QTabWidget * tab)
   tab->addTab( tab2, tr( "PlantGL &Scene" ) );
 
   if(!__selectedShapes.empty()){
-	  
-	  StatisticComputer comp;
-	  ScenePtr selection = getSelection();
-	  selection->apply(comp);
 
-	  tab2 = new QWidget( tab );
-	  real_t surface = getSelectionSurface();
-	  real_t volume = getSelectionVolume();
-	  QFrame * Line = new QFrame( tab2 );
-	  Line->setGeometry( QRect( 30, 100, 351, 20 ) );
-	  Line->setFrameShape( QFrame::HLine );
-	  Line->setFrameShadow( QFrame::Sunken );
-  
-	  QLabel * TextLabel = new QLabel( tab2 );
-	  TextLabel->setGeometry( QRect( 18, 20, 130,30 ) );
-	  TextLabel->setText( tr( "Selection")+" :" );
-	  
-	  QLineEdit * TextLabel2 = new QLineEdit( tab2 );
-	  TextLabel2->setReadOnly(true);
-	  TextLabel2->setAlignment(Qt::AlignHCenter);
-	  TextLabel2->setGeometry( QRect( 178, 20, 190, 30 ) );
-	  SelectionCache::const_iterator _it = __selectedShapes.begin();
-  
-	  QString listid = QString::number(get_item_value(_it)->getId()==Shape::NOID?get_item_key(_it):get_item_value(_it)->getId());
-	  for(_it++;_it != __selectedShapes.end();_it++)
-			listid += ','+QString::number(get_item_value(_it)->getId()==Shape::NOID?get_item_key(_it):get_item_value(_it)->getId());
+      StatisticComputer comp;
+      ScenePtr selection = getSelection();
+      selection->apply(comp);
 
-	  TextLabel2->setText( listid );
+      tab2 = new QWidget( tab );
+      real_t surface = getSelectionSurface();
+      real_t volume = getSelectionVolume();
+      QFrame * Line = new QFrame( tab2 );
+      Line->setGeometry( QRect( 30, 100, 351, 20 ) );
+      Line->setFrameShape( QFrame::HLine );
+      Line->setFrameShadow( QFrame::Sunken );
 
-	  TextLabel = new QLabel( tab2 );
-	  TextLabel->setGeometry( QRect( 18, 55, 130,30 ) );
-	  TextLabel->setText( tr( "Number of Element")+" :" );
-	  	  
-	  TextLabel2 = new QLineEdit( tab2 );
-	  TextLabel2->setReadOnly(true);
-	  TextLabel2->setAlignment(Qt::AlignHCenter);
-	  TextLabel2->setGeometry( QRect( 178, 55, 190, 30 ) );
-	  TextLabel2->setText( QString::number(comp.getSize())+"  ( "+QString::number(selection->size())+" "+tr("shape(s)")+" )" );
-	  
-	  TextLabel = new QLabel( tab2 );
-	  TextLabel->setGeometry( QRect( 150, 90, 120, 31 ) );
-	  TextLabel->setText( " "+tr( "General Properties" ) );
+      QLabel * TextLabel = new QLabel( tab2 );
+      TextLabel->setGeometry( QRect( 18, 20, 130,30 ) );
+      TextLabel->setText( tr( "Selection")+" :" );
 
-	  TextLabel = new QLabel( tab2 );
-	  TextLabel->setGeometry( QRect( 20, 120, 130, 31 ) );
-	  TextLabel->setText( tr( "Surface")+" :" );
-	  
-	  TextLabel = new QLabel( tab2 );
-	  TextLabel->setGeometry( QRect( 20, 145, 130, 31 ) );
-	  TextLabel->setText( tr( "Volume")+" :" );
-	  
-	  TextLabel = new QLabel( tab2 );
-	  TextLabel->setGeometry( QRect( 20, 170, 130, 31 ) );
-	  TextLabel->setText( tr( "Number of Polygon")+" :" );
-	  
-	  TextLabel = new QLabel( tab2 );
-	  TextLabel->setGeometry( QRect( 20, 195, 130, 31 ) );
-	  TextLabel->setText( tr( "Memory Size")+" :" );
-	  
-	  TextLabel2 = new QLineEdit( tab2 );
-	  TextLabel2->setReadOnly(true);
-	  TextLabel2->setAlignment(Qt::AlignHCenter);
-	  TextLabel2->setGeometry( QRect( 170, 120, 200, 25 ) );
-	  TextLabel2->setText( QString::number(surface) );
-	  
-	  TextLabel2 = new QLineEdit( tab2 );
-	  TextLabel2->setReadOnly(true);
-	  TextLabel2->setAlignment(Qt::AlignHCenter);
-	  TextLabel2->setGeometry( QRect( 170, 145, 200, 25 ) );
-	  TextLabel2->setText( QString::number(volume) );
-	  
-	  TextLabel2 = new QLineEdit( tab2 );
-	  TextLabel2->setReadOnly(true);
-	  TextLabel2->setAlignment(Qt::AlignHCenter);
-	  TextLabel2->setGeometry( QRect( 170, 170, 200, 25 ) );
-	  TextLabel2->setText( QString::number(polygonNumber(selection) ) );
-	  
-	  uint_t s = comp.getMemorySize();
-	  QString labl;
-	  if( s/1024 > 0 )
-		  labl = QString::number(s/1024)+" Kb "+QString::number(s % 1024)+" bytes.";
-	  else
-		  labl = QString::number(s)+" bytes.";
-	  
-	  
-	  TextLabel2 = new QLineEdit( tab2 );
-	  TextLabel2->setReadOnly(true);
-	  TextLabel2->setAlignment(Qt::AlignHCenter);
-	  TextLabel2->setGeometry( QRect( 170, 195, 200, 25 ) );
-	  TextLabel2->setText( labl );
-	  
-	  Line = new QFrame( tab2  );
-	  Line->setGeometry( QRect( 20, 250, 351, 20 ) );
-	  Line->setFrameShape( QFrame::HLine );
-	  Line->setFrameShadow( QFrame::Sunken );
-	  
-	  TextLabel = new QLabel( tab2 );
-	  TextLabel->setGeometry( QRect( 150, 240, 80, 31 ) );
-	  TextLabel->setText( " " + tr( "Bounding Box" ) );
-	  
-	  TextLabel = new QLabel( tab2 );
-	  TextLabel->setGeometry( QRect( 20, 280, 130, 31 ) );
-	  TextLabel->setText( tr( "Upper Rigth Corner")+" :" );
-	  
-	  TextLabel = new QLabel( tab2 );
-	  TextLabel->setGeometry( QRect( 20, 310, 130, 31 ) );
-	  TextLabel->setText( tr( "Lower Left Corner")+" :" );
-	  
-	  TextLabel = new QLabel( tab2 );
-	  TextLabel->setGeometry( QRect( 20, 340, 130, 31 ) );
-	  TextLabel->setText( tr( "Size")+" :" );
-	  
-	  TextLabel = new QLabel( tab2 );
-	  TextLabel->setGeometry( QRect( 20, 370, 130, 31 ) );
-	  TextLabel->setText( tr( "Center")+" :" );
-	  
-	  BoundingBoxPtr bbox = getSelectionBoundingBox();
-	  
-	  TextLabel2 = new QLineEdit( tab2 );
-	  TextLabel2->setReadOnly(true);
-	  TextLabel2->setAlignment(Qt::AlignHCenter);
-	  TextLabel2->setGeometry( QRect( 168, 275, 200, 25 ) );
-	  if(bbox)TextLabel2->setText( toQString( bbox->getUpperRightCorner()) );
-	  
-	  TextLabel2 = new QLineEdit( tab2 );
-	  TextLabel2->setReadOnly(true);
-	  TextLabel2->setAlignment(Qt::AlignHCenter);
-	  TextLabel2->setGeometry( QRect( 168, 305, 200, 25 ) );
-	  if(bbox)TextLabel2->setText( toQString( bbox->getLowerLeftCorner()) );
-	  
-	  TextLabel2 = new QLineEdit( tab2 );
-	  TextLabel2->setReadOnly(true);
-	  TextLabel2->setAlignment(Qt::AlignHCenter);
-	  TextLabel2->setGeometry( QRect( 168, 335, 200, 25 ) );
-	  if(bbox)TextLabel2->setText( toQString( bbox->getSize()*2)  );
-	  
-	  TextLabel2 = new QLineEdit( tab2 );
-	  TextLabel2->setReadOnly(true);
-	  TextLabel2->setAlignment(Qt::AlignHCenter);
-	  TextLabel2->setGeometry( QRect( 168, 365, 200, 25 ) );
-	  if(bbox)TextLabel2->setText( toQString( bbox->getCenter()) );
+      QLineEdit * TextLabel2 = new QLineEdit( tab2 );
+      TextLabel2->setReadOnly(true);
+      TextLabel2->setAlignment(Qt::AlignHCenter);
+      TextLabel2->setGeometry( QRect( 178, 20, 190, 30 ) );
+      SelectionCache::const_iterator _it = __selectedShapes.begin();
 
-	  tab->addTab( tab2, tr( "Selection" ) );
-	  
-	}
+      QString listid = QString::number(get_item_value(_it)->getId()==Shape::NOID?get_item_key(_it):get_item_value(_it)->getId());
+      for(_it++;_it != __selectedShapes.end();_it++)
+            listid += ','+QString::number(get_item_value(_it)->getId()==Shape::NOID?get_item_key(_it):get_item_value(_it)->getId());
+
+      TextLabel2->setText( listid );
+
+      TextLabel = new QLabel( tab2 );
+      TextLabel->setGeometry( QRect( 18, 55, 130,30 ) );
+      TextLabel->setText( tr( "Number of Element")+" :" );
+
+      TextLabel2 = new QLineEdit( tab2 );
+      TextLabel2->setReadOnly(true);
+      TextLabel2->setAlignment(Qt::AlignHCenter);
+      TextLabel2->setGeometry( QRect( 178, 55, 190, 30 ) );
+      TextLabel2->setText( QString::number(comp.getSize())+"  ( "+QString::number(selection->size())+" "+tr("shape(s)")+" )" );
+
+      TextLabel = new QLabel( tab2 );
+      TextLabel->setGeometry( QRect( 150, 90, 120, 31 ) );
+      TextLabel->setText( " "+tr( "General Properties" ) );
+
+      TextLabel = new QLabel( tab2 );
+      TextLabel->setGeometry( QRect( 20, 120, 130, 31 ) );
+      TextLabel->setText( tr( "Surface")+" :" );
+
+      TextLabel = new QLabel( tab2 );
+      TextLabel->setGeometry( QRect( 20, 145, 130, 31 ) );
+      TextLabel->setText( tr( "Volume")+" :" );
+
+      TextLabel = new QLabel( tab2 );
+      TextLabel->setGeometry( QRect( 20, 170, 130, 31 ) );
+      TextLabel->setText( tr( "Number of Polygon")+" :" );
+
+      TextLabel = new QLabel( tab2 );
+      TextLabel->setGeometry( QRect( 20, 195, 130, 31 ) );
+      TextLabel->setText( tr( "Memory Size")+" :" );
+
+      TextLabel2 = new QLineEdit( tab2 );
+      TextLabel2->setReadOnly(true);
+      TextLabel2->setAlignment(Qt::AlignHCenter);
+      TextLabel2->setGeometry( QRect( 170, 120, 200, 25 ) );
+      TextLabel2->setText( QString::number(surface) );
+
+      TextLabel2 = new QLineEdit( tab2 );
+      TextLabel2->setReadOnly(true);
+      TextLabel2->setAlignment(Qt::AlignHCenter);
+      TextLabel2->setGeometry( QRect( 170, 145, 200, 25 ) );
+      TextLabel2->setText( QString::number(volume) );
+
+      TextLabel2 = new QLineEdit( tab2 );
+      TextLabel2->setReadOnly(true);
+      TextLabel2->setAlignment(Qt::AlignHCenter);
+      TextLabel2->setGeometry( QRect( 170, 170, 200, 25 ) );
+      TextLabel2->setText( QString::number(polygonNumber(selection) ) );
+
+      uint_t s = comp.getMemorySize();
+      QString labl;
+      if( s/1024 > 0 )
+          labl = QString::number(s/1024)+" Kb "+QString::number(s % 1024)+" bytes.";
+      else
+          labl = QString::number(s)+" bytes.";
+
+
+      TextLabel2 = new QLineEdit( tab2 );
+      TextLabel2->setReadOnly(true);
+      TextLabel2->setAlignment(Qt::AlignHCenter);
+      TextLabel2->setGeometry( QRect( 170, 195, 200, 25 ) );
+      TextLabel2->setText( labl );
+
+      Line = new QFrame( tab2  );
+      Line->setGeometry( QRect( 20, 250, 351, 20 ) );
+      Line->setFrameShape( QFrame::HLine );
+      Line->setFrameShadow( QFrame::Sunken );
+
+      TextLabel = new QLabel( tab2 );
+      TextLabel->setGeometry( QRect( 150, 240, 80, 31 ) );
+      TextLabel->setText( " " + tr( "Bounding Box" ) );
+
+      TextLabel = new QLabel( tab2 );
+      TextLabel->setGeometry( QRect( 20, 280, 130, 31 ) );
+      TextLabel->setText( tr( "Upper Rigth Corner")+" :" );
+
+      TextLabel = new QLabel( tab2 );
+      TextLabel->setGeometry( QRect( 20, 310, 130, 31 ) );
+      TextLabel->setText( tr( "Lower Left Corner")+" :" );
+
+      TextLabel = new QLabel( tab2 );
+      TextLabel->setGeometry( QRect( 20, 340, 130, 31 ) );
+      TextLabel->setText( tr( "Size")+" :" );
+
+      TextLabel = new QLabel( tab2 );
+      TextLabel->setGeometry( QRect( 20, 370, 130, 31 ) );
+      TextLabel->setText( tr( "Center")+" :" );
+
+      BoundingBoxPtr bbox = getSelectionBoundingBox();
+
+      TextLabel2 = new QLineEdit( tab2 );
+      TextLabel2->setReadOnly(true);
+      TextLabel2->setAlignment(Qt::AlignHCenter);
+      TextLabel2->setGeometry( QRect( 168, 275, 200, 25 ) );
+      if(bbox)TextLabel2->setText( toQString( bbox->getUpperRightCorner()) );
+
+      TextLabel2 = new QLineEdit( tab2 );
+      TextLabel2->setReadOnly(true);
+      TextLabel2->setAlignment(Qt::AlignHCenter);
+      TextLabel2->setGeometry( QRect( 168, 305, 200, 25 ) );
+      if(bbox)TextLabel2->setText( toQString( bbox->getLowerLeftCorner()) );
+
+      TextLabel2 = new QLineEdit( tab2 );
+      TextLabel2->setReadOnly(true);
+      TextLabel2->setAlignment(Qt::AlignHCenter);
+      TextLabel2->setGeometry( QRect( 168, 335, 200, 25 ) );
+      if(bbox)TextLabel2->setText( toQString( bbox->getSize()*2)  );
+
+      TextLabel2 = new QLineEdit( tab2 );
+      TextLabel2->setReadOnly(true);
+      TextLabel2->setAlignment(Qt::AlignHCenter);
+      TextLabel2->setGeometry( QRect( 168, 365, 200, 25 ) );
+      if(bbox)TextLabel2->setText( toQString( bbox->getCenter()) );
+
+      tab->addTab( tab2, tr( "Selection" ) );
+
+    }
     QWidget * tab3 = new QWidget(tab);
     Ui::CodecView codecView;
     codecView.setupUi(tab3);
     QTreeWidgetItem * itemCodec = NULL;
     QTreeWidgetItem * itemFormat = NULL;
     QMap<SceneCodec::Mode,QString> modeMap;
-    modeMap[SceneCodec::None] = "None";
+    modeMap[SceneCodec::Nothing] = "None";
     modeMap[SceneCodec::Read] = "Read";
     modeMap[SceneCodec::Write] = "Write";
     modeMap[SceneCodec::ReadWrite] = "Read/Write";
@@ -465,12 +472,12 @@ ViewGeomSceneGL::addProperties(QTabWidget * tab)
         itemCodec->setText(0, (*itCodec)->getName().c_str());
         itemCodec->setText(1, modeMap[(*itCodec)->getMode()]);
         SceneFormatList formats = (*itCodec)->formats();
-        for(SceneFormatList::const_iterator itFormat = formats.begin(); 
+        for(SceneFormatList::const_iterator itFormat = formats.begin();
             itFormat != formats.end(); ++itFormat){
             itemFormat = new QTreeWidgetItem(itemCodec,itemFormat);
             itemFormat->setText(0, itFormat->name.c_str() );
             QString fileExt;
-            for(std::vector<std::string>::const_iterator itFileExt = itFormat->suffixes.begin(); 
+            for(std::vector<std::string>::const_iterator itFileExt = itFormat->suffixes.begin();
                 itFileExt != itFormat->suffixes.end(); ++itFileExt)
                     fileExt += QString(itFileExt->c_str())+';';
             itemFormat->setText(1, fileExt );
@@ -481,7 +488,7 @@ ViewGeomSceneGL::addProperties(QTabWidget * tab)
     }
 
     tab->addTab( tab3, tr( "Codecs" ) );
-	return true;
+    return true;
 }
 
 bool
@@ -511,26 +518,26 @@ ViewGeomSceneGL::createToolsMenu(QWidget * parent)
   return menu;
 }
 
-void 
+void
 ViewGeomSceneGL::clipboard(){
-	QClipboard * clipboard = QApplication::clipboard();
-	if(clipboard ){
-		const QMimeData* data = clipboard->mimeData();
-		if(data!=NULL ){
-			if(data->hasUrls()){
-				QList<QUrl> urls = data->urls();
-				if(!urls.empty())
-				{
-					QFileInfo f(urls[0].toLocalFile());
-					QString ext = f.suffix();
-					ext = ext.toUpper();
-				    if(f.exists()&& (ext == "GEOM" ||ext == "BGEOM")){
-						open(urls[0].toLocalFile());
-					}
-				}
-			}
-		}
-	}
+    QClipboard * clipboard = QApplication::clipboard();
+    if(clipboard ){
+        const QMimeData* data = clipboard->mimeData();
+        if(data!=NULL ){
+            if(data->hasUrls()){
+                QList<QUrl> urls = data->urls();
+                if(!urls.empty())
+                {
+                    QFileInfo f(urls[0].toLocalFile());
+                    QString ext = f.suffix();
+                    ext = ext.toUpper();
+                    if(f.exists()&& (ext == "GEOM" ||ext == "BGEOM")){
+                        open(urls[0].toLocalFile());
+                    }
+                }
+            }
+        }
+    }
 }
 
 /* ----------------------------------------------------------------------- */

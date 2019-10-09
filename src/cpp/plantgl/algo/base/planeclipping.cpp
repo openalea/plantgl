@@ -1,35 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2012-2015 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al.
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 
 
@@ -50,15 +58,14 @@
 
 #include <plantgl/math/util_math.h>
 
-TOOLS_USING_NAMESPACE
 PGL_USING_NAMESPACE
 
 using namespace std;
 
 /* ----------------------------------------------------------------------- */
-Point3ArrayPtr PGL(plane_segment_clip)(const Plane3& plane, 
-                                  const TOOLS(Vector3)& p1, 
-                                  const TOOLS(Vector3)& p2)
+Point3ArrayPtr PGL(plane_segment_clip)(const Plane3& plane,
+                                  const Vector3& p1,
+                                  const Vector3& p2)
 {
     real_t d1 = dot(plane.getNormal(),p1);
     real_t d2 = dot(plane.getNormal(),p2);
@@ -79,10 +86,10 @@ Point3ArrayPtr PGL(plane_segment_clip)(const Plane3& plane,
     }
 }
 
-Point3ArrayPtr PGL(plane_triangle_clip)(const Plane3& plane, 
-                                   const TOOLS(Vector3)& p1, 
-                                   const TOOLS(Vector3)& p2, 
-                                   const TOOLS(Vector3)& p3)
+Point3ArrayPtr PGL(plane_triangle_clip)(const Plane3& plane,
+                                   const Vector3& p1,
+                                   const Vector3& p2,
+                                   const Vector3& p3)
 {
     real_t d1 = dot(plane.getNormal(),p1);
     real_t d2 = dot(plane.getNormal(),p2);
@@ -92,7 +99,7 @@ Point3ArrayPtr PGL(plane_triangle_clip)(const Plane3& plane,
     bool side3 = (d3 > plane.getD());
     if ( side1 == side2 && side1 == side3) {
         printf("all in the same side\n");
-        if (side1) { 
+        if (side1) {
             Point3ArrayPtr result(new Point3Array(3));
             result->setAt(0,p1); result->setAt(1,p2); result->setAt(2,p3);
             return result;
@@ -145,17 +152,17 @@ Point3ArrayPtr PGL(plane_triangle_clip)(const Plane3& plane,
 
 }
 
-Index PGL::plane_pointset_clip(const Plane3& plane, 
-                                   const Point3ArrayPtr points, 
+Index PGL::plane_pointset_clip(const Plane3& plane,
+                                   const Point3ArrayPtr points,
                                    const Index& group)
 {
    size_t nbpoints = group.size();
    Index result;
-   if(nbpoints != 0) {        
+   if(nbpoints != 0) {
         for(Index::const_iterator itg = group.begin(); itg != group.end(); ++itg){
             if (plane.getDistance(points->getAt(*itg)) >= 0) result.push_back(*itg);
         }
-        
+
     }
     else {
         size_t pid = 0;

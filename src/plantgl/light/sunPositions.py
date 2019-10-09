@@ -160,14 +160,14 @@ if __name__ == "__main__":
     pas = 30 
     hdeb = seq.heureTSV(jour, heureDeb, 1, 0, longitude)
     hfin = seq.heureTSV(jour, heureFin, 1, 0, longitude)
-    print "Heure debut, fin : ",hdeb, hfin
+    print("Heure debut, fin : ",hdeb, hfin)
     declinaison = seq.declinaison(jour)
-    print "Declinaison : ",declinaison
+    print("Declinaison : ",declinaison)
     angleHoraireMax = seq.angleHoraireMax(declinaison,latitude*math.pi/180)
-    print "Angle Horaire Max : ",angleHoraireMax
-    print "Angle horaire de 1362 : ",seq.angleHoraire(1362)
+    print("Angle Horaire Max : ",angleHoraireMax)
+    print("Angle horaire de 1362 : ",seq.angleHoraire(1362))
     (az,el,heur) = seq.positionSoleil(pas, latitude*math.pi/180, jour, 0, hfin)
     assert( len(az) == len(el) )
     for i in range(len(az)) :
-        print "Azimuth : ", az[i] * 180. / math.pi,"  Elevation : ", el[i] * 180. / math.pi
+        print("Azimuth : ", az[i] * 180. / math.pi,"  Elevation : ", el[i] * 180. / math.pi)
         

@@ -1,4 +1,4 @@
-import sunDome as sd
+from . import sunDome as sd
 import openalea.plantgl.all as pgl
 
 from math import radians, sin, pi, ceil
@@ -8,12 +8,12 @@ def diffuseInterception(scene):
   return  directionalInterception(scene, directions = sd.skyTurtle())
 
 def directInterception(scene, lat=43.36, long=3.52, jj=221, start=7, stop=19, stp=30, dsun = 1, dGMT = 0):
-  direct = sd.getDirectLight( latitude=lat , longitude=long, jourJul=jj, startH=start, stopH=stop, step=stp, decalSun = dsun, decalGMT = dGMT)
+  direct = sd.getDirectLight( latitude=lat , longitude=int, jourJul=jj, startH=start, stopH=stop, step=stp, decalSun = dsun, decalGMT = dGMT)
   return  directionalInterception(scene, directions = direct)
 
 def totalInterception(scene, lat=43.36, long=3.52, jj=221, start=7, stop=19, stp=30, dsun = 1, dGMT = 0):
   diffu = sd.skyTurtle()
-  direct =  sd.getDirectLight( latitude=lat , longitude=long, jourJul=jj, startH=start, stopH=stop, step=stp, decalSun = dsun, decalGMT = dGMT)
+  direct =  sd.getDirectLight( latitude=lat , longitude=int, jourJul=jj, startH=start, stopH=stop, step=stp, decalSun = dsun, decalGMT = dGMT)
   all = direct + diffu
   return directionalInterception(scene, directions = all)
 
@@ -65,7 +65,7 @@ def directionalInterceptionGL(scene, directions, north = 0, horizontal = False, 
       nbpixpershape, pixsize = values
       pixsize = pixsize*pixsize
       for key,val in nbpixpershape:
-        if shapeLight.has_key(key):
+        if key in shapeLight:
           shapeLight[key] += val*pixsize*wg
         else:
           shapeLight[key] = val*pixsize*wg
@@ -119,8 +119,8 @@ def directionalInterception(scene, directions, north = 0, horizontal = False, sc
     worldheight = pjbbx.getYRange()
     w, h = max(2,int(ceil(worldWidth/screenresolution))+1), max(2,int(ceil(worldheight/screenresolution))+1)
     if verbose : 
-        print 'direction :', dir
-        print 'image size :', w,'x',h
+        print('direction :', dir)
+        print('image size :', w,'x',h)
     worldWidth = w * screenresolution
     worldheight = h * screenresolution
     noid = pgl.Shape.NOID
@@ -162,12 +162,12 @@ def scene_irradiance(scene, directions, north = 0, horizontal = False, scene_uni
 
 
     res = directionalInterception(scene = scene, directions = directions, north = north, horizontal = horizontal, screenresolution=screenresolution, verbose=verbose)
-    res = { sid : conv_unit2 * value for sid, value in res.iteritems() }
+    res = { sid : conv_unit2 * value for sid, value in res.items() }
 
-    surfaces = dict([(sid, conv_unit2*sum([pgl.surface(sh.geometry) for sh in shapes])) for sid, shapes in scene.todict().iteritems()])
+    surfaces = dict([(sid, conv_unit2*sum([pgl.surface(sh.geometry) for sh in shapes])) for sid, shapes in scene.todict().items()])
 
 
-    irradiance = { sid : value / surfaces[sid] for sid, value in res.iteritems() }
+    irradiance = { sid : value / surfaces[sid] for sid, value in res.items() }
 
     import pandas
     return pandas.DataFrame( {'area' : surfaces, 'irradiance' : irradiance} )

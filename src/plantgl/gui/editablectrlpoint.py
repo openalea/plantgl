@@ -1,9 +1,9 @@
-from openalea.vpltk.qt import QtCore
+from openalea.plantgl.gui.qt import QtCore
 from PyQGLViewer import *
 from openalea.plantgl.all import *
 
 
-from openalea.vpltk.qt.QtCore import QObject,pyqtSignal
+from openalea.plantgl.gui.qt.QtCore import QObject,pyqtSignal
 
 class Pos3Setter:
     def __init__(self,ctrlpointset,index):

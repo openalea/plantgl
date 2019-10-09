@@ -1,13 +1,18 @@
-file(GLOB SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
+# --- Source Files
 
-find_package(Qt4)
-SET(CMAKE_AUTOMOC ON)
-
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
+file(GLOB_RECURSE SRC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
 
 add_executable(pglviewer ${SRC_FILES})
-target_link_libraries(pglviewer ${PGL_LIBRARIES} pglgui pglalgo pgltool pglmath pglsg)
+
+# --- Linked Libraries
+
+target_link_libraries(pglviewer pglgui)
+target_link_libraries(pglviewer Qt5::Core Qt5::Widgets Qt5::OpenGL)
+
+# --- Dependencies
+
 add_dependencies(pglviewer pglgui)
 
-install(TARGETS pglviewer
-        RUNTIME DESTINATION bin)
+# --- Output Executable
+
+install(TARGETS pglviewer RUNTIME DESTINATION "bin")

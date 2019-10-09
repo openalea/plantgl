@@ -3,31 +3,41 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon et al.
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 
 /*! \file geom_pointarray.h
@@ -60,7 +70,7 @@ PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-class SG_API Point2Array : public TOOLS(Array1)<TOOLS(Vector2)>
+class SG_API Point2Array : public Array1<Vector2>
 {
 
 public:
@@ -73,24 +83,24 @@ public:
   /** Constructs a Point2Array of size of \e size.
       \post
       - \e self is valid. */
-  Point2Array( uint_t size, const TOOLS(Vector2)& t);
+  Point2Array( uint_t size, const Vector2& t);
 
   /** Constructs a Point2Array of size of \e size starting from \e firstval and incermenting each time of \e increment.
       \post
       - \e self is valid. */
-  Point2Array( size_t size, const TOOLS(Vector2)& firstval, const TOOLS(Vector2)& increment);
+  Point2Array( size_t size, const Vector2& firstval, const Vector2& increment);
 
   /** Constructs a Point2Array of size 2 with \e a and \e b.
       \post
       - \e self is valid. */
-  Point2Array( TOOLS(Vector2) a, TOOLS(Vector2) b );
+  Point2Array( Vector2 a, Vector2 b );
 
   /** Constructs a PointArray with the range of points [\e first, \e last).
       \post
       - \e self is valid. */
   template <class InIterator>
   Point2Array( InIterator first, InIterator last ) :
-    TOOLS(Array1)<TOOLS(Vector2)>(first,last) {
+    Array1<Vector2>(first,last) {
     GEOM_ASSERT(isValid());
   }
 
@@ -98,13 +108,13 @@ public:
   virtual ~Point2Array( );
 
   /// Returns the mimimum and maximum points bounding \e self.
-  std::pair<TOOLS(Vector2),TOOLS(Vector2)> getBounds( ) const;
+  std::pair<Vector2,Vector2> getBounds( ) const;
 
   /// Returns the center of \e self.
-  TOOLS(Vector2) getCenter( ) const;
+  Vector2 getCenter( ) const;
 
   /// Returns the extent along the \c axis and \c y axis of \e self.
-  TOOLS(Vector2) getExtent( ) const;
+  Vector2 getExtent( ) const;
 
   /** Returns the total length of the segments formed by adjacent points.
       It takes sense in the case that \e self denotes a polyline. */
@@ -138,7 +148,7 @@ public:
   void normalize();
 
   /// Transform all the points of the array with a matrix
-  void transform(const TOOLS(Matrix2)&);
+  void transform(const Matrix2&);
 
   real_t * data() const;
 
@@ -158,7 +168,7 @@ PGL_DECLARE_TYPE(Point2Array)
 */
 
 
-class SG_API Point3Array : public TOOLS(Array1)<TOOLS(Vector3)>
+class SG_API Point3Array : public Array1<Vector3>
 {
 
 public:
@@ -171,17 +181,17 @@ public:
   /** Constructs a Point3Array of size of \e size.
       \post
       - \e self is valid. */
-  Point3Array( uint_t size, const TOOLS(Vector3)& t);
+  Point3Array( uint_t size, const Vector3& t);
 
   /** Constructs a Point3Array of size of \e size starting from \e firstval and incermenting each time of \e increment.
       \post
       - \e self is valid. */
-  Point3Array( size_t size, const TOOLS(Vector3)& firstval, const TOOLS(Vector3)& increment);
+  Point3Array( size_t size, const Vector3& firstval, const Vector3& increment);
 
   /** Constructs a Point3Array of size 2 with \e a and \e b.
       \post
       - \e self is valid. */
-  Point3Array( const TOOLS(Vector3)& a, const TOOLS(Vector3)& b );
+  Point3Array( const Vector3& a, const Vector3& b );
 
   /** Constructs a Point3Array from the Point2Array \e a and with z value \e z.
       \post
@@ -194,7 +204,7 @@ public:
       - \e self is valid. */
   template <class InIterator>
   Point3Array( InIterator first, InIterator last ) :
-    TOOLS(Array1)<TOOLS(Vector3)>(first,last) {
+    Array1<Vector3>(first,last) {
     GEOM_ASSERT(isValid());
   }
 
@@ -202,13 +212,13 @@ public:
   virtual ~Point3Array( );
 
   /// Returns the mimimum and maximum points bounding \e self.
-  std::pair<TOOLS(Vector3),TOOLS(Vector3)> getBounds( ) const;
+  std::pair<Vector3,Vector3> getBounds( ) const;
 
   /// Returns the center of \e self.
-  TOOLS(Vector3) getCenter( ) const;
+  Vector3 getCenter( ) const;
 
   /// Returns the extent along the \c axis and \c y axis of \e self.
-  TOOLS(Vector3) getExtent( ) const;
+  Vector3 getExtent( ) const;
 
  /** Returns the total length of the segments formed by adjacent points.
       It takes sense in the case that \e self denotes a polyline. */
@@ -260,10 +270,10 @@ public:
   real_t * data() const;
 
   /// Transform all the points of the array with a matrix
-  void transform(const TOOLS(Matrix3)&);
+  void transform(const Matrix3&);
 
   /// Transform all the points of the array with a matrix
-  void transform(const TOOLS(Matrix4)&);
+  void transform(const Matrix4&);
 
 };
 
@@ -280,7 +290,7 @@ PGL_DECLARE_TYPE(Point3Array)
 */
 
 
-class SG_API Point4Array : public TOOLS(Array1)<TOOLS(Vector4)>
+class SG_API Point4Array : public Array1<Vector4>
 {
 
 public:
@@ -293,14 +303,14 @@ public:
   /** Constructs a Point4Array of size of \e size.
       \post
       - \e self is valid. */
-  Point4Array( uint_t size, const TOOLS(Vector4)& value);
+  Point4Array( uint_t size, const Vector4& value);
 
   /** Constructs a Point4Array with the range of points [\e first, \e last).
       \post
       - \e self is valid. */
   template <class InIterator>
   Point4Array( InIterator first, InIterator last ) :
-    TOOLS(Array1)<TOOLS(Vector4)>(first,last) {
+    Array1<Vector4>(first,last) {
     GEOM_ASSERT(isValid());
   }
 
@@ -325,19 +335,19 @@ public:
   /** Constructs a Point4Array of size of \e size starting from \e firstval and incermenting each time of \e increment.
       \post
       - \e self is valid. */
-  Point4Array( size_t size, const TOOLS(Vector4)& firstval, const TOOLS(Vector4)& increment);
+  Point4Array( size_t size, const Vector4& firstval, const Vector4& increment);
 
   /// Destructor
   virtual ~Point4Array( );
 
   /// Returns the mimimum and maximum points bounding \e self.
-  std::pair<TOOLS(Vector4),TOOLS(Vector4)> getBounds( ) const;
+  std::pair<Vector4,Vector4> getBounds( ) const;
 
   /// Returns the center of \e self.
-  TOOLS(Vector4) getCenter( ) const;
+  Vector4 getCenter( ) const;
 
   /// Returns the extent along the \c axis and \c y axis  of \e self.
-  TOOLS(Vector4) getExtent( ) const;
+  Vector4 getExtent( ) const;
 
   /** Returns the total length of the segments formed adjacent points.
       It takes sense in the case that \e self denotes a polyline. */
@@ -400,7 +410,7 @@ public:
   real_t * data() const;
 
   /// Transform all the points of the array with a matrix
-  void transform(const TOOLS(Matrix4)&);
+  void transform(const Matrix4&);
 };
 
 /// Point4Array Pointer
@@ -411,28 +421,28 @@ PGL_DECLARE_TYPE(Point4Array)
 
 template <class T>
 real_t hausdorff_distance(const RCPtr<T> pts1,
-						  const RCPtr<T> pts2)
+                          const RCPtr<T> pts2)
 {
-	if(!pts1 || !pts2 || pts1->empty() ||pts2->empty())
+    if(!pts1 || !pts2 || pts1->empty() ||pts2->empty())
         return 0;
-	real_t dist1 = 0;
-	for(typename T::const_iterator it1 = pts1->begin(); it1 != pts1->end();++it1){
-		real_t dist1a = REAL_MAX;
-		for(typename T::const_iterator it2 = pts2->begin(); it2 != pts2->end();++it2)
+    real_t dist1 = 0;
+    for(typename T::const_iterator it1 = pts1->begin(); it1 != pts1->end();++it1){
+        real_t dist1a = REAL_MAX;
+        for(typename T::const_iterator it2 = pts2->begin(); it2 != pts2->end();++it2)
             dist1a = std::min(dist1a,norm((*it1)-(*it2)));
-		dist1 = std::max(dist1,dist1a);
-	}
-	real_t dist2 = 0;
-	for(typename T::const_iterator it2 = pts2->begin(); it2 != pts2->end();++it2){
-		real_t dist2a = REAL_MAX;
-		for(typename T::const_iterator it1 = pts1->begin(); it1 != pts1->end();++it1)
-			dist2a = std::min(dist2a,norm((*it1)-(*it2)));
-		dist2 = std::max(dist2,dist2a);
-	}
-	return std::max(dist1,dist2);
+        dist1 = std::max(dist1,dist1a);
+    }
+    real_t dist2 = 0;
+    for(typename T::const_iterator it2 = pts2->begin(); it2 != pts2->end();++it2){
+        real_t dist2a = REAL_MAX;
+        for(typename T::const_iterator it1 = pts1->begin(); it1 != pts1->end();++it1)
+            dist2a = std::min(dist2a,norm((*it1)-(*it2)));
+        dist2 = std::max(dist2,dist2a);
+    }
+    return std::max(dist1,dist2);
 }
 
-// filter redundant successive value and homogenize value according to 
+// filter redundant successive value and homogenize value according to
 template <class Array>
 void filterAndHomogenize(Array& array)
 {
@@ -449,11 +459,11 @@ void filterAndHomogenize(Array& array)
       element_type v = *it;
       res = points.insert(v);
       if (!res.second)
-	{
-	  iterator it_prec = it - 1;
-	  if ((*it_prec != v) && (*it_prec != *res.first))
-	    *it = *res.first;
-	}
+    {
+      iterator it_prec = it - 1;
+      if ((*it_prec != v) && (*it_prec != *res.first))
+        *it = *res.first;
+    }
     }
 }
 
@@ -461,16 +471,16 @@ void filterAndHomogenize(Array& array)
 template <class Array>
 std::pair<typename Array::const_iterator,real_t> findClosest(const Array& array, const typename Array::element_type& point)
 {
-	typename Array::const_iterator closest = array.begin();
-	real_t dist = norm(*closest-point);
-	for (typename Array::const_iterator it = closest+1; it != array.end(); ++it){
-		real_t d = norm(*it-point);
-		if (d < dist) {
-			closest = it;
-			dist = d;
-		}
-	}
-	return std::pair<typename Array::const_iterator,real_t>(closest,dist);
+    typename Array::const_iterator closest = array.begin();
+    real_t dist = norm(*closest-point);
+    for (typename Array::const_iterator it = closest+1; it != array.end(); ++it){
+        real_t d = norm(*it-point);
+        if (d < dist) {
+            closest = it;
+            dist = d;
+        }
+    }
+    return std::pair<typename Array::const_iterator,real_t>(closest,dist);
 }
 
 // __geom_pointarray.h__

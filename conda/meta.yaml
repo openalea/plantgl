@@ -8,7 +8,6 @@ package:
 source:
   path: ..
 
-
 about:
   home: https://github.com/openalea/plantgl
   license: Cecill-C
@@ -17,38 +16,50 @@ about:
 build:
   preserve_egg_dir: True
   number: 1
+  features:
+    - vc9         [win and py27]
+    - vc14        [win and py37]
+  track_features:
+    - vc9         [win and py27]
+    - vc14        [win and py37]
 
 requirements:
   build:
    - python
-   - setuptools
-   - openalea.deploy
-   - scons
-   - openalea.sconsx
-   - qt <5
+   - qt =5
    - boost
    - bison [unix]
-   - flex 2.5.39 [unix]
-   - m2-bison [win]
-   - m2-flex  [win]
-   - cgal [unix]
+   - flex [unix]
    - gmp [unix]
+   - cgal [unix]
+   - m2-bison [win]
+   - m2-flex [win]
+   - qhull
    - eigen
    - ann
-   - qhull
-   - patchelf [linux]
+   - pyqglviewer
+   - menuinst [win]
+   - setuptools
+   - openalea.deploy
+   - cmake >=3.12.0
+   #- {{ compiler('cxx') }}
   run:
    - python
-   - openalea.deploy
-   - openalea.core
-   - {{ pin_compatible('qt', exact=True) }}
-   - pyqt
+   - qt =5
+   - boost
    - gmp [unix]
    - cgal [unix]
    - qhull
    - ann
-   - {{ pin_compatible('boost', exact=True) }}
-   - path.py
+   - pyqt
+   - ipython
+   - qtconsole
+   - pyopengl
+   - pyqglviewer
+   - scipy
+   - matplotlib
+   - vs2008_runtime [win and py27]
+   - vs2015_runtime [win and py37]
 
 test:
   requires:
@@ -60,4 +71,4 @@ test:
     - test/data
     - share/
   commands:
-   - nosetests -v -I test_viewer.py -I test_projpershape.py -I thread.py -I test_geomprinter.py -I test_coneofperception.py -I test_pointgrid.py # -I test_bbox.py -I test_codec.py
+    - nosetests -v -I test_viewer.py -I test_projpershape.py -I thread.py -I test_geomprinter.py -I test_coneofperception.py -I test_pointgrid.py -I test_depthsortengine.py -I test_zbufferengine.py -I test_shared_data.py -I test_light.py -I test_image.py

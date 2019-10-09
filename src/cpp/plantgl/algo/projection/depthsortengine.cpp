@@ -1,35 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2018 - Cirad/Inra/Inria
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al.
- *
- *       Development site : https://github.com/openalea/plantgl
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
- * 
- *                      GNU General Public Licence
- *           
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
+ *
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
- */             
+ */
+             
 
 
 /* ----------------------------------------------------------------------- */
@@ -44,7 +52,6 @@
 /* ----------------------------------------------------------------------- */
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 DepthSortEngine::DepthSortEngine() :
     ProjectionEngine()
@@ -59,6 +66,8 @@ DepthSortEngine::~DepthSortEngine()
 
 void DepthSortEngine::iprocess(TriangleSetPtr triangles, AppearancePtr appearance, uint32_t id, ProjectionCameraPtr camera, uint32_t threadid )
 {
+	#ifdef WITH_CGAL
+
     /*
     const Point3ArrayPtr points(triangles->getPointList());
     const Index3ArrayPtr indices(triangles->getIndexList());
@@ -79,7 +88,9 @@ void DepthSortEngine::iprocess(TriangleSetPtr triangles, AppearancePtr appearanc
 
         processTriangle(v0, v1, v2, id);
 
-    }    
+    }  
+
+	#endif
 }
 
 void DepthSortEngine::iprocess(PolylinePtr polyline, MaterialPtr material, uint32_t id, ProjectionCameraPtr camera, uint32_t threadid )
@@ -93,12 +104,15 @@ void DepthSortEngine::iprocess(PointSetPtr pointset, MaterialPtr material, uint3
 }
 
 
+
+#ifdef WITH_CGAL
 #include <CGAL/Exact_predicates_exact_constructions_kernel.h>
 #include <CGAL/Boolean_set_operations_2.h>
 #include <CGAL/Constrained_Delaunay_triangulation_2.h>
 #include <CGAL/Triangulation_face_base_with_info_2.h>
 #include <CGAL/intersections.h>
 #include <list>
+#include <iterator>
 
 
 struct FaceInfo2
@@ -414,7 +428,7 @@ void swap(Vector3& v1, Vector3& v2){
     v2 = vTemp;    
 }
 
-void DepthSortEngine::processTriangle(const TOOLS(Vector3)& v0, const TOOLS(Vector3)& v1, const TOOLS(Vector3)& v2, uint32_t id)
+void DepthSortEngine::processTriangle(const Vector3& v0, const Vector3& v1, const Vector3& v2, uint32_t id)
 {
     setlocale(LC_ALL, "en_GB");
 
@@ -529,8 +543,14 @@ DepthSortEngine::_processTriangle( PolygonInfo polygon,
                 if (mrest2.size() > 0) {
                     printf("rest2 : %lu\n", mrest2.size());
                     DepthSortEngine::PolygonInfoIteratorList newPol = appendPolygons(mrest2.begin(), mrest2.end());
-                    DepthSortEngine::PolygonInfoIteratorList::iterator it2 = polygonstotest.insert(it, newPol.begin(), newPol.end());
-                    if (isbegin) { begin = it2; }
+                    polygonstotest.insert(it, newPol.begin(), newPol.end());
+                    if (isbegin) { 
+                        begin = it;
+                        std::size_t const distance = std::distance(newPol.begin(), newPol.end());
+                        for (std::size_t i = 0; i < distance; ++i) {
+                            --begin;
+                        }
+                    }
                 }
                 else {
                     if (isbegin) { begin = it; }
@@ -618,8 +638,15 @@ DepthSortEngine::_processTriangle( PolygonInfo polygon,
                 if (mrest2.size() > 0) {
                     printf("rest2 : %lu\n", mrest2.size());
                     DepthSortEngine::PolygonInfoIteratorList newPol = appendPolygons(mrest2.begin(), mrest2.end());
-                    DepthSortEngine::PolygonInfoIteratorList::iterator it2 = polygonstotest.insert(it, newPol.begin(), newPol.end());
-                    if (isbegin) { begin = it2; isbegin = false; }
+                    polygonstotest.insert(it, newPol.begin(), newPol.end());
+                    if (isbegin) {
+                        begin = it;
+                        std::size_t const distance = std::distance(newPol.begin(), newPol.end());
+                        for (std::size_t i = 0; i < distance; ++i) {
+                            --begin;
+                        }
+                        isbegin = false;
+                    }
                 }
 
                 printf("rest1 : %lu\n", mrest1.size());
@@ -692,3 +719,4 @@ ScenePtr DepthSortEngine::getProjectionResult(Color4::eColor4Format format, bool
     return scene;
 }
 
+#endif

@@ -1,9 +1,28 @@
-file(GLOB_RECURSE SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
+# --- Source Files
+
+file(GLOB_RECURSE SRC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
 
 add_library(pglsg SHARED ${SRC_FILES})
-target_link_libraries(pglsg ${PGL_LIBRARIES} pgltool pglmath)
-target_compile_definitions(pglsg PRIVATE ${PGL_DEFINE_VARIABLES} SG_MAKEDLL)
+
+# --- Linked Libraries
+
+target_link_libraries(pglsg pgltool pglmath)
+
+if (QT5_FOUND)
+    target_link_libraries(pglsg Qt5::Core)
+endif()
+
+# --- Dependencies
+
 add_dependencies(pglsg pgltool pglmath)
 
-install(TARGETS pglsg
-        LIBRARY DESTINATION lib)
+# --- Preprocessor
+
+if (WIN32)
+    # Export DLL on Windows
+    target_compile_definitions(pglsg PRIVATE SG_MAKEDLL)
+endif()
+
+# --- Output Library
+
+install(TARGETS pglsg LIBRARY DESTINATION "lib")
