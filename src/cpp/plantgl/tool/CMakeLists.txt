@@ -10,6 +10,11 @@ if (QT5_FOUND)
     target_link_libraries(pgltool Qt5::Core)
 endif()
 
+if (NOT MSVC)
+    target_link_libraries(pgltool Boost::system Boost::thread)
+endif()
+
+
 # --- Preprocessor
 
 if (WIN32)

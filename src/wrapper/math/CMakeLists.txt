@@ -31,4 +31,9 @@ if (WIN32)
     set_target_properties(_pglmath PROPERTIES SUFFIX ".pyd")
 endif()
 
+if (APPLE)
+    set_target_properties(_pglmath PROPERTIES SUFFIX ".so")
+endif()
+
+
 install(TARGETS _pglmath DESTINATION "${CMAKE_SOURCE_DIR}/src/plantgl/math")

@@ -31,4 +31,9 @@ if (WIN32)
     set_target_properties(_pglsg PROPERTIES SUFFIX ".pyd")
 endif()
 
+if (APPLE)
+    set_target_properties(_pglsg PROPERTIES SUFFIX ".so")
+endif()
+
+
 install(TARGETS _pglsg DESTINATION "${CMAKE_SOURCE_DIR}/src/plantgl/scenegraph")

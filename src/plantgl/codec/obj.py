@@ -1,10 +1,8 @@
 # -*- utf-8 -*-
 #
-#       VPlants.PlantGL
+#       OpenAlea.PlantGL
 #
 #       Copyright 2011-2011 INRIA - CIRAD - INRA
-#
-#       File author(s): Christophe Pradal <christophe.pradal@cirad.fr>
 #
 #       Distributed under the Cecill-C License.
 #       See accompanying file LICENSE.txt or copy at
@@ -24,12 +22,14 @@ This codec allow to read and write `OBJ`_ file format.
 """
 
 __license__ = "Cecill-C"
-__revision__ = " $Id: obj.py 2242 2010-02-08 17:03:26Z cokelaer $ "
 
 import os
 import warnings
 from random import randint
-from itertools import zip_longest
+try:
+    from itertools import zip_longest
+except ImportError:
+    from itertools import izip_longest as zip_longest
 
 import openalea.plantgl.math as mt
 import openalea.plantgl.scenegraph as sg

@@ -35,4 +35,8 @@ if (WIN32)
     set_target_properties(_pglalgo PROPERTIES SUFFIX ".pyd")
 endif()
 
+if (APPLE)
+    set_target_properties(_pglalgo PROPERTIES SUFFIX ".so")
+endif()
+
 install(TARGETS _pglalgo DESTINATION "${CMAKE_SOURCE_DIR}/src/plantgl/algo")
