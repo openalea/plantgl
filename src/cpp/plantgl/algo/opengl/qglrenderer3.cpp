@@ -1189,7 +1189,7 @@ static const char *fragmentShaderSourceCore =
     "#version 150\n"
     "out highp vec4 fragColor;\n"
     "void main() {\n"
-    "   fragColor = vec4(1.0, 1.0, 1.0, 1.0);\n"
+    "   fragColor = vec4(1.0, 0.5, 0.0, 1.0);\n"
     "}\n";
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -1262,11 +1262,14 @@ bool QGLRenderer3::process(TriangleSet *triangleSet)
 
     if(!vertexBuf) {
       vertexBuf = new QOpenGLBuffer( QOpenGLBuffer::VertexBuffer);
+      vertexBuf->setUsagePattern(QOpenGLBuffer::StaticDraw);
+
       vertexBuf->create();
       vertexBuf->bind();
     }
 
     vertexBuf->allocate(vertices, triangleSet->getPointList()->size() * 3 * sizeof(real_t));
+    vertexBuf->write(0, vertices, triangleSet->getPointList()->size() * 3 * sizeof(real_t));
 
     for(int i = 0; i < triangleSet->getPointList()->size(); i++)
       qDebug() << Q_FUNC_INFO
@@ -1289,7 +1292,8 @@ bool QGLRenderer3::process(TriangleSet *triangleSet)
       indexBuf->bind();
     }
 
-    indexBuf->allocate(indices, triangleSet->getIndexList()->size() * 3 * sizeof(uint_t));
+    indexBuf->allocate(indices, triangleSet->getIndexList()->size() * 3* sizeof(uint_t));
+    //indexBuf->write(0, indices, triangleSet->getIndexList()->size() * 3 * sizeof(uint_t));
 
     for(int i = 0; i < triangleSet->getIndexList()->size(); i++)
       qDebug() << Q_FUNC_INFO
@@ -1302,14 +1306,16 @@ bool QGLRenderer3::process(TriangleSet *triangleSet)
 // Init - attributes
 // /////////////////////////////////////////////////////////////////////////////
 
-    indexBuf->bind();
-    vertexBuf->bind();
     __ogl.glEnableVertexAttribArray(0);
-    __ogl.glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(real_t), 0);
+    vertexBuf->bind();
+    // __ogl.glVertexAttribPointer(0, 3, GL_GEOM_REAL, GL_FALSE, 3 * sizeof(real_t), 0);
+    __ogl.glVertexAttribPointer(0, 3, GL_GEOM_REAL, GL_FALSE, 0, 0);
+
+    indexBuf->bind();
 
 // /////////////////////////////////////////////////////////////////////////////
 
-    program->release();
+    // program->release();
 
 // /////////////////////////////////////////////////////////////////////////////
 // Actual rendering
@@ -1323,20 +1329,20 @@ bool QGLRenderer3::process(TriangleSet *triangleSet)
     double m_yRot = 0;
     double m_zRot = 0;
 
-    QMatrix4x4 m_camera;
+    /*QMatrix4x4 m_camera;
     m_camera.setToIdentity();
-    // m_camera.translate(0, 0, 0);
-
+    m_camera.translate(0, 0, 0);
+    */
     QMatrix4x4 m_world;
     m_world.setToIdentity();
-    m_world.rotate(180.0f - (m_xRot / 16.0f), 1, 0, 0);
+    /*m_world.rotate(180.0f - (m_xRot / 16.0f), 1, 0, 0);
     m_world.rotate(m_yRot / 16.0f, 0, 1, 0);
-    m_world.rotate(m_zRot / 16.0f, 0, 0, 1);
+    m_world.rotate(m_zRot / 16.0f, 0, 0, 1);*/
 
-    program->bind();
+    // program->bind();
     // QMatrix4x4 proj = toQMatrix44(__projection);
     program->setUniformValue(projMatrixID, __projection);
-    program->setUniformValue(modvMatrixID, m_camera * m_world);
+    program->setUniformValue(modvMatrixID, m_world);
 
     for(int i = 0; i < 4; i++)
       qDebug() << Q_FUNC_INFO
@@ -1346,7 +1352,12 @@ bool QGLRenderer3::process(TriangleSet *triangleSet)
                << __projection(i,2)
                << __projection(i,3);
 
-    glDrawArrays(GL_TRIANGLES, 0, triangleSet->getIndexList()->size());
+      qDebug() << Q_FUNC_INFO
+               << "nbtr"
+               << triangleSet->getIndexList()->size()*3;
+
+    //__ogl.glDrawArrays(GL_TRIANGLES, 0, triangleSet->getIndexList()->size()*3);
+    __ogl.glDrawElements(GL_TRIANGLES, triangleSet->getIndexList()->size()*3, GL_UNSIGNED_INT, (void *)0);
 
     program->release();
 
