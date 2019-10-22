@@ -5,7 +5,7 @@ from OpenGL.GLU import *
 import os
 
 from openalea.plantgl.gui.qt.QtCore import QObject, QPoint, QTimer, Qt, pyqtSignal
-from openalea.plantgl.gui.qt.QtGui import QCursor, QImageReader, QPixmap
+from openalea.plantgl.gui.qt.QtGui import QCursor, QImageReader, QPixmap, QGuiApplication
 from openalea.plantgl.gui.qt.QtWidgets import QApplication, QDialog, QDockWidget, QFileDialog, QMenu, QMessageBox, QScrollArea, QSplashScreen, QVBoxLayout, QWidget
 from openalea.plantgl.gui.qt.QtOpenGL import QGLWidget 
 
@@ -189,7 +189,8 @@ class MaterialPanelView (QGLWidget):
         if w == 0 or h == 0 : return
         if self.mousepos != None and self.geometry().contains(self.mousepos):            
             cursorselection = self.selectedColor(self.mousepos.x(),self.mousepos.y())
-        glViewport(0,0,w,h);
+        scaling = QGuiApplication.instance().devicePixelRatio()
+        glViewport(0,0,int(w*scaling),int(h*scaling));
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         glOrtho(0,w,h,0,-3000,1000);
@@ -208,8 +209,8 @@ class MaterialPanelView (QGLWidget):
         glr = GLRenderer(d)
         selectionbegin = self.selectionbegin
         selectionend = self.selectionend
-        for i in range(0,nbcitem):
-            for j in range(0,nbritem):
+        for i in range(0,int(nbcitem)):
+            for j in range(0,int(nbritem)):
                 if colindex < self.nbMaterial():
                     curmat = self.getMaterial(colindex)
                 else:
@@ -351,7 +352,7 @@ class MaterialPanelView (QGLWidget):
             #         p2 = QPoint(*self.positionColor(self.cursorselection))
             #         self.initpos = self.initpos - p1 + p2 
             #         self.setSelection(self.cursorselection)
-        elif event.buttons()  == Qt.NoButton and self.cursorselection >= 0:
+        elif event.buttons()  == Qt.NoButton and not self.cursorselection is None and self.cursorselection >= 0:
             cmat = self.getMaterial(self.cursorselection)
             if cmat.isTexture():
                 if lastcursorselection != self.cursorselection or (self.preview is None and not self.previewtrigger.isActive()):                    

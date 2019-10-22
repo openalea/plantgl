@@ -67,6 +67,80 @@ class MatrixTransformed;
 
 /* ----------------------------------------------------------------------- */
 
+
+class MatrixStack {
+public:
+  typedef std::stack<Matrix4> Matrix4StackInternalType;
+  MatrixStack();
+  ~MatrixStack();
+
+  void push() {
+        __stack.push(__matrix);
+  }
+
+  void pop() {
+      if(__stack.empty()){
+          __matrix = TOOLS(Matrix4::IDENTITY);
+      }
+      else {
+        __matrix = __stack.top();
+        __stack.pop();
+      }
+  }
+
+  /// Returns the resulting matrix when applying \e self for the last time.
+  const Matrix4& getMatrix() const {
+      return __matrix;
+  }
+
+  /// Returns the resulting matrix when applying \e self for the last time.
+  Matrix4& getMatrix() {
+      return __matrix;
+  }
+
+  inline void translate(const Vector3& t){
+      transform(Matrix4::translation(t));
+  }
+
+  inline void scale(const Vector3& s){
+      transform(Matrix3::scaling(s));
+  }
+
+  inline void axisRotation(const Vector3& axe,const real_t angle){
+      transform(Matrix3::axisRotation(axe,angle));
+  }
+
+  inline void eulerRotationZYX(const real_t azimuth, const real_t elevation, const real_t roll){
+      transform(Matrix3::eulerRotationZYX(Vector3(azimuth,elevation,roll)));
+  }
+
+  inline void transform(const Matrix4& m){
+      __matrix *= m;
+  }
+
+  inline void transform(const Matrix3& m){
+      __matrix *= Matrix4(m);
+  }
+
+  inline void identity(){
+      __matrix = Matrix4();
+  }
+
+
+  void getTransformation(Vector3& scale,
+                         Vector3& angle,
+                         Vector3& translate) const;
+
+  void clear();
+
+protected:
+
+  /// The resulting matrix.
+  Matrix4 __matrix;
+
+  Matrix4StackInternalType __stack;
+};
+
 /**
    \class MatrixComputer
    \brief An action to compute the matrix4 representing the affine transformations in a branch of the scene.
@@ -204,72 +278,18 @@ public:
   virtual bool process( Font * font );
 
 
-  void pushMatrix() {
-        __stack.push(__matrix);
-  }
+  const Matrix4& getMatrix() const { return __matrix.getMatrix(); }
 
-  void popMatrix() {
-      if(__stack.empty()){
-          __matrix = TOOLS(Matrix4::IDENTITY);
-      }
-      else {
-        __matrix = __stack.top();
-        __stack.pop();
-      }
-  }
-
-  /// Returns the resulting matrix when applying \e self for the last time.
-  const Matrix4& getMatrix() const {
-      return __matrix;
-  }
-
-  /// Returns the resulting matrix when applying \e self for the last time.
-  Matrix4& getMatrix() {
-      return __matrix;
-  }
-
-  inline void translate(const Vector3& t){
-      transform(Matrix4::translation(t));
-  }
-
-  inline void scale(const Vector3& s){
-      transform(Matrix3::scaling(s));
-  }
-
-  inline void axisRotate(const Vector3& axe,const real_t angle){
-      transform(Matrix3::axisRotation(axe,angle));
-  }
-
-  inline void transform(const Matrix4& m){
-      __matrix *= m;
-  }
-
-  inline void transform(const Matrix3& m){
-      __matrix *= Matrix4(m);
-  }
-
-  inline void identity(){
-      __matrix = Matrix4();
-  }
-
-
-  void getTransformation(Vector3& scale,
-                         Vector3& angle,
-                         Vector3& translate) const;
 protected:
 
-  /// The resulting matrix.
-  Matrix4 __matrix;
-
-  std::stack<Matrix4> __stack;
+  MatrixStack __matrix;
 
 private:
-
 
   bool default_process( Geometry* object )
     {
     GEOM_ASSERT(object);
-    __matrix= TOOLS(Matrix4::IDENTITY);
+    __matrix.identity();
     return true;
     }
 

@@ -119,7 +119,7 @@ bool VgstarPrinter::header(const char * comment){
 void VgstarPrinter::printTransformation(){
     Vector3 scaling, rotation, translation;
 
-    getTransformation(scaling, rotation, translation);
+    __matrix.getTransformation(scaling, rotation, translation);
     rotation *= GEOM_DEG;
 
 //      Matrix4 test;
@@ -261,16 +261,16 @@ bool VgstarPrinter::process( Cone * cone ) {
 
   Vector3 scaling, rotation, translation;
 
-  getTransformation(scaling, rotation, translation);
+  __matrix.getTransformation(scaling, rotation, translation);
 
   if(scaling.x() == scaling.y()){
 
-          pushMatrix();
-          axisRotate(Vector3::OY,-GEOM_HALF_PI);
+          __matrix.push();
+          __matrix.axisRotation(Vector3::OY,-GEOM_HALF_PI);
 
           real_t diam_base= cone->getRadius( ) * 2.;
           Vector3 scales(cone->getHeight(),diam_base,0.0001);
-          scale(scales);
+          __matrix.scale(scales);
 
           GEOM_VGSTARPRINT_BEGIN(__vgstarStream,"33");
 
@@ -279,7 +279,7 @@ bool VgstarPrinter::process( Cone * cone ) {
           printNullTriangle();
 
           GEOM_VGSTARPRINT_END(__vgstarStream);
-          popMatrix();
+          __matrix.pop();
           return true;
   }
   else {
@@ -295,13 +295,13 @@ bool VgstarPrinter::process( Cylinder * cylinder ) {
 //  return triangle_process(cylinder);
   GEOM_ASSERT(cylinder);
 
-  pushMatrix();
+  __matrix.push();
 
   real_t r = cylinder->getRadius()*2;
   Vector3 scales(r,r,cylinder->getHeight());
-  scale(scales);
+  __matrix.scale(scales);
 
-  axisRotate(Vector3::OY,-GEOM_HALF_PI);
+  __matrix.axisRotation(Vector3::OY,-GEOM_HALF_PI);
 
 
   GEOM_VGSTARPRINT_BEGIN(__vgstarStream,"32");
@@ -311,7 +311,7 @@ bool VgstarPrinter::process( Cylinder * cylinder ) {
   printNullTriangle();
 
   GEOM_VGSTARPRINT_END(__vgstarStream);
-  popMatrix();
+  __matrix.pop();
 
   return true;
 }
@@ -350,17 +350,17 @@ bool VgstarPrinter::process( Frustum * cone ) {
   Vector3 scaling, rotation, translation;
   Matrix4 gmatrix = getMatrix();
 
-  getTransformation(scaling, rotation, translation);
+  __matrix.getTransformation(scaling, rotation, translation);
 
   if(scaling.x() == scaling.y()){
 
-          pushMatrix();
-          axisRotate(Vector3::OY,-GEOM_HALF_PI);
+          __matrix.push();
+          __matrix.axisRotation(Vector3::OY,-GEOM_HALF_PI);
 
           real_t diam_base= cone->getRadius( ) * 2.;
           real_t diam_up= cone->getRadius( ) * cone->getTaper() * 2.;
           Vector3 scales(cone->getHeight(),diam_base,diam_up);
-          scale(scales);
+          __matrix.scale(scales);
 
           GEOM_VGSTARPRINT_BEGIN(__vgstarStream,"33");
 
@@ -369,7 +369,7 @@ bool VgstarPrinter::process( Frustum * cone ) {
           printNullTriangle();
 
           GEOM_VGSTARPRINT_END(__vgstarStream);
-          popMatrix();
+          __matrix.pop();
   }
   else {
           return triangle_process(cone);
@@ -497,11 +497,11 @@ bool VgstarPrinter::process( QuadSet * quadSet ) {
 bool VgstarPrinter::process( Sphere * sphere ) {
   GEOM_ASSERT(sphere);
 
-  pushMatrix();
+  __matrix.push();
 
   real_t r = sphere->getRadius()*2;
   Vector3 scales(r,r,r);
-  scale(scales);
+  __matrix.scale(scales);
 
   GEOM_VGSTARPRINT_BEGIN(__vgstarStream,"31");
 
@@ -510,7 +510,7 @@ bool VgstarPrinter::process( Sphere * sphere ) {
   printNullTriangle();
 
   GEOM_VGSTARPRINT_END(__vgstarStream);
-  popMatrix();
+  __matrix.pop();
 
   return true;
 }
@@ -567,12 +567,12 @@ bool VgstarPrinter::process( BezierCurve2D * bezierCurve ) {
 
 bool VgstarPrinter::process( Disc * disc ) {
 //  return triangle_process(disc);
-  pushMatrix();
+  __matrix.push();
 
   real_t r = disc->getRadius()*2;
   Vector3 scales(r,r,r);
-  scale(scales);
-  translate(Vector3(-0.5,0,0));
+  __matrix.scale(scales);
+  __matrix.translate(Vector3(-0.5,0,0));
 
   GEOM_VGSTARPRINT_BEGIN(__vgstarStream,"21");
 
@@ -581,7 +581,7 @@ bool VgstarPrinter::process( Disc * disc ) {
   printNullTriangle();
 
   GEOM_VGSTARPRINT_END(__vgstarStream);
-  popMatrix();
+  __matrix.pop();
   return true;
 }
 

@@ -64,6 +64,7 @@ if (QT5_FOUND)
 endif()
 
 if (CGAL_FOUND)
+    include_directories(${CGAL_INCLUDE_DIRS})
     target_link_libraries(pglalgo CGAL::CGAL)
 endif()
 
