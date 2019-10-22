@@ -48,7 +48,7 @@
 
 #ifndef PGL_WITHOUT_QT
 
-#include <QtOpenGL/QGLWidget>
+#include <QtOpenGL>
 #include <QtGui/QImage>
 #include <QtGui/QFont>
 
@@ -120,7 +120,7 @@ bool QGLRenderer3::discretize_and_render(T *geom) {
 
 QGLRenderer3::QGLRenderer3(Discretizer& discretizer,
                            Tesselator& tesselator,
-                           const Matrix4& projection,
+                           const QMatrix4x4& projection,
                            const Vector3& lightPosition,
                            const Color3& lightColor,
                            QOpenGLFunctions& ogl) :
@@ -1154,7 +1154,7 @@ QMatrix4x4 toQMatrix44(const Matrix4& matrix){
     for(Matrix4::const_iterator it = matrix.begin(); it != matrix.end(); ++it, ++itd){
         *itd = *it;
     }
-    return QMatrix4x4(data);
+    return QMatrix4x4(data).transposed();
 }
 
 QMatrix3x3 toQMatrix33(const Matrix4& matrix){
@@ -1172,190 +1172,185 @@ QMatrix3x3 toQMatrix33(const Matrix4& matrix){
     return QMatrix3x3(data);
 }
 
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
+
 static const char *vertexShaderSourceCore =
     "#version 150\n"
     "in vec4 vertex;\n"
-    "in mat4 projMatrix;\n"
-//    "in mat4 MVMatrix;\n"
-//    "in mat3 normalMatrix;\n"
+    "uniform mat4 projMatrix;\n"
+    "uniform mat4 modvMatrix;\n"
     "void main() {\n"
-    "   gl_Position = projMatrix * vertex;\n"
+    "   gl_Position = projMatrix * modvMatrix * vertex;\n"
     "}\n";
 
-/*
 static const char *fragmentShaderSourceCore =
     "#version 150\n"
-    "in highp vec3 vert;\n"
-    "in highp vec3 vertNormal;\n"
     "out highp vec4 fragColor;\n"
-    "uniform highp vec3 lightPos;\n"
-    "uniform highp vec3 lightColor;\n"
     "void main() {\n"
-    "   highp vec3 L = normalize(lightPos - vert);\n"
-    "   highp float NL = max(dot(normalize(vertNormal), L), 0.0);\n"
-    "   highp vec3 color = vec3(0.39, 1.0, 0.0);\n"
-    "   highp vec3 col = clamp(color * 0.2 + color * 0.8 * NL, 0.0, 1.0);\n"
-    "   fragColor = vec4(col, 1.0);\n"
-    "}\n";
-*/
-
-static const char *fragmentShaderSourceCore =
-    "#version 150\n"
-    "out vec4 color;\n"
-    "void main() {\n"
-    "   color = vec4(1.0, 0., 0., 1.0);\n"
+    "   fragColor = vec4(1.0, 1.0, 1.0, 1.0);\n"
     "}\n";
 
+// /////////////////////////////////////////////////////////////////////////////
+// main
+// /////////////////////////////////////////////////////////////////////////////
 
-bool QGLRenderer3::process(TriangleSet *triangleSet) {
-  GEOM_ASSERT_OBJ(triangleSet);
+bool QGLRenderer3::process(TriangleSet *triangleSet)
+{
+// /////////////////////////////////////////////////////////////////////////////
+// Logging
+// /////////////////////////////////////////////////////////////////////////////
 
-  printf("process TriangleSet Z\n");
+  static QOpenGLDebugLogger *logger = nullptr;
 
-  bool normalV = triangleSet->getNormalPerVertex();
-  bool tex = __appearance && __appearance->isTexture() && triangleSet->hasTexCoordList();
-  bool color = triangleSet->hasColorList();
-  bool colorV = triangleSet->getColorPerVertex();
+    if(!logger) {
+      logger = new QOpenGLDebugLogger;
+      logger->initialize();
 
-  triangleSet->checkNormalList();
+      QObject::connect(logger, &QOpenGLDebugLogger::messageLogged, [=](const QOpenGLDebugMessage &message) -> void {
+                                                                     qDebug() << Q_FUNC_INFO << message;
+                                                                   });
 
-  /*
-  glFrontFace(triangleSet->getCCW() ? GL_CCW : GL_CW);
-  if (__appearance && __appearance->isTexture() && !triangleSet->hasTexCoordList()) {
-    glEnable(GL_TEXTURE_GEN_S);
-    glEnable(GL_TEXTURE_GEN_T);
-  } else if (color) {
-    glDisable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, 0);
+      logger->startLogging(QOpenGLDebugLogger::SynchronousLogging);
+    }
+
+// /////////////////////////////////////////////////////////////////////////////
+// Init - program
+// /////////////////////////////////////////////////////////////////////////////
+
+  static QOpenGLShaderProgram *program = 0;
+
+  if(!program) {
+    program = new QOpenGLShaderProgram;
+    program->addShaderFromSourceCode(QOpenGLShader::Vertex, vertexShaderSourceCore);
+    program->addShaderFromSourceCode(QOpenGLShader::Fragment, fragmentShaderSourceCore);
+    program->bindAttributeLocation("vertex", 0);
+    program->link();
   }
-*/
-    static QOpenGLShaderProgram program ;
-    program.addShaderFromSourceCode(QOpenGLShader::Vertex, vertexShaderSourceCore);
-    program.addShaderFromSourceCode(QOpenGLShader::Fragment, fragmentShaderSourceCore);
 
-    if(!program.link()) { printf("Cannot link shaders\n");}
+  program->bind();
 
-        // qDebug() << Q_FUNC_INFO << "Linking program";
+  GLuint projMatrixID = program->uniformLocation("projMatrix");
+  GLuint modvMatrixID = program->uniformLocation("modvMatrix");
 
-    if(!program.bind()) { printf("Cannot bind shaders\n");}
+// /////////////////////////////////////////////////////////////////////////////
+// Init - VAO
+// /////////////////////////////////////////////////////////////////////////////
 
+    static QOpenGLVertexArrayObject * m_vao = nullptr;
 
-    GLuint projMatrixID = program.uniformLocation("projMatrix");
-    // GLuint mvMatrixID = program.uniformLocation("MVMatrix");
-    // GLuint normalMatrixID = program.uniformLocation("normalMatrix");
-//    GLuint lightPosID = program.uniformLocation("lightPos");
-//    GLuint lightColorID = program.uniformLocation("lightColor");
+    if(!m_vao) {
+      m_vao = new QOpenGLVertexArrayObject;
+      m_vao->create();
+    }
 
-    program.setUniformValue(projMatrixID, toQMatrix44(__projection));
-    // program.setUniformValue(mvMatrixID, toQMatrix44(__modelmatrix.getMatrix()));
-//    program.setUniformValue(normalMatrixID, toQMatrix33(__modelmatrix.getMatrix()));
-//  program.setUniformValue(lightPosID, QVector3D(__lightPosition.x(),__lightPosition.y(),__lightPosition.z()));
-//    program.setUniformValue(lightColorID, QVector3D(__lightColor.getRedClamped(),__lightColor.getGreenClamped(),__lightColor.getBlueClamped()));
+    static QOpenGLVertexArrayObject::Binder *vaoBinder = new QOpenGLVertexArrayObject::Binder(m_vao);
 
+// /////////////////////////////////////////////////////////////////////////////
+// Init - DS
+// /////////////////////////////////////////////////////////////////////////////
 
-    QOpenGLBuffer vertexBuf( QOpenGLBuffer::VertexBuffer);
-
-    vertexBuf.create();
-    vertexBuf.bind();
     real_t * vertices = triangleSet->getPointList()->data();
-    vertexBuf.allocate(vertices, triangleSet->getPointList()->size() * 3 * sizeof(real_t));
-
-
-    // QOpenGLBuffer normalBuf( QOpenGLBuffer::VertexBuffer);;
-
-    // normalBuf.create();
-    // normalBuf.bind();
-    // real_t * normals = triangleSet->getNormalList()->data();
-    // normalBuf.allocate(normals, triangleSet->getNormalList()->size() * 3 * sizeof(real_t));
-
-
-    QOpenGLBuffer indexBuf (QOpenGLBuffer::IndexBuffer);
-
-    indexBuf.create();
-    indexBuf.bind();
     uint_t * indices = triangleSet->getIndexList()->data();
-    indexBuf.allocate(indices, triangleSet->getIndexList()->size() * 3 * sizeof(uint_t));
 
-    GLuint verticesID = program.attributeLocation("vertex");
-    program.enableAttributeArray(verticesID);
-    program.setAttributeBuffer(verticesID, GL_GEOM_REAL, 0, 3, 3 * sizeof(real_t));
+// /////////////////////////////////////////////////////////////////////////////
+// Init - VBO
+// /////////////////////////////////////////////////////////////////////////////
 
-    // GLuint normalsID = program.attributeLocation("normal");
-    // program.enableAttributeArray(normalsID);
-    // program.setAttributeBuffer(normalsID, GL_GEOM_REAL, 0, 3, 3 * sizeof(real_t));
+    static QOpenGLBuffer *vertexBuf = nullptr;
 
-    vertexBuf.bind();
-    indexBuf.bind();
+    if(!vertexBuf) {
+      vertexBuf = new QOpenGLBuffer( QOpenGLBuffer::VertexBuffer);
+      vertexBuf->create();
+      vertexBuf->bind();
+    }
 
-    __ogl.glDrawElements(GL_TRIANGLES, triangleSet->getIndexList()->size(), GL_UNSIGNED_INT, 0);
+    vertexBuf->allocate(vertices, triangleSet->getPointList()->size() * 3 * sizeof(real_t));
 
-    // vertexBuf.destroy();
-    // normalBuf.destroy();
-    // indexBuf.destroy();
+    for(int i = 0; i < triangleSet->getPointList()->size(); i++)
+      qDebug() << Q_FUNC_INFO
+               << i
+               << vertices[3*i+0]
+               << vertices[3*i+1]
+               << vertices[3*i+2];
 
-/*
-  glEnableClientState(GL_VERTEX_ARRAY);
-  real_t * vertices = triangleSet->getPointList()->data();
-  glVertexPointer( 3, GL_GEOM_REAL,0,vertices);
-  size_t si = triangleSet->getIndexList()->size();
+    qDebug() << Q_FUNC_INFO << vertices << triangleSet->getPointList()->size();
 
-  real_t * normals = NULL;
-  if (normalV) {
-    normals = triangleSet->getNormalList()->data();
-    glEnableClientState(GL_NORMAL_ARRAY);
-    glNormalPointer( GL_GEOM_REAL,0,normals);
-  }
+// /////////////////////////////////////////////////////////////////////////////
+// Init - IBO
+// /////////////////////////////////////////////////////////////////////////////
 
-  real_t * texCoord = NULL;
-  uchar_t * colors = NULL;
+    static QOpenGLBuffer *indexBuf = nullptr;
 
-  if(tex){
-    texCoord = triangleSet->getTexCoordList()->data();
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    glTexCoordPointer( 2, GL_GEOM_REAL,0,texCoord);
-  }
-  else if( color ) {
-    colors = triangleSet->getColorList()->toUcharArray();
-    glEnableClientState( GL_COLOR_ARRAY );
-    glColorPointer( 4, GL_UNSIGNED_BYTE, 4*sizeof( uchar_t ), colors );
-  }
+    if(!indexBuf) {
+      indexBuf = new QOpenGLBuffer(QOpenGLBuffer::IndexBuffer);
+      indexBuf->create();
+      indexBuf->bind();
+    }
 
-  if (normalV){
-    uint_t * indices = triangleSet->getIndexList()->data();
-    glDrawElements( GL_TRIANGLES, 3*si , GL_UNSIGNED_INT, indices);
-    delete [] indices;
-  }
-  else {
-    size_t _i = 0;
-    for(Index3Array::const_iterator it = triangleSet->getIndexList()->begin();
-    it != triangleSet->getIndexList()->end(); it++, _i++){
-          glGeomNormal(triangleSet->getNormalAt(_i));
-          glDrawElements(   GL_TRIANGLES, 3 , GL_UNSIGNED_INT, it->begin());
-          }
+    indexBuf->allocate(indices, triangleSet->getIndexList()->size() * 3 * sizeof(uint_t));
 
-  }
+    for(int i = 0; i < triangleSet->getIndexList()->size(); i++)
+      qDebug() << Q_FUNC_INFO
+               << i
+               << indices[3*i+0]
+               << indices[3*i+1]
+               << indices[3*i+2];
 
-  glDisableClientState(GL_VERTEX_ARRAY);
-  if (normalV)glDisableClientState(GL_NORMAL_ARRAY);
-  if( color )glDisableClientState(GL_NORMAL_ARRAY);
-  if(tex)glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-  if (normalV)glDisableClientState(GL_COLOR_ARRAY);
+// /////////////////////////////////////////////////////////////////////////////
+// Init - attributes
+// /////////////////////////////////////////////////////////////////////////////
 
+    indexBuf->bind();
+    vertexBuf->bind();
+    __ogl.glEnableVertexAttribArray(0);
+    __ogl.glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(real_t), 0);
 
-  if (__appearance && __appearance->isTexture() && !triangleSet->hasTexCoordList()) {
-    glDisable(GL_TEXTURE_GEN_S);
-    glDisable(GL_TEXTURE_GEN_T);
-  }
-  */
+// /////////////////////////////////////////////////////////////////////////////
 
-  delete [] vertices;
-  delete [] indices;
-  // if(normals)  delete [] normals;
-  // if(texCoord) delete [] texCoord;
-  // if(colors)   delete [] colors;
+    program->release();
 
-  GEOM_ASSERT(glGetError() == GL_NO_ERROR);
-  return true;
+// /////////////////////////////////////////////////////////////////////////////
+// Actual rendering
+// /////////////////////////////////////////////////////////////////////////////
+
+    static int frame = 0;
+
+    qDebug() << Q_FUNC_INFO << "Rendering frame" << frame++;
+
+    double m_xRot = 0;
+    double m_yRot = 0;
+    double m_zRot = 0;
+
+    QMatrix4x4 m_camera;
+    m_camera.setToIdentity();
+    // m_camera.translate(0, 0, 0);
+
+    QMatrix4x4 m_world;
+    m_world.setToIdentity();
+    m_world.rotate(180.0f - (m_xRot / 16.0f), 1, 0, 0);
+    m_world.rotate(m_yRot / 16.0f, 0, 1, 0);
+    m_world.rotate(m_zRot / 16.0f, 0, 0, 1);
+
+    program->bind();
+    // QMatrix4x4 proj = toQMatrix44(__projection);
+    program->setUniformValue(projMatrixID, __projection);
+    program->setUniformValue(modvMatrixID, m_camera * m_world);
+
+    for(int i = 0; i < 4; i++)
+      qDebug() << Q_FUNC_INFO
+               << "proj"
+               << __projection(i,0)
+               << __projection(i,1)
+               << __projection(i,2)
+               << __projection(i,3);
+
+    glDrawArrays(GL_TRIANGLES, 0, triangleSet->getIndexList()->size());
+
+    program->release();
+
+    return true;
 }
 
 

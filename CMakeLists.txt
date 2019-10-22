@@ -66,7 +66,7 @@ set(Boost_NO_SYSTEM_PATHS ON)
 set(Boost_USE_MULTITHREAD ON)
 set(Boost_USE_STATIC_LIBS OFF)
 
-find_package(Boost 1.67 COMPONENTS system thread ${BOOST_PYTHON_LIB} ${BOOST_NUMPY_LIB})
+find_package(Boost COMPONENTS system thread ${BOOST_PYTHON_LIB} ${BOOST_NUMPY_LIB})
 
 if (Boost_FOUND)
     # Build with Boost

@@ -39,7 +39,7 @@
 #ifndef __actn_glrenderer3_h__
 #define __actn_glrenderer3_h__
 
-
+#include <QtGui>
 
 #include "util_gl.h"
 
@@ -81,7 +81,7 @@ public:
   /** Constructs a GLRenderer with the Discretizer \e discretizer. */
   QGLRenderer3( Discretizer& discretizer, 
                 Tesselator& tesselator, 
-                const Matrix4& projection,
+                const QMatrix4x4& projection,
                 const Vector3& lightPosition,
                 const Color3& lightColor,
                 QOpenGLFunctions& ogl
@@ -282,7 +282,7 @@ protected:
 
   // QOpenGLShaderProgram * __currentprogram;
 
-  Matrix4     __projection;
+  QMatrix4x4  __projection;
   MatrixStack __modelmatrix; 
   MatrixStack __texturematrix; 
 
