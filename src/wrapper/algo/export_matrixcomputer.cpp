@@ -61,7 +61,6 @@ void export_MatrixComputer()
      ( ( const char* )"MatrixComputer()"
        "Compute the matrix4 representing the affine transformations. " ))
     .def("clear",&MatrixComputer::clear)
-    .DEC_CT_PROPERTY(matrix,MatrixComputer,Matrix,Matrix4)
     .add_property("result",mc_getMatrix)
     ;
 }
