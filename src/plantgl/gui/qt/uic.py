@@ -7,7 +7,7 @@ from openalea.plantgl.gui.qt import QT_API, PYQT5_API, PYQT4_API, PYSIDE_API, PY
 try:
     if os.environ[QT_API] in PYQT5_API:
         from PyQt5.uic import compileUi
-        compile_args = dict(execute=False, indent=4)
+        compile_args = dict(execute=False, indent=4, from_imports=True)
     elif os.environ[QT_API] in PYQT4_API:
         from PyQt4.uic import compileUi
         compile_args = dict(execute=False, indent=4)
