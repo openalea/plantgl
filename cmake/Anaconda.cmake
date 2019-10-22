@@ -1,5 +1,5 @@
 # Anaconda Check
-if (DEFINED ENV{CONDA_PREFIX})
+if (DEFINED $ENV{CONDA_PREFIX})
     # Anaconda Environment
     message(STATUS "Anaconda environment detected.")
     
