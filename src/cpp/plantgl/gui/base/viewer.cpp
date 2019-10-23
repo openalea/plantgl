@@ -165,7 +165,7 @@ Viewer::Viewer( int argc, char ** argv, ViewRendererGL * r)
     // ViewFileManager::FILE_CONFIG = f.baseName();
   }
 
-    __GLFrame = new ViewGLFrame(this,"FrameGL",r);
+    __GLFrame = new ViewGLFrame(this,"PGLFrameGL",r);
     initialize();
     bool stdinput = false;
 
@@ -252,6 +252,7 @@ extern void qt_set_sequence_auto_mnemonic(bool b);
 void Viewer::initialize()
 {
   // qt_set_sequence_auto_mnemonic (true);
+  setObjectName("PGLMainWindow");
 
   setWindowIcon(QPixmap(ViewerIcon::getPixmap(ViewerIcon::flower)));
 
