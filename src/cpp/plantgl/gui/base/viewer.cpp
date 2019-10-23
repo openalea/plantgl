@@ -138,7 +138,7 @@ Viewer::Viewer( QWidget * parent, const char * name, ViewRendererGL * r , Qt::Wi
   __ErrorDialog= new ViewErrorDialog(this);
   addDockWidget(Qt::BottomDockWidgetArea,__ErrorDialog);
 
-  __GLFrame = new ViewGLFrame(this,"FrameGL",r);
+  __GLFrame = new ViewGLFrame(this,"PGLFrameGL",r);
   initialize();
 }
 
