@@ -39,7 +39,10 @@
 #ifndef __actn_glrenderer3_h__
 #define __actn_glrenderer3_h__
 
+#define GL_SILENCE_DEPRECATION
+
 #include <QtGui>
+
 
 #include "util_gl.h"
 
@@ -47,6 +50,7 @@
 #include <plantgl/tool/rcobject.h>
 #include <plantgl/tool/util_cache.h>
 #include <plantgl/scenegraph/appearance/appearance.h>
+#include <plantgl/scenegraph/geometry/explicitmodel.h>
 #include <plantgl/algo/base/matrixcomputer.h>
 #include <plantgl/scenegraph/appearance/color.h>
 
@@ -73,19 +77,16 @@ class Tesselator;
 */
 #ifndef PGL_WITHOUT_QT
 
-class ALGO_API QGLRenderer3 : public Action
+class ALGO_API QGLRenderer : public Action
 {
 
 public:
 
   /** Constructs a GLRenderer with the Discretizer \e discretizer. */
-  QGLRenderer3( Discretizer& discretizer, 
-                Tesselator& tesselator, 
-                const QMatrix4x4& projection,
-                const Vector3& lightPosition,
-                const Color3& lightColor,
-                QOpenGLFunctions& ogl
-                );
+  QGLRenderer( Discretizer& discretizer, 
+                Tesselator& tesselator);
+
+   void setViewProjection(const QMatrix4x4& view, const QMatrix4x4& projection);
 
 
   /*! \enum RenderingMode
@@ -123,13 +124,41 @@ public:
   };
   */
 
+  enum eRenderingMode {
+    eFilled = 0x0001,
+    eWire = 0x0002,
+    eFilledNWired = 0x0003
+  };
+
   /// Destructor
-  virtual ~QGLRenderer3( );
+  virtual ~QGLRenderer( );
 
   /// Clears \e self.
   void clear( );
 
   void init();
+
+  void setLight(const Vector3& lightPosition, 
+                const Color3& lightAmbient, 
+                const Color3& lightDiffuse, 
+                const Color3& lightSpecular ) {
+    __lightPosition = lightPosition;
+    __lightAmbient  = lightAmbient; 
+    __lightDiffuse  = lightDiffuse; 
+    __lightSpecular = lightSpecular; 
+  }
+
+  void enableLight(bool enabled) {
+    __lightEnabled = enabled;
+  }
+
+  bool isLightEnabled() const {
+    return __lightEnabled;
+  }
+
+  void setRendering(eRenderingMode mode) {
+    __mode = mode;
+  }
 
   /// Returns the Discretizer attached to \e self.
   Discretizer& getDiscretizer( );
@@ -271,6 +300,21 @@ public:
 
 protected:
 
+    struct BufferInfo {
+        QOpenGLVertexArrayObject * vao;
+        QOpenGLBuffer *vertexBuf;
+        QOpenGLBuffer *normalBuf;
+        QOpenGLBuffer *colorBuf;
+        QOpenGLBuffer *indexBuf;
+    };
+
+  typedef Cache<ExplicitModelPtr> GeometryCache;
+  GeometryCache __geometrycache;
+
+  typedef Cache<BufferInfo> BufferCache;
+  BufferCache __buffercache;
+
+
   /// The discretizer used to store the discretize parametric while
   Discretizer& __discretizer;
   Tesselator& __tesselator;
@@ -278,16 +322,26 @@ protected:
   /// The current material
   AppearancePtr __appearance;
 
-  QOpenGLFunctions& __ogl;
+  QOpenGLFunctions __ogl;
 
-  // QOpenGLShaderProgram * __currentprogram;
+  QOpenGLShaderProgram * __materialprogram;
+  QOpenGLShaderProgram * __colorprogram;
+  QOpenGLShaderProgram * __textureprogram;
 
-  QMatrix4x4  __projection;
+  QOpenGLShaderProgram * __currentprogram;
+
+  QMatrix4x4  __projectionmatrix;
+  QMatrix4x4  __viewmatrix;
   MatrixStack __modelmatrix; 
   MatrixStack __texturematrix; 
 
   Vector3  __lightPosition;
-  Color3   __lightColor;
+  Color3   __lightAmbient;
+  Color3   __lightDiffuse;
+  Color3   __lightSpecular;
+  bool     __lightEnabled;
+
+  eRenderingMode __mode;
   
 private:
   template<class T> 

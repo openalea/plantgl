@@ -32,7 +32,7 @@
 
 
 
-#include "qglrenderer3.h"
+#include "qglrenderer.h"
 #include <plantgl/algo/base/discretizer.h>
 #include <plantgl/algo/base/tesselator.h>
 
@@ -68,9 +68,9 @@ TOOLS_USING_NAMESPACE
 
 
 #ifdef GEOM_TREECALLDEBUG
-#define GEOM_ASSERT_OBJ(obj) printf("Look at %sobject %zu of type '%s' in mode %i\n", (!obj->unique()?"shared ":""),obj->getId(), typeid(*obj).name(), __compil);
+    #define GEOM_ASSERT_OBJ(obj) printf("Look at %sobject %zu of type '%s'\n", (!obj->unique()?"shared ":""),obj->getId(), typeid(*obj).name());
 #else
-#define GEOM_ASSERT_OBJ(obj)
+    #define GEOM_ASSERT_OBJ(obj)
 #endif
 
 #define GEOM_GLRENDERER_CHECK_APPEARANCE(app) \
@@ -81,21 +81,28 @@ TOOLS_USING_NAMESPACE
 
 
 template<class T>
-bool QGLRenderer3::discretize_and_render(T *geom) {
+bool QGLRenderer::discretize_and_render(T *geom) {
   GEOM_ASSERT_OBJ(geom);
-  if (__appearance && __appearance->isTexture())
-    __discretizer.computeTexCoord(true);
-  else __discretizer.computeTexCoord(false);
-  bool b = geom->apply(__discretizer);
-  if (b && (b = (__discretizer.getDiscretization()))) {
-    b = __discretizer.getDiscretization()->apply(*this);
+  bool b = false;
+  GeometryCache::Iterator it = __geometrycache.find((uint_t)geom->getId());
+  if (it != __geometrycache.end()) {
+     b = it->second->apply(*this);
+  }
+  else {
+      if (__appearance && __appearance->isTexture())
+        __discretizer.computeTexCoord(true);
+      else __discretizer.computeTexCoord(false);
+      b = geom->apply(__discretizer);
+      if (b && (b = (__discretizer.getDiscretization()))) {
+        __geometrycache.insert((uint_t)geom->getId(), __discretizer.getDiscretization());
+        b = __discretizer.getDiscretization()->apply(*this);
+      }
   }
   return b;
 }
 
 
-#define GEOM_GLRENDERER_DISCRETIZE_RENDER(geom) \
-  GEOM_ASSERT_OBJ(geom); \
+#define QGLRENDERER_DISCRETIZE_N_RENDER(geom) \
   return discretize_and_render(geom); \
 
 
@@ -118,38 +125,163 @@ bool QGLRenderer3::discretize_and_render(T *geom) {
 /* ----------------------------------------------------------------------- */
 
 
-QGLRenderer3::QGLRenderer3(Discretizer& discretizer,
-                           Tesselator& tesselator,
-                           const QMatrix4x4& projection,
-                           const Vector3& lightPosition,
-                           const Color3& lightColor,
-                           QOpenGLFunctions& ogl) :
+QGLRenderer::QGLRenderer(Discretizer& discretizer,
+                           Tesselator& tesselator) :
         Action(),
-        __projection(projection),
-        __lightPosition(lightPosition),
-        __lightColor(lightColor),
-        __ogl(ogl),
+        __projectionmatrix(),
+        __viewmatrix(),
+        __lightPosition(0,0,10),
+        __lightAmbient(255,255,255),
+        __lightDiffuse(255,255,255),
+        __lightSpecular(255,255,255),
+        __lightEnabled(false),
         __discretizer(discretizer),
         __tesselator(tesselator),
-        __appearance()
-{
+        __appearance(),
+        __materialprogram(0),
+        __colorprogram(0),
+        __textureprogram(0),
+        __currentprogram(0){
 }
 
 
-QGLRenderer3::~QGLRenderer3() {
+void QGLRenderer::setViewProjection(const QMatrix4x4& view, const QMatrix4x4& projection )
+{
+        __projectionmatrix = projection;
+        __viewmatrix = view;
+}
+
+
+QGLRenderer::~QGLRenderer() {
   clear();
 }
 
 Discretizer &
-QGLRenderer3::getDiscretizer() {
+QGLRenderer::getDiscretizer() {
   return __discretizer;
 }
 
-void QGLRenderer3::init() {
+
+static const char *vertexShaderSourceCore =
+    "#version 150\n"
+    "in vec3 vertex;\n"
+    "in vec3 normal;\n"
+    "\n"
+    "out vec3 fragPos;\n"
+    "out vec3 fragNormal;\n"
+    "out vec3 viewPos;\n"
+    "\n"
+    "uniform mat4 model;\n"
+    "uniform mat4 view;\n"
+    "uniform mat4 projection;\n"
+    "\n"
+    "vec3 origin = vec3(0.0);\n"
+    "\n"
+    "void main() {\n"
+    "   viewPos = vec3(inverse(view) * vec4(origin, 1.0));\n"
+    "   fragPos = vec3(model * vec4(vertex, 1.0));\n"
+    "   fragNormal = normal; // mat3(transpose(inverse(model))) * normal;\n"
+    "   gl_Position = projection * view * vec4(fragPos, 1.0);\n"
+    "}\n";
+
+
+
+static const char *fragmentShaderSourceCore =
+    "#version 150\n"
+    "struct Material {\n"
+    "    vec3 ambient;\n"
+    "    vec3 diffuse;\n"
+    "    vec3 specular;\n"    
+    "    float shininess;\n"
+    "    float transparency;\n"
+    "};\n" 
+    "\n"
+    "struct Light {\n"
+    "    vec3 position;\n"
+    "\n"
+    "    vec3 ambient;\n"
+    "    vec3 diffuse;\n"
+    "    vec3 specular;\n"
+    "};\n"
+    "\n"
+    "in vec3 fragPos;\n"
+    "in vec3 fragNormal;\n" 
+    "in vec3 viewPos;\n"
+    "\n"
+    "out vec4 fragColor;\n"
+    "\n"
+    "uniform Material material;\n"
+    "uniform Light light;\n"
+    "\n"
+    "void main()\n"
+    "{\n"
+    "    // ambient\n"
+    "    vec3 ambient = light.ambient * material.ambient;\n"
+    "\n"    
+    "    // diffuse \n"
+    "    vec3 norm = normalize(fragNormal);\n"
+    "    vec3 lightDir = normalize(light.position - fragPos);\n"
+    "    float diff = dot(norm, lightDir); //, 0.0);\n"
+    "    vec3 diffuse = light.diffuse * (diff * material.diffuse);\n"
+    "\n"    
+    "    // specular\n"
+    "    vec3 viewDir = normalize(viewPos - fragPos);\n"
+    "    vec3 reflectDir = reflect(-lightDir, norm);\n"  
+    "    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);\n"
+    "    vec3 specular = light.specular * (spec * material.specular);  \n"
+    "\n"        
+    "    vec3 result = ambient + diffuse + specular;\n"
+    "    fragColor = vec4(result, 1.0 - material.transparency);\n"
+    "} \n";
+
+
+void QGLRenderer::init() {
+
+    __ogl.initializeOpenGLFunctions();
+
+    /*
+  static QOpenGLDebugLogger *logger = nullptr;
+
+    if(!logger) {
+      logger = new QOpenGLDebugLogger;
+      logger->initialize();
+
+      QObject::connect(logger, &QOpenGLDebugLogger::messageLogged, [=](const QOpenGLDebugMessage &message) -> void {
+                                                                     qDebug() << Q_FUNC_INFO << message;
+                                                                   });
+
+      logger->startLogging(QOpenGLDebugLogger::SynchronousLogging);
+    }
+    */
+
+// /////////////////////////////////////////////////////////////////////////////
+// Init - program
+// /////////////////////////////////////////////////////////////////////////////
+
+  if(!__materialprogram) {
+    __materialprogram = new QOpenGLShaderProgram;
+    __materialprogram->addShaderFromSourceCode(QOpenGLShader::Vertex, vertexShaderSourceCore);
+    __materialprogram->addShaderFromSourceCode(QOpenGLShader::Fragment, fragmentShaderSourceCore);
+    __materialprogram->bindAttributeLocation("vertex", 0);
+    __materialprogram->bindAttributeLocation("normal", 1);
+    __materialprogram->link();
+   } 
+
+
+
 
 }
 
-void QGLRenderer3::clear() {
+void QGLRenderer::clear() {
+
+    __geometrycache.clear();
+    for(BufferCache::Iterator it = __buffercache.begin(); it != __buffercache.end(); ++it){
+        if(it->second.vertexBuf) delete it->second.vertexBuf;
+        if(it->second.normalBuf) delete it->second.normalBuf;
+        if(it->second.colorBuf) delete it->second.colorBuf;
+        if(it->second.indexBuf) delete it->second.indexBuf;
+    }
+    __buffercache.clear();
 
 }
 
@@ -160,31 +292,52 @@ void QGLRenderer3::clear() {
 
 
 
-bool QGLRenderer3::beginProcess() {
+bool QGLRenderer::beginProcess() {
+
+    __materialprogram->bind();
+
+    GLuint viewMatrixID = __materialprogram->uniformLocation("view");
+    __materialprogram->setUniformValue(viewMatrixID, __viewmatrix);
+
+    GLuint projMatrixID = __materialprogram->uniformLocation("projection");
+    __materialprogram->setUniformValue(projMatrixID, __projectionmatrix);
+
+    GLuint lightPositionID = __materialprogram->uniformLocation("light.position");
+    __materialprogram->setUniformValue(lightPositionID, QVector3D(__lightPosition.x(),__lightPosition.y(),__lightPosition.z() ));
+
+    GLuint lightAmbientID = __materialprogram->uniformLocation("light.ambient");
+    __materialprogram->setUniformValue(lightAmbientID, QVector3D(__lightAmbient.getRedClamped(),__lightAmbient.getGreenClamped(),__lightAmbient.getBlueClamped() ));
+
+    GLuint lightDiffuseID = __materialprogram->uniformLocation("light.diffuse");
+    __materialprogram->setUniformValue(lightDiffuseID, QVector3D(__lightDiffuse.getRedClamped(),__lightDiffuse.getGreenClamped(),__lightDiffuse.getBlueClamped() ));
+
+    GLuint lightSpecularID = __materialprogram->uniformLocation("light.specular");
+    __materialprogram->setUniformValue(lightSpecularID, QVector3D(__lightSpecular.getRedClamped(),__lightSpecular.getGreenClamped(),__lightSpecular.getBlueClamped() ));
+
   return true;
 }
 
 
-bool QGLRenderer3::endProcess() {
+bool QGLRenderer::endProcess() {
   __appearance = AppearancePtr();
   return true;
 }
 
 /* ----------------------------------------------------------------------- */
-bool QGLRenderer3::process(Shape *geomshape) {
+bool QGLRenderer::process(Shape *geomshape) {
   GEOM_ASSERT_OBJ(geomshape);
   processAppereance(geomshape);
   return processGeometry(geomshape);
 }
 
-bool QGLRenderer3::processAppereance(Shape *geomshape) {
+bool QGLRenderer::processAppereance(Shape *geomshape) {
   GEOM_ASSERT(geomshape);
   if (geomshape->appearance) {
     return geomshape->appearance->apply(*this);
   } else return Material::DEFAULT_MATERIAL->apply(*this);
 }
 
-bool QGLRenderer3::processGeometry(Shape *geomshape) 
+bool QGLRenderer::processGeometry(Shape *geomshape) 
 {
   GEOM_ASSERT(geomshape);
   return geomshape->geometry->apply(*this);
@@ -194,7 +347,7 @@ bool QGLRenderer3::processGeometry(Shape *geomshape)
 
 /* ----------------------------------------------------------------------- */
 
-bool QGLRenderer3::process(Inline *geomInline) {
+bool QGLRenderer::process(Inline *geomInline) {
   GEOM_ASSERT_OBJ(geomInline);
   if (geomInline->getScene()) {
     if (!geomInline->isTranslationToDefault() || !geomInline->isScaleToDefault()) {
@@ -225,7 +378,7 @@ bool QGLRenderer3::process(Inline *geomInline) {
 
 /* ----------------------------------------------------------------------- */
 
-bool QGLRenderer3::process(AmapSymbol *amapSymbol) {
+bool QGLRenderer::process(AmapSymbol *amapSymbol) {
   GEOM_ASSERT_OBJ(amapSymbol);
 
   /*
@@ -286,15 +439,15 @@ bool QGLRenderer3::process(AmapSymbol *amapSymbol) {
 /* ----------------------------------------------------------------------- */
 
 
-bool QGLRenderer3::process(AsymmetricHull *asymmetricHull) {
-  GEOM_GLRENDERER_DISCRETIZE_RENDER(asymmetricHull);
+bool QGLRenderer::process(AsymmetricHull *asymmetricHull) {
+  QGLRENDERER_DISCRETIZE_N_RENDER(asymmetricHull);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 
-bool QGLRenderer3::process(AxisRotated *axisRotated) {
+bool QGLRenderer::process(AxisRotated *axisRotated) {
   GEOM_ASSERT_OBJ(axisRotated);
 
 
@@ -316,54 +469,54 @@ bool QGLRenderer3::process(AxisRotated *axisRotated) {
 /* ----------------------------------------------------------------------- */
 
 
-bool QGLRenderer3::process(BezierCurve *bezierCurve) {
-  GEOM_GLRENDERER_DISCRETIZE_RENDER(bezierCurve);
+bool QGLRenderer::process(BezierCurve *bezierCurve) {
+  QGLRENDERER_DISCRETIZE_N_RENDER(bezierCurve);
 }
 
 /* ----------------------------------------------------------------------- */
 
 
-bool QGLRenderer3::process(BezierPatch *bezierPatch) {
-  GEOM_GLRENDERER_DISCRETIZE_RENDER(bezierPatch);
-}
-
-
-/* ----------------------------------------------------------------------- */
-
-
-bool QGLRenderer3::process(Box *box) {
-  GEOM_GLRENDERER_DISCRETIZE_RENDER(box);
+bool QGLRenderer::process(BezierPatch *bezierPatch) {
+  QGLRENDERER_DISCRETIZE_N_RENDER(bezierPatch);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 
-bool QGLRenderer3::process(Cone *cone) {
-  GEOM_GLRENDERER_DISCRETIZE_RENDER(cone);
+bool QGLRenderer::process(Box *box) {
+  QGLRENDERER_DISCRETIZE_N_RENDER(box);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 
-bool QGLRenderer3::process(Cylinder *cylinder) {
-  GEOM_GLRENDERER_DISCRETIZE_RENDER(cylinder);
+bool QGLRenderer::process(Cone *cone) {
+  QGLRENDERER_DISCRETIZE_N_RENDER(cone);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 
-bool QGLRenderer3::process(ElevationGrid *elevationGrid) {
-  GEOM_GLRENDERER_DISCRETIZE_RENDER(elevationGrid);
+bool QGLRenderer::process(Cylinder *cylinder) {
+  QGLRENDERER_DISCRETIZE_N_RENDER(cylinder);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 
-bool QGLRenderer3::process(EulerRotated *eulerRotated) {
+bool QGLRenderer::process(ElevationGrid *elevationGrid) {
+  QGLRENDERER_DISCRETIZE_N_RENDER(elevationGrid);
+}
+
+
+/* ----------------------------------------------------------------------- */
+
+
+bool QGLRenderer::process(EulerRotated *eulerRotated) {
   GEOM_ASSERT_OBJ(eulerRotated);
 
   PUSH_MODELMATRIX;
@@ -383,15 +536,15 @@ bool QGLRenderer3::process(EulerRotated *eulerRotated) {
 /* ----------------------------------------------------------------------- */
 
 
-bool QGLRenderer3::process(ExtrudedHull *extrudedHull) {
-  GEOM_GLRENDERER_DISCRETIZE_RENDER(extrudedHull);
+bool QGLRenderer::process(ExtrudedHull *extrudedHull) {
+  QGLRENDERER_DISCRETIZE_N_RENDER(extrudedHull);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 
-bool QGLRenderer3::process(FaceSet *faceSet) {
+bool QGLRenderer::process(FaceSet *faceSet) {
   GEOM_ASSERT_OBJ(faceSet);
   __tesselator.process(faceSet);
   __tesselator.getTriangulation()->apply(*this);
@@ -465,23 +618,23 @@ bool QGLRenderer3::process(FaceSet *faceSet) {
 /* ----------------------------------------------------------------------- */
 
 
-bool QGLRenderer3::process(Frustum *frustum) {
-  GEOM_GLRENDERER_DISCRETIZE_RENDER(frustum);
+bool QGLRenderer::process(Frustum *frustum) {
+  QGLRENDERER_DISCRETIZE_N_RENDER(frustum);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 
-bool QGLRenderer3::process(Extrusion *extrusion) {
-  GEOM_GLRENDERER_DISCRETIZE_RENDER(extrusion);
+bool QGLRenderer::process(Extrusion *extrusion) {
+  QGLRENDERER_DISCRETIZE_N_RENDER(extrusion);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 
-bool QGLRenderer3::process(Group *group) {
+bool QGLRenderer::process(Group *group) {
   GEOM_ASSERT_OBJ(group);
     
   group->getGeometryList()->apply(*this);
@@ -494,7 +647,7 @@ bool QGLRenderer3::process(Group *group) {
 /* ----------------------------------------------------------------------- */
 
 
-bool QGLRenderer3::process(IFS *ifs) {
+bool QGLRenderer::process(IFS *ifs) {
   GEOM_ASSERT_OBJ(ifs);
 
   ITPtr transfos;
@@ -522,45 +675,35 @@ bool QGLRenderer3::process(IFS *ifs) {
 /* ----------------------------------------------------------------------- */
 
 
-bool QGLRenderer3::process(Material *material) {
+bool QGLRenderer::process(Material *material) {
   GEOM_ASSERT_OBJ(material);
+
+
   GEOM_GLRENDERER_CHECK_APPEARANCE(material);
 
-/*
-  glDisable(GL_TEXTURE_2D);
-  glBindTexture(GL_TEXTURE_2D, 0);
+    __materialprogram->bind();
 
-  GLfloat _rgba[4];
-  const Color3 &_ambient = material->getAmbient();
-  _rgba[0] = (GLfloat) _ambient.getRedClamped();
-  _rgba[1] = (GLfloat) _ambient.getGreenClamped();
-  _rgba[2] = (GLfloat) _ambient.getBlueClamped();
-  _rgba[3] = 1.0f - material->getTransparency();
-  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, _rgba);
+    GLuint ambientId = __materialprogram->uniformLocation("material.ambient");
+    __materialprogram->setUniformValue(ambientId, QVector3D((float)material->getAmbient().getRedClamped(),(float)material->getAmbient().getGreenClamped(),(float)material->getAmbient().getBlueClamped() ));
 
-  const real_t &_diffuse = material->getDiffuse();
-  _rgba[0] *= _diffuse;
-  _rgba[1] *= _diffuse;
-  _rgba[2] *= _diffuse;
-  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, _rgba);
+    GLuint diffuseId = __materialprogram->uniformLocation("material.diffuse");
+    __materialprogram->setUniformValue(diffuseId, QVector3D((float)material->getAmbient().getRedClamped()*material->getDiffuse(),
+                                                            (float)material->getAmbient().getGreenClamped()*material->getDiffuse(),
+                                                            (float)material->getAmbient().getBlueClamped()*material->getDiffuse() ));
 
-  /// We set the current color in the case of disabling the lighting
-  glColor4fv(_rgba);
+    GLuint specularId = __materialprogram->uniformLocation("material.specular");
+    __materialprogram->setUniformValue(specularId, QVector3D((float)material->getSpecular().getRedClamped(),(float)material->getSpecular().getGreenClamped(),(float)material->getSpecular().getBlueClamped() ));
 
-  const Color3 &_specular = material->getSpecular();
-  _rgba[0] = (GLfloat) _specular.getRedClamped();
-  _rgba[1] = (GLfloat) _specular.getGreenClamped();
-  _rgba[2] = (GLfloat) _specular.getBlueClamped();
-  glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, _rgba);
+    GLuint shininessId = __materialprogram->uniformLocation("material.shininess");
+    __materialprogram->setUniformValue(shininessId, (float)material->getShininess() );
 
-  const Color3 &_emission = material->getEmission();
-  _rgba[0] = (GLfloat) _emission.getRedClamped();
-  _rgba[1] = (GLfloat) _emission.getGreenClamped();
-  _rgba[2] = (GLfloat) _emission.getBlueClamped();
-  glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, _rgba);
+    GLuint transparencyId = __materialprogram->uniformLocation("material.transparency");
+    __materialprogram->setUniformValue(transparencyId, (float)material->getTransparency() );
 
-  glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, material->getShininess());
-  */
+    __currentprogram = __materialprogram;
+
+
+    /// What about emission ???
 
   GEOM_GLRENDERER_UPDATE_APPEARANCE(material);
 
@@ -570,7 +713,7 @@ bool QGLRenderer3::process(Material *material) {
 
 
 /* ----------------------------------------------------------------------- */
-bool QGLRenderer3::process(ImageTexture *texture) {
+bool QGLRenderer::process(ImageTexture *texture) {
   GEOM_ASSERT_OBJ(texture);
   GEOM_GLRENDERER_CHECK_APPEARANCE(texture);
 
@@ -652,7 +795,7 @@ bool QGLRenderer3::process(ImageTexture *texture) {
 
 /* ----------------------------------------------------------------------- */
 
-bool QGLRenderer3::process(Texture2D *texture) {
+bool QGLRenderer::process(Texture2D *texture) {
   GEOM_ASSERT_OBJ(texture);
   GEOM_GLRENDERER_CHECK_APPEARANCE(texture);
 
@@ -694,7 +837,7 @@ bool QGLRenderer3::process(Texture2D *texture) {
 
 /* ----------------------------------------------------------------------- */
 
-bool QGLRenderer3::process(Texture2DTransformation *texturetransfo) {
+bool QGLRenderer::process(Texture2DTransformation *texturetransfo) {
   GEOM_ASSERT_OBJ(texturetransfo);
 
 /*
@@ -729,7 +872,7 @@ bool QGLRenderer3::process(Texture2DTransformation *texturetransfo) {
 /* ----------------------------------------------------------------------- */
 
 
-bool QGLRenderer3::process(MonoSpectral *monoSpectral) {
+bool QGLRenderer::process(MonoSpectral *monoSpectral) {
   GEOM_ASSERT_OBJ(monoSpectral);
 
   GEOM_GLRENDERER_CHECK_APPEARANCE(monoSpectral);
@@ -756,7 +899,7 @@ bool QGLRenderer3::process(MonoSpectral *monoSpectral) {
 /* ----------------------------------------------------------------------- */
 
 
-bool QGLRenderer3::process(MultiSpectral *multiSpectral) {
+bool QGLRenderer::process(MultiSpectral *multiSpectral) {
   GEOM_ASSERT_OBJ(multiSpectral);
 
   GEOM_GLRENDERER_CHECK_APPEARANCE(multiSpectral);
@@ -788,23 +931,23 @@ bool QGLRenderer3::process(MultiSpectral *multiSpectral) {
 /* ----------------------------------------------------------------------- */
 
 
-bool QGLRenderer3::process(NurbsCurve *nurbsCurve) {
-  GEOM_GLRENDERER_DISCRETIZE_RENDER(nurbsCurve);
+bool QGLRenderer::process(NurbsCurve *nurbsCurve) {
+  QGLRENDERER_DISCRETIZE_N_RENDER(nurbsCurve);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 
-bool QGLRenderer3::process(NurbsPatch *nurbsPatch) {
-  GEOM_GLRENDERER_DISCRETIZE_RENDER(nurbsPatch);
+bool QGLRenderer::process(NurbsPatch *nurbsPatch) {
+  QGLRENDERER_DISCRETIZE_N_RENDER(nurbsPatch);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 
-bool QGLRenderer3::process(Oriented *oriented) {
+bool QGLRenderer::process(Oriented *oriented) {
   GEOM_ASSERT_OBJ(oriented);
 
 
@@ -828,15 +971,15 @@ bool QGLRenderer3::process(Oriented *oriented) {
 /* ----------------------------------------------------------------------- */
 
 
-bool QGLRenderer3::process(Paraboloid *paraboloid) {
-  GEOM_GLRENDERER_DISCRETIZE_RENDER(paraboloid);
+bool QGLRenderer::process(Paraboloid *paraboloid) {
+  QGLRENDERER_DISCRETIZE_N_RENDER(paraboloid);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 
-bool QGLRenderer3::process(PointSet *pointSet) {
+bool QGLRenderer::process(PointSet *pointSet) {
   GEOM_ASSERT_OBJ(pointSet);
 
 /*
@@ -883,7 +1026,7 @@ bool QGLRenderer3::process(PointSet *pointSet) {
 
 /* ----------------------------------------------------------------------- */
 
-bool QGLRenderer3::process(PGL(Polyline) *polyline) {
+bool QGLRenderer::process(PGL(Polyline) *polyline) {
   GEOM_ASSERT_OBJ(polyline);
 
 /*
@@ -927,7 +1070,7 @@ bool QGLRenderer3::process(PGL(Polyline) *polyline) {
 
 
 
-bool QGLRenderer3::process(QuadSet *quadSet) {
+bool QGLRenderer::process(QuadSet *quadSet) {
   GEOM_ASSERT_OBJ(quadSet);
   __tesselator.process(quadSet);
   __tesselator.getTriangulation()->apply(*this);
@@ -1012,23 +1155,23 @@ bool QGLRenderer3::process(QuadSet *quadSet) {
 /* ----------------------------------------------------------------------- */
 
 
-bool QGLRenderer3::process(Revolution *revolution) {
-  GEOM_GLRENDERER_DISCRETIZE_RENDER(revolution);
+bool QGLRenderer::process(Revolution *revolution) {
+  QGLRENDERER_DISCRETIZE_N_RENDER(revolution);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 
-bool QGLRenderer3::process(Swung *swung) {
-  GEOM_GLRENDERER_DISCRETIZE_RENDER(swung);
+bool QGLRenderer::process(Swung *swung) {
+  QGLRENDERER_DISCRETIZE_N_RENDER(swung);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 
-bool QGLRenderer3::process(Scaled *scaled) {
+bool QGLRenderer::process(Scaled *scaled) {
   GEOM_ASSERT_OBJ(scaled);
 
   PUSH_MODELMATRIX;
@@ -1047,7 +1190,7 @@ bool QGLRenderer3::process(Scaled *scaled) {
 /* ----------------------------------------------------------------------- */
 
 
-bool QGLRenderer3::process(ScreenProjected *scp) {
+bool QGLRenderer::process(ScreenProjected *scp) {
   GEOM_ASSERT_OBJ(scp);
 /*
   if (__Mode == Selection) {
@@ -1098,15 +1241,15 @@ bool QGLRenderer3::process(ScreenProjected *scp) {
 /* ----------------------------------------------------------------------- */
 
 
-bool QGLRenderer3::process(Sphere *sphere) {
-  GEOM_GLRENDERER_DISCRETIZE_RENDER(sphere);
+bool QGLRenderer::process(Sphere *sphere) {
+  QGLRENDERER_DISCRETIZE_N_RENDER(sphere);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 
-bool QGLRenderer3::process(Tapered *tapered) {
+bool QGLRenderer::process(Tapered *tapered) {
   GEOM_ASSERT_OBJ(tapered);
 
   PrimitivePtr _primitive = tapered->getPrimitive();
@@ -1127,7 +1270,7 @@ bool QGLRenderer3::process(Tapered *tapered) {
 /* ----------------------------------------------------------------------- */
 
 
-bool QGLRenderer3::process(Translated *translated) {
+bool QGLRenderer::process(Translated *translated) {
   GEOM_ASSERT_OBJ(translated);
 
   PUSH_MODELMATRIX;
@@ -1176,190 +1319,116 @@ QMatrix3x3 toQMatrix33(const Matrix4& matrix){
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-static const char *vertexShaderSourceCore =
-    "#version 150\n"
-    "in vec4 vertex;\n"
-    "uniform mat4 projMatrix;\n"
-    "uniform mat4 modvMatrix;\n"
-    "void main() {\n"
-    "   gl_Position = projMatrix * modvMatrix * vertex;\n"
-    "}\n";
-
-static const char *fragmentShaderSourceCore =
-    "#version 150\n"
-    "out highp vec4 fragColor;\n"
-    "void main() {\n"
-    "   fragColor = vec4(1.0, 0.5, 0.0, 1.0);\n"
-    "}\n";
 
 // /////////////////////////////////////////////////////////////////////////////
 // main
 // /////////////////////////////////////////////////////////////////////////////
 
-bool QGLRenderer3::process(TriangleSet *triangleSet)
+
+bool QGLRenderer::process(TriangleSet *triangleSet)
 {
-// /////////////////////////////////////////////////////////////////////////////
-// Logging
-// /////////////////////////////////////////////////////////////////////////////
+    qDebug() << Q_FUNC_INFO << triangleSet << triangleSet->getPointList()->size();
 
-  static QOpenGLDebugLogger *logger = nullptr;
+    QOpenGLVertexArrayObject * m_vao = nullptr;
+    QOpenGLBuffer *vertexBuf = nullptr;
+    QOpenGLBuffer *normalBuf = nullptr;
+    QOpenGLBuffer *colorBuf = nullptr;
+    QOpenGLBuffer *indexBuf = nullptr;
 
-    if(!logger) {
-      logger = new QOpenGLDebugLogger;
-      logger->initialize();
+     __currentprogram->bind();
+    GLuint modelMatrixID = __currentprogram->uniformLocation("model");
+    __currentprogram->setUniformValue(modelMatrixID, toQMatrix44(__modelmatrix.getMatrix()));
 
-      QObject::connect(logger, &QOpenGLDebugLogger::messageLogged, [=](const QOpenGLDebugMessage &message) -> void {
-                                                                     qDebug() << Q_FUNC_INFO << message;
-                                                                   });
 
-      logger->startLogging(QOpenGLDebugLogger::SynchronousLogging);
-    }
-
-// /////////////////////////////////////////////////////////////////////////////
-// Init - program
-// /////////////////////////////////////////////////////////////////////////////
-
-  static QOpenGLShaderProgram *program = 0;
-
-  if(!program) {
-    program = new QOpenGLShaderProgram;
-    program->addShaderFromSourceCode(QOpenGLShader::Vertex, vertexShaderSourceCore);
-    program->addShaderFromSourceCode(QOpenGLShader::Fragment, fragmentShaderSourceCore);
-    program->bindAttributeLocation("vertex", 0);
-    program->link();
-  }
-
-  program->bind();
-
-  GLuint projMatrixID = program->uniformLocation("projMatrix");
-  GLuint modvMatrixID = program->uniformLocation("modvMatrix");
-
-// /////////////////////////////////////////////////////////////////////////////
-// Init - VAO
-// /////////////////////////////////////////////////////////////////////////////
-
-    static QOpenGLVertexArrayObject * m_vao = nullptr;
-
-    if(!m_vao) {
+    BufferCache::Iterator _it = __buffercache.find((uint_t)triangleSet->getId()); 
+    bool tocreate = _it == __buffercache.end();
+    if (tocreate) {
       m_vao = new QOpenGLVertexArrayObject;
       m_vao->create();
     }
+    else {
+      m_vao = _it->second.vao;
+    }
 
-    static QOpenGLVertexArrayObject::Binder *vaoBinder = new QOpenGLVertexArrayObject::Binder(m_vao);
+    QOpenGLVertexArrayObject::Binder vaoBinder (m_vao);
 
-// /////////////////////////////////////////////////////////////////////////////
-// Init - DS
-// /////////////////////////////////////////////////////////////////////////////
+    if (tocreate) {
+        printf("Creating buffers\n");
 
-    real_t * vertices = triangleSet->getPointList()->data();
-    uint_t * indices = triangleSet->getIndexList()->data();
+      triangleSet->checkNormalList();
 
-// /////////////////////////////////////////////////////////////////////////////
-// Init - VBO
-// /////////////////////////////////////////////////////////////////////////////
+      real_t * vertices = triangleSet->getPointList()->data();
+      real_t * normals = triangleSet->getNormalList()->data();
+      uint_t * indices = triangleSet->getIndexList()->data();
 
-    static QOpenGLBuffer *vertexBuf = nullptr;
-
-    if(!vertexBuf) {
       vertexBuf = new QOpenGLBuffer( QOpenGLBuffer::VertexBuffer);
-      vertexBuf->setUsagePattern(QOpenGLBuffer::StaticDraw);
 
       vertexBuf->create();
       vertexBuf->bind();
-    }
+      vertexBuf->setUsagePattern(QOpenGLBuffer::StaticDraw);
+      vertexBuf->allocate(vertices, triangleSet->getPointList()->size() * 3 * sizeof(real_t));
+      vertexBuf->release();
 
-    vertexBuf->allocate(vertices, triangleSet->getPointList()->size() * 3 * sizeof(real_t));
-    vertexBuf->write(0, vertices, triangleSet->getPointList()->size() * 3 * sizeof(real_t));
+      normalBuf = new QOpenGLBuffer( QOpenGLBuffer::VertexBuffer);
 
-    for(int i = 0; i < triangleSet->getPointList()->size(); i++)
-      qDebug() << Q_FUNC_INFO
-               << i
-               << vertices[3*i+0]
-               << vertices[3*i+1]
-               << vertices[3*i+2];
+      normalBuf->create();
+      normalBuf->bind();
+      normalBuf->setUsagePattern(QOpenGLBuffer::StaticDraw);
+      normalBuf->allocate(normals, triangleSet->getNormalList()->size() * 3 * sizeof(real_t));
+      vertexBuf->release();
 
-    qDebug() << Q_FUNC_INFO << vertices << triangleSet->getPointList()->size();
-
-// /////////////////////////////////////////////////////////////////////////////
-// Init - IBO
-// /////////////////////////////////////////////////////////////////////////////
-
-    static QOpenGLBuffer *indexBuf = nullptr;
-
-    if(!indexBuf) {
       indexBuf = new QOpenGLBuffer(QOpenGLBuffer::IndexBuffer);
       indexBuf->create();
       indexBuf->bind();
+      indexBuf->allocate(indices, triangleSet->getIndexList()->size() * 3 * sizeof(uint_t));
+      indexBuf->release();
+      
+      printf("Storing buffers in cache\n");
+
+      BufferInfo mcache;
+      mcache.vao = m_vao;
+      mcache.vertexBuf = vertexBuf;
+      mcache.normalBuf = normalBuf;
+      mcache.colorBuf = colorBuf;
+      mcache.indexBuf = indexBuf;
+
+      __buffercache.insert((uint_t) triangleSet->getId(), mcache);
+
+      if (vertices) delete [] vertices;
+      if (normals) delete [] normals;
+      if (indices) delete [] indices;
+
+      printf("done\n");
+    }
+    else {
+      printf("Reusing buffers\n");
+      BufferInfo mcache = _it->second;
+
+      m_vao = mcache.vao;
+      vertexBuf = mcache.vertexBuf;
+      normalBuf = mcache.normalBuf;
+      indexBuf = mcache.indexBuf;
+
     }
 
-    indexBuf->allocate(indices, triangleSet->getIndexList()->size() * 3* sizeof(uint_t));
-    //indexBuf->write(0, indices, triangleSet->getIndexList()->size() * 3 * sizeof(uint_t));
-
-    for(int i = 0; i < triangleSet->getIndexList()->size(); i++)
-      qDebug() << Q_FUNC_INFO
-               << i
-               << indices[3*i+0]
-               << indices[3*i+1]
-               << indices[3*i+2];
-
-// /////////////////////////////////////////////////////////////////////////////
-// Init - attributes
-// /////////////////////////////////////////////////////////////////////////////
-
-    __ogl.glEnableVertexAttribArray(0);
+    printf("Enabling vertex attributes\n");
     vertexBuf->bind();
+    normalBuf->bind();
+    __ogl.glEnableVertexAttribArray(0);
+    __ogl.glEnableVertexAttribArray(1);
+
+    printf("Vertex attributes types\n");
     // __ogl.glVertexAttribPointer(0, 3, GL_GEOM_REAL, GL_FALSE, 3 * sizeof(real_t), 0);
     __ogl.glVertexAttribPointer(0, 3, GL_GEOM_REAL, GL_FALSE, 0, 0);
+    __ogl.glVertexAttribPointer(1, 3, GL_GEOM_REAL, GL_FALSE, 0, 0);
 
+
+    printf("Draw elements\n");
     indexBuf->bind();
-
-// /////////////////////////////////////////////////////////////////////////////
-
-    // program->release();
-
-// /////////////////////////////////////////////////////////////////////////////
-// Actual rendering
-// /////////////////////////////////////////////////////////////////////////////
-
-    static int frame = 0;
-
-    qDebug() << Q_FUNC_INFO << "Rendering frame" << frame++;
-
-    double m_xRot = 0;
-    double m_yRot = 0;
-    double m_zRot = 0;
-
-    /*QMatrix4x4 m_camera;
-    m_camera.setToIdentity();
-    m_camera.translate(0, 0, 0);
-    */
-    QMatrix4x4 m_world;
-    m_world.setToIdentity();
-    /*m_world.rotate(180.0f - (m_xRot / 16.0f), 1, 0, 0);
-    m_world.rotate(m_yRot / 16.0f, 0, 1, 0);
-    m_world.rotate(m_zRot / 16.0f, 0, 0, 1);*/
-
-    // program->bind();
-    // QMatrix4x4 proj = toQMatrix44(__projection);
-    program->setUniformValue(projMatrixID, __projection);
-    program->setUniformValue(modvMatrixID, m_world);
-
-    for(int i = 0; i < 4; i++)
-      qDebug() << Q_FUNC_INFO
-               << "proj"
-               << __projection(i,0)
-               << __projection(i,1)
-               << __projection(i,2)
-               << __projection(i,3);
-
-      qDebug() << Q_FUNC_INFO
-               << "nbtr"
-               << triangleSet->getIndexList()->size()*3;
-
     //__ogl.glDrawArrays(GL_TRIANGLES, 0, triangleSet->getIndexList()->size()*3);
     __ogl.glDrawElements(GL_TRIANGLES, triangleSet->getIndexList()->size()*3, GL_UNSIGNED_INT, (void *)0);
 
-    program->release();
+    printf("end tr\n");
 
     return true;
 }
@@ -1368,45 +1437,45 @@ bool QGLRenderer3::process(TriangleSet *triangleSet)
 /* ----------------------------------------------------------------------- */
 
 
-bool QGLRenderer3::process(BezierCurve2D *bezierCurve) {
-  GEOM_GLRENDERER_DISCRETIZE_RENDER(bezierCurve);
+bool QGLRenderer::process(BezierCurve2D *bezierCurve) {
+  QGLRENDERER_DISCRETIZE_N_RENDER(bezierCurve);
 }
 
 /* ----------------------------------------------------------------------- */
 
 
-bool QGLRenderer3::process(Disc *disc) {
-  GEOM_GLRENDERER_DISCRETIZE_RENDER(disc);
-}
-
-
-/* ----------------------------------------------------------------------- */
-
-
-bool QGLRenderer3::process(NurbsCurve2D *nurbsCurve) {
-  GEOM_GLRENDERER_DISCRETIZE_RENDER(nurbsCurve);
+bool QGLRenderer::process(Disc *disc) {
+  QGLRENDERER_DISCRETIZE_N_RENDER(disc);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 
-bool QGLRenderer3::process(PointSet2D *pointSet) {
-  GEOM_GLRENDERER_DISCRETIZE_RENDER(pointSet);
+bool QGLRenderer::process(NurbsCurve2D *nurbsCurve) {
+  QGLRENDERER_DISCRETIZE_N_RENDER(nurbsCurve);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 
-bool QGLRenderer3::process(Polyline2D *polyline) {
-  GEOM_GLRENDERER_DISCRETIZE_RENDER(polyline);
+bool QGLRenderer::process(PointSet2D *pointSet) {
+  QGLRENDERER_DISCRETIZE_N_RENDER(pointSet);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
-bool QGLRenderer3::process(Text *text) {
+
+bool QGLRenderer::process(Polyline2D *polyline) {
+  QGLRENDERER_DISCRETIZE_N_RENDER(polyline);
+}
+
+
+/* ----------------------------------------------------------------------- */
+
+bool QGLRenderer::process(Text *text) {
   GEOM_ASSERT_OBJ(text);
 
     /*
@@ -1457,7 +1526,7 @@ bool QGLRenderer3::process(Text *text) {
 
 /* ----------------------------------------------------------------------- */
 
-bool QGLRenderer3::process(Font *font) {
+bool QGLRenderer::process(Font *font) {
   GEOM_ASSERT_OBJ(font);
   return true;
 }
