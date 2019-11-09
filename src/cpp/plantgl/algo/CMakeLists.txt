@@ -4,7 +4,7 @@ set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(BIN_DIR ${CMAKE_CURRENT_BINARY_DIR})
 
 if (BISON_FOUND AND FLEX_FOUND)
-    set(GENERATE_PARSER ON)
+    set(GENERATE_PARSER OM)
 endif()
 
 if (GENERATE_PARSER)
@@ -72,6 +72,8 @@ target_link_libraries(pglalgo ${ANN_LIBRARIES})
 target_link_libraries(pglalgo ${GMP_LIBRARIES})
 target_link_libraries(pglalgo ${QHULL_LIBRARIES})
 target_link_libraries(pglalgo OpenGL::GL OpenGL::GLU)
+
+target_link_libraries(pglalgo Python3::Python)
 
 if (NOT MSVC)
     target_link_libraries(pglalgo Boost::system Boost::thread)
