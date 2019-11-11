@@ -1,7 +1,9 @@
 #!/bin/bash
 
-# Working Dir
-mkdir -p build
+if [[ -d build ]]; then
+    rm -rf build
+fi
+mkdir build
 cd build
 
 # Build
