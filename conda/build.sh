@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Working Dir
-mkdir build
+mkdir -p build
 cd build
 
 # Build
