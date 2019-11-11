@@ -3,11 +3,6 @@
 cmake_minimum_required(VERSION 3.12)
 project(plantgl CXX)
 
-
-## #################################################################
-## Build setup
-## #################################################################
-
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -83,7 +78,8 @@ include_directories(${Python3_INCLUDE_DIRS})
 find_package(Threads REQUIRED)
 find_package(Qt)
 
-#message($ENV{CONDA_PREFIX})
+message("Conda Prefix ====== $ENV{CONDA_PREFIX}")
+message("Build Prefix ====== $ENV{BUILD_PREFIX}")
 
 set(BOOST_ROOT $ENV{CONDA_PREFIX})
 
@@ -101,11 +97,6 @@ if (Boost_FOUND)
     set(USE_BOOST ON)
 
     include_directories(${Boost_INCLUDE_DIR})
-   
-    message("PROUT")
-    message(Boost::system)
-    message(Boost::thread)
-
 else()
     set(USE_BOOST OFF)
     message(STATUS "Building without Boost - Library not found.")

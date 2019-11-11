@@ -71,7 +71,13 @@ endif()
 target_link_libraries(pglalgo ${ANN_LIBRARIES})
 target_link_libraries(pglalgo ${GMP_LIBRARIES})
 target_link_libraries(pglalgo ${QHULL_LIBRARIES})
-target_link_libraries(pglalgo OpenGL::GL OpenGL::GLU)
+
+if(APPLE)
+  target_link_libraries(pglalgo "-framework AGL")
+  target_link_libraries(pglalgo "-framework OpenGL")
+else(APPLE)
+  target_link_libraries(pglalgo OpenGL::GL OpenGL::GLU)
+endif(APPLE)
 
 target_link_libraries(pglalgo Python3::Python)
 
