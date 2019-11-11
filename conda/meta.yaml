@@ -72,9 +72,11 @@ requirements:
 #  - cgal [unix]
    - qhull
    - ann
+   - eigen
    - pyqt >=5.6.0
    - ipython
    - pyopengl
+   - py-boost
 #  - pyqglviewer
    - scipy
    - matplotlib
