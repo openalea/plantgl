@@ -76,7 +76,7 @@ void vec_setw(V * v, real_t val){ v->w() = val; }
 
 
 template <class V>
-real_t vec_size(V * v){ return v->size(); }
+size_t vec_size(V * v){ return v->size(); }
 
 template <class V>
 real_t vec_getAt(V * v, size_t i)
