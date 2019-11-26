@@ -163,6 +163,20 @@ T * array_getslice( T * array, int beg, int end )
 }
 
 template<class T>
+T * array_getitem_slice( T * array, boost::python::slice sl )
+{
+  int beg = 0;
+  if (sl.start() != boost::python::object()){
+    beg = boost::python::extract<int>(sl.start())();
+  }
+  int end = array->size();
+  if (sl.stop() != boost::python::object()){
+    end = boost::python::extract<int>(sl.stop())();
+  }
+  return array_getslice(array, beg, end);
+}
+
+template<class T>
 typename T::element_type array_popitem( T * a, int pos )
 {
   size_t len = a->size();
@@ -463,7 +477,8 @@ class array_func : public boost::python::def_visitor<array_func<ARRAY> >
     template <class classT>
     void visit(classT& c) const
     {
-        c.def( "__getslice__", &array_getslice<ARRAY>, boost::python::return_value_policy<boost::python::manage_new_object>() ) \
+        c.def( "__getitem__", &array_getitem_slice<ARRAY>, boost::python::return_value_policy<boost::python::manage_new_object>() ) \
+        .def( "__getslice__", &array_getslice<ARRAY>, boost::python::return_value_policy<boost::python::manage_new_object>() ) \
         .def( "__setitem__",  &array_setitem<ARRAY>   ) \
         .def( "__delitem__",  &array_delitem<ARRAY>   ) \
         .def( "__delslice__", &array_delslice<ARRAY>  ) \
