@@ -11,7 +11,7 @@ if (QT5_FOUND)
 endif()
 
 if (NOT MSVC)
-    target_link_libraries(pgltool Boost::system Boost::thread)
+    target_link_libraries(pgltool Boost::system Boost::thread Boost::chrono)
 endif()
 
 

@@ -21,7 +21,7 @@ endif()
 # Disable Boost Auto-Link
 target_compile_definitions(_pglgui PRIVATE BOOST_ALL_NO_LIB)
 
-target_link_libraries(_pglgui Boost::system Boost::thread Boost::python37 Boost::numpy)
+target_link_libraries(_pglgui Boost::system Boost::thread Boost::python )
 
 if(APPLE)
   target_link_libraries(_pglgui "-framework AGL")

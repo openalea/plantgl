@@ -13,7 +13,7 @@ def getMetaInfo():
 globals().update(getMetaInfo())
 
 # Setup script
-version = '2.4.0'
+version = '3.0.1'
 print(pkg_name + ' : version = ' + version)
 
 # Main setup

@@ -17,7 +17,7 @@ endif()
 # Disable Boost Auto-Link
 target_compile_definitions(_pglmath PRIVATE BOOST_ALL_NO_LIB)
 
-target_link_libraries(_pglmath Boost::system Boost::thread Boost::python37 Boost::numpy)
+target_link_libraries(_pglmath Boost::system Boost::thread Boost::python )
 
 # --- Dependencies
 

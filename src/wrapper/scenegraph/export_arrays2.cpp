@@ -48,8 +48,11 @@
 #include <plantgl/scenegraph/container/pointmatrix.h>
 #include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>
-#include <boost/python/numpy.hpp>
 
+#if WITH_BOOST_NUMPY
+#include <boost/python/numpy.hpp>
+#define np boost::python::numpy
+#endif
 
 #include "arrays2_macro.h"
 
@@ -57,7 +60,6 @@ PGL_USING_NAMESPACE
 
 using namespace boost::python;
 #define bp boost::python
-#define np boost::python::numpy
 
 
 EXPORT_FUNCTION( p2m, Point2Matrix )
@@ -65,6 +67,7 @@ EXPORT_FUNCTION( p3m, Point3Matrix )
 EXPORT_FUNCTION( p4m, Point4Matrix )
 EXPORT_FUNCTION( ra,  RealArray2 )
 
+#if WITH_BOOST_NUMPY
 np::ndarray array_to_nparray(RealArray2 * data)
 {
     np::dtype dt = np::dtype::get_builtin<real_t>();
@@ -77,6 +80,7 @@ np::ndarray array_to_nparray(RealArray2 * data)
                                       bp::object());
     return array;
 }
+#endif
 
 void threshold_max_values(RealArray2 * data, real_t maxvalue) {
     for(RealArray2::iterator it = data->begin(); it != data->end(); ++it)
@@ -102,7 +106,9 @@ void export_arrays2()
 
   EXPORT_ARRAY_BT( ra, RealArray2 )
    .def(numarray2_func<RealArray2>())
+#if WITH_BOOST_NUMPY
    .def("to_array",&array_to_nparray)
+#endif
    .def("threshold_max_values",&threshold_max_values)
    .def("threshold_min_values",&threshold_min_values);
 

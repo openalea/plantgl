@@ -1,6 +1,10 @@
 # --- PlantGL Project
 
 cmake_minimum_required(VERSION 3.12)
+
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+include("Anaconda")
+
 project(plantgl CXX)
 
 # --- Build setup
@@ -21,9 +25,6 @@ endif("${isSystemDir}" STREQUAL "-1")
 
 # --- CMake Modules
 
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-
-include("Anaconda")
 
 # ---  CXX11 Compilation
 
@@ -85,13 +86,21 @@ set(BOOST_ROOT $ENV{CONDA_PREFIX})
 set(Boost_NO_SYSTEM_PATHS ON)
 set(Boost_USE_MULTITHREAD ON)
 set(Boost_USE_STATIC_LIBS OFF)
+#set(Boost_DEBUG ON)
+set(BUILD_SHARED_LIBS ON)
 
-find_package(Boost COMPONENTS thread system python37 numpy)
+find_package(Boost COMPONENTS thread system python chrono) # numpy)
 
 if (Boost_FOUND)
     # Build with Boost
     define_macro(WITH_BOOST 1)
     define_macro(BOOST_PYTHON_DYNAMIC_LIB 1)
+
+    if(DEFINED Boost_NUMPY_LIBRARY_RELEASE)
+        define_macro(WITH_BOOST_NUMPY 1)
+    else()
+        define_macro(WITH_BOOST_NUMPY 0)
+    endif()
 
     set(USE_BOOST ON)
 
@@ -108,7 +117,7 @@ find_package(ZLIB REQUIRED)
 
 find_package(ANN)
 find_package(BISON)
-find_package(CGAL QUIET)
+#find_package(CGAL QUIET)
 find_package(Eigen)
 find_package(FLEX)
 find_package(GMP)
@@ -167,4 +176,13 @@ endif()
 # --- Source Directories
 
 add_subdirectory("src/cpp")
-add_subdirectory("src/wrapper")
+
+if (Boost_FOUND)
+    add_subdirectory("src/wrapper")
+endif()
+
+#add_subdirectory("src/cpp/plantgl/math")
+
+#if (Boost_FOUND)
+#    add_subdirectory("src/wrapper/math")
+#endif()

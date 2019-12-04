@@ -2,17 +2,18 @@ name: plantgl-devel
 channels:
     - local
     - defaults
-    - conda-forge
+    #- conda-forge
     - openalea
+    - ethan13310
 dependencies:
-    - python
+    - python =3.7
     - boost
     - qt =5
     - pyqt
     - ipython
     - qtconsole
     - pyopengl
-    - pyqglviewer
+    #- pyqglviewer
     - nose
     - bison [unix]
     - flex [unix]
