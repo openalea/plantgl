@@ -42,7 +42,6 @@ requirements:
       - {{ cdt('pciutils-devel') }}        # [linux]
       - {{ cdt('libxscrnsaver-devel') }}   # [linux]
       - {{ cdt('libxtst-devel') }}         # [linux]
-      - {{ cdt('libseunix-devel') }}      # [linux]
       - {{ cdt('libxdamage') }}            # [linux]
       - {{ cdt('libxdamage-devel') }}      # [linux]
       - {{ cdt('libxfixes') }}             # [linux]
