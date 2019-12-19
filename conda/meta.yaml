@@ -72,7 +72,7 @@ requirements:
      - pyopengl
   #  - pyqglviewer
      - scipy
-     - matplotlib
+     - matplotlib-base
      - vs2015_runtime [win and py37]
   test:
      requires:
@@ -86,3 +86,4 @@ requirements:
        - share/
      commands:
        - nosetests -v -I test_viewer.py -I test_projpershape.py -I thread.py -I test_geomprinter.py -I test_coneofperception.py -I test_pointgrid.py -I test_depthsortengine.py -I test_zbufferengine.py -I test_shared_data.py -I test_light.py -I test_image.py
+       
