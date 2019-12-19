@@ -1,35 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr)
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 /*! \file view_application.h
     \brief Definition of the viewer class ViewerApplication.
@@ -86,15 +94,15 @@ public :
 
   static void update();
 
-  static void saveImage( const std::string& filename, 
-					     const std::string& format = "PNG",
-						 bool  withAlpha = false );
+  static void saveImage( const std::string& filename,
+                         const std::string& format = "PNG",
+                         bool  withAlpha = false );
 
-  static ViewRayBuffer * castRays(const TOOLS(Vector3)& pos, 
-	                               const TOOLS(Vector3)& dir,
-								   const TOOLS(Vector3)& dx, 
-								   const TOOLS(Vector3)& dy,
-								   int sx, int sy);
+  static ViewRayBuffer * castRays(const PGL(Vector3)& pos,
+                                   const PGL(Vector3)& dir,
+                                   const PGL(Vector3)& dx,
+                                   const PGL(Vector3)& dy,
+                                   int sx, int sy);
 
   static ViewZBuffer * grabZBuffer();
 
@@ -103,36 +111,36 @@ public :
   static void showMessage(const std::string& caption, int timeout = 0);
 
   static int question(const std::string& caption,
-					   const std::string& text,
-					   const std::string& but0txt = "",
-					   const std::string& but1txt = "",
-					   const std::string& but2txt = "");
+                       const std::string& text,
+                       const std::string& but0txt = "",
+                       const std::string& but1txt = "",
+                       const std::string& but2txt = "");
   typedef bool(*AbortFunc)();
   static void setAborter(AbortFunc);
 
   static std::string itemSelection(const std::string& caption,
-					   const std::string& text,
-					   const std::vector<std::string> & values,
-					   bool& ok,
-					   bool editable = false);
+                       const std::string& text,
+                       const std::vector<std::string> & values,
+                       bool& ok,
+                       bool editable = false);
 
   static double doubleSelection(const std::string& caption,
-								   const std::string& text,
-								   double value,
+                                   const std::string& text,
+                                   double value,
                                    double minvalue,
                                    double maxvalue,
-								   bool& ok);
+                                   bool& ok);
 
   static std::string getOpenFile(const std::string& caption,
-								 const std::string& filter,
-								 const std::string& startPath);
+                                 const std::string& filter,
+                                 const std::string& startPath);
 
   static std::string getSaveFile(const std::string& caption,
-								 const std::string& filter,
-								 const std::string& startPath);
+                                 const std::string& filter,
+                                 const std::string& startPath);
 
   static std::string getDirectory(const std::string& caption,
-								  const std::string& startPath);
+                                  const std::string& startPath);
 
   static void fullScreen(bool b = true);
   static void glFrameOnly(bool b = true);
@@ -165,12 +173,12 @@ public :
   static void start();
   static void exit();
 
-  static void setCamera(const TOOLS(Vector3)& pos);
-  static void setCamera(const TOOLS(Vector3)& pos, real_t azimuth, real_t elevation);
-  static void lookAt(const TOOLS(Vector3)& pos, const TOOLS(Vector3)& target);
-  static void lookAt(const TOOLS(Vector3)& target);
+  static void setCamera(const PGL(Vector3)& pos);
+  static void setCamera(const PGL(Vector3)& pos, real_t azimuth, real_t elevation);
+  static void lookAt(const PGL(Vector3)& pos, const PGL(Vector3)& target);
+  static void lookAt(const PGL(Vector3)& target);
 
-  static void getCamera(TOOLS(Vector3)& pos, TOOLS(Vector3)& heading, TOOLS(Vector3)& up);
+  static void getCamera(PGL(Vector3)& pos, PGL(Vector3)& heading, PGL(Vector3)& up);
 
   static void setViewAngle(real_t angle);
   static real_t getViewAngle();
@@ -178,8 +186,8 @@ public :
   static void setLightEnabled(bool);
   static bool isLightEnabled();
 
-  static void setLightPosition(const TOOLS(Vector3)& position);
-  static TOOLS(Vector3) getLightPosition();
+  static void setLightPosition(const PGL(Vector3)& position);
+  static PGL(Vector3) getLightPosition();
 
   static void setLightAmbient(int red, int green, int blue);
   static void getLightAmbient(int& red, int& green, int& blue);
@@ -206,13 +214,13 @@ public :
   static void move(int,int);
   static void setGeometry(int,int,int,int);
 
-  static double getProjectionSize(int* nbpixel = NULL, double* pixelwidth = NULL); 
+  static double getProjectionSize(int* nbpixel = NULL, double* pixelwidth = NULL);
 
-  static void setPerspectiveCamera(); 
-  static void setOrthographicCamera(); 
+  static void setPerspectiveCamera();
+  static void setOrthographicCamera();
 
   template<class T>
-  static void registerThreadStateSaver() 
+  static void registerThreadStateSaver()
   { registerThreadStateSaverFatory(new ThreadStateSaverTFactory<T>()); }
 
   static void registerThreadStateSaverFatory(ThreadStateSaverFactory * tssf) ;
@@ -222,8 +230,8 @@ public :
 
 protected :
 
-	static void _sendAnEvent(QEvent *);
-	static void _setViewerBuilder(ViewerBuilder * builder);
+    static void _sendAnEvent(QEvent *);
+    static void _setViewerBuilder(ViewerBuilder * builder);
 
 };
 

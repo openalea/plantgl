@@ -3,31 +3,41 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon et al.
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 
 
@@ -70,11 +80,11 @@ public:
 
   static const uchar_t DEFAULT_WIDTH;
 
-  /// A structure which helps to build a PointSet when parsing. 
-  struct SG_API Builder : public ExplicitModel::Builder { 
+  /// A structure which helps to build a PointSet when parsing.
+  struct SG_API Builder : public ExplicitModel::Builder {
 
     /// A pointer to the \b Width field.
- 	uchar_t * Width;
+    uchar_t * Width;
 
     /// Constructor.
     Builder( );
@@ -96,12 +106,12 @@ public:
   /** Constructs a PointSet bounding the set of points \e points.
       \pre
       - \e points must contain at leat 3 points.
-    
+
       \postt
       - \e self is valid. */
-  PointSet( const Point3ArrayPtr& points, 
-	        const Color4ArrayPtr& colors = Color4ArrayPtr(),
-			uchar_t width = DEFAULT_WIDTH);
+  PointSet( const Point3ArrayPtr& points,
+            const Color4ArrayPtr& colors = Color4ArrayPtr(),
+            uchar_t width = DEFAULT_WIDTH);
 
   /// Destructor
   virtual ~PointSet( );
@@ -111,12 +121,12 @@ public:
   /** Returns the value of the \e i-th point of \b PointList.
       \pre
       - \e i must belong to the range [0,size of \b PointList). */
-  const TOOLS(Vector3)& getPointListAt( uint_t i ) const;
+  const Vector3& getPointListAt( uint_t i ) const;
 
   /** Returns the \e i-th point of \b PointList.
       \pre
       - \e i must belong to the range [0,size of \b PointList). */
-  TOOLS(Vector3)& getPointListAt( uint_t i );
+  Vector3& getPointListAt( uint_t i );
 
   virtual bool isACurve( ) const ;
 
@@ -134,7 +144,7 @@ public:
   inline uchar_t& getWidth() { return __width; }
   inline bool isWidthToDefault( ) const { return __width == DEFAULT_WIDTH; }
 
-  TOOLS(Vector3) findClosest(const TOOLS(Vector3)& point, uint_t * index = 0) const;
+  Vector3 findClosest(const Vector3& point, uint_t * index = 0) const;
 
 protected:
   /// The \b width field
@@ -161,14 +171,14 @@ class SG_API PointSet2D : public PlanarModel
 public:
 
 
-  /// A structure which helps to build a PointSet when parsing. 
-  struct SG_API Builder : public PlanarModel::Builder { 
+  /// A structure which helps to build a PointSet when parsing.
+  struct SG_API Builder : public PlanarModel::Builder {
 
     /// A pointer to the \b PointList field.
     Point2ArrayPtr * PointList;
 
     /// A pointer to the \b Width field.
- 	uchar_t * Width;
+    uchar_t * Width;
 
     /// Constructor.
     Builder( );
@@ -189,7 +199,7 @@ public:
 
   /** Constructs a PointSet2D bounding the set of points \e points.
       \pre
-      - \e points must contain at leat 3 points.    
+      - \e points must contain at leat 3 points.
       \post
       - \e self is valid. */
   PointSet2D( const Point2ArrayPtr& points, uchar_t width = PointSet::DEFAULT_WIDTH );
@@ -202,21 +212,21 @@ public:
   /** Returns the value of the \e i-th point of \b PointList.
       \pre
       - \e i must belong to the range [0,size of \b PointList). */
-  const TOOLS(Vector2)& getPointListAt( uint_t i ) const ;
+  const Vector2& getPointListAt( uint_t i ) const ;
 
   /** Returns the \e i-th point of \b PointList.
       \pre
       - \e i must belong to the range [0,size of \b PointList). */
-  TOOLS(Vector2)& getPointListAt( uint_t i ) ;
+  Vector2& getPointListAt( uint_t i ) ;
 
   /// Returns an iterator at the beginning of \b PointList.
 /*  Point2Array::const_iterator getPointListBegin( ) const {
-     return __pointList->begin();   
+     return __pointList->begin();
   }
 
   /// Returns an iterator at the end of \b PointList.
   Point2Array::const_iterator getPointListEnd( ) const {
-     return __pointList->end();   
+     return __pointList->end();
   }
 */
   /// Returns \b PointList value.
@@ -245,10 +255,10 @@ public:
   inline uchar_t& getWidth() { return __width; }
   inline bool isWidthToDefault( ) const { return __width == PointSet::DEFAULT_WIDTH; }
 
-  TOOLS(Vector2) findClosest(const TOOLS(Vector2)& point, uint_t * index = 0) const;
+  Vector2 findClosest(const Vector2& point, uint_t * index = 0) const;
 
 protected:
-  
+
   /// The \b PointList field.
   Point2ArrayPtr __pointList;
 

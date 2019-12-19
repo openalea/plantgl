@@ -1,13 +1,13 @@
 from openalea.plantgl.all import *
-from openalea.vpltk.qt import qt    
+from openalea.plantgl.gui.qt import qt    
 from OpenGL.GL import *
 from OpenGL.GLU import *
 import os
 
-from openalea.vpltk.qt.QtCore import QObject, QPoint, QTimer, Qt, pyqtSignal
-from openalea.vpltk.qt.QtGui import QCursor, QImageReader, QPixmap
-from openalea.vpltk.qt.QtWidgets import QApplication, QDialog, QDockWidget, QFileDialog, QMenu, QMessageBox, QScrollArea, QSplashScreen, QVBoxLayout, QWidget
-from openalea.vpltk.qt.QtOpenGL import QGLWidget 
+from openalea.plantgl.gui.qt.QtCore import QObject, QPoint, QTimer, Qt, pyqtSignal
+from openalea.plantgl.gui.qt.QtGui import QCursor, QImageReader, QPixmap, QGuiApplication
+from openalea.plantgl.gui.qt.QtWidgets import QApplication, QDialog, QDockWidget, QFileDialog, QMenu, QMessageBox, QScrollArea, QSplashScreen, QVBoxLayout, QWidget
+from openalea.plantgl.gui.qt.QtOpenGL import QGLWidget 
 
 class MaterialPanelView (QGLWidget):
     valueChanged = pyqtSignal()
@@ -21,7 +21,7 @@ class MaterialPanelView (QGLWidget):
         self.lightcheck = [0.9,0.9,0.9]
         self.checklist = None
         self.selectedBorderList = None
-        self.turtle = PglTurtle()
+        self.turtle = None # PglTurtle()
         self.mousepos = None
         self.initpos = None
         self.menuselection = None        
@@ -189,7 +189,8 @@ class MaterialPanelView (QGLWidget):
         if w == 0 or h == 0 : return
         if self.mousepos != None and self.geometry().contains(self.mousepos):            
             cursorselection = self.selectedColor(self.mousepos.x(),self.mousepos.y())
-        glViewport(0,0,w,h);
+        scaling = QGuiApplication.instance().devicePixelRatio()
+        glViewport(0,0,int(w*scaling),int(h*scaling));
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         glOrtho(0,w,h,0,-3000,1000);
@@ -208,8 +209,8 @@ class MaterialPanelView (QGLWidget):
         glr = GLRenderer(d)
         selectionbegin = self.selectionbegin
         selectionend = self.selectionend
-        for i in xrange(0,nbcitem):
-            for j in xrange(0,nbritem):
+        for i in range(0,int(nbcitem)):
+            for j in range(0,int(nbritem)):
                 if colindex < self.nbMaterial():
                     curmat = self.getMaterial(colindex)
                 else:
@@ -275,7 +276,7 @@ class MaterialPanelView (QGLWidget):
         else:
             self.selectionend = end
     def getSelection(self):
-        return xrange(self.selectionbegin,self.selectionend+1)
+        return range(self.selectionbegin,self.selectionend+1)
     def selectedColor(self,x,y):
         w = self.width()
         h = self.height()
@@ -351,7 +352,7 @@ class MaterialPanelView (QGLWidget):
             #         p2 = QPoint(*self.positionColor(self.cursorselection))
             #         self.initpos = self.initpos - p1 + p2 
             #         self.setSelection(self.cursorselection)
-        elif event.buttons()  == Qt.NoButton and self.cursorselection >= 0:
+        elif event.buttons()  == Qt.NoButton and not self.cursorselection is None and self.cursorselection >= 0:
             cmat = self.getMaterial(self.cursorselection)
             if cmat.isTexture():
                 if lastcursorselection != self.cursorselection or (self.preview is None and not self.previewtrigger.isActive()):                    
@@ -402,9 +403,9 @@ class MaterialPanelView (QGLWidget):
                     res = editMaterialInDialog(color) # Warning Here! QLayout problem.
                     if res is None or res == QDialog.Accepted:
                         self.valueChanged.emit()
-                except Exception, e:
-                    print e
-                    print 'editMaterialInDialog not supported by your version of PlantGL'
+                except Exception as e:
+                    print(e)
+                    print('editMaterialInDialog not supported by your version of PlantGL')
             else:
                 self.edittexture(color.image.filename)     
     def contextMenuEvent(self,event):
@@ -468,7 +469,7 @@ class MaterialPanelView (QGLWidget):
                         self.delMaterial(i)
                         if i < sel:
                             sel -= 1
-                print 'Copy ',self.clipboard[0][0],'to',sel
+                print('Copy ',self.clipboard[0][0],'to',sel)
                 self.setMaterial(sel,self.clipboard[0][1].deepcopy())
                 for i,color in reversed(self.clipboard[1:]):
                     self.insertMaterial(sel+1,color.deepcopy())
@@ -522,7 +523,7 @@ class MaterialPanelView (QGLWidget):
             fmat = self.getMaterial(beg)
             lmat = self.getMaterial(end)
             iratio = 0
-            for i in xrange(beg+1,end):
+            for i in range(beg+1,end):
                 iratio += ratio
                 self.setMaterial(i,fmat.interpolate(lmat,iratio))
             self.selectionbegin,self.selectionend = None,None

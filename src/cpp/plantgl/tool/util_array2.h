@@ -1,33 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Plant Graphic Library
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2003 UMR Cirad/Inria/Inra Dap - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): C. Nouguier & F. Boudon (frederic.boudon@cirad.fr) nouguier
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 /*! \file util_array2.h
     \brief Definition of the container class Array2 and RealArray2.
@@ -39,15 +49,17 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "rcobject.h"
 #include "tools_config.h"
+
+#include "rcobject.h"
+#include "classinfo.h"
+
 #include <vector>
 #include <algorithm>
 #include <iostream>
-#include "classinfo.h"
 /* ----------------------------------------------------------------------- */
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -178,6 +190,9 @@ public:
   /// Clear \e self.
   inline void clear( ) { __A.clear(); __rowSize = 0; }
 
+  /// data
+  inline const T * data( ) const { return __A.data(); }
+
   /// Returns a const iterator at the beginning of \e self.
   inline const_iterator begin( ) const { return __A.begin(); }
 
@@ -192,7 +207,7 @@ public:
 
   /// Returns a const iterator at the beginning of the row \e row of\e self.
   inline const_iterator beginRow(uint_t row ) const {
-      return (__A.begin()+(row*getRowSize())); 
+      return (__A.begin()+(row*getRowSize()));
   }
 
   /// Returns an iterator at the beginning of \e self.
@@ -243,7 +258,7 @@ public:
       GEOM_ASSERT((j == 0 && __rowSize == 0) || (nrsize == getRowSize()));
       iterator _pos;
       if(!__rowSize) { _pos = __A.begin(); __rowSize = nrsize; }
-      else _pos = beginRow(j); 
+      else _pos = beginRow(j);
       __A.insert(_pos, begin,end);
   }
 
@@ -713,7 +728,7 @@ typedef RCPtr<RealArray2> RealArray2Ptr;
 // __util_array2_h__
 /* ----------------------------------------------------------------------- */
 
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /// Write Array2 \b a on \b stream
   template< class T >
@@ -723,4 +738,3 @@ TOOLS_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif
-

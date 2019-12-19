@@ -1,35 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al.
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 
 
@@ -48,7 +56,6 @@
 #include <plantgl/scenegraph/container/pointarray.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 using namespace std;
 
@@ -79,42 +86,42 @@ using namespace std;
 
 #define GEOM_POVPRINT_BEGIN(stream,type,obj) \
     if (obj->isNamed()){ \
-	  if(!(__cache.insert(obj->getId()).second)){ \
-	    GEOM_POVPRINT_BEG_(stream,"object"); \
-		stream << __indent << obj->getName() << endl; \
-		GEOM_POVPRINT_TEXTURE_REF; \
-		GEOM_POVPRINT_END_(stream); \
-		return true; \
-	  } \
-	  else { \
-		stream << __indent << "#declare " << obj->getName() << " = "; \
-		GEOM_POVPRINT_BEG_(stream,type) \
-	  } \
-	} \
-	else { \
-	    GEOM_POVPRINT_BEG_(stream,type); \
-	} \
+      if(!(__cache.insert(obj->getId()).second)){ \
+        GEOM_POVPRINT_BEG_(stream,"object"); \
+        stream << __indent << obj->getName() << endl; \
+        GEOM_POVPRINT_TEXTURE_REF; \
+        GEOM_POVPRINT_END_(stream); \
+        return true; \
+      } \
+      else { \
+        stream << __indent << "#declare " << obj->getName() << " = "; \
+        GEOM_POVPRINT_BEG_(stream,type) \
+      } \
+    } \
+    else { \
+        GEOM_POVPRINT_BEG_(stream,type); \
+    } \
 
 #define GEOM_POVPRINT_END(stream,obj) \
   GEOM_POVPRINT_END_(stream) \
   if (obj->isNamed()){ \
-	    GEOM_POVPRINT_BEG_(stream,"object"); \
-		stream << __indent << obj->getName() << endl; \
+        GEOM_POVPRINT_BEG_(stream,"object"); \
+        stream << __indent << obj->getName() << endl; \
         GEOM_POVPRINT_TEXTURE_REF; \
-		GEOM_POVPRINT_END_(stream); \
+        GEOM_POVPRINT_END_(stream); \
   } \
 
 
 #define GEOM_POVPRINT_BEGIN_DIS(stream,obj) \
     if (obj->isNamed()){ \
-	  if(!(__cache.insert(obj->getId()).second)){ \
-	    GEOM_POVPRINT_BEG_(stream,"object"); \
-		stream << __indent << obj->getName() << endl; \
-		GEOM_POVPRINT_TEXTURE_REF;  \
-		GEOM_POVPRINT_END_(stream); \
-		return true; \
-	  } \
-	} \
+      if(!(__cache.insert(obj->getId()).second)){ \
+        GEOM_POVPRINT_BEG_(stream,"object"); \
+        stream << __indent << obj->getName() << endl; \
+        GEOM_POVPRINT_TEXTURE_REF;  \
+        GEOM_POVPRINT_END_(stream); \
+        return true; \
+      } \
+    } \
 
 
 #define GEOM_POVPRINT_DISCRETIZE(stream,obj) \
@@ -206,7 +213,7 @@ using namespace std;
 
 PovPrinter::PovPrinter( ostream& povStream,
                         Tesselator& tesselator,
-						const BoundingBox& bbox ) :
+                        const BoundingBox& bbox ) :
   Printer(povStream,povStream,povStream),
   __tesselator(tesselator),
   __linewidth(0.1),
@@ -240,13 +247,13 @@ bool PovPrinter::setCenter(const BoundingBox& bbox ){
 
 
 bool PovPrinter::setCamera(const Vector3& location, 
-						   const Vector3& direction, 
-						   const Vector3& up, 
-						   const Vector3& right){
-	assert(direction.isOrthogonalTo(up));
-	__geomStream << endl << "camera {" << endl;
-	__geomStream << "   perspective" << endl;
-	__geomStream << "    location ";
+                           const Vector3& direction, 
+                           const Vector3& up, 
+                           const Vector3& right){
+    assert(direction.isOrthogonalTo(up));
+    __geomStream << endl << "camera {" << endl;
+    __geomStream << "   perspective" << endl;
+    __geomStream << "    location ";
     GEOM_POVPRINT_VECTOR3(__geomStream,location);
     __geomStream << setprecision(20);
     __geomStream << endl << "    direction ";
@@ -262,14 +269,14 @@ bool PovPrinter::setCamera(const Vector3& location,
 }
 
 bool PovPrinter::setCamera(const Vector3& eye, 
-						   const Vector3& distance,
-						   const double&  ang, 
-						   const double&  az, 
-						   const double&  el){
-	__geomStream << endl << "camera {" << endl;
-	__geomStream << "   perspective" << endl;
-	__geomStream << "    location ";
-	Vector3 v = eye-distance;
+                           const Vector3& distance,
+                           const double&  ang, 
+                           const double&  az, 
+                           const double&  el){
+    __geomStream << endl << "camera {" << endl;
+    __geomStream << "   perspective" << endl;
+    __geomStream << "    location ";
+    Vector3 v = eye-distance;
     GEOM_POVPRINT_VECTOR3(__geomStream,v);
     __geomStream << endl << "    direction ";
         Vector3 dir = - Vector3::OX;
@@ -286,17 +293,17 @@ bool PovPrinter::setCamera(const Vector3& eye,
 }
 
 void PovPrinter::beginHeader(){
-	__geomStream << endl;
-	__geomStream << "#ifndef (__camera_definition__)" << endl;
-	__geomStream << "#declare __camera_definition__ = true;" << endl;
+    __geomStream << endl;
+    __geomStream << "#ifndef (__camera_definition__)" << endl;
+    __geomStream << "#declare __camera_definition__ = true;" << endl;
 }
 
 void PovPrinter::endHeader(){
-	__geomStream << endl;
-	__geomStream << "#end // __camera_definition__" << endl;
+    __geomStream << endl;
+    __geomStream << "#end // __camera_definition__" << endl;
 }
 
-bool PovPrinter::setLight(const TOOLS(Vector3)& position, const Color3& color){
+bool PovPrinter::setLight(const Vector3& position, const Color3& color){
         __geomStream << endl << "light_source {" << endl << "     ";
     GEOM_POVPRINT_VECTOR3(__geomStream,position);
         __matStream << endl << "    color rgb ";
@@ -307,7 +314,7 @@ bool PovPrinter::setLight(const TOOLS(Vector3)& position, const Color3& color){
 
 bool PovPrinter::header(const char * comment){
     __geomStream << "/*" << endl;
-	__geomStream << " * A povray file generated with GEOM." << endl;
+    __geomStream << " * A povray file generated with GEOM." << endl;
     __geomStream << " * Example of use : povray -Ifile.pov -Ofile.png +FN +H600 +W800 +A." << endl;
     if(comment) __geomStream << " * " << comment << '.' << endl;
     __geomStream << " */" << endl << endl;
@@ -335,10 +342,10 @@ bool PovPrinter::process(Shape * Shape) {
 bool PovPrinter::process( Inline * geomInline ) {
   GEOM_ASSERT(geomInline);
   if(geomInline->getScene() && geomInline->getScene()->size()>1){
-	GEOM_POVPRINT_BEG_(__geomStream,"union");
+    GEOM_POVPRINT_BEG_(__geomStream,"union");
   }
   else {
-	GEOM_POVPRINT_BEG_(__geomStream,"object");
+    GEOM_POVPRINT_BEG_(__geomStream,"object");
   }
 
   geomInline->getScene()->apply(*this) ;
@@ -444,7 +451,7 @@ bool PovPrinter::process( Texture2D * texture ) {
     texture->getImage()->apply(*this);
 
   if(texture->getTransformation())
-	  texture->getTransformation()->apply(*this);
+      texture->getTransformation()->apply(*this);
 
   GEOM_POVPRINT_END_(__matStream);
 
@@ -848,20 +855,20 @@ bool PovPrinter::process( PointSet * pointSet ) {
   GEOM_ASSERT(pointSet);
 
   if(!__pointcache){
-	__geomStream << "#ifndef (PointWidth)" << endl;
-	__geomStream << "#declare PointWidth = " << __linewidth << ';' << endl;
-	__geomStream << "#end // PointWidth" << endl;
-	__pointcache = true;
+    __geomStream << "#ifndef (PointWidth)" << endl;
+    __geomStream << "#declare PointWidth = " << __linewidth << ';' << endl;
+    __geomStream << "#end // PointWidth" << endl;
+    __pointcache = true;
   }
 
   GEOM_POVPRINT_BEGIN(__geomStream,"union",pointSet);
   Color4Array::const_iterator itColor;
   if (pointSet->hasColorList()) itColor = pointSet->getColorList()->begin();
   for (Point3Array::const_iterator _i = pointSet->getPointList()->begin();
-	_i != pointSet->getPointList()->end(); _i++) {
+    _i != pointSet->getPointList()->end(); _i++) {
     const Vector3& _vertex1 = *_i;
- 	GEOM_POVPRINT_BEG_(__geomStream,"sphere");
-	__geomStream << __indent;
+    GEOM_POVPRINT_BEG_(__geomStream,"sphere");
+    __geomStream << __indent;
     GEOM_POVPRINT_VECTOR3(__geomStream,_vertex1);
     __geomStream << ", PointWidth" << endl;
     if (pointSet->hasColorList()){
@@ -871,7 +878,7 @@ bool PovPrinter::process( PointSet * pointSet ) {
         __geomStream  << "  } finish { ambient 1 diffuse 1 } } " << endl;
     }
     else { GEOM_POVPRINT_TEXTURE(pointSet); }
-	GEOM_POVPRINT_END_(__geomStream);
+    GEOM_POVPRINT_END_(__geomStream);
   };
   // nothing to do
   GEOM_POVPRINT_END(__geomStream,pointSet);
@@ -886,10 +893,10 @@ bool PovPrinter::process( Polyline * polyline ) {
   GEOM_ASSERT(polyline);
 
   if(!__linecache){
-	__geomStream << "#ifndef (LineWidth)" << endl;
-	__geomStream << "#declare LineWidth = " << __linewidth << ';' << endl;
-	__geomStream << "#end // LineWidth" << endl;
-	__linecache = true;
+    __geomStream << "#ifndef (LineWidth)" << endl;
+    __geomStream << "#declare LineWidth = " << __linewidth << ';' << endl;
+    __geomStream << "#end // LineWidth" << endl;
+    __linecache = true;
   }
 
   size_t nbpoints = polyline->getPointList()->size();
@@ -913,23 +920,23 @@ bool PovPrinter::process( Polyline * polyline ) {
         GEOM_POVPRINT_BEGIN(__geomStream,"cylinder",polyline);
       }
       for (Point3Array::const_iterator _i = polyline->getPointList()->begin();
-        	_i != polyline->getPointList()->end()-1; _i++) {
+            _i != polyline->getPointList()->end()-1; _i++) {
             const Vector3& _vertex1 = *_i;
             const Vector3& _vertex2 = *(_i+1);
-        	if(norm(_vertex1-_vertex2) > GEOM_EPSILON){
-         	  if (nbpoints > 2) { GEOM_POVPRINT_BEG_(__geomStream,"cylinder"); }
-        	   __geomStream << __indent;
+            if(norm(_vertex1-_vertex2) > GEOM_EPSILON){
+              if (nbpoints > 2) { GEOM_POVPRINT_BEG_(__geomStream,"cylinder"); }
+               __geomStream << __indent;
                 GEOM_POVPRINT_VECTOR3(__geomStream,_vertex1);
                 __geomStream << ", ";
                 GEOM_POVPRINT_VECTOR3(__geomStream,_vertex2);
                 __geomStream << ", LineWidth";
-        	   if(!polyline->isWidthToDefault()) __geomStream << "*" << polyline->getWidth();
-        	   __geomStream << endl;
-        	   GEOM_POVPRINT_TEXTURE(polyline);
-        	   if (nbpoints > 2) {
+               if(!polyline->isWidthToDefault()) __geomStream << "*" << polyline->getWidth();
+               __geomStream << endl;
+               GEOM_POVPRINT_TEXTURE(polyline);
+               if (nbpoints > 2) {
                 GEOM_POVPRINT_END_(__geomStream);
                 }
-        	}
+            }
       };
 
       // nothing to do
@@ -968,7 +975,7 @@ bool PovPrinter::process( Revolution * revolution ) {
     __geomStream << __indent;
     GEOM_POVPRINT_VECTOR2(__geomStream,_point);
     __geomStream << endl;
-	fk += step;
+    fk += step;
   };
 
   GEOM_POVPRINT_TEXTURE(revolution);
@@ -1131,54 +1138,54 @@ bool PovPrinter::process( TriangleSet * triangleSet ) {
     if (triangleSet->getFacePointAt(_i,0) != triangleSet->getFacePointAt(_i,1) && 
         triangleSet->getFacePointAt(_i,0) != triangleSet->getFacePointAt(_i,2) && 
         triangleSet->getFacePointAt(_i,1) != triangleSet->getFacePointAt(_i,2)){
-	  if(normalV){
-		  __geomStream << __indent << "smooth_triangle { ";
-		  const Vector3& _vertex1 = triangleSet->getFacePointAt(_i,0);
-		  GEOM_POVPRINT_VECTOR3(__geomStream,_vertex1);
-		  __geomStream << ", ";
-		  const Vector3& _normal1 = triangleSet->getFaceNormalAt(_i,0);
-		  GEOM_POVPRINT_VECTOR3(__geomStream,_normal1);
-		  __geomStream << ", ";
-		  const Vector3& _vertex2 = triangleSet->getFacePointAt(_i,1);
-		  GEOM_POVPRINT_VECTOR3(__geomStream,_vertex2);
-		  __geomStream << ", ";
-		  const Vector3& _normal2 = triangleSet->getFaceNormalAt(_i,1);
-		  GEOM_POVPRINT_VECTOR3(__geomStream,_normal2);
-		  __geomStream << ", ";
-		  const Vector3& _vertex3 = triangleSet->getFacePointAt(_i,2);
-		  GEOM_POVPRINT_VECTOR3(__geomStream,_vertex3);
-		  __geomStream << ", ";
-		  const Vector3& _normal3 = triangleSet->getFaceNormalAt(_i,2);
-		  GEOM_POVPRINT_VECTOR3(__geomStream,_normal3);
-	  }
-	  else {
-		  __geomStream << __indent << "triangle { ";
-		  const Vector3& _vertex1 = triangleSet->getFacePointAt(_i,0);
-		  GEOM_POVPRINT_VECTOR3(__geomStream,_vertex1);
-		  __geomStream << ", ";
-		  const Vector3& _vertex2 = triangleSet->getFacePointAt(_i,1);
-		  GEOM_POVPRINT_VECTOR3(__geomStream,_vertex2);
-		  __geomStream << ", ";
-		  const Vector3& _vertex3 = triangleSet->getFacePointAt(_i,2);
-		  GEOM_POVPRINT_VECTOR3(__geomStream,_vertex3);
-	  }
-	  if (__tesselator.texCoordComputed() && triangleSet->getTexCoordList())
-	  {
-		  Point2ArrayPtr newtexcoord = triangleSet->getTexCoordList();
-		  if (__appearance->isTexture()){
-			  Texture2DTransformationPtr transform = dynamic_pointer_cast<Texture2D>(__appearance)->getTransformation();
-			  if (transform)  newtexcoord = transform->transform(newtexcoord);
-		  }
-		  __geomStream << " uv_vectors ";
-		  const Vector2& _vertex1 = newtexcoord->getAt(triangleSet->getFaceTexCoordIndexAt(_i,0));
-		  GEOM_POVPRINT_VECTOR2(__geomStream,_vertex1);
-		  __geomStream << ", ";
-		  const Vector2& _vertex2 = newtexcoord->getAt(triangleSet->getFaceTexCoordIndexAt(_i,1));
-		  GEOM_POVPRINT_VECTOR2(__geomStream,_vertex2);
-		  __geomStream << ", ";
-		  const Vector2& _vertex3 = newtexcoord->getAt(triangleSet->getFaceTexCoordIndexAt(_i,2));
-		  GEOM_POVPRINT_VECTOR2(__geomStream,_vertex3);
-	  }
+      if(normalV){
+          __geomStream << __indent << "smooth_triangle { ";
+          const Vector3& _vertex1 = triangleSet->getFacePointAt(_i,0);
+          GEOM_POVPRINT_VECTOR3(__geomStream,_vertex1);
+          __geomStream << ", ";
+          const Vector3& _normal1 = triangleSet->getFaceNormalAt(_i,0);
+          GEOM_POVPRINT_VECTOR3(__geomStream,_normal1);
+          __geomStream << ", ";
+          const Vector3& _vertex2 = triangleSet->getFacePointAt(_i,1);
+          GEOM_POVPRINT_VECTOR3(__geomStream,_vertex2);
+          __geomStream << ", ";
+          const Vector3& _normal2 = triangleSet->getFaceNormalAt(_i,1);
+          GEOM_POVPRINT_VECTOR3(__geomStream,_normal2);
+          __geomStream << ", ";
+          const Vector3& _vertex3 = triangleSet->getFacePointAt(_i,2);
+          GEOM_POVPRINT_VECTOR3(__geomStream,_vertex3);
+          __geomStream << ", ";
+          const Vector3& _normal3 = triangleSet->getFaceNormalAt(_i,2);
+          GEOM_POVPRINT_VECTOR3(__geomStream,_normal3);
+      }
+      else {
+          __geomStream << __indent << "triangle { ";
+          const Vector3& _vertex1 = triangleSet->getFacePointAt(_i,0);
+          GEOM_POVPRINT_VECTOR3(__geomStream,_vertex1);
+          __geomStream << ", ";
+          const Vector3& _vertex2 = triangleSet->getFacePointAt(_i,1);
+          GEOM_POVPRINT_VECTOR3(__geomStream,_vertex2);
+          __geomStream << ", ";
+          const Vector3& _vertex3 = triangleSet->getFacePointAt(_i,2);
+          GEOM_POVPRINT_VECTOR3(__geomStream,_vertex3);
+      }
+      if (__tesselator.texCoordComputed() && triangleSet->getTexCoordList())
+      {
+          Point2ArrayPtr newtexcoord = triangleSet->getTexCoordList();
+          if (__appearance->isTexture()){
+              Texture2DTransformationPtr transform = dynamic_pointer_cast<Texture2D>(__appearance)->getTransformation();
+              if (transform)  newtexcoord = transform->transform(newtexcoord);
+          }
+          __geomStream << " uv_vectors ";
+          const Vector2& _vertex1 = newtexcoord->getAt(triangleSet->getFaceTexCoordIndexAt(_i,0));
+          GEOM_POVPRINT_VECTOR2(__geomStream,_vertex1);
+          __geomStream << ", ";
+          const Vector2& _vertex2 = newtexcoord->getAt(triangleSet->getFaceTexCoordIndexAt(_i,1));
+          GEOM_POVPRINT_VECTOR2(__geomStream,_vertex2);
+          __geomStream << ", ";
+          const Vector2& _vertex3 = newtexcoord->getAt(triangleSet->getFaceTexCoordIndexAt(_i,2));
+          GEOM_POVPRINT_VECTOR2(__geomStream,_vertex3);
+      }
     __geomStream << "}" << endl;
     }
   }; */
@@ -1193,8 +1200,8 @@ bool PovPrinter::process( TriangleSet * triangleSet ) {
 
     for (Point3Array::const_iterator itPoints = triangleSet->getPointList()->begin(); itPoints != endpoints; ++itPoints, ++cpid) 
     {
-		    GEOM_POVPRINT_VECTOR3(__geomStream,(*itPoints));
-		    if (itPoints != endpoints -1){
+            GEOM_POVPRINT_VECTOR3(__geomStream,(*itPoints));
+            if (itPoints != endpoints -1){
                 __geomStream << ", ";
                 if ((cpid+1) % 5 == 0) __geomStream << endl << __indent;
             }
@@ -1210,8 +1217,8 @@ bool PovPrinter::process( TriangleSet * triangleSet ) {
 
     for (Point3Array::const_iterator itPoints = triangleSet->getNormalList()->begin(); itPoints != endpoints; ++itPoints, ++cpid) 
     {
-		    GEOM_POVPRINT_VECTOR3(__geomStream,(*itPoints));
-		    if (itPoints != endpoints -1){
+            GEOM_POVPRINT_VECTOR3(__geomStream,(*itPoints));
+            if (itPoints != endpoints -1){
                 __geomStream << ", ";
                 if ((cpid+1) % 5 == 0) __geomStream << endl << __indent;
             }
@@ -1219,11 +1226,11 @@ bool PovPrinter::process( TriangleSet * triangleSet ) {
     }
     if (__tesselator.texCoordComputed() && triangleSet->getTexCoordList())
     {
-	    Point2ArrayPtr newtexcoord = triangleSet->getTexCoordList();
-	    if (__appearance->isTexture()){
-		    Texture2DTransformationPtr transform = dynamic_pointer_cast<Texture2D>(__appearance)->getTransformation();
-		    if (transform)  newtexcoord = transform->transform(newtexcoord);
-	    }
+        Point2ArrayPtr newtexcoord = triangleSet->getTexCoordList();
+        if (__appearance->isTexture()){
+            Texture2DTransformationPtr transform = dynamic_pointer_cast<Texture2D>(__appearance)->getTransformation();
+            if (transform)  newtexcoord = transform->transform(newtexcoord);
+        }
 
         __geomStream << __indent << "uv_vectors  { " << newtexcoord->size() << endl << __indent;
 
@@ -1232,8 +1239,8 @@ bool PovPrinter::process( TriangleSet * triangleSet ) {
 
         for (Point2Array::const_iterator itTex = newtexcoord->begin(); itTex != endtex; ++itTex, ++cpid) 
         {
-		        GEOM_POVPRINT_VECTOR2(__geomStream,(*itTex));
-		        if (itTex != endtex -1){
+                GEOM_POVPRINT_VECTOR2(__geomStream,(*itTex));
+                if (itTex != endtex -1){
                     __geomStream << ", ";
                     if ((cpid+1) % 5 == 0) __geomStream << endl << __indent;
                 }
@@ -1250,10 +1257,10 @@ bool PovPrinter::process( TriangleSet * triangleSet ) {
 
         for (Color4Array::const_iterator itColor = triangleSet->getColorList()->begin(); itColor != endColor; ++itColor, ++cpid) 
         {
-		        __geomStream << "texture { pigment { rgbt ";
+                __geomStream << "texture { pigment { rgbt ";
                 GEOM_POVPRINT_COLOR4(__geomStream,(*itColor));
                 __geomStream << "}}";
-		        if (itColor != endColor -1){
+                if (itColor != endColor -1){
                     __geomStream << ", ";
                     if ((cpid+1) % 5 == 0) __geomStream << endl << __indent;
                 }
@@ -1268,7 +1275,7 @@ bool PovPrinter::process( TriangleSet * triangleSet ) {
 
     for (Index3Array::const_iterator itIndex = triangleSet->getIndexList()->begin(); itIndex != endIndex; ++itIndex, ++cpid) 
     {
-		    GEOM_POVPRINT_INDEX3(__geomStream,(*itIndex));
+            GEOM_POVPRINT_INDEX3(__geomStream,(*itIndex));
             if (triangleSet->hasColorList()){
                 __geomStream << ", ";
                 if(!triangleSet->getColorPerVertex()){
@@ -1279,7 +1286,7 @@ bool PovPrinter::process( TriangleSet * triangleSet ) {
                     __geomStream << ind.getAt(0) << ", " << ind.getAt(1) << ", " << ind.getAt(2) ;
                 }
             }
-		    if (itIndex != endIndex -1){
+            if (itIndex != endIndex -1){
                 __geomStream << ", ";
                 if ((cpid+1) % 5 == 0) __geomStream << endl << __indent;
             }
@@ -1328,54 +1335,54 @@ bool PovPrinter::process( TriangleSet * triangleSet ) {
     if (triangleSet->getFacePointAt(_i,0) != triangleSet->getFacePointAt(_i,1) && 
         triangleSet->getFacePointAt(_i,0) != triangleSet->getFacePointAt(_i,2) && 
         triangleSet->getFacePointAt(_i,1) != triangleSet->getFacePointAt(_i,2)){
-	  if(normalV){
-		  __geomStream << __indent << "smooth_triangle { ";
-		  const Vector3& _vertex1 = triangleSet->getFacePointAt(_i,0);
-		  GEOM_POVPRINT_VECTOR3(__geomStream,_vertex1);
-		  __geomStream << ", ";
-		  const Vector3& _normal1 = triangleSet->getFaceNormalAt(_i,0);
-		  GEOM_POVPRINT_VECTOR3(__geomStream,_normal1);
-		  __geomStream << ", ";
-		  const Vector3& _vertex2 = triangleSet->getFacePointAt(_i,1);
-		  GEOM_POVPRINT_VECTOR3(__geomStream,_vertex2);
-		  __geomStream << ", ";
-		  const Vector3& _normal2 = triangleSet->getFaceNormalAt(_i,1);
-		  GEOM_POVPRINT_VECTOR3(__geomStream,_normal2);
-		  __geomStream << ", ";
-		  const Vector3& _vertex3 = triangleSet->getFacePointAt(_i,2);
-		  GEOM_POVPRINT_VECTOR3(__geomStream,_vertex3);
-		  __geomStream << ", ";
-		  const Vector3& _normal3 = triangleSet->getFaceNormalAt(_i,2);
-		  GEOM_POVPRINT_VECTOR3(__geomStream,_normal3);
-	  }
-	  else {
-		  __geomStream << __indent << "triangle { ";
-		  const Vector3& _vertex1 = triangleSet->getFacePointAt(_i,0);
-		  GEOM_POVPRINT_VECTOR3(__geomStream,_vertex1);
-		  __geomStream << ", ";
-		  const Vector3& _vertex2 = triangleSet->getFacePointAt(_i,1);
-		  GEOM_POVPRINT_VECTOR3(__geomStream,_vertex2);
-		  __geomStream << ", ";
-		  const Vector3& _vertex3 = triangleSet->getFacePointAt(_i,2);
-		  GEOM_POVPRINT_VECTOR3(__geomStream,_vertex3);
-	  }
-	  if (__tesselator.texCoordComputed() && triangleSet->getTexCoordList())
-	  {
-		  Point2ArrayPtr newtexcoord = triangleSet->getTexCoordList();
-		  if (__appearance->isTexture()){
-			  Texture2DTransformationPtr transform = dynamic_pointer_cast<Texture2D>(__appearance)->getTransformation();
-			  if (transform)  newtexcoord = transform->transform(newtexcoord);
-		  }
-		  __geomStream << " uv_vectors ";
-		  const Vector2& _vertex1 = newtexcoord->getAt(triangleSet->getFaceTexCoordIndexAt(_i,0));
-		  GEOM_POVPRINT_VECTOR2(__geomStream,_vertex1);
-		  __geomStream << ", ";
-		  const Vector2& _vertex2 = newtexcoord->getAt(triangleSet->getFaceTexCoordIndexAt(_i,1));
-		  GEOM_POVPRINT_VECTOR2(__geomStream,_vertex2);
-		  __geomStream << ", ";
-		  const Vector2& _vertex3 = newtexcoord->getAt(triangleSet->getFaceTexCoordIndexAt(_i,2));
-		  GEOM_POVPRINT_VECTOR2(__geomStream,_vertex3);
-	  }
+      if(normalV){
+          __geomStream << __indent << "smooth_triangle { ";
+          const Vector3& _vertex1 = triangleSet->getFacePointAt(_i,0);
+          GEOM_POVPRINT_VECTOR3(__geomStream,_vertex1);
+          __geomStream << ", ";
+          const Vector3& _normal1 = triangleSet->getFaceNormalAt(_i,0);
+          GEOM_POVPRINT_VECTOR3(__geomStream,_normal1);
+          __geomStream << ", ";
+          const Vector3& _vertex2 = triangleSet->getFacePointAt(_i,1);
+          GEOM_POVPRINT_VECTOR3(__geomStream,_vertex2);
+          __geomStream << ", ";
+          const Vector3& _normal2 = triangleSet->getFaceNormalAt(_i,1);
+          GEOM_POVPRINT_VECTOR3(__geomStream,_normal2);
+          __geomStream << ", ";
+          const Vector3& _vertex3 = triangleSet->getFacePointAt(_i,2);
+          GEOM_POVPRINT_VECTOR3(__geomStream,_vertex3);
+          __geomStream << ", ";
+          const Vector3& _normal3 = triangleSet->getFaceNormalAt(_i,2);
+          GEOM_POVPRINT_VECTOR3(__geomStream,_normal3);
+      }
+      else {
+          __geomStream << __indent << "triangle { ";
+          const Vector3& _vertex1 = triangleSet->getFacePointAt(_i,0);
+          GEOM_POVPRINT_VECTOR3(__geomStream,_vertex1);
+          __geomStream << ", ";
+          const Vector3& _vertex2 = triangleSet->getFacePointAt(_i,1);
+          GEOM_POVPRINT_VECTOR3(__geomStream,_vertex2);
+          __geomStream << ", ";
+          const Vector3& _vertex3 = triangleSet->getFacePointAt(_i,2);
+          GEOM_POVPRINT_VECTOR3(__geomStream,_vertex3);
+      }
+      if (__tesselator.texCoordComputed() && triangleSet->getTexCoordList())
+      {
+          Point2ArrayPtr newtexcoord = triangleSet->getTexCoordList();
+          if (__appearance->isTexture()){
+              Texture2DTransformationPtr transform = dynamic_pointer_cast<Texture2D>(__appearance)->getTransformation();
+              if (transform)  newtexcoord = transform->transform(newtexcoord);
+          }
+          __geomStream << " uv_vectors ";
+          const Vector2& _vertex1 = newtexcoord->getAt(triangleSet->getFaceTexCoordIndexAt(_i,0));
+          GEOM_POVPRINT_VECTOR2(__geomStream,_vertex1);
+          __geomStream << ", ";
+          const Vector2& _vertex2 = newtexcoord->getAt(triangleSet->getFaceTexCoordIndexAt(_i,1));
+          GEOM_POVPRINT_VECTOR2(__geomStream,_vertex2);
+          __geomStream << ", ";
+          const Vector2& _vertex3 = newtexcoord->getAt(triangleSet->getFaceTexCoordIndexAt(_i,2));
+          GEOM_POVPRINT_VECTOR2(__geomStream,_vertex3);
+      }
     __geomStream << "}" << endl;
     }
   };*/
@@ -1452,23 +1459,23 @@ bool PovPrinter::process( PointSet2D * pointSet ) {
   GEOM_ASSERT(pointSet);
 
   if(!__pointcache){
-	__geomStream << "#ifndef (PointWidth)" << endl;
-	__geomStream << "#declare PointWidth = " << __linewidth << ';' << endl;
-	__geomStream << "#end // PointWidth" << endl;
-	__pointcache = true;
+    __geomStream << "#ifndef (PointWidth)" << endl;
+    __geomStream << "#declare PointWidth = " << __linewidth << ';' << endl;
+    __geomStream << "#end // PointWidth" << endl;
+    __pointcache = true;
   }
 
   GEOM_POVPRINT_BEGIN(__geomStream,"union",pointSet);
   Vector3 _vertex1;
   for (Point2Array::const_iterator _i = pointSet->getPointList()->begin();
-	_i != pointSet->getPointList()->end(); _i++) {
+    _i != pointSet->getPointList()->end(); _i++) {
     _vertex1 = Vector3(*_i,0);
- 	GEOM_POVPRINT_BEG_(__geomStream,"sphere");
-	__geomStream << __indent;
+    GEOM_POVPRINT_BEG_(__geomStream,"sphere");
+    __geomStream << __indent;
     GEOM_POVPRINT_VECTOR3(__geomStream,_vertex1);
     __geomStream << ", PointWidth" << endl;
-	GEOM_POVPRINT_TEXTURE(pointSet);
-	GEOM_POVPRINT_END_(__geomStream);
+    GEOM_POVPRINT_TEXTURE(pointSet);
+    GEOM_POVPRINT_END_(__geomStream);
   };
   // nothing to do
   GEOM_POVPRINT_END(__geomStream,pointSet);

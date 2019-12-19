@@ -1,35 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2009 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al.
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 #ifndef __dijkstra_h__
 #define __dijkstra_h__
@@ -60,7 +68,7 @@
         #define PGL_USE_PRIORITY_QUEUE
     #endif
 #endif
-    
+
 
 PGL_BEGIN_NAMESPACE
 
@@ -68,7 +76,7 @@ struct Node {
     uint32_t id;
     uint32_t parent;
     real_t distance;
-    Node(uint32_t _id, uint32_t _parent, real_t _distance) 
+    Node(uint32_t _id, uint32_t _parent, real_t _distance)
         : id(_id), parent(_parent), distance(_distance) {}
 } ;
 
@@ -76,9 +84,9 @@ typedef std::vector<Node> NodeList;
 
 
 struct nodecompare {
-       const TOOLS(RealArrayPtr)& __distances;
+       const RealArrayPtr& __distances;
 
-       nodecompare(const TOOLS(RealArrayPtr)& distances) : __distances(distances) {}
+       nodecompare(const RealArrayPtr& distances) : __distances(distances) {}
        bool operator()(const uint32_t& a,const uint32_t& b) const { return __distances->getAt(a) > __distances->getAt(b); }
 };
 
@@ -98,8 +106,8 @@ enum color { black, grey, white };
 typedef std::vector<std::pair<uint32_t, real_t> > NodeDistancePairList;
 
 struct DijkstraAllocator {
-    void allocate(size_t nbnodes, TOOLS(RealArrayPtr)& distances,  uint32_t *& parents, color *& colored) const {
-        distances = TOOLS(RealArrayPtr)(new TOOLS(RealArray)(nbnodes,REAL_MAX));
+    void allocate(size_t nbnodes, RealArrayPtr& distances,  uint32_t *& parents, color *& colored) const {
+        distances = RealArrayPtr(new RealArray(nbnodes,REAL_MAX));
         parents = new uint32_t[nbnodes];
         colored = new color[nbnodes];
 
@@ -107,9 +115,9 @@ struct DijkstraAllocator {
         for (color * itcol = colored ; itcol != colored+nbnodes ; ++itcol) *itcol = black;
     }
 
-    
-    void desallocate(TOOLS(RealArrayPtr) distances, uint32_t * parents, color * colored)  const {
-        delete [] parents;        
+
+    void desallocate(RealArrayPtr distances, uint32_t * parents, color * colored)  const {
+        delete [] parents;
         delete [] colored;
     }
 
@@ -128,16 +136,16 @@ struct DijkstraAllocator {
 class DijkstraReusingAllocator {
     class Cache {
     public:
-        TOOLS(RealArrayPtr) distances;  
+        RealArrayPtr distances;
         uint32_t * parents;
         color * colored;
 #ifdef PGL_USE_FIBONACCI_HEAP
-        dijkstrahandle * handles
+		dijkstrahandle * handles;
 #endif
 
         Cache() : distances(), parents(NULL), colored(NULL)
 #ifdef PGL_USE_FIBONACCI_HEAP
-        handles(NULL)
+        , handles(NULL)
 #endif
         {}
 
@@ -157,9 +165,9 @@ public:
         if (__cache) delete __cache;
     }
 
-    void allocate(size_t nbnodes, TOOLS(RealArrayPtr)& distances,  uint32_t *& parents, color *& colored) const {
+    void allocate(size_t nbnodes, RealArrayPtr& distances,  uint32_t *& parents, color *& colored) const {
         if (__cache->parents == NULL){
-            __cache->distances = TOOLS(RealArrayPtr)(new TOOLS(RealArray)(nbnodes,REAL_MAX));
+            __cache->distances = RealArrayPtr(new RealArray(nbnodes,REAL_MAX));
             __cache->parents = new uint32_t[nbnodes];
             __cache->colored = new color[nbnodes];
         }
@@ -168,18 +176,18 @@ public:
         parents = __cache->parents;
         colored = __cache->colored;
 
-        for (TOOLS(RealArray)::iterator itdist = distances->begin() ; itdist != distances->end() ; ++itdist) *itdist = REAL_MAX;
+        for (RealArray::iterator itdist = distances->begin() ; itdist != distances->end() ; ++itdist) *itdist = REAL_MAX;
         for (color * itcol = colored ; itcol != colored+nbnodes ; ++itcol) *itcol = black;
         for (uint32_t * itpar = parents ; itpar != parents+nbnodes ; ++itpar) *itpar = 0;
     }
 
-    
-    void desallocate(TOOLS(RealArrayPtr) distances, uint32_t * parents, color * colored)  const {
+
+    void desallocate(RealArrayPtr distances, uint32_t * parents, color * colored)  const {
     }
 
 #ifdef PGL_USE_FIBONACCI_HEAP
     void allocate(size_t nbnodes, dijkstrahandle *& handles)  const {
-        if (__cache->parents == NULL){
+        if (__cache->handles == NULL){
             __cache->handles = new dijkstrahandle[nbnodes];
         }
         handles = __cache->handles;
@@ -195,8 +203,8 @@ protected:
 };
 
 template<class EdgeWeigthEvaluation, class Allocator>
-NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections, 
-                                             uint32_t root, 
+NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections,
+                                             uint32_t root,
                                              EdgeWeigthEvaluation& distevaluator,
                                              real_t maxdist,
                                              uint32_t maxnbelements,
@@ -208,7 +216,7 @@ NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections,
      size_t nbnodes = connections->size();
      size_t nbprocessednodes = 0;
 
-     TOOLS(RealArrayPtr) distances = NULL;
+     RealArrayPtr distances = NULL;
      uint32_t * parents = NULL;
      color * colored = NULL;
 
@@ -220,10 +228,11 @@ NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections,
 
      distances->setAt(root,0);
      parents[root] = root;
- 
+
 
      struct nodecompare comp(distances);
      dijkstraheap Q(comp);
+
 
 #ifdef PGL_USE_FIBONACCI_HEAP
      dijkstrahandle * handles = NULL;
@@ -261,7 +270,7 @@ NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections,
          {
              uint32_t v = *itchildren;
 
-             real_t weigthuv = distevaluator(current,v); 
+             real_t weigthuv = distevaluator(current,v);
              real_t distance = weigthuv + distances->getAt(current);
 
              if (distance <= maxdist && distance < distances->getAt(v)) {
@@ -296,26 +305,26 @@ NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections,
 
 
 template<class EdgeWeigthEvaluation>
-NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections, 
-                                             uint32_t root, 
+NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections,
+                                             uint32_t root,
                                              EdgeWeigthEvaluation& distevaluator,
                                              real_t maxdist = REAL_MAX,
                                              uint32_t maxnbelements = UINT32_MAX)
-                                             
+
  { return dijkstra_shortest_paths_in_a_range(connections,root,distevaluator,maxdist,maxnbelements,DijkstraAllocator());  }
- 
+
 template<class EdgeWeigthEvaluation>
-std::pair<TOOLS(Uint32Array1Ptr),TOOLS(RealArrayPtr)>  dijkstra_shortest_paths(const IndexArrayPtr& connections, 
-                                   uint32_t root, 
+std::pair<Uint32Array1Ptr,RealArrayPtr>  dijkstra_shortest_paths(const IndexArrayPtr& connections,
+                                   uint32_t root,
                                    EdgeWeigthEvaluation& distevaluator)
  {
 
 
      size_t nbnodes = connections->size();
-     TOOLS(RealArrayPtr) distances(new TOOLS(RealArray)(nbnodes,REAL_MAX));
+     RealArrayPtr distances(new RealArray(nbnodes,REAL_MAX));
      distances->setAt(root,0);
 
-     TOOLS(Uint32Array1Ptr) parents(new TOOLS(Uint32Array1)(nbnodes,UINT32_MAX));
+     Uint32Array1Ptr parents(new Uint32Array1(nbnodes,UINT32_MAX));
      parents->setAt(root,root);
 
      std::vector<color> colored(nbnodes,black);
@@ -326,14 +335,14 @@ std::pair<TOOLS(Uint32Array1Ptr),TOOLS(RealArrayPtr)>  dijkstra_shortest_paths(c
      dijkstraheap Q(comp);
 
 #ifdef PGL_USE_FIBONACCI_HEAP
-     handle * handles = new handle[nbnodes];
+     dijkstrahandle * handles = new dijkstrahandle[nbnodes];
      handles[root] = Q.push(root);
 #else
      Q.push(root);
 #endif
 
      while(!Q.empty()){
-         uint32_t current = Q.top(); Q.pop(); 
+         uint32_t current = Q.top(); Q.pop();
 #ifdef PGL_USE_PRIORITY_QUEUE
          if(colored[current] == white) continue;
 #endif
@@ -343,7 +352,7 @@ std::pair<TOOLS(Uint32Array1Ptr),TOOLS(RealArrayPtr)>  dijkstra_shortest_paths(c
              itchildren != nextchildren.end(); ++itchildren)
          {
              uint32_t v = *itchildren;
-             real_t weigthuv = distevaluator(current,v); 
+             real_t weigthuv = distevaluator(current,v);
              real_t distance = weigthuv+distances->getAt(current);
              if (distance < distances->getAt(v)){
                  // printf("consider child %i %f %f %i\n", v, distance, (distances->getAt(v)!=REAL_MAX?distances->getAt(v):-1), int(colored[v]));
@@ -367,29 +376,29 @@ std::pair<TOOLS(Uint32Array1Ptr),TOOLS(RealArrayPtr)>  dijkstra_shortest_paths(c
              }
          }
      }
-     return std::pair<TOOLS(Uint32Array1Ptr),TOOLS(RealArrayPtr)>(parents,distances);
+     return std::pair<Uint32Array1Ptr,RealArrayPtr>(parents,distances);
  }
 
  /*
  DIJKSTRA(G, s, w)
   for each vertex u in V
-    d[u] := infinity 
-    p[u] := u 
+    d[u] := infinity
+    p[u] := u
     color[u] := WHITE
   end for
-  color[s] := GRAY 
-  d[s] := 0 
+  color[s] := GRAY
+  d[s] := 0
   INSERT(Q, s)
-  while (Q != Ø)
+  while (Q != ï¿½)
     u := EXTRACT-MIN(Q)
     S := S U { u }
     for each vertex v in Adj[u]
       if (w(u,v) + d[u] < d[v])
         d[v] := w(u,v) + d[u]
-        p[v] := u 
-        if (color[v] = WHITE) 
+        p[v] := u
+        if (color[v] = WHITE)
           color[v] := GRAY
-          INSERT(Q, v) 
+          INSERT(Q, v)
         else if (color[v] = GRAY)
           DECREASE-KEY(Q, v)
       else

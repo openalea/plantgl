@@ -1,2 +1,2 @@
-from _pglmath import *
+from ._pglmath import *
 

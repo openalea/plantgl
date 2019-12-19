@@ -92,18 +92,18 @@ def asymetric_swung( obj , **kwds ):
   rgb = kwds.get('rgb', None)
   spec_name = kwds.get('spec_name', 'houppier_mat')
 
-  rd_kz = [ k for k in obj.__dict__.keys() if radiusHoup_prefix in k]
+  rd_kz = [ k for k in list(obj.__dict__.keys()) if radiusHoup_prefix in k]
   rd_kz.sort()
-  az_kz = [ k for k in obj.__dict__.keys() if azimuthHoup_prefix in k]
+  az_kz = [ k for k in list(obj.__dict__.keys()) if azimuthHoup_prefix in k]
   az_kz.sort()
   if len(rd_kz) != len(az_kz):
-    print  obj.__dict__[X_attr], obj.__dict__[Y_attr]
+    print(obj.__dict__[X_attr], obj.__dict__[Y_attr])
   assert( len(rd_kz) == len(az_kz) and "directional canopy length and azimuth are not the same size" )
 
   houppier=[ ( obj.__dict__[rd_kz[i]], houppier2geomAZ(obj.__dict__[az_kz[i]]) ) for i in range( len(rd_kz) ) ]
   houppier.sort(cmp = lambda x,y : cmp(x[1],y[1]))
   
-  if not obj.__dict__.has_key("posX") and not obj.__dict__.has_key("posY"):
+  if "posX" not in obj.__dict__ and "posY" not in obj.__dict__:
     try :
       r = obj.__dict__[pos_dist]
       a = obj.__dict__[pos_az]
@@ -160,7 +160,7 @@ def spheres( obj , **kwds ):
   rgb = kwds.get('rgb', None)
   spec_name = kwds.get('spec_name', 'houppier_mat')
 
-  if not obj.__dict__.has_key("posX") and not obj.__dict__.has_key("posY"):
+  if "posX" not in obj.__dict__ and "posY" not in obj.__dict__:
     try :
       r = obj.__dict__[pos_dist]
       a = obj.__dict__[pos_az]
@@ -173,7 +173,7 @@ def spheres( obj , **kwds ):
 
   ht = 100* (obj.__dict__[height_attr] - obj.__dict__[botHoup_attr])
 
-  rd_kz = [ k for k in obj.__dict__.keys() if radiusHoup_prefix in k]
+  rd_kz = [ k for k in list(obj.__dict__.keys()) if radiusHoup_prefix in k]
   radii=[ obj.__dict__[k] for k in rd_kz ]
 
   if radiusHoup :
@@ -216,7 +216,7 @@ def cones( obj , **kwds ):
   rgb = kwds.get('rgb', None)
   spec_name = kwds.get('spec_name', 'houppier_mat')
 
-  if not obj.__dict__.has_key("posX") and not obj.__dict__.has_key("posY"):
+  if "posX" not in obj.__dict__ and "posY" not in obj.__dict__:
     try :
       r = obj.__dict__[pos_dist]
       a = obj.__dict__[pos_az]
@@ -229,7 +229,7 @@ def cones( obj , **kwds ):
 
   ht = 100* (obj.__dict__[height_attr] - obj.__dict__[botHoup_attr])
 
-  rd_kz = [ k for k in obj.__dict__.keys() if radiusHoup_prefix in k]
+  rd_kz = [ k for k in list(obj.__dict__.keys()) if radiusHoup_prefix in k]
   radii=[ obj.__dict__[k] for k in rd_kz ]
 
   if radiusHoup :
@@ -274,7 +274,7 @@ class dresser( Node ):
     
         Node.__init__(self)
 
-        funs= self.geom_func.keys()
+        funs= list(self.geom_func.keys())
         funs.sort()
         self.add_input( name = "Type", interface = IEnumStr(funs), value = funs[0])
         self.add_input(name = "Params", interface = IDict, value = {'X_attr': 'X','Y_attr': 'Y'})

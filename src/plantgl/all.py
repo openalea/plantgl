@@ -1,10 +1,10 @@
-from math import *
-from scenegraph import *
-from algo import *
+from .math import *
+from .scenegraph import *
+from .algo import *
 if not pgl_support_extension('PGL_NO_QT_GUI'):
-    from gui import *
+    from .gui import *
 
-import codec
+from . import codec
 
 
 from os.path import join as pj

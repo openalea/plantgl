@@ -21,11 +21,11 @@ This module provide a set of geometrical concepts to express tissue geometry
 __license__= "Cecill-C"
 __revision__=" $Id$ "
 
-from interface.abstract_geometry import AbstractPolyhedra
-from polygon import Polygon
-from segment import Segment
-from point import Point
-from tools import Vmean,barycenter
+from .interface.abstract_geometry import AbstractPolyhedra
+from .polygon import Polygon
+from .segment import Segment
+from .point import Point
+from .tools import Vmean,barycenter
 
 class Polyhedra (AbstractPolyhedra) :
 	"""

@@ -32,22 +32,22 @@
 #include <boost/python.hpp>
 
 
-void index_trans(const PythonExc_IndexError& err)
+inline void index_trans(const PythonExc_IndexError& err)
 { PyErr_SetString(PyExc_IndexError, err.error_str); }
 
-void value_trans(const PythonExc_ValueError& err)
+inline void value_trans(const PythonExc_ValueError& err)
 { PyErr_SetString(PyExc_ValueError, err.error_str); }
 
-void type_trans(const PythonExc_TypeError& err)
+inline void type_trans(const PythonExc_TypeError& err)
 { PyErr_SetString(PyExc_TypeError, err.error_str); }
 
-void key_trans(const PythonExc_KeyError& err)
+inline void key_trans(const PythonExc_KeyError& err)
 { PyErr_SetString(PyExc_KeyError, err.error_str); }
 
-void stopiteration_trans(const PythonExc_StopIteration& err)
+inline void stopiteration_trans(const PythonExc_StopIteration& err)
 { PyErr_SetString(PyExc_StopIteration, err.error_str); }
 
-void define_stl_exceptions()
+inline void define_stl_exceptions()
 {
   boost::python::register_exception_translator<PythonExc_IndexError>(&index_trans);
   boost::python::register_exception_translator<PythonExc_ValueError>(&value_trans);

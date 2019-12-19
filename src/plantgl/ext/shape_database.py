@@ -10,7 +10,7 @@ class ShapeDatabase (dict) :
 		convert the database into a plantgl scene
 		"""
 		sc=Scene()
-		for shp_id,shp in self.iteritems() :
+		for shp_id,shp in self.items() :
 			shp.id=shp_id
 			sc.add(shp)
 		return sc

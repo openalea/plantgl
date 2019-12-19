@@ -1,35 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr)
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
- * 
- *                      GNU General Public Licence
- *           
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
+ *
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
+
 
 /*! \file view_scenegl.h
     \brief Definition of the viewer classes ViewRendererGL and ViewSceneRendererGL.
@@ -73,7 +81,7 @@ class ViewSceneChangeEvent;
 
 /* ----------------------------------------------------------------------- */
 
-/**   
+/**
    \class ViewRendererGL
    \brief An abstract class for Display Manager.
 
@@ -87,10 +95,10 @@ class VIEW_API ViewRendererGL  : public ViewObjectGL
   Q_PROPERTY( QString Filename READ getFilename WRITE openFile )
 
 public :
-  
+
   /// Constructor
   ViewRendererGL(QGLWidget * parent=0, const char * name=0);
-  
+
   /// Destructor.
   virtual ~ViewRendererGL();
 
@@ -120,7 +128,7 @@ public :
 
   /// Add Open Entries
   virtual bool addOpenEntries(QMenu * menu);
-  
+
   /// Add Import Entries
   virtual bool addImportEntries(QMenu * menu);
 
@@ -129,10 +137,10 @@ public :
 
   /// Add Export Entries
   virtual bool addExportEntries(QMenu * menu);
-  
+
   /// Add Edit Entries
   virtual bool addEditEntries(QMenu * menu);
-  
+
   /// Add properties info in the \e tab
   virtual bool addProperties(QTabWidget * tab);
 
@@ -174,7 +182,7 @@ public :
   virtual uint_t translateId(uint_t) const;
 
   /// Get the global Bounding Box.
-  virtual const PGL::BoundingBoxPtr getGlobalBoundingBox() const;
+  virtual const PGL(BoundingBoxPtr) getGlobalBoundingBox() const;
 
   virtual bool isEmpty() const;
 
@@ -187,7 +195,7 @@ public slots:
 
   /// Save.
   virtual void save();
-  
+
   /// Save As
   virtual void saveAs();
 
@@ -213,7 +221,7 @@ signals:
 
   /// Signal emit when filename has changed.
   void filenameChanged(const QString&);
-  
+
   /// Signal emit when the scene change.
   void sceneChanged();
 
@@ -236,22 +244,22 @@ private:
 
 };
 
-/**   
+/**
       \class ViewSceneRendererGL
       \brief An abstract class for Display Manager of GL Scene.
-      
+
 */
 class VIEW_API ViewSceneRendererGL  : public ViewRendererGL
 {
   Q_OBJECT
 
 public :
-  
+
   /// Constructor.
   ViewSceneRendererGL(ViewCameraGL * camera=0,
-		      ViewLightGL * light=0,
-		      QGLWidget * parent=0, 
-		      const char * name=0);
+              ViewLightGL * light=0,
+              QGLWidget * parent=0,
+              const char * name=0);
 
   /// Destructor.
   virtual ~ViewSceneRendererGL();
@@ -260,13 +268,13 @@ public :
   ViewCameraGL *getCamera() const;
 
   /// Get the light.
-  ViewLightGL *getLight() const; 
+  ViewLightGL *getLight() const;
 
   /// Set the camera.
   void setCamera(ViewCameraGL *);
 
   /// Set the light.
-  void setLight(ViewLightGL *); 
+  void setLight(ViewLightGL *);
 
   inline eAnimationFlag isAnimated() const { return __animated; }
 

@@ -24,7 +24,7 @@ import sys, time
 from numpy import array
 import Blender
 from Blender import Scene,Mesh,Material,Object
-from vplants.plantgl.algo import Discretizer
+from openalea.plantgl.algo import Discretizer
 
 def material_to_blender (pglmat) :
 	"""Create a blender material
@@ -217,17 +217,17 @@ def sc_to_blender (sc) :
 	d = Discretizer()
 	for ind,shp in enumerate(sc) :
 		if ind % 10 == 0 :
-			print ind,
+			print(ind)
 			sys.stdout.flush()
 		ob = shp_to_blender(shp,d)
 		bldsc.link(ob)
 		ob.sel = True
 	
-	print
-	print 'Time :', time.time() - t
+	print()
+	print('Time :', time.time() - t)
 	
 	#return
-	print "created"
+	print("created")
 	bldsc.update(1)
 	Blender.Redraw()
 	

@@ -1,10 +1,10 @@
 import openalea.plantgl.math
-from _pglsg import *
+from ._pglsg import *
 
-import cspline
-import bezier_nurbs
+from . import cspline
+from . import bezier_nurbs
 import warnings
-from colormap import *
+from .colormap import *
 
 NurbsCurve.CSpline = staticmethod(cspline.cspline)
 NurbsCurve2D.CBezier = staticmethod(bezier_nurbs.cubic_bezier2D)
@@ -172,6 +172,32 @@ Polyline2D.__getinitargs__ = __pol_getinitargs__
 del __pol_getinitargs__
 
 
-from editablequantisedfunction import *
+def _toQImage(self):
+    """ Convert self into a QImage """
+    from openalea.plantgl.config import PGL_QT_VERSION
+    if PGL_QT_VERSION == 5:
+        from PyQt5.QtGui import QImage
+    else:
+        from PyQt4.QtGui import QImage
+    npi = self.to_interlaced_array()
+    width, height,  nbchannel = npi.shape
+    bytesPerLine = nbchannel * width
+    iformat = QImage.Format_RGB888
+    if nbchannel == 4 : iformat = QImage.Format_RGBX8888
+    return QImage(npi.data, width, height,  bytesPerLine, iformat)
 
-import __docufy
+Image.toQImage = _toQImage
+del _toQImage
+
+def _img_plot(self):
+    """ plot self using maplotlib """
+    import matplotlib.pyplot as plot
+    plot.imshow(self.to_array())
+    plot.show()
+
+Image.plot = _img_plot
+del _img_plot
+
+from .editablequantisedfunction import *
+
+from . import __docufy

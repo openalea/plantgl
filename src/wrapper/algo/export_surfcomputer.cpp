@@ -3,42 +3,53 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon, DDS et al.
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
- 
+
+
+
 #include <boost/python.hpp>
 
 #include <plantgl/algo/base/surfcomputer.h>
 #include <plantgl/algo/base/discretizer.h>
 #include <plantgl/scenegraph/scene/scene.h>
+#include <plantgl/scenegraph/container/indexarray.h>
 
 /* ----------------------------------------------------------------------- */
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
 
@@ -48,14 +59,23 @@ real_t surf_geom(Geometry * obj){
     Discretizer d;
     SurfComputer sf(d);
     obj->apply(sf);
-	return sf.getSurface();
+    return sf.getSurface();
 }
 
 real_t surf_sh(Shape * obj){
     Discretizer d;
     SurfComputer sf(d);
     obj->apply(sf);
-	return sf.getSurface();
+    return sf.getSurface();
+}
+
+RealArrayPtr surfaces(Index3Array * triangles, Point3Array * points){
+    RealArrayPtr result(new RealArray(triangles->size(),0));
+    RealArray::iterator itres = result->begin();
+    for(Index3Array::const_iterator it = triangles->begin(); it != triangles->end(); ++it, ++itres){
+        *itres = surface(points->getAt(it->getAt(0)),points->getAt(it->getAt(1)),points->getAt(it->getAt(2)));
+    }
+    return result;
 }
 
 /* ----------------------------------------------------------------------- */
@@ -65,7 +85,7 @@ void export_SurfComputer()
   class_< SurfComputer, bases<Action>, boost::noncopyable >
     ("SurfComputer", init<Discretizer&>("SurfComputer() -> compute the object surface"))
     .def("clear",&SurfComputer::clear)
-    .def("process", (bool (SurfComputer::*)(const ScenePtr))&SurfComputer::process) 
+    .def("process", (bool (SurfComputer::*)(const ScenePtr))&SurfComputer::process)
     .add_property("surface", &SurfComputer::getSurface, "Return the surface of the shape")
     .add_property("result",  &SurfComputer::getSurface)
     ;
@@ -73,6 +93,7 @@ void export_SurfComputer()
   def("surface",(real_t(*)(const ScenePtr))&sceneSurface,"Compute surface of a scene");
   def("surface",&surf_geom,"Compute surface of a geometry");
   def("surface",&surf_sh,"Compute surface of a shape");
-  def("surface",(real_t(*)(const TOOLS(Vector2)&,const TOOLS(Vector2)&,const TOOLS(Vector2)&))&surface,"Compute surface of a 2D triangle");
-  def("surface",(real_t(*)(const TOOLS(Vector3)&,const TOOLS(Vector3)&,const TOOLS(Vector3)&))&surface,"Compute surface of a triangle");
+  def("surface",(real_t(*)(const Vector2&,const Vector2&,const Vector2&))&surface,"Compute surface of a 2D triangle");
+  def("surface",(real_t(*)(const Vector3&,const Vector3&,const Vector3&))&surface,"Compute surface of a triangle");
+  def("surfaces",&surfaces,"Compute the surfaces of a set of triangles");
 }

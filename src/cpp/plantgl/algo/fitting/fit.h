@@ -1,33 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Plant Graphic Library
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2003 UMR Cirad/Inria/Inra Dap - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 /*! \file actn_fit.h
     \brief Some algorithms for fitting Geometric Model on points.
@@ -112,7 +122,7 @@ class ALGO_API Fit
     virtual GeometryPtr use(const std::string& classname);
 
  /* ----------------------------------------------------------------------- */
-   
+
     /// Fit the points with a sphere using a Gaussian distribution.
     virtual GeometryPtr sphere();
 
@@ -157,7 +167,7 @@ class ALGO_API Fit
     */
     virtual GeometryPtr ellipsoid2();
 
-  
+
     /*!
       Fit the points with an average aligned box.
     */
@@ -203,7 +213,7 @@ class ALGO_API Fit
     /*!
       Fit the points with a convex hull.
       Use the Quick Hull Algorithm.
-      See The Quick Hull Algorithm for Convex Hulls 
+      See The Quick Hull Algorithm for Convex Hulls
       from C. B. Barber, D. P. Dobkin, H. Huhdanpaa.
       */
     virtual GeometryPtr convexHull();
@@ -216,12 +226,14 @@ class ALGO_API Fit
     /*!
       Fit the 2D points \e points with a bounding circle.
     */
-	static bool boundingCircle(const Point2ArrayPtr& _points, TOOLS::Vector2& center, real_t& radius);
+    static bool boundingCircle(const Point2ArrayPtr& _points,
+Vector2& center, real_t& radius);
 
     /*
       Fit the 3D points \e points with a bounding circle.
     */
-	static bool plane(const Point3ArrayPtr& _points, TOOLS::Vector3& center, Plane3& plane, const Index& subset = Index(0));
+    static bool plane(const Point3ArrayPtr& _points,
+Vector3& center, Plane3& plane, const Index& subset = Index(0));
 
 /* ----------------------------------------------------------------------- */
     /*!
@@ -276,8 +288,8 @@ class ALGO_API Fit
       \date 24 January, 1997
     */
     static LineicModelPtr leastSquares(const Point3ArrayPtr & Q, int degC, int n);
-    
-    
+
+
     /*!
       \brief chord length parameterization
 
@@ -306,7 +318,7 @@ class ALGO_API Fit
       \author    Philippe Lavoie
       \date 24 January, 1997
     */
-    static TOOLS(RealArrayPtr) chordLengthParam(const Point3ArrayPtr &Q,real_t& totalLength);
+    static RealArrayPtr chordLengthParam(const Point3ArrayPtr &Q,real_t& totalLength);
 
     /*!
       \brief  A least squares curve approximation
@@ -343,8 +355,8 @@ class ALGO_API Fit
       \author Philippe Lavoie
       \date 24 January 1997
     */
-    static LineicModelPtr leastSquares(const Point3ArrayPtr & Q, 
-			       int degC, int n, const TOOLS(RealArrayPtr)& ub);
+    static LineicModelPtr leastSquares(const Point3ArrayPtr & Q,
+                   int degC, int n, const RealArrayPtr& ub);
 
     /*!
       \brief  A least squares curve approximation
@@ -385,9 +397,9 @@ class ALGO_API Fit
       \author Philippe Lavoie
       \date 24 January 1997
     */
-    static LineicModelPtr leastSquares(const Point3ArrayPtr & Q, 
-			       int degC, int n, const TOOLS(RealArrayPtr)& ub,
-			       const TOOLS(RealArrayPtr)& knot);
+    static LineicModelPtr leastSquares(const Point3ArrayPtr & Q,
+                   int degC, int n, const RealArrayPtr& ub,
+                   const RealArrayPtr& knot);
 
 /* ----------------------------------------------------------------------- */
 
@@ -397,25 +409,25 @@ class ALGO_API Fit
     /// get the class name available.
     static  std::vector<std::string> getVolumeClassNames();
 
-	static bool available(const std::string&);
+    static bool available(const std::string&);
 
     /// Return whether the radius are needed
     static bool areRadiusNeeded(std::string classname);
 
-	/// compute inertia axis
-	static bool inertiaAxis(const Point3ArrayPtr& points, 
-						    TOOLS(Vector3)& u, TOOLS(Vector3)& v, 
-							TOOLS(Vector3)& w, TOOLS(Vector3)& s);
+    /// compute inertia axis
+    static bool inertiaAxis(const Point3ArrayPtr& points,
+                            Vector3& u, Vector3& v,
+                            Vector3& w, Vector3& s);
 
-	static bool inertiaAxis(const Point2ArrayPtr& points, 
-						    TOOLS(Vector2)& u, TOOLS(Vector2)& v, TOOLS(Vector2)& s);
+    static bool inertiaAxis(const Point2ArrayPtr& points,
+                            Vector2& u, Vector2& v, Vector2& s);
 
-	/*!
-		Find \e e value for equation x^e / r^e + y^e / h^e +1 = 0.
-		Use a second order polynomium approximation of this equation :
-		- a = x / r, b = y / h, e = - ln(a.b) / ( ln²a + ln²b ).
-	*/
-	static double fitShapeFactor(double x, double r, double y, double h);
+    /*!
+        Find \e e value for equation x^e / r^e + y^e / h^e +1 = 0.
+        Use a second order polynomium approximation of this equation :
+        - a = x / r, b = y / h, e = - ln(a.b) / ( ln a + ln b ).
+    */
+    static double fitShapeFactor(double x, double r, double y, double h);
 
 protected:
 
@@ -442,4 +454,3 @@ PGL_END_NAMESPACE
 
 // __actn_fit_h__
 #endif
-

@@ -1,38 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       AMAPmod: Exploring and Modeling Plant Architecture
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2000 UMR Cirad/Inra Modelisation des Plantes
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): C. Nouguier & F. Boudon (frederic.boudon@cirad.fr) nouguier
- *
- *       $Source$
- *       $Id$
- *
- *       Forum for AMAPmod developers    : amldevlp@cirad.fr
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 /*! \file ligfile.h
     \brief Definition of the parsing class Ligfile.
 */
@@ -50,10 +55,10 @@
 
 /* ----------------------------------------------------------------------- */
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 class bifstream;
 class bofstream;
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -91,13 +96,13 @@ class CODEC_API LigRecord {
 
     /// Set values to \e this.
     void setValues(const long symbol , const long val1 , const long val2,
-				   const long range  , const TOOLS(Vector3) dirp , const TOOLS(Vector3) dirs,
-				   const TOOLS(Vector3) dirt, const TOOLS(Vector3) origin ,
-				   const float base_dia, const float sommit_dia , const long entity_number);
+                   const long range  , const Vector3 dirp , const Vector3 dirs,
+                   const Vector3 dirt, const Vector3 origin ,
+                   const float base_dia, const float sommit_dia , const long entity_number);
     
-    void setValues(const TOOLS(Vector3) dirp , const TOOLS(Vector3) dirs,
-				   const TOOLS(Vector3) dirt, const TOOLS(Vector3) origin ,
-				   const float base_dia, const float sommit_dia );
+    void setValues(const Vector3 dirp , const Vector3 dirs,
+                   const Vector3 dirt, const Vector3 origin ,
+                   const float base_dia, const float sommit_dia );
 
     /// Compute the transformation represented by its values.
     GeometryPtr getTransformed(GeometryPtr primitive) const;
@@ -112,13 +117,13 @@ class CODEC_API LigRecord {
     const long& getEntityNumber() const;
 
     /// read values on \e stream.
-    bool read( TOOLS(bifstream)& stream);
+    bool read( bifstream& stream);
 
     /// Read \e l in the input stream \e stream.
-    friend CODEC_API TOOLS(bifstream)& operator>>( TOOLS(bifstream)& stream, LigRecord& l);
+    friend CODEC_API bifstream& operator>>( bifstream& stream, LigRecord& l);
 
     /// Prints \e l to the output stream \e stream.
-    friend CODEC_API TOOLS(bofstream)& operator<<( TOOLS(bofstream)& stream, const LigRecord& l );
+    friend CODEC_API bofstream& operator<<( bofstream& stream, const LigRecord& l );
 
 //    protected :
 
@@ -132,8 +137,8 @@ class CODEC_API LigRecord {
   long  __entity_number;
 };
 
-CODEC_API TOOLS(bifstream)& operator>>( TOOLS(bifstream)& stream, LigRecord& l);
-CODEC_API TOOLS(bofstream)& operator<<( TOOLS(bofstream)& stream, const LigRecord& l );
+CODEC_API bifstream& operator>>( bifstream& stream, LigRecord& l);
+CODEC_API bofstream& operator<<( bofstream& stream, const LigRecord& l );
 
 /* ----------------------------------------------------------------------- */
 

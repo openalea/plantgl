@@ -1,6 +1,0 @@
-import os
-
-
-EXTRA_CXXFLAGS="-DCGAL_CFG_NO_CPP0X_VARIADIC_TEMPLATES"
-
-EXTRA_LIBS = "boost_system png" 

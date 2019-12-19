@@ -14,7 +14,7 @@ def test(visual = False):
     setb = []
     setc = []
     setd = []
-    for i in xrange(5000):
+    for i in range(5000):
         p = Vector3(Vector3.Cylindrical(radius,pi*uniform(0,2),uniform(0,maxheigth)))
         if (p-src).radialAnisotropicNorm(Vector3.OZ,a,b) < radius:
             if norm(p-src) < radius: setc.append(p)

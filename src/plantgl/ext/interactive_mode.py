@@ -44,8 +44,8 @@ with CURRENT_SCENE to be able to extend it in the future(?).
 """
 
 import openalea.plantgl.all as pgl
-import material
-import absolute_shapes
+from . import material
+from . import absolute_shapes
 
 __docformat__="restructuredtext en"
 

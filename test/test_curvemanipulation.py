@@ -76,7 +76,7 @@ else:
     pts = [(0,0),(1,-1),(2,0),(1,1),(-1,-1),(-1,1),(0,2)]
     edges = [(0,1),(1,2),(2,3),(3,0),(0,4),(4,5),(5,0),(5,6),(3,6)]
     faces = determine_faces_from_edges(pts,edges)
-    print faces
+    print(faces)
   
   if __name__ == '__main__':
     import sys

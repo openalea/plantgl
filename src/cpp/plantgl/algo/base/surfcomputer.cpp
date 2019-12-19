@@ -1,35 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al.
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 
 
@@ -45,7 +53,6 @@
 #include <plantgl/scenegraph/container/geometryarray2.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 using namespace std;
 
@@ -153,11 +160,11 @@ bool SurfComputer::process( AmapSymbol * amapSymbol ) {
       /* Vector3 _vi = amapSymbol->getPointAt(_i,_j) -
                     amapSymbol->getPointAt(_i,0);
       Vector3 _vj = amapSymbol->getPointAt(_i,_j + 1) -
-                    amapSymbol->getPointAt(_i,0); 
+                    amapSymbol->getPointAt(_i,0);
       __result += 0.5 * norm(cross(_vi,_vj)); */
-	  __result += surface(amapSymbol->getFacePointAt(_i,0),
-						  amapSymbol->getFacePointAt(_i,_j),
-						  amapSymbol->getFacePointAt(_i,_j + 1));
+      __result += surface(amapSymbol->getFacePointAt(_i,0),
+                          amapSymbol->getFacePointAt(_i,_j),
+                          amapSymbol->getFacePointAt(_i,_j + 1));
     };
   };
 
@@ -228,11 +235,11 @@ bool SurfComputer::process( Cone * cone ) {
   real_t _radius = cone->getRadius();
   real_t _height = cone->getHeight();
   if(!cone->getSolid()) {
-      // Side Area : Pi * r * racine²(r² + h²).
+      // Side Area : Pi * r * racine2(r2 + h2).
       __result = GEOM_TWO_PI * _radius * sqrt(sq(_radius) + sq(_height))/2;
   }
   else {
-      // Side and Base Area : Pi * r * ( r *  racine²(r² + h²)).
+      // Side and Base Area : Pi * r * ( r *  racine2(r2 + h2)).
       __result =  GEOM_TWO_PI  * _radius * ( _radius + sqrt(sq(_radius) + sq(_height)) )/2;
   }
 
@@ -254,7 +261,7 @@ bool SurfComputer::process( Cylinder * cylinder ) {
       __result = GEOM_TWO_PI * _radius * _height;
   }
   else {
-      // Side and Base Area :  2 Pi r h + 2 Pi r²
+      // Side and Base Area :  2 Pi r h + 2 Pi r2
       __result = GEOM_TWO_PI  * _radius * ( _radius + _height );
   }
 
@@ -311,7 +318,7 @@ bool SurfComputer::process( FaceSet * faceSet ) {
     const Index& _index = faceSet->getIndexList()->getAt(_i);
     uint_t _jSize = _index.size();
     for (uint_t _j = 1; _j < _jSize - 1; _j++) {
-	  __result += surface(faceSet->getFacePointAt(_i,0),faceSet->getFacePointAt(_i,_j),faceSet->getFacePointAt(_i,_j+1));
+      __result += surface(faceSet->getFacePointAt(_i,0),faceSet->getFacePointAt(_i,_j),faceSet->getFacePointAt(_i,_j+1));
     };
   };
 
@@ -341,11 +348,11 @@ bool SurfComputer::process( Frustum * frustum ) {
 
       if(!frustum->getSolid()) {
           // q : top radius. h : height of the cone containing the frustrum. a : height of the frustrum.
-          // Side Area : Pi * [ r * racine²(r² + h²) - q * racine²(q² + (h -a)²) ].
+          // Side Area : Pi * [ r * racine2(r2 + h2) - q * racine2(q2 + (h -a)2) ].
           __result = GEOM_TWO_PI * ( _radius * sqrt(sq(_radius) + sq(h)) - _top_radius * sqrt( sq(_top_radius) + sq(_hdif)))/2;
       }
       else {
-          // Side and Base Area : Pi * [ r + q + r * racine²(r² + h²) - q * racine²(q² + (h -a)²) ].
+          // Side and Base Area : Pi * [ r + q + r * racine2(r2 + h2) - q * racine2(q2 + (h -a)2) ].
           __result = GEOM_TWO_PI  * ( _radius + _top_radius + _radius * sqrt(sq(_radius) + sq(h)) - _top_radius * sqrt( sq(_top_radius) + sq(_hdif)))/2;
       }
   }
@@ -355,7 +362,7 @@ bool SurfComputer::process( Frustum * frustum ) {
           __result = GEOM_TWO_PI * _radius * _height;
       }
       else {
-          // Side and Base Area :  2 Pi r h + 2 Pi r²
+          // Side and Base Area :  2 Pi r h + 2 Pi r2
           __result = GEOM_TWO_PI  * _radius * ( _radius + _height );
       }
   }
@@ -519,7 +526,7 @@ bool SurfComputer::process( ScreenProjected * scp) {
 bool SurfComputer::process( Sphere * sphere ) {
   GEOM_ASSERT(sphere);
 
-  // 4 PI r²
+  // 4 PI r2
   const real_t& _radius = sphere->getRadius();
   __result = GEOM_TWO_PI * 2 * sq(_radius);
 
@@ -561,8 +568,8 @@ bool SurfComputer::process( TriangleSet * triangleSet ) {
   uint_t _size = triangleSet->getIndexListSize();
   for (uint_t _i = 0; _i < _size; _i++) {
     __result += surface(triangleSet->getFacePointAt(_i,0),
-						triangleSet->getFacePointAt(_i,1),
-						triangleSet->getFacePointAt(_i,2));
+                        triangleSet->getFacePointAt(_i,1),
+                        triangleSet->getFacePointAt(_i,2));
   };
 
   GEOM_SURFCOMPUTER_UPDATE_CACHE(triangleSet);
@@ -759,4 +766,3 @@ bool SurfComputer::process( Font * font ){
   __result = 0;
   return true;
 };
-

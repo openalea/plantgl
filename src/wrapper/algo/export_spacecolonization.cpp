@@ -3,31 +3,42 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon et al.
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
+
 
 #include <plantgl/algo/modelling/spacecolonization.h>
 #include <plantgl/python/export_refcountptr.h>
@@ -35,7 +46,6 @@
 #include <plantgl/python/export_list.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
 #define bp boost::python
@@ -44,45 +54,45 @@ using namespace std;
         virtual void funcname(size_t pid) \
         {  \
           if(bp::override f = this->get_override(#funcname)) \
-		    bp::call<void>(f.ptr(), pid); \
+            bp::call<void>(f.ptr(), pid); \
           else return default_##funcname(pid); \
-	    } \
+        } \
         void default_##funcname(size_t pid) \
         { \
-	      base::funcname(pid); \
-	    } \
+          base::funcname(pid); \
+        } \
 
 #define INHERIT_SIMPLE_FUNC0(base, funcname) \
         virtual void funcname() \
         {  \
           if(bp::override f = this->get_override(#funcname)) \
-		    bp::call<void>(f.ptr()); \
+            bp::call<void>(f.ptr()); \
           else return default_##funcname(); \
-	    } \
+        } \
         void default_##funcname() \
         { \
-	      base::funcname(); \
-	    } \
+          base::funcname(); \
+        } \
 
 class PySpaceColonization : public SpaceColonization, public bp::wrapper<SpaceColonization>
 {
 public:
-        PySpaceColonization(const Point3ArrayPtr _attractors,                           
+        PySpaceColonization(const Point3ArrayPtr _attractors,
                           real_t nodelength,
                           real_t kill_radius,
                           real_t perception_radius,
-                          const Point3ArrayPtr initialskeletonnodes = Point3ArrayPtr(0), 
+                          const Point3ArrayPtr initialskeletonnodes = Point3ArrayPtr(0),
                           const Uint32ArrayPtr  initialskeletonparent = Uint32ArrayPtr(0),
                           const Index& _active_nodes = Index(0),
                           size_t spacetilingratio = 100):
             SpaceColonization(_attractors,nodelength, kill_radius, perception_radius, initialskeletonnodes, initialskeletonparent, _active_nodes, spacetilingratio),
                 bp::wrapper<SpaceColonization>() { }
 
-        PySpaceColonization(const Point3ArrayPtr _attractors,                           
+        PySpaceColonization(const Point3ArrayPtr _attractors,
                           real_t nodelength,
                           real_t kill_radius,
                           real_t perception_radius,
-                          const TOOLS(Vector3)& rootnode, 
+                          const Vector3& rootnode,
                           size_t spacetilingratio = 100):
             SpaceColonization(_attractors,nodelength, kill_radius, perception_radius, rootnode, spacetilingratio),
                 bp::wrapper<SpaceColonization>() { }
@@ -94,11 +104,11 @@ public:
             INHERIT_SIMPLE_FUNC0(SpaceColonization,EndEach);
 
 
-    void py_add_bud(size_t pid, const TOOLS(Vector3)& direction, const Index& attractors){
+    void py_add_bud(size_t pid, const Vector3& direction, const Index& attractors){
         add_bud(pid, direction, AttractorList(attractors.begin(),attractors.end()));
     }
 
-    bp::object py_lateral_directions(const TOOLS(Vector3)& dir, real_t angle, int nb){
+    bp::object py_lateral_directions(const Vector3& dir, real_t angle, int nb){
         return make_list(lateral_directions(dir, angle, nb));
     }
 
@@ -111,10 +121,10 @@ class PyGraphColonization : public GraphColonization, public bp::wrapper<GraphCo
 {
 public:
 
-        PyGraphColonization(const Point3ArrayPtr attractors,                           
+        PyGraphColonization(const Point3ArrayPtr attractors,
                                   real_t perception_radius,
-                                  const IndexArrayPtr graph, 
-                                  uint32_t root, 
+                                  const IndexArrayPtr graph,
+                                  uint32_t root,
                                   real_t powerdistance = 1,
                                   size_t spacetilingratio = 100):
             GraphColonization(attractors, perception_radius, graph, root,powerdistance, spacetilingratio),
@@ -172,7 +182,7 @@ void gc_nodecomponents(GraphColonization * gc, IndexArrayPtr nodecomponents) { g
 
 void export_SpaceColonization()
 {
-      class_< PySpaceColonization, PySpaceColonizationPtr, bases<RefCountObject>, boost::noncopyable > 
+      class_< PySpaceColonization, PySpaceColonizationPtr, bases<RefCountObject>, boost::noncopyable >
         ("SpaceColonization", init<Point3ArrayPtr, real_t , real_t , real_t , Point3ArrayPtr,  Uint32Array1Ptr, Index, size_t >("Construct a SpaceColonization.",
                           (bp::arg("attractors"),bp::arg("nodelength"),bp::arg("kill_radius"),bp::arg("perception_radius"),bp::arg("initialskeletonnodes")=Point3ArrayPtr(0),
                            bp::arg("initialskeletonparent")=Uint32Array1Ptr(0),bp::arg("active")=Index(),bp::arg("spacetilingratio")=100) ))
@@ -183,14 +193,14 @@ void export_SpaceColonization()
         .def("add_bud", &PySpaceColonization::py_add_bud)
         .def("lateral_directions", &PySpaceColonization::py_lateral_directions)
         .def("node_attractors",&GraphColonization::node_attractors,(bp::arg("pid")),return_value_policy<return_by_value>())
- 
+
         ;
-      
+
       implicitly_convertible< SpaceColonizationPtr, RefCountObjectPtr >();
 
 
-      class_< PyGraphColonization, PyGraphColonizationPtr, boost::noncopyable > 
-        ("GraphColonization", init<Point3ArrayPtr, real_t , const IndexArrayPtr, uint32_t, optional<real_t, size_t> >("Construct a GraphColonization.",
+      class_< PyGraphColonization, PyGraphColonizationPtr, boost::noncopyable >
+        ("GraphColonization", init<Point3ArrayPtr, real_t , const IndexArrayPtr, uint32_t, boost::python::optional<real_t, size_t> >("Construct a GraphColonization.",
                              bp::args("attractors","perception_radius","graph","root","powerdistance","spacetilingratio") ))
         BASESCA(GraphColonization)
         .def_readwrite("graph",&GraphColonization::graph)

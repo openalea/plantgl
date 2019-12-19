@@ -5,7 +5,7 @@ def bbox_application(geom,nbtest = 5,testshape = False):
     """ Simple test on Bounding Box Computation """
     d = Discretizer()
     b = BBoxComputer(d)
-    for i in xrange(nbtest):
+    for i in range(nbtest):
        if not isinstance(geom,Text) and not ((testshape and isinstance(geom.geometry,Text))):
         #b.clear() # a cache pb may occur sometimes.
         if not geom.apply(b):
@@ -23,7 +23,7 @@ def bbox_application(geom,nbtest = 5,testshape = False):
         dist = norm(b1.lowerLeftCorner-b2.lowerLeftCorner + b1.upperRightCorner - b2.upperRightCorner)/ref	
         if dist > 0.1 :
             Scene([geom]).save('bboxerror.bgeom')
-            print b1,b2,norm(b1.getSize())
+            print(b1,b2,norm(b1.getSize()))
             cname = geom.__class__.__name__ if not testshape else geom.geometry.__class__.__name__
             raise Exception('Invalid BoundingBox Computation for object of type '+cname+' : '+str(dist))
 

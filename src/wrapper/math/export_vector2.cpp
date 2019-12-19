@@ -1,33 +1,44 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Plant Graphic Library
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2003 UMR Cirad/Inria/Inra Dap - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
+
 
 
 #include "export_vector.h"
@@ -37,7 +48,7 @@
 #include <string>
 #include <sstream>
 
-TOOLS_USING_NAMESPACE
+PGL_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
 
@@ -56,19 +67,19 @@ std::string pol_repr(Vector2::Polar * v){
 
 
 object pgl_py_normSquared(object obj){
-	try {
+    try {
        return obj.attr( "__normSquared__" )();
-	}
-	catch( error_already_set ){ PyErr_Clear(); }
-	object iter_obj = boost::python::object( handle<>( PyObject_GetIter( obj.ptr() ) ) );
-	real_t val = 0;
+    }
+    catch( error_already_set ){ PyErr_Clear(); }
+    object iter_obj = boost::python::object( boost::python::handle<PyObject>( PyObject_GetIter( obj.ptr() ) ) );
+    real_t val = 0;
     while( 1 )
        {
-		object lobj;
-		try {  lobj = iter_obj.attr( "next" )(); 		}
-		catch( error_already_set ){ PyErr_Clear(); break; }
+        object lobj;
+        try {  lobj = boost::python::object(boost::python::handle<PyObject>(PyIter_Next(iter_obj.ptr()))); }
+        catch( error_already_set ){ PyErr_Clear(); break; }
         real_t lval = boost::python::extract<real_t>( lobj );
-		val += lval * lval;
+        val += lval * lval;
    }
    return object(val);
 }
@@ -76,7 +87,7 @@ object pgl_py_normSquared(object obj){
 real_t pgl_py_normSquaredList(real_t val1     , real_t val2     , real_t val3  = 0, real_t val4  = 0, real_t val5  = 0,
                               real_t val6  = 0, real_t val7  = 0, real_t val8  = 0, real_t val9  = 0, real_t val10 = 0,
                               real_t val11 = 0, real_t val12 = 0, real_t val13 = 0, real_t val14 = 0, real_t val15 = 0){
-	real_t val = 0;
+    real_t val = 0;
     val += val1 * val1;
     val += val2 * val2;
     val += val3 * val3;
@@ -109,24 +120,24 @@ real_t pgl_py_normList(real_t val1     , real_t val2     , real_t val3  = 0, rea
 BOOST_PYTHON_FUNCTION_OVERLOADS(pgl_py_normList_overloads, pgl_py_normList, 2, 15)
 
 object pgl_py_norm(object obj){
-	try { return obj.attr( "__norm__" )();	}
-	catch( error_already_set ){ PyErr_Clear(); }
-	return object(sqrt(extract<real_t>(pgl_py_normSquared(obj))));
+    try { return obj.attr( "__norm__" )();  }
+    catch( error_already_set ){ PyErr_Clear(); }
+    return object(sqrt(extract<real_t>(pgl_py_normSquared(obj))));
 }
 
 
 object pgl_py_normL1(object obj){
-	try { return obj.attr( "__normL1__" )(); }
-	catch( error_already_set ){ PyErr_Clear(); }
-	object iter_obj = boost::python::object( handle<>( PyObject_GetIter( obj.ptr() ) ) );
-	real_t val = 0;
+    try { return obj.attr( "__normL1__" )(); }
+    catch( error_already_set ){ PyErr_Clear(); }
+    object iter_obj = boost::python::object( boost::python::handle<PyObject>( PyObject_GetIter( obj.ptr() ) ) );
+    real_t val = 0;
     while( 1 )
        {
-		object lobj;
-		try {  lobj = iter_obj.attr( "next" )(); 		}
-		catch( error_already_set ){ PyErr_Clear(); break; }
+        object lobj;
+        try {  lobj = boost::python::object(boost::python::handle<PyObject>(PyIter_Next(iter_obj.ptr()))); }
+        catch( error_already_set ){ PyErr_Clear(); break; }
         real_t lval = boost::python::extract<real_t>( lobj );
-		val += abs(lval);
+        val += abs(lval);
    }
    return object(val);
 }
@@ -134,7 +145,7 @@ object pgl_py_normL1(object obj){
 real_t pgl_py_normL1List(real_t val1     , real_t val2     , real_t val3  = 0, real_t val4  = 0, real_t val5  = 0,
                               real_t val6  = 0, real_t val7  = 0, real_t val8  = 0, real_t val9  = 0, real_t val10 = 0,
                               real_t val11 = 0, real_t val12 = 0, real_t val13 = 0, real_t val14 = 0, real_t val15 = 0){
-	real_t val = 0;
+    real_t val = 0;
     val += abs(val1);
     val += abs(val2);
     val += abs(val3);
@@ -157,17 +168,17 @@ real_t pgl_py_normL1List(real_t val1     , real_t val2     , real_t val3  = 0, r
 BOOST_PYTHON_FUNCTION_OVERLOADS(pgl_py_normL1List_overloads, pgl_py_normL1List, 2, 15)
 
 object pgl_py_normLinf(object obj){
-	try { return obj.attr( "__normLinf__" )(); }
-	catch( error_already_set ){ PyErr_Clear(); }
-	object iter_obj = boost::python::object( handle<>( PyObject_GetIter( obj.ptr() ) ) );
-	real_t val = 0;
+    try { return obj.attr( "__normLinf__" )(); }
+    catch( error_already_set ){ PyErr_Clear(); }
+    object iter_obj = boost::python::object( boost::python::handle<PyObject>( PyObject_GetIter( obj.ptr() ) ) );
+    real_t val = 0;
     while( 1 )
        {
-		object lobj;
-		try {  lobj = iter_obj.attr( "next" )(); 		}
-		catch( error_already_set ){ PyErr_Clear(); break; }
+        object lobj;
+        try {  lobj = boost::python::object(boost::python::handle<PyObject>(PyIter_Next(iter_obj.ptr()))); }
+        catch( error_already_set ){ PyErr_Clear(); break; }
         real_t lval = abs(boost::python::extract<real_t>( lobj ));
-		if(val < lval) val = lval;
+        if(val < lval) val = lval;
    }
    return object(val);
 }
@@ -177,7 +188,7 @@ object pgl_py_normLinf(object obj){
 real_t pgl_py_normLinfList(real_t val1     , real_t val2     , real_t val3  = 0, real_t val4  = 0, real_t val5  = 0,
                               real_t val6  = 0, real_t val7  = 0, real_t val8  = 0, real_t val9  = 0, real_t val10 = 0,
                               real_t val11 = 0, real_t val12 = 0, real_t val13 = 0, real_t val14 = 0, real_t val15 = 0){
-	real_t val = 0;
+    real_t val = 0;
     LINFCMP(val,val1);
     LINFCMP(val,val2);
     LINFCMP(val,val3);
@@ -200,50 +211,50 @@ real_t pgl_py_normLinfList(real_t val1     , real_t val2     , real_t val3  = 0,
 BOOST_PYTHON_FUNCTION_OVERLOADS(pgl_py_normLinfList_overloads, pgl_py_normLinfList, 2, 15)
 
 object pgl_py_dir(object obj){
-	try { return obj.attr( "__direction__" )(); }
-	catch( error_already_set ){ PyErr_Clear(); }
-	real_t f = extract<real_t>(pgl_py_norm(obj));
-	boost::python::list l;
-	object iter_obj = boost::python::object( handle<>( PyObject_GetIter( obj.ptr() ) ) );
-	real_t val = 0;
+    try { return obj.attr( "__direction__" )(); }
+    catch( error_already_set ){ PyErr_Clear(); }
+    real_t f = extract<real_t>(pgl_py_norm(obj));
+    boost::python::list l;
+    object iter_obj = boost::python::object( boost::python::handle<PyObject>( PyObject_GetIter( obj.ptr() ) ) );
+    real_t val = 0;
     while( 1 )
        {
-		object lobj;
-		try {  lobj = iter_obj.attr( "next" )(); 		}
-		catch( error_already_set ){ PyErr_Clear(); break; }
-		lobj = lobj / f;
-		l.append(lobj);
+        object lobj;
+        try {  lobj = boost::python::object(boost::python::handle<PyObject>(PyIter_Next(iter_obj.ptr()))); }
+        catch( error_already_set ){ PyErr_Clear(); break; }
+        lobj = lobj / f;
+        l.append(lobj);
    }
    return l;
 }
 
 real_t pgl_py_dot(object p1, object p2){
-	extract<Vector2> pt1(p1);
+    extract<Vector2> pt1(p1);
     if(pt1.check()) {
         return dot(pt1(),extract<Vector2>(p2)());
     }
-	extract<Vector3> pt1b(p1);
+    extract<Vector3> pt1b(p1);
     if(pt1b.check()){
         return dot(pt1b(),extract<Vector3>(p2)());
     }
-	extract<Vector4> pt1c(p1);
+    extract<Vector4> pt1c(p1);
     if(pt1c.check()) {
         return dot(pt1c(),extract<Vector4>(p2)());
     }
     else {
         if (extract<int>(p1.attr("__len__")()) != extract<int>(p2.attr("__len__")()))
             throw PythonExc_IndexError();
-	    object iter_obj1 = boost::python::object( handle<>( PyObject_GetIter( p1.ptr() ) ) );
-	    object iter_obj2 = boost::python::object( handle<>( PyObject_GetIter( p2.ptr() ) ) );
-	    real_t val = 0;
+        object iter_obj1 = boost::python::object( boost::python::handle<PyObject>( PyObject_GetIter( p1.ptr() ) ) );
+        object iter_obj2 = boost::python::object( boost::python::handle<PyObject>( PyObject_GetIter( p2.ptr() ) ) );
+        real_t val = 0;
         while( 1 )
          {
-		    object lobj1,lobj2;
-		    try {  lobj1 = iter_obj1.attr( "next" )(); lobj2 = iter_obj2.attr( "next" )(); }
-		    catch( error_already_set ){ PyErr_Clear(); break; }
+            object lobj1,lobj2;
+            try {  lobj1 = boost::python::object(boost::python::handle<PyObject>(PyIter_Next(iter_obj1.ptr()))); lobj2 = boost::python::object(boost::python::handle<PyObject>(PyIter_Next(iter_obj2.ptr()))); }
+            catch( error_already_set ){ PyErr_Clear(); break; }
             real_t lval1 = extract<real_t>( lobj1 )();
             real_t lval2 = extract<real_t>( lobj2 )();
-		    val += lval1*lval2;
+            val += lval1*lval2;
         }
         return val;
     }
@@ -251,10 +262,10 @@ real_t pgl_py_dot(object p1, object p2){
 
 struct v2_pickle_suite : boost::python::pickle_suite
 {
-	static boost::python::tuple getinitargs(Vector2 const& v)
-	{
-		return boost::python::make_tuple(v.x(),v.y());
-	}
+    static boost::python::tuple getinitargs(Vector2 const& v)
+    {
+        return boost::python::make_tuple(v.x(),v.y());
+    }
 };
 
 
@@ -262,14 +273,14 @@ void export_Vector2()
 {
   {
   scope v2 = class_< Vector2 >("Vector2", init< const Vector2 & >("Vector2(Vector2 v)",args("v")))
-    .def(init< optional< real_t, real_t > >("Vector2(real_t x , real_t y)",args("x","y")))
-	.def(init< const Vector2::Polar & >("Vector2(Polar p)",args("p")))
+    .def(init< boost::python::optional< real_t, real_t > >("Vector2(real_t x , real_t y)",args("x","y")))
+    .def(init< const Vector2::Polar & >("Vector2(Polar p)",args("p")))
     .def(self_ns::str(self))
     .def( "__str__", v2_repr )
     .def( "__repr__", v2_repr )
     .def(vector_dim2_func<Vector2>())
     .def(vector_crossdot<Vector2>())
-	.def_pickle(v2_pickle_suite());
+    .def_pickle(v2_pickle_suite());
    ;
 
    pgltuple_from_tuple<Vector2,2>();

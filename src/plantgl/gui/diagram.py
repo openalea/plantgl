@@ -21,9 +21,9 @@ class DiagramPlotter:
   
     def add_curve(self, curvedata, color= (255,0,0), size = 2):
         if type(curvedata) == tuple:
-          curvedata = zip(curvedata[0],curvedata[1])
+          curvedata = list(zip(curvedata[0],curvedata[1]))
         elif type(curvedata) == dict:
-          curvedata = curvedata.items()
+          curvedata = list(curvedata.items())
           curvedata.sort()
         assert len(curvedata) > 1
         self.curves.append((curvedata,color, size))
@@ -32,11 +32,11 @@ class DiagramPlotter:
     def add_points(self,pointdata, color = (255,0,255), size = 6):
         if type(pointdata) == tuple:
             if isiterable(pointdata[0]):
-                pointdata = zip(pointdata[0],pointdata[1])
+                pointdata = list(zip(pointdata[0],pointdata[1]))
             else:
                 pointdata = [pointdata]
         elif type(pointdata) == dict:
-          pointdata = pointdata.items()
+          pointdata = list(pointdata.items())
           pointdata.sort()
         assert len(pointdata) > 0
         self.points.append((pointdata,color, size))
@@ -44,9 +44,9 @@ class DiagramPlotter:
     
     def add_boxplot(self,values, color = (255,0,255)):
         if type(values) == tuple:
-          values = zip(values[0],values[1])
+          values = list(zip(values[0],values[1]))
         elif type(values) == dict:
-          values = values.items()
+          values = list(values.items())
           values.sort()
         assert len(values) > 0
         self.boxplot.append((values, color))
@@ -123,12 +123,12 @@ class DiagramPlotter:
             return p
 
         for curve, color, size in self.curves:      
-            curvedata = map(projp3, map(limit, curve))
+            curvedata = list(map(projp3, list(map(limit, curve))))
             colorperobject = hasColorPerObject(color)
             result.append(Shape(ScreenProjected(Polyline(curvedata, width=size, colorList = None if not colorperobject else color), False), toMaterial(color) if not colorperobject else Material((255,0,0))))
 
         for pointdata, color, size in self.points:
-            pointdata = map(projp3, filter(lambda p : miny <= p[1] < maxy, pointdata))
+            pointdata = list(map(projp3, [p for p in pointdata if miny <= p[1] < maxy]))
             colorperobject = hasColorPerObject(color)
             result.append(Shape(ScreenProjected(PointSet(pointdata, width=size, colorList = None if not colorperobject else color), False), toMaterial(color) if not colorperobject else Material((255,0,0)) ))
 
@@ -142,7 +142,7 @@ class DiagramPlotter:
                         v = (v[0],maxy)
                     vx, vy = projp(v)
                     p1,p2,p3,p4 = (vx-delta,y0),(vx+delta,y0),(vx+delta,vy),(vx-delta,vy) 
-                    result.append(Shape(ScreenProjected(QuadSet([(x,y,0.0) for x,y in [p1,p2,p3,p4]], [range(4)]), False), toMaterial(color if not colorperobject else color[i]) ))
+                    result.append(Shape(ScreenProjected(QuadSet([(x,y,0.0) for x,y in [p1,p2,p3,p4]], [list(range(4))]), False), toMaterial(color if not colorperobject else color[i]) ))
                     result.append(Shape(ScreenProjected(Translated(0,0,-0.01,Group([Polyline2D([pi,pj]) for pi,pj in [(p1,p4),(p1,p2),(p2,p3),(p3,p4)] ])), False), toMaterial((0,0,0)) ))
 
         if miny <= 0 <= maxy:

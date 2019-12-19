@@ -1,35 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr)
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
- * 
- *                      GNU General Public license
- *           
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
+ *
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
+
 
 /*! \file view_helpmenu.h
     \brief Definition of the viewer class ViewHelpMenu.
@@ -42,7 +50,7 @@
 
 #include "../gui_config.h"
 #include <QtGlobal>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/qmenu.h>
     #include <QtWidgets/qdialog.h>
 #else
@@ -57,7 +65,7 @@ class QLabel;
 
 /* ----------------------------------------------------------------------- */
 
-/**   
+/**
    \class ViewHelpMenu
    \brief A Class who control Popup Menu relative to Help.
    Display Help Information.
@@ -65,7 +73,7 @@ class QLabel;
 
 /* ----------------------------------------------------------------------- */
 
-class VIEW_API ViewHelpMenu : public QMenu 
+class VIEW_API ViewHelpMenu : public QMenu
 {
   Q_OBJECT
   Q_PROPERTY(int AppStyle READ getStyle WRITE setStyle );
@@ -75,12 +83,12 @@ class VIEW_API ViewHelpMenu : public QMenu
 
   /// Constructor
   ViewHelpMenu(QWidget * parent=0,
-	   QGLWidget * glwidget = 0,
-	   const char * name=0);
-  
+       QGLWidget * glwidget = 0,
+       const char * name=0);
+
   /// Destructor
   ~ViewHelpMenu();
-  
+
   int getStyle() const;
   int getStyleId(const QString& name) const;
   QString getStyleName() const;
@@ -91,19 +99,19 @@ public slots:
 
   /// Display About Viewer Information
   void showAbout();
-  
+
   /// Display About Viewer Information
   void showInit();
-  
+
   /// Display About Viewer Information
   void showLicense();
-  
+
   /// Display  Help on use of the Viewer
   void showHelp();
-  
+
   /// Display About Qt Information
   void aboutQt();
-  
+
   /// Display Informations about Librairies used.
   void generalInfo();
 
@@ -122,9 +130,9 @@ public slots:
   void setStyleCorrespondingTo(QAction *);
 
 protected :
-  
+
   void checkItem(int i);
-  
+
   QMenu * __style;
   std::vector<QAction *>  __ids;
 
@@ -136,43 +144,43 @@ protected :
 class ViewAboutDialog : public QDialog {
   Q_OBJECT
 public :
-  ViewAboutDialog ( QWidget * parent=0, 
-					const char * name=0, 
-					int timeout=-1,
-					bool modal=false);
+  ViewAboutDialog ( QWidget * parent=0,
+                    const char * name=0,
+                    int timeout=-1,
+                    bool modal=false);
 
-	 ~ViewAboutDialog();
+     ~ViewAboutDialog();
 
-	 void display(int timeout);
-	 bool useNewStyle() const { return __style; }
+     void display(int timeout);
+     bool useNewStyle() const { return __style; }
 signals:
-	 void licenseView();
+     void licenseView();
 public slots:
-	 void setText(const QString&);
-	 void setText(const QString&,int timeout);
+     void setText(const QString&);
+     void setText(const QString&,int timeout);
 protected :
 
-	 void clear();
+     void clear();
 
-	 void setIconPixmap( const QPixmap & icon);
+     void setIconPixmap( const QPixmap & icon);
 
-	 void setInfo(const QString& text, QRect d, int size);
+     void setInfo(const QString& text, QRect d, int size);
 
      virtual void mousePressEvent ( QMouseEvent * ) ;
-	 virtual void mouseMoveEvent ( QMouseEvent * );
-	 virtual void showEvent ( QShowEvent * ); 
-	 virtual void hideEvent ( QHideEvent * );
-	 virtual bool eventFilter( QObject *o, QEvent *e );
-	 void changeLogo(const QPoint& p);
+     virtual void mouseMoveEvent ( QMouseEvent * );
+     virtual void showEvent ( QShowEvent * );
+     virtual void hideEvent ( QHideEvent * );
+     virtual bool eventFilter( QObject *o, QEvent *e );
+     void changeLogo(const QPoint& p);
 
-	 QLabel * __text;
-	 QTimer __timer;
+     QLabel * __text;
+     QTimer __timer;
 
-	 bool __style;
-	 QPixmap __logo;
-	 QPixmap __logo2;
-	 bool __license;
-	 QRect __licenseRect;
+     bool __style;
+     QPixmap __logo;
+     QPixmap __logo2;
+     bool __license;
+     QRect __licenseRect;
 
 };
 /* ----------------------------------------------------------------------- */

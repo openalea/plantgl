@@ -1,35 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al.
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
- * 
- *                      GNU General Public Licence
- *           
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
+ *
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
+
 
 
 
@@ -53,7 +61,7 @@ PGL_BEGIN_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 
-/** 
+/**
     \class Voxel
     \brief A Voxel is a regular Tile whose geometry is a box.
 */
@@ -67,16 +75,16 @@ class ALGO_API Voxel : public Tile {
   static AppearancePtr EMPTY_APPEARANCE;
   static AppearancePtr FILLED_APPEARANCE;
   static AppearancePtr UNDETERMINED_APPEARANCE;
-	
+
     /** Default constructor. */
-	Voxel(Tile * Complex = NULL, 
-	      const unsigned char Scale = 0, 
-	      const TileType Type = Empty, 
-	      const unsigned char Num = 0, 
-	      const TOOLS(Vector3)& PMin = TOOLS(Vector3)::ORIGIN,
-	      const TOOLS(Vector3)& PMax = TOOLS(Vector3)::ORIGIN);
-    
-    
+    Voxel(Tile * Complex = NULL,
+          const unsigned char Scale = 0,
+          const TileType Type = Empty,
+          const unsigned char Num = 0,
+          const Vector3& PMin = Vector3::ORIGIN,
+          const Vector3& PMax = Vector3::ORIGIN);
+
+
 
     /// Destructor
     virtual ~Voxel();
@@ -86,62 +94,62 @@ class ALGO_API Voxel : public Tile {
     virtual bool isValid() const ;
 
     /// Return center of \e self.
-    inline TOOLS(Vector3) getCenter() const {
-	return (__ur + __ll) / 2 ;
+    inline Vector3 getCenter() const {
+    return (__ur + __ll) / 2 ;
     }
-    
+
     /// Return size of \e self.
-    inline TOOLS(Vector3) getSize() const {
-	return (__ur - __ll) / 2 ;
+    inline Vector3 getSize() const {
+    return (__ur - __ll) / 2 ;
     }
-    
+
     /// Return coordinates min of \e self.
-    inline const TOOLS(Vector3)& getMinCoord() const {
-	return __ll;
+    inline const Vector3& getMinCoord() const {
+    return __ll;
     }
-    
+
     /// Return coordinates min of \e self.
-    inline TOOLS(Vector3)& getMinCoord(){
-	return __ll;
+    inline Vector3& getMinCoord(){
+    return __ll;
     }
-    
+
     /// Return Lower Left Corner of \e self.
-    inline const TOOLS(Vector3)& getLowerLeftCorner() const {
-	return __ll;
+    inline const Vector3& getLowerLeftCorner() const {
+    return __ll;
     }
-    
+
     /// Return Lower Left Corner of \e self.
-    inline TOOLS(Vector3)& getLowerLeftCorner(){
-	return __ll;
+    inline Vector3& getLowerLeftCorner(){
+    return __ll;
     }
-    
+
     /// Return coordinates max of \e self.
-    inline const TOOLS(Vector3)& getMaxCoord() const {
-	return __ur;
+    inline const Vector3& getMaxCoord() const {
+    return __ur;
     }
-    
+
     /// Return coordinates max of \e self.
-    inline TOOLS(Vector3)& getMaxCoord(){
-	return __ur;
+    inline Vector3& getMaxCoord(){
+    return __ur;
     }
-    
+
     /// Return Upper Right Corner of \e self.
-    inline const TOOLS(Vector3)& getUpperRightCorner() const {
-	return __ur;
+    inline const Vector3& getUpperRightCorner() const {
+    return __ur;
     }
-    
+
     /// Return Upper Right Corner  of \e self.
-    inline TOOLS(Vector3)& getUpperRightCorner(){
-	return __ur;
+    inline Vector3& getUpperRightCorner(){
+    return __ur;
     }
-    
+
     /// Set coordinates min and max of \e self from \e bbox.
     void setBBox(const BoundingBox& bbox);
 
     /// Set coordinates min and max of \e self from \e bbox.
     void setBBox(const BoundingBoxPtr& bbox);
 
-    
+
    /*! Intersection between \e self and \e voxel.
       \pre
       - \e self must be valid;
@@ -158,32 +166,32 @@ class ALGO_API Voxel : public Tile {
       \pre
       - \e self must be valid;
       - \e point must be valid. */
-    bool intersect( const TOOLS(Vector3)& point ) const;
+    bool intersect( const Vector3& point ) const;
 
   /*! Intersection between projection of \e self on z=0 and \e point.
       \pre
       - \e self must be valid;
       - \e point must be valid. */
-    bool intersect( const TOOLS(Vector2)& point ) const;
+    bool intersect( const Vector2& point ) const;
 
-  /*! Intersection between  \e self and a segment defined by [ \e point1 , \e point2 ]. 
+  /*! Intersection between  \e self and a segment defined by [ \e point1 , \e point2 ].
       \pre
       - \e self must be valid;
       - \e point1 and \e point2 must be valid. */
-    bool intersect( const TOOLS(Vector3)& point1, const TOOLS(Vector3)& point2 ) const;
+    bool intersect( const Vector3& point1, const Vector3& point2 ) const;
 
-  /*! Intersection between projection of \e self on z=0 and a segment defined by [ \e point1 , \e point2 ]. 
+  /*! Intersection between projection of \e self on z=0 and a segment defined by [ \e point1 , \e point2 ].
       \pre
       - \e self must be valid;
       - \e point1 and \e point2 must be valid. */
-    bool intersect( const TOOLS(Vector2)& point1, const TOOLS(Vector2)& point2 ) const;
+    bool intersect( const Vector2& point1, const Vector2& point2 ) const;
 
   /*! Intersection between \e self and a triangle defined by [ \e point1 , \e point2 , \e point3 ].
       Test if an edge of the voxel cross the triangle.
       \pre
       - \e self must be valid;
       - \e point1, \e point2  and \e point3 must be valid. */
-   bool intersect( const TOOLS(Vector3)& point1, const TOOLS(Vector3)& point2, const TOOLS(Vector3)& point3 ) const;
+   bool intersect( const Vector3& point1, const Vector3& point2, const Vector3& point3 ) const;
 
   /*! Intersection between \e self and a quad facet defined by [ \e point1 , \e point2 , \e point3 , \e point4 ].
       Test if an edge of the voxel cross the facet.
@@ -191,7 +199,7 @@ class ALGO_API Voxel : public Tile {
       - \e self must be valid;
       - \e facet must be planar and convex;
       - \e point1, \e point2, \e point3 and \e point4 must be valid. */
-   bool intersect( const TOOLS(Vector3)& point1, const TOOLS(Vector3)& point2, const TOOLS(Vector3)& point3, const TOOLS(Vector3)& point4 ) const;
+   bool intersect( const Vector3& point1, const Vector3& point2, const Vector3& point3, const Vector3& point4 ) const;
 
 
    /// Return a representation of self with GEOM object.
@@ -200,31 +208,31 @@ class ALGO_API Voxel : public Tile {
 
    /// Returns whether \e v1 intersect \e v2.
    friend ALGO_API bool intersection( const Voxel& v1, const Voxel& v2);
-   
+
    /// Returns whether \e v1 intersect \e b2.
    friend ALGO_API bool intersection( const Voxel& v1, const BoundingBox& b2);
-   
+
    /** Returns whether \e v1 intersect \e b2.
        \pre
        - \e b2 must be non null and valid.
    */
    friend ALGO_API bool intersection( const Voxel& v1, const BoundingBoxPtr& b2);
-   
+
    /// Returns whether \e v1 intersect \e v2.
-   friend ALGO_API bool intersection( const Voxel& v1, const TOOLS(Vector3)& v2);
+   friend ALGO_API bool intersection( const Voxel& v1, const Vector3& v2);
 
    /** Returns whether \e v1 intersect segment define by [ \e seg1, \e seg2 ].
        This is a progressive test.
        Test first if a vertex of the segment lies in the voxel,
        then if a point of the edge of the segment lies in the voxel. */
-   friend ALGO_API bool intersection( const Voxel& v1, const TOOLS(Vector3)& seg1, const TOOLS(Vector3)& seg2);
+   friend ALGO_API bool intersection( const Voxel& v1, const Vector3& seg1, const Vector3& seg2);
 
    /** Returns whether \e v1 intersect triangle define by [ \e triangle1, \e triangle2 , \e triangle3 ].
        This is a progressive test.
        Test first if a vertex of the triangle lies in the voxel,
        then if an edge of the triangle lies in the voxel,
        and finally if an edge of the voxel lies in the triangle. */
-   friend ALGO_API bool intersection( const Voxel& v1, const TOOLS(Vector3)& triangle1, const TOOLS(Vector3)& triangle2, const TOOLS(Vector3)& triangle3);
+   friend ALGO_API bool intersection( const Voxel& v1, const Vector3& triangle1, const Vector3& triangle2, const Vector3& triangle3);
 
    /** Returns whether \e v1 intersect quad facet define by [ \e quad1, \e quad2 , \e quad3 , \e quad4 ].
        This is a progressive test.
@@ -234,25 +242,25 @@ class ALGO_API Voxel : public Tile {
        \pre
        - the facet must be planar and convex.
    */
-   friend ALGO_API bool intersection( const Voxel& v1, const TOOLS(Vector3)& quad1, const TOOLS(Vector3)& quad2, const TOOLS(Vector3)& quad3, const TOOLS(Vector3)& quad4);
+   friend ALGO_API bool intersection( const Voxel& v1, const Vector3& quad1, const Vector3& quad2, const Vector3& quad3, const Vector3& quad4);
 
    protected :
-	
+
    /// coordinates min of \e self.
-   TOOLS(Vector3) __ll;
-   
+   Vector3 __ll;
+
    /// coordinates max of \e self.
-   TOOLS(Vector3) __ur;
-   
+   Vector3 __ur;
+
 };
 
 ALGO_API bool intersection( const Voxel& v1, const Voxel& v2);
 ALGO_API bool intersection( const Voxel& v1, const BoundingBox& b2);
 ALGO_API bool intersection( const Voxel& v1, const BoundingBoxPtr& b2);
-ALGO_API bool intersection( const Voxel& v1, const TOOLS(Vector3)& v2);
-ALGO_API bool intersection( const Voxel& v1, const TOOLS(Vector3)& seg1, const TOOLS(Vector3)& seg2);
-ALGO_API bool intersection( const Voxel& v1, const TOOLS(Vector3)& triangle1, const TOOLS(Vector3)& triangle2, const TOOLS(Vector3)& triangle3);
-ALGO_API bool intersection( const Voxel& v1, const TOOLS(Vector3)& quad1, const TOOLS(Vector3)& quad2, const TOOLS(Vector3)& quad3, const TOOLS(Vector3)& quad4);
+ALGO_API bool intersection( const Voxel& v1, const Vector3& v2);
+ALGO_API bool intersection( const Voxel& v1, const Vector3& seg1, const Vector3& seg2);
+ALGO_API bool intersection( const Voxel& v1, const Vector3& triangle1, const Vector3& triangle2, const Vector3& triangle3);
+ALGO_API bool intersection( const Voxel& v1, const Vector3& quad1, const Vector3& quad2, const Vector3& quad3, const Vector3& quad4);
 
 /* ----------------------------------------------------------------------- */
 

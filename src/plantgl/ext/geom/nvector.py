@@ -1,6 +1,6 @@
 import math
 import operator
-from geometrical_concept import GeometricalConcept
+from .geometrical_concept import GeometricalConcept
 
 class NVector (GeometricalConcept) :
 	"""general vector in N dimensions

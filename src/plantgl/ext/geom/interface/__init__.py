@@ -1,1 +1,1 @@
-from abstract_geometry import *
+from .abstract_geometry import *

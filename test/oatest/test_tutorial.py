@@ -19,7 +19,7 @@ def test_tutorial():
     pm.load_directory(path)
     n = pm.get_node("tutorial_standbuilder", "gen_images")
 
-    print path
+    print(path)
     n.actor(4).set_input(0, path)
 
 # the following call create a segmentation fault

@@ -1,53 +1,60 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al.
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
- * 
- *                      GNU General Public Licence
- *           
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
+ *
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
+
 
 #include "util_intersection.h"
 #include <plantgl/math/util_math.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
-bool PGL(intersectSegment)(const Vector3& seg1, const Vector3& seg2 , 
-		      const Vector3& pt1){
+bool PGL(intersectSegment)(const Vector3& seg1, const Vector3& seg2 ,
+              const Vector3& pt1){
   Vector3 AB( pt1 - seg1);
   Vector3 dir( seg2 - seg1);
   if (normLinf(AB ^ dir) < GEOM_EPSILON) return false;
   real_t u = norm(AB) / norm(dir);
-  return ( (u > - GEOM_EPSILON) && (u < 1 - GEOM_EPSILON)); 
+  return ( (u > - GEOM_EPSILON) && (u < 1 - GEOM_EPSILON));
 }
 
-bool PGL(intersectSegment)(const Vector3& seg1, const Vector3& seg2 , 
-	       const Vector3& segb1,const Vector3& segb2){
+bool PGL(intersectSegment)(const Vector3& seg1, const Vector3& seg2 ,
+           const Vector3& segb1,const Vector3& segb2){
   Vector3 _deltaOrig(segb1-seg1);
   Vector3 d1 = seg2 - seg1;
   Vector3 d2 = segb2 - segb1;
@@ -62,9 +69,9 @@ bool PGL(intersectSegment)(const Vector3& seg1, const Vector3& seg2 ,
   if(fabs(alpha * d1.z() - beta * d2.z() - _deltaOrig.z()) > GEOM_EPSILON) return false;
   return true;
 }
- 
-bool PGL(intersectSegment)(const Vector2& seg1, const Vector2& seg2 , 
-	       const Vector2& segb1,const Vector2& segb2){
+
+bool PGL(intersectSegment)(const Vector2& seg1, const Vector2& seg2 ,
+           const Vector2& segb1,const Vector2& segb2){
   Vector2 _deltaOrig(segb1-seg1);
   Vector2 d1 = seg2 - seg1;
   Vector2 d2 = segb2 - segb1;
@@ -78,10 +85,10 @@ bool PGL(intersectSegment)(const Vector2& seg1, const Vector2& seg2 ,
   if(alpha < -GEOM_EPSILON || alpha  - 1 > GEOM_EPSILON)return false;
   return true;
 }
- 
-bool PGL(intersectSegment)(const Vector3& seg1, const Vector3& seg2 , 
-	       const Vector3& triangle1,const Vector3& triangle2, const Vector3& triangle3 ){
-    
+
+bool PGL(intersectSegment)(const Vector3& seg1, const Vector3& seg2 ,
+           const Vector3& triangle1,const Vector3& triangle2, const Vector3& triangle3 ){
+
   Vector3 u(triangle2 - triangle1);
   Vector3 v(triangle3 - triangle1);
   Vector3 n(cross(u,v));
@@ -91,13 +98,13 @@ bool PGL(intersectSegment)(const Vector3& seg1, const Vector3& seg2 ,
   real_t dn = dot(d,n);
 
   if( fabs(dn) < GEOM_EPSILON ) return false;
-  
+
   real_t mu = dot(( triangle1 - Pline),n)/dn;
   if(mu < -GEOM_EPSILON || mu - 1 > GEOM_EPSILON) return false;
 
 //      Vector3 Pi = Pline + mu * d;
   Vector3 w = d * mu + Pline - triangle1;
- 
+
   real_t uu = dot(u,u);
   real_t vv = dot(v,v);
   real_t uv = dot(u,v);
@@ -137,9 +144,9 @@ bool PGL(intersectSegment)(const Vector3& seg1, const Vector3& seg2 ,
 
 }
 
-bool PGL(intersectSegment)(const Vector3& seg1, const Vector3& seg2 , 
-	       const Vector3& quad1,const Vector3& quad2, const Vector3& quad3 , const Vector3& quad4 ){
-    
+bool PGL(intersectSegment)(const Vector3& seg1, const Vector3& seg2 ,
+           const Vector3& quad1,const Vector3& quad2, const Vector3& quad3 , const Vector3& quad4 ){
+
   Vector3 u(quad2 - quad1);
   Vector3 v(quad3 - quad1);
   Vector3 n(cross(u,v));
@@ -152,24 +159,24 @@ bool PGL(intersectSegment)(const Vector3& seg1, const Vector3& seg2 ,
 
       real_t mu = dot(( quad1 - Pline),n)/dn;
       if(!(mu < -GEOM_EPSILON || mu - 1 > GEOM_EPSILON)){
-	  Vector3 w = d * mu + Pline - quad1;
-      
-	  real_t uu = dot(u,u);
-	  real_t vv = dot(v,v);
-	  real_t uv = dot(u,v);
-	  real_t denominator = uu*vv-pow(uv,2);
-	  if( !(fabs(denominator)< GEOM_EPSILON) ) {
-	      
-	      real_t alpha = dot(w,u)*vv - dot(w,v)* uv;
-	      alpha /= denominator;
-	      
-	      real_t beta = dot(w,v)*uu - dot(w,u)* uv;
-	      beta /= denominator;
-	      
-	      if( alpha < -GEOM_EPSILON || alpha-1 > GEOM_EPSILON || beta < -GEOM_EPSILON || beta-1 > GEOM_EPSILON);
-	      else if( (alpha + beta - 1) > GEOM_EPSILON );
-	      else return true;
-	  }
+      Vector3 w = d * mu + Pline - quad1;
+
+      real_t uu = dot(u,u);
+      real_t vv = dot(v,v);
+      real_t uv = dot(u,v);
+      real_t denominator = uu*vv-pow(uv,2);
+      if( !(fabs(denominator)< GEOM_EPSILON) ) {
+
+          real_t alpha = dot(w,u)*vv - dot(w,v)* uv;
+          alpha /= denominator;
+
+          real_t beta = dot(w,v)*uu - dot(w,u)* uv;
+          beta /= denominator;
+
+          if( alpha < -GEOM_EPSILON || alpha-1 > GEOM_EPSILON || beta < -GEOM_EPSILON || beta-1 > GEOM_EPSILON);
+          else if( (alpha + beta - 1) > GEOM_EPSILON );
+          else return true;
+      }
       }
   }
 
@@ -183,7 +190,7 @@ bool PGL(intersectSegment)(const Vector3& seg1, const Vector3& seg2 ,
   real_t mu = dot(( quad1 - Pline),n)/dn;
   if(mu < -GEOM_EPSILON || mu - 1 > GEOM_EPSILON) return false;
   Vector3 w = d * mu + Pline - quad1;
- 
+
   real_t uu = dot(u,u);
   real_t vv = dot(v,v);
   real_t uv = dot(u,v);

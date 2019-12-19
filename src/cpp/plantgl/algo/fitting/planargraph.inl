@@ -412,7 +412,7 @@ void PlanarGraph<Point2>::ExtractPrimitive (Vertex* V0,
     {
         // A cycle has been found, but it is not guaranteed to be a minimal
         // cycle. V0 is therefore part of a filament.
-        
+
         // Find a filament starting vertex.
         while (V0->Adjacent.size() == 2)
         {

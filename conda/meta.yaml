@@ -1,5 +1,4 @@
-# do not edit the following line. It will be updated automatically
-{% set version = "2.23.2" %}
+{% set version = "3.0.2" %}
 
 package:
   name: openalea.plantgl
@@ -8,56 +7,83 @@ package:
 source:
   path: ..
 
-
 about:
   home: https://github.com/openalea/plantgl
   license: Cecill-C
   summary: An open-source graphic toolkit for the creation, simulation and analysis of 3D virtual plants.
 
 build:
+  number: 2
   preserve_egg_dir: True
-  number: 1
 
 requirements:
   build:
-   - python
-   - setuptools
-   - openalea.deploy
-   - scons
-   - openalea.sconsx
-   - qt <5
-   - boost
-   - bison [unix]
-   - flex 2.5.39 [unix]
-   - m2-bison [win]
-   - m2-flex  [win]
-   - cgal [unix]
-   - gmp [unix]
-   - eigen
-   - ann
-   - qhull
-   - patchelf [linux]
+      - cmake >=3.2.0
+      - binutils_impl_linux-64<2.31.0 # [linux]
+      - {{ compiler('cxx') }}
+      - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
+      - {{ cdt('mesa-libgl-devel') }}      # [linux]
+      - {{ cdt('mesa-libegl-devel') }}     # [linux]
+      - {{ cdt('mesa-dri-drivers') }}      # [linux]
+      - {{ cdt('libx11-devel') }}          # [linux]
+      - {{ cdt('libXt-devel') }}           # [linux]
+      - {{ cdt('libICE-devel') }}          # [linux]
+      - {{ cdt('libuuid-devel') }}         # [linux]
+      - {{ cdt('libSM-devel') }}           # [linux]
+      - {{ cdt('libxext-devel') }}         # [linux]
+      - {{ cdt('libxcb') }}                # [linux]
+      - {{ cdt('libxrender-devel') }}      # [linux]
+      - {{ cdt('libxau-devel') }}          # [linux]
+      - {{ cdt('libdrm-devel') }}          # [linux]
+      - {{ cdt('libxcomposite-devel') }}   # [linux]
+      - {{ cdt('libxcursor-devel') }}      # [linux]
+      - {{ cdt('libxi-devel') }}           # [linux]
+      - {{ cdt('libxrandr-devel') }}       # [linux]
+      - {{ cdt('pciutils-devel') }}        # [linux]
+      - {{ cdt('libxscrnsaver-devel') }}   # [linux]
+      - {{ cdt('libxtst-devel') }}         # [linux]
+      - {{ cdt('libxdamage') }}            # [linux]
+      - {{ cdt('libxdamage-devel') }}      # [linux]
+      - {{ cdt('libxfixes') }}             # [linux]
+      - {{ cdt('libxfixes-devel') }}       # [linux]
+      - {{ cdt('libxxf86vm') }}            # [linux]
+      - bison [unix]
+      - flex [unix]
+      - m2-bison [win]
+      - m2-flex [win]
+      - menuinst [win]
+      - pip
+      - cmake >=3.12.0
+      - openalea.deploy
+  host:
+      - python=3.7    
+      - setuptools
+      - eigen
+      - gmp [unix]
+      #- cgal [unix]
+      - qhull
+      - ann
+      - qt >=5.9.0
+      - pyqt >=5.6.0
+      - boost # boost module of conda-forge install boost.python and dependency boost-cpp for the cpp libs.
+      - libpng
   run:
-   - python
-   - openalea.deploy
-   - openalea.core
-   - qt <5 #{{ pin_compatible('qt', exact=True) }}
-   - pyqt
-   - gmp [unix]
-   - cgal [unix]
-   - qhull
-   - ann
-   - boost #{{ pin_compatible('boost', exact=True) }}
-   - path.py
-
-test:
-  requires:
-    - nose
-  imports:
-    - openalea.plantgl
-  source_files:
-    - test/test_*.py
-    - test/data
-    - share/
-  commands:
-   - nosetests -v -I test_viewer.py -I test_projpershape.py -I thread.py -I test_geomprinter.py -I test_coneofperception.py -I test_pointgrid.py # -I test_bbox.py -I test_codec.py
+     - ipython
+     - pyopengl
+  #  - pyqglviewer
+     - scipy
+     - matplotlib-base
+     - vs2015_runtime [win and py37]
+  test:
+     requires:
+       - nose
+     imports:
+       - openalea.plantgl
+       - openalea.plantgl.all
+     source_files:
+       - test/test_*.py
+       - test/data
+       - share/
+     commands:
+       - nosetests -v -I test_viewer.py -I test_projpershape.py -I thread.py -I test_geomprinter.py -I test_coneofperception.py -I test_pointgrid.py -I test_depthsortengine.py -I test_zbufferengine.py -I test_shared_data.py -I test_light.py -I test_image.py
+       

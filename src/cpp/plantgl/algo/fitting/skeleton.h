@@ -1,33 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Plant Graphic Library
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2003 UMR Cirad/Inria/Inra Dap - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): C. Xavier
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 #ifndef __actn_skeleton_h__
 #define __actn_skeleton_h__
@@ -61,7 +71,7 @@ typedef RCPtr<SkelTriangle> SkelTrianglePtr;
 typedef SkelTriangle* SkelTriangleWeakPtr;
 
 //! A class that associate a vector2 and an index, to get the position of a point within a polyline
-class ALGO_API ShapePoint : public TOOLS::RefCountObject
+class ALGO_API ShapePoint : public RefCountObject
 {
 public:
   Vector2 m_vec;
@@ -106,12 +116,12 @@ class SkelEdgeSet;
  *  and faces.
  *  The pair of points used to define the edge are sorted within the class.
  */
-class ALGO_API SkelEdge : public TOOLS::RefCountObject
+class ALGO_API SkelEdge : public RefCountObject
 {
 public:
-  friend class PGL::SkelTriangle;
-  friend class PGL::Skeleton;
-  friend class PGL::SkelEdgeSet;
+  friend class PGL(SkelTriangle);
+  friend class PGL(Skeleton);
+  friend class PGL(SkelEdgeSet);
 
   enum TypeEdge{UNDEFINED, BOUNDARY, INTERIOR};
 
@@ -134,21 +144,21 @@ protected:
 public:
   //! basic constructor from 2 points
   SkelEdge(Vector2 p1,
-	   Vector2 p2);
+       Vector2 p2);
 
   //! constructor from two ShapePoints
   SkelEdge(ShapePointPtr p1 ,
-	   ShapePointPtr p2 , 
-	   TypeEdge type = UNDEFINED, 
-	   bool infinite = false, 
-	   bool visited = false);
+       ShapePointPtr p2 ,
+       TypeEdge type = UNDEFINED,
+       bool infinite = false,
+       bool visited = false);
 
   //! constructor from two ShapePoints, with a boolean indicating if edge is boundary or interior
   SkelEdge(ShapePointPtr p1 ,
-	   ShapePointPtr p2 , 
-	   bool boundary , 
-	   bool infinite = false,
-	   bool visited = false);
+       ShapePointPtr p2 ,
+       bool boundary ,
+       bool infinite = false,
+       bool visited = false);
 
   //! copy constructor
   SkelEdge(const SkelEdge& e);
@@ -176,7 +186,7 @@ public:
 
   //! removes triangle t from adjacent triangles
   /*!
-   * \param t the triangle that is to be removed 
+   * \param t the triangle that is to be removed
    */
   void rmAdjTri(SkelTriangle& t);
 
@@ -204,20 +214,20 @@ typedef RCPtr<SkelEdge> SkelEdgePtr;
  *  describing with 3 edges allows to cover the triangulation getting through the edges
  *  more easily, but as we do have redundant information, we have some constraints on the
  *  edges used to make the triangle. Only 3 points can form the 3 edges, and each point must
- *  be used twice. In the creation of the type Triangle, we sort the 3 edges, and we can get 
+ *  be used twice. In the creation of the type Triangle, we sort the 3 edges, and we can get
  *  the 3 points of the triangle by getting p1 and p2 on the first edge, and p2 on the second
  *  edge. (the points are also sorted such as p1 < p2 in an edge) (e1 < e2 < e3 in the triangle)
  *  We also give some information on the type of the triangle (depending on how much edges are
  *  on the borders of the shape) and on the infinite type of the triangle (infinite triangles
  *  are on a CGAL triangulation those who are adjacent to the infinite vertex and therefore
- *  describe the space unoccupied by our shapes) 
+ *  describe the space unoccupied by our shapes)
  */
-class ALGO_API SkelTriangle : public TOOLS::RefCountObject
+class ALGO_API SkelTriangle : public RefCountObject
 {
 public:
-  friend class PGL::SkelEdge;
-  friend class PGL::Skeleton;
-  friend class PGL::SkelTriangleSet;
+  friend class PGL(SkelEdge);
+  friend class PGL(Skeleton);
+  friend class PGL(SkelTriangleSet);
 
   //! enum for giving a type to the triangle
   /*!
@@ -257,7 +267,7 @@ public:
    *  \param ShapePointPtr p1 one point to define the triangle
    *  \param ShapePointPtr p2 another point to define the triangle
    *  \param ShapePointPtr p3 another point to define the triangle
-   *  \return a SkelTriangle finite, of UNDEFINED type, with three edges defined 
+   *  \return a SkelTriangle finite, of UNDEFINED type, with three edges defined
    *          by the three given points to get a triangle
    */
   SkelTriangle(ShapePointPtr p1, ShapePointPtr p2, ShapePointPtr p3);
@@ -281,7 +291,7 @@ public:
   Vector2 getCircumCenter() const;
   //! check if the triangle is acute (i.e. hes 3 acute angles)
   bool isAcuteAngleTriangle() const;
-  //! calculate pseudo-circumcenter 
+  //! calculate pseudo-circumcenter
   /*!
    *  The pseudo circumcenter is the circumcenter itself if the triangle is acute
    *  Otherwise it is the middle of the biggest side
@@ -352,7 +362,7 @@ class SkelBranch;
 typedef RCPtr<SkelBranch> SkelBranchPtr;
 class ShapePointSet;
 
-class ALGO_API SkelBranch : public TOOLS::RefCountObject
+class ALGO_API SkelBranch : public RefCountObject
 {
   friend class Skeleton;
 public:
@@ -362,7 +372,7 @@ protected:
   EndType m_firstEnd;
   EndType m_secondEnd;
   ShapePointSet* m_pointSet;
- 
+
   int m_beginBumpIndice;
   int m_endBumpIndice;
   int m_middleBumpIndice;
@@ -372,20 +382,20 @@ protected:
 public:
   SkelBranch();
   SkelBranch(std::list<Vector2> points,
-	     ShapePointSet* ptr = 0, 
-	     EndType firstEnd = UNDEFINED, 
-	     EndType secondEnd = UNDEFINED, 
-	     int begin = -1, 
-	     int end = -1, 
-	     int middle = -1,
-	     int jjbeg2 = -1,
-	     int jjend2 = -1);
+         ShapePointSet* ptr = 0,
+         EndType firstEnd = UNDEFINED,
+         EndType secondEnd = UNDEFINED,
+         int begin = -1,
+         int end = -1,
+         int middle = -1,
+         int jjbeg2 = -1,
+         int jjend2 = -1);
   static std::list<Polyline2DPtr> getListPolylines(std::list<SkelBranchPtr> lb);
   Polyline2DPtr getPolylineForAssociatedBump();
   double area();
 };
 
-class ALGO_API SkelJonction : public Vector2, public TOOLS::RefCountObject
+class ALGO_API SkelJonction : public Vector2, public RefCountObject
 {
   friend class Skeleton;
 protected:
@@ -470,17 +480,17 @@ class ALGO_API Skeleton
 
   static Polyline2DPtr removeLoopsInShape(Polyline2DPtr shape);
 
-  static std::list<Polyline2DPtr> getChordalAxisTransform(const Polyline2DPtr discretizedShape, 
-							  const double areaMaxFilter);
+  static std::list<Polyline2DPtr> getChordalAxisTransform(const Polyline2DPtr discretizedShape,
+                              const double areaMaxFilter);
 
-  static std::list<Polyline2DPtr> getSkeletonInformation(const Polyline2DPtr discretizedShape, 
-							 const double areaMaxFilter,
-							 std::list<Vector2> * ends,
-							 std::list<Vector2> * end_tgts,
-							 std::list<Vector2> * bump_ends,
-							 std::list<Vector2> * bump_tgts,
-							 std::list<Polyline2DPtr> * bumps);
- 
+  static std::list<Polyline2DPtr> getSkeletonInformation(const Polyline2DPtr discretizedShape,
+                             const double areaMaxFilter,
+                             std::list<Vector2> * ends,
+                             std::list<Vector2> * end_tgts,
+                             std::list<Vector2> * bump_ends,
+                             std::list<Vector2> * bump_tgts,
+                             std::list<Polyline2DPtr> * bumps);
+
   static TriangleSetPtr getDelaunayConstrained2DTriangulation(const Polyline2DPtr discretizedShape);
 
 };

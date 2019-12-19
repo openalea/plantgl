@@ -1,33 +1,44 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Plant Graphic Library
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR Cirad/Inria/Inra Dap - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
+
 
 #include <plantgl/scenegraph/appearance/color.h>
 #include <plantgl/scenegraph/appearance/texture.h>
@@ -38,7 +49,6 @@
 #include "export_sceneobject.h"
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
 
@@ -69,19 +79,19 @@ std::string imgtex_str(ImageTexture * m){
 void export_ImageTexture()
 {
   class_< ImageTexture, ImageTexturePtr, bases<  SceneObject >, boost::noncopyable >
-    ( "ImageTexture", "The image of a textured object.", 
-	  init< string, optional< bool, bool, bool> >(
-		(bp::arg("filename"),
-		 bp::arg("repeatS") = ImageTexture::DEFAULT_REPEATS,
-		 bp::arg("repeatT") = ImageTexture::DEFAULT_REPEATT,
-		 bp::arg("mipmaping") = ImageTexture::DEFAULT_MIPMAPING),
+    ( "ImageTexture", "The image of a textured object.",
+      init< string, boost::python::optional< bool, bool, bool> >(
+        (bp::arg("filename"),
+         bp::arg("repeatS") = ImageTexture::DEFAULT_REPEATS,
+         bp::arg("repeatT") = ImageTexture::DEFAULT_REPEATT,
+         bp::arg("mipmaping") = ImageTexture::DEFAULT_MIPMAPING),
           "ImageTexture(filename [, transparency, repeatS, repeatT, mipmaping])"))
-    .def(init< string,string, optional< bool, bool, bool> >(
-		(bp::arg("name"),
-		 bp::arg("filename"),
-		 bp::arg("repeatS") = ImageTexture::DEFAULT_REPEATS,
-		 bp::arg("repeatT") = ImageTexture::DEFAULT_REPEATT,
-		 bp::arg("mipmaping") = ImageTexture::DEFAULT_MIPMAPING),
+    .def(init< string,string, boost::python::optional< bool, bool, bool> >(
+        (bp::arg("name"),
+         bp::arg("filename"),
+         bp::arg("repeatS") = ImageTexture::DEFAULT_REPEATS,
+         bp::arg("repeatT") = ImageTexture::DEFAULT_REPEATT,
+         bp::arg("mipmaping") = ImageTexture::DEFAULT_MIPMAPING),
           "ImageTexture(name, filename [, transparency, repeatS, repeatT, mipmaping])"))
 
     .DEC_BT_PROPERTY(filename,ImageTexture,Filename,std::string )
@@ -113,24 +123,24 @@ std::string textr_str(Texture2DTransformation * m){
 void export_Texture2DTransformation()
 {
   class_< Texture2DTransformation, Texture2DTransformationPtr, bases<  SceneObject >, boost::noncopyable >
-    ( "Texture2DTransformation", "The transformation of a texture 2D.", 
-	init< optional<std::string,Vector2,Vector2,Vector2,real_t> >
-		((bp::arg("name"),
-		  bp::arg("scale")=Texture2DTransformation::DEFAULT_SCALE,
-		  bp::arg("translation")=Texture2DTransformation::DEFAULT_TRANSLATION,
-		  bp::arg("rotationCenter")=Texture2DTransformation::DEFAULT_ROTATIONCENTER,
-		  bp::arg("rotationAngle")=Texture2DTransformation::DEFAULT_ROTATIONANGLE),
+    ( "Texture2DTransformation", "The transformation of a texture 2D.",
+    init< boost::python::optional<std::string,Vector2,Vector2,Vector2,real_t> >
+        ((bp::arg("name"),
+          bp::arg("scale")=Texture2DTransformation::DEFAULT_SCALE,
+          bp::arg("translation")=Texture2DTransformation::DEFAULT_TRANSLATION,
+          bp::arg("rotationCenter")=Texture2DTransformation::DEFAULT_ROTATIONCENTER,
+          bp::arg("rotationAngle")=Texture2DTransformation::DEFAULT_ROTATIONANGLE),
           "Texture2D([name,scale,translation,rotationCenter,rotationAngle])"))
 
-    .DEC_BT_PROPERTY_WDV(scale,Texture2DTransformation, 
-							Scale, Vector2,DEFAULT_SCALE)
+    .DEC_BT_PROPERTY_WDV(scale,Texture2DTransformation,
+                            Scale, Vector2,DEFAULT_SCALE)
 
-    .DEC_BT_PROPERTY_WDV(translation,Texture2DTransformation, 
-							Translation, Vector2,DEFAULT_TRANSLATION)
-    .DEC_BT_PROPERTY_WDV(rotationCenter,Texture2DTransformation, 
-							RotationCenter, Vector2,DEFAULT_ROTATIONCENTER)
-    .DEC_BT_PROPERTY_WDV(rotationAngle,Texture2DTransformation, 
-							RotationAngle, real_t,DEFAULT_ROTATIONANGLE)
+    .DEC_BT_PROPERTY_WDV(translation,Texture2DTransformation,
+                            Translation, Vector2,DEFAULT_TRANSLATION)
+    .DEC_BT_PROPERTY_WDV(rotationCenter,Texture2DTransformation,
+                            RotationCenter, Vector2,DEFAULT_ROTATIONCENTER)
+    .DEC_BT_PROPERTY_WDV(rotationAngle,Texture2DTransformation,
+                            RotationAngle, real_t,DEFAULT_ROTATIONANGLE)
     .def( "__str__", textr_str )
     .def( "__repr__", textr_str )
     .def( "transform", (Point3ArrayPtr (Texture2DTransformation::*)( const Point3ArrayPtr& points ) const)&Texture2DTransformation::transform,bp::args("points3"))
@@ -156,11 +166,11 @@ std::string tex_str(Texture2D * m){
 void export_Texture2D()
 {
   class_< Texture2D, Texture2DPtr, bases<  Appearance >, boost::noncopyable >
-    ( "Texture2D", "The material of a textured object.", 
-	   init< ImageTexturePtr, optional<Texture2DTransformationPtr, Color4> >
+    ( "Texture2D", "The material of a textured object.",
+       init< ImageTexturePtr, boost::python::optional<Texture2DTransformationPtr, Color4> >
          (args("image","transformation","baseColor"),
           "Texture2D(image [,transformation, baseColor])"))
-       .def(init< string, ImageTexturePtr, optional<Texture2DTransformationPtr, Color4> >
+       .def(init< string, ImageTexturePtr, boost::python::optional<Texture2DTransformationPtr, Color4> >
          (args("name","image","transformation","baseColor"),
           "Texture2D(name, image [,transformation, baseColor])"))
     .DEC_PTR_PROPERTY(image,Texture2D,Image,ImageTexturePtr )

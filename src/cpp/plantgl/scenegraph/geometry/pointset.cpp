@@ -3,31 +3,41 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon et al.
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 
 
@@ -37,7 +47,6 @@
 #include <plantgl/scenegraph/transformation/transformed.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -59,7 +68,7 @@ PointSet::Builder::~Builder( ) {
 
 SceneObjectPtr PointSet::Builder::build( ) const {
   if (isValid())
-	  return SceneObjectPtr(new PointSet(*PointList,ColorList?*ColorList:Color4ArrayPtr(),Width?*Width:DEFAULT_WIDTH));
+      return SceneObjectPtr(new PointSet(*PointList,ColorList?*ColorList:Color4ArrayPtr(),Width?*Width:DEFAULT_WIDTH));
   // Returns null as self is not valid.
   return SceneObjectPtr();
 }
@@ -72,16 +81,16 @@ void PointSet::Builder::destroy( ) {
 
 
 bool PointSet::Builder::isValid( ) const {
-	if(!EMValid()) return false;
+    if(!EMValid()) return false;
 
-	if (ColorList && *ColorList) {
-		uint_t _colorListSize = (*ColorList)->size();
-		if(_colorListSize != (*PointList)->size()){
-			pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"PointSet","ColorList","Number of colors must be compatible to PointList size.");
-			return false;
-		}
-	}
-	return true;
+    if (ColorList && *ColorList) {
+        uint_t _colorListSize = (*ColorList)->size();
+        if(_colorListSize != (*PointList)->size()){
+            pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"PointSet","ColorList","Number of colors must be compatible to PointList size.");
+            return false;
+        }
+    }
+    return true;
 
 }
 
@@ -121,27 +130,27 @@ bool  PointSet::isAVolume( ) const {
 }
 
 
-const Vector3& 
+const Vector3&
 PointSet::getPointListAt( uint_t i ) const {
   GEOM_ASSERT(i < __pointList->size());
-  return __pointList->getAt(i);   
+  return __pointList->getAt(i);
 }
 
-Vector3& 
+Vector3&
 PointSet::getPointListAt( uint_t i ) {
   GEOM_ASSERT(i < __pointList->size());
-  return __pointList->getAt(i);   
+  return __pointList->getAt(i);
 }
 
 
-ExplicitModelPtr 
+ExplicitModelPtr
 PointSet::transform( const Transformation3DPtr& transformation ) const {
   GEOM_ASSERT(transformation);
   return ExplicitModelPtr(new PointSet(transformation->transform(__pointList),__colorList));
 }
 
-SceneObjectPtr 
-PointSet::copy(DeepCopier& copier) const 
+SceneObjectPtr
+PointSet::copy(DeepCopier& copier) const
 {
   PointSet * ptr = new PointSet(*this);
   copier.copy_attribute(ptr->getPointList());
@@ -150,13 +159,13 @@ PointSet::copy(DeepCopier& copier) const
 }
 
 
-Vector3 
+Vector3
 PointSet::findClosest(const Vector3& point, uint_t * index) const
 {
 
-	std::pair<Point3Array::const_iterator,real_t> res = PGL::findClosest(*__pointList,point);
-	if(index) *index = std::distance<Point3Array::const_iterator>(__pointList->begin(),res.first);
-	return *res.first;
+    std::pair<Point3Array::const_iterator,real_t> res = PGL::findClosest(*__pointList,point);
+    if(index) *index = std::distance<Point3Array::const_iterator>(__pointList->begin(),res.first);
+    return *res.first;
 }
 
 /* ----------------------------------------------------------------------- */
@@ -177,7 +186,7 @@ PointSet2D::Builder::~Builder( ) {
 
 SceneObjectPtr PointSet2D::Builder::build( ) const {
   if (isValid())
-	  return SceneObjectPtr(new PointSet2D(*PointList,Width?*Width:PointSet::DEFAULT_WIDTH));
+      return SceneObjectPtr(new PointSet2D(*PointList,Width?*Width:PointSet::DEFAULT_WIDTH));
   // Returns null as self is not valid.
   return SceneObjectPtr();
 }
@@ -192,7 +201,7 @@ void PointSet2D::Builder::destroy( ) {
 bool PointSet2D::Builder::isValid( ) const {
 
   // PointList
-  if (! PointList) { 
+  if (! PointList) {
     pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"PointSet2D","PointList");
     return false;
   };
@@ -241,55 +250,55 @@ bool PointSet2D::isAVolume( ) const {
   return false;
 }
 
-SceneObjectPtr 
-PointSet2D::copy(DeepCopier& copier) const 
+SceneObjectPtr
+PointSet2D::copy(DeepCopier& copier) const
 {
   PointSet2D * ptr = new PointSet2D(*this);
   copier.copy_attribute(ptr->getPointList());
   return SceneObjectPtr(ptr);
 }
 
-const Vector2& 
+const Vector2&
 PointSet2D::getPointListAt( uint_t i ) const {
   GEOM_ASSERT(i < __pointList->size());
-  return __pointList->getAt(i);   
+  return __pointList->getAt(i);
 }
 
-Vector2& 
+Vector2&
 PointSet2D::getPointListAt( uint_t i ) {
   GEOM_ASSERT(i < __pointList->size());
-  return __pointList->getAt(i);   
+  return __pointList->getAt(i);
 }
 
-const Point2ArrayPtr& 
+const Point2ArrayPtr&
 PointSet2D::getPointList( ) const {
   return __pointList;
 }
 
-Point2ArrayPtr& 
+Point2ArrayPtr&
 PointSet2D::getPointList( ) {
   return __pointList;
 }
 
-uint_t 
+uint_t
 PointSet2D::getPointListSize( ) const {
   return __pointList->size();
 }
 
 /*
-ExplicitModel2DPtr 
+ExplicitModel2DPtr
 PointSet2D::transform( const Transformation2DPtr& transformation ) const {
   GEOM_ASSERT(transformation);
   return ExplicitModel2DPtr(new Point2DSet(transformation->transform(__pointList)));
 }
 */
 
-Vector2 
+Vector2
 PointSet2D::findClosest(const Vector2& point, uint_t * index) const
 {
-	std::pair<Point2Array::const_iterator,real_t> res = PGL::findClosest(*__pointList,point);
-	if(index) *index = std::distance<Point2Array::const_iterator>(__pointList->begin(),res.first);
-	return *res.first;
+    std::pair<Point2Array::const_iterator,real_t> res = PGL::findClosest(*__pointList,point);
+    if(index) *index = std::distance<Point2Array::const_iterator>(__pointList->begin(),res.first);
+    return *res.first;
 }
 
 /* ----------------------------------------------------------------------- */

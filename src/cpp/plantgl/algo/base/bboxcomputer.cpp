@@ -1,35 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al.
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 
 
@@ -49,7 +57,6 @@
 
 #include <plantgl/math/util_math.h>
 
-TOOLS_USING_NAMESPACE
 PGL_USING_NAMESPACE
 
 using namespace std;
@@ -75,9 +82,9 @@ using namespace std;
 #define GEOM_BBOXCOMPUTER_TRANSFORM_BBOX(matrix) \
   if( __bbox->unique() ) __bbox->transform(matrix); \
   else { \
-	BoundingBox bbox(*__bbox); \
-	bbox.transform(matrix); \
-	__bbox = BoundingBoxPtr(new BoundingBox(bbox)); \
+    BoundingBox bbox(*__bbox); \
+    bbox.transform(matrix); \
+    __bbox = BoundingBoxPtr(new BoundingBox(bbox)); \
   } \
 
 #define GEOM_BBOXCOMPUTER_DISCRETIZE(geom) \
@@ -153,17 +160,17 @@ bool BBoxComputer::process(Shape * Shape){
 bool BBoxComputer::process(Inline * geomInline){
     GEOM_ASSERT(geomInline);
     GEOM_BBOXCOMPUTER_CHECK_CACHE(geomInline);
-	geomInline->getScene()->apply(*this);
-	if(!__bbox) return false;
+    geomInline->getScene()->apply(*this);
+    if(!__bbox) return false;
 
-	Matrix3 _matrix = Matrix3::scaling(geomInline->getScale());
+    Matrix3 _matrix = Matrix3::scaling(geomInline->getScale());
     GEOM_BBOXCOMPUTER_TRANSFORM_BBOX(_matrix);
 
-	const Vector3& _ll = __bbox->getLowerLeftCorner();
-	const Vector3& _ur = __bbox->getUpperRightCorner();
-	const Vector3& _t = geomInline->getTranslation();
+    const Vector3& _ll = __bbox->getLowerLeftCorner();
+    const Vector3& _ur = __bbox->getUpperRightCorner();
+    const Vector3& _t = geomInline->getTranslation();
 
-	__bbox = BoundingBoxPtr(new BoundingBox(_ll + _t, _ur + _t));
+    __bbox = BoundingBoxPtr(new BoundingBox(_ll + _t, _ur + _t));
 
 
     GEOM_BBOXCOMPUTER_UPDATE_CACHE(geomInline);
@@ -447,7 +454,7 @@ bool BBoxComputer::process( Group * group ) {
   uint_t _size = _group->size();
   uint_t _first = 0;
   do {
-	_group->getAt(_first)->apply(*this);
+    _group->getAt(_first)->apply(*this);
     ++_first;
   } while(!__bbox && _first <_size);
   if(!__bbox)return false;
@@ -483,32 +490,32 @@ bool BBoxComputer::process( IFS * ifs ) {
   // We compute the bounding box of the children Geometry
   ifs->getGeometry()->apply(*this);
   if(__bbox){
-	
-	Vector3 _ll = __bbox->getLowerLeftCorner();
-	Vector3 _ur = __bbox->getUpperRightCorner();
-	Matrix4Array::const_iterator matrix= matrixList->begin();
-	BoundingBox UnionBox( _ll, _ur);
-	UnionBox.transform(*matrix);
-	matrix++;
-	
-	while( matrix != matrixList->end() )
+
+    Vector3 _ll = __bbox->getLowerLeftCorner();
+    Vector3 _ur = __bbox->getUpperRightCorner();
+    Matrix4Array::const_iterator matrix= matrixList->begin();
+    BoundingBox UnionBox( _ll, _ur);
+    UnionBox.transform(*matrix);
+    matrix++;
+
+    while( matrix != matrixList->end() )
     {
-	  BoundingBox bbox( _ll, _ur);
-	  bbox.transform(*matrix);
-	  UnionBox.extend(bbox);
-	  matrix++;
+      BoundingBox bbox( _ll, _ur);
+      bbox.transform(*matrix);
+      UnionBox.extend(bbox);
+      matrix++;
     }
-	
-	_ll= UnionBox.getLowerLeftCorner();
-	_ur= UnionBox.getUpperRightCorner();
-	
-	__bbox = BoundingBoxPtr(new BoundingBox(_ll,_ur));
-	
-	GEOM_ASSERT(__bbox);
-	
-	GEOM_BBOXCOMPUTER_UPDATE_CACHE(ifs);
-	
-	return true;
+
+    _ll= UnionBox.getLowerLeftCorner();
+    _ur= UnionBox.getUpperRightCorner();
+
+    __bbox = BoundingBoxPtr(new BoundingBox(_ll,_ur));
+
+    GEOM_ASSERT(__bbox);
+
+    GEOM_BBOXCOMPUTER_UPDATE_CACHE(ifs);
+
+    return true;
   }
   return false;
 }
@@ -541,7 +548,7 @@ bool BBoxComputer::process( Oriented * oriented ) {
   // We compute the bounding box of the children Geometry
   oriented->getGeometry()->apply(*this);
   if(!__bbox) return false;
-	
+
   // We retrieve the matrix transformation attached to axisRotated
   Matrix4TransformationPtr _transformation = dynamic_pointer_cast<Matrix4Transformation>(oriented->getTransformation());
   GEOM_ASSERT(_transformation);
@@ -632,7 +639,7 @@ bool BBoxComputer::process( Revolution * revolution ) {
   real_t _yMin = it->y();
   real_t _yMax = it->y();
   real_t _xMax = it->x();
-  
+
   for (++it; it < _pointList->end(); ++it) {
     const real_t& _x = it->x();
     const real_t& _y = it->y();
@@ -727,7 +734,7 @@ bool BBoxComputer::process( Scaled * scaled ) {
   // We compute the bounding box of the children Geometry
   scaled->getGeometry()->apply(*this);
   if(!__bbox) return false;
-	
+
   // We retrieve the matrix transformation attached to axisRotated
   Matrix4TransformationPtr _transformation = dynamic_pointer_cast<Matrix4Transformation>(scaled->getTransformation());
   GEOM_ASSERT(_transformation);
@@ -810,7 +817,7 @@ bool BBoxComputer::process( Translated * translated ) {
 
   translated->getGeometry()->apply(*this);
   if(!__bbox) return false;
-	
+
   const Vector3& _ll = __bbox->getLowerLeftCorner();
   const Vector3& _ur = __bbox->getUpperRightCorner();
   const Vector3& _t = translated->getTranslation();

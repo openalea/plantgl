@@ -61,7 +61,7 @@ class NurbsMethod:
             return self.nPatch
     @staticmethod
     def make_interpolation(curves, *args, **kargs):
-        curves  = map(sg.Point4Array, curves)
+        curves  = list(map(sg.Point4Array, curves))
         return NurbsMethod.Patch(curves, *args, **kargs)
     @staticmethod
     def make_section(pts, **kargs):
@@ -72,7 +72,7 @@ class CSplineMethod:
     class Patch:
         def __init__(self, curves, normalisedVDistances=None, normalisedUDistances=None, **kwargs):
             self._vs = [NurbsCurve.CSpline(pts, is_linear=False, distances=normalisedVDistances) for pts in curves]
-            us = zip(*curves)
+            us = list(zip(*curves))
             self._us = [NurbsCurve.CSpline(pts, is_linear=False, distances=normalisedUDistances[i]) for i, pts in enumerate(us)]
         def getVSection(self, v):
             return [ x.getPointAt(v) for x in self._vs ]
@@ -82,12 +82,12 @@ class CSplineMethod:
             return self
     @staticmethod
     def make_interpolation(curves, *args, **kargs):
-        curves  = map(sg.Point3Array,
-                      ((Vector3(p[0], p[1], p[2]) for p in c) for c in curves))
+        curves  = list(map(sg.Point3Array,
+                      ((Vector3(p[0], p[1], p[2]) for p in c) for c in curves)))
         return CSplineMethod.Patch(curves, *args, **kargs)
     @staticmethod
     def make_section(pts, distances=None, **kargs):
-        pts = map(lambda p: Vector3(p[0],p[1], p[2]), pts)
+        pts = [Vector3(p[0],p[1], p[2]) for p in pts]
         return NurbsCurve.CSpline(pts, is_linear=False, distances=None)
 
 
@@ -147,7 +147,7 @@ class InterpolatedProfile( dict ):
         return interpolator
 
     def real(self):
-        real = dict((self.__normToReal[k],v) for k,v in self.iteritems())
+        real = dict((self.__normToReal[k],v) for k,v in self.items())
         return real
 
     def as_sorted_tuples(self):
@@ -202,7 +202,7 @@ class InterpolatedProfile( dict ):
         control points with this profile."""
         sectionLen = len(section)
         if len(self)>0:
-            count = len( self.itervalues().next() )
+            count = len( next(iter(self.values())) )
             diff = sectionLen - count
             return diff
         return 0
@@ -215,20 +215,20 @@ class InterpolatedProfile( dict ):
         if numSections>=2:
             # -- clear cached sections --
             self.__cachedSections.clear()
-            self.__normToReal = dict( (k, self.unnormalised_parameter(k)) for k in self.iterkeys() )
+            self.__normToReal = dict( (k, self.unnormalised_parameter(k)) for k in self.keys() )
 
             # -- make a list of tuples out of the items,
-            self.__sortedTuples = map(tuple, self.iteritems())
+            self.__sortedTuples = list(map(tuple, iter(self.items())))
             # -- sort according to key,
             self.__sortedTuples.sort()
-            curves  = map(lambda x: x[1], self.__sortedTuples)
+            curves  = [x[1] for x in self.__sortedTuples]
             unorm = self._get_u_distances
             normalisedUDistances=[unorm(c) for c in curves]
             # -- and transpose since we are specifying rows, not columns
             curveLen = len( curves[0] )
-            curves  = zip(*curves)
+            curves  = list(zip(*curves))
             # -- create point arrays
-            curvesAr  = map(sg.Point4Array, curves)
+            curvesAr  = list(map(sg.Point4Array, curves))
 
             vsdiffs  = self._get_v_distances()
             patch  = self.Method.make_interpolation(curvesAr,
@@ -274,15 +274,15 @@ class InterpolatedProfile( dict ):
         norm = self.normalised_abscissa
         if len(crv) < 2:
             return []
-        diffPairs = zip(crv[1:], crv[:-1])
-        return map(norm, map(sum, ( (x[0],-y[0]) for x,y in diffPairs)))
+        diffPairs = list(zip(crv[1:], crv[:-1]))
+        return list(map(norm, list(map(sum, ( (x[0],-y[0]) for x,y in diffPairs)))))
 
     def _get_v_distances(self):
         steps = self.as_sorted_tuples()
         if len(steps) < 2:
             return []
-        diffPairs = zip(steps[1:], steps[:-1])
-        return map(sum, ( (x[0],-y[0]) for x,y in diffPairs))
+        diffPairs = list(zip(steps[1:], steps[:-1]))
+        return list(map(sum, ( (x[0],-y[0]) for x,y in diffPairs)))
 
     #################
     # Functor style #
@@ -318,7 +318,7 @@ class InterpolatedProfile( dict ):
             self.update_interpolation()
 
     def add_cross_sections(self, *parameters_and_sections, **kargs):
-        for i in xrange(0,len(parameters_and_sections),2):
+        for i in range(0,len(parameters_and_sections),2):
             t, s = parameters_and_sections[i], parameters_and_sections[i+1]
             self.add_cross_section(t, s,
                                    autoUpdate=False, normalised=kargs.get("normalised"))
@@ -346,9 +346,9 @@ class InterpolatedProfile( dict ):
         if abscissa == 1.0 or abscissa == 0.0:
             return
         if self.__patch:
-            rows = self.itervalues()
+            rows = iter(self.values())
             afterId  = InterpolatedProfile.__find_index_in_polyline(abscissa,
-                                                                    self.itervalues().next(),
+                                                                    next(iter(self.values())),
                                                                     is_abscissa=True)
             beforeId = afterId-1
             ptPairs = [(c[afterId], c[beforeId]) for c in rows]
@@ -367,7 +367,7 @@ class InterpolatedProfile( dict ):
         assert len(controlPoints) == len(self)
         if self.__patch:
             newSections = []
-            for lineCount, (t, xsection) in enumerate(self.iteritems()):
+            for lineCount, (t, xsection) in enumerate(self.items()):
                 xsection.insert(index, controlPoints[lineCount])
                 newSections += [t,xsection]
             self.add_cross_sections(*newSections, normalised=True)
@@ -388,10 +388,10 @@ class InterpolatedProfile( dict ):
             # -- retreive ordered cross sections --
             sortedTups = self.as_sorted_tuples()
             # -- transpose to columns to compute the linear interpolation --
-            columns = zip(*zip(*sortedTups)[1])
+            columns = list(zip(*list(zip(*sortedTups))[1]))
             # -- compute new cross section --
             afterId  = InterpolatedProfile.__find_index_in_polyline(nparameter,
-                                                                    iter(columns).next(),
+                                                                    next(iter(columns)),
                                                                     is_abscissa=False)
             beforeId = afterId-1
             ptPairs = [(c[afterId], c[beforeId]) for c in columns]
@@ -437,7 +437,7 @@ class InterpolatedProfile( dict ):
         if l == 0.0:
             raise Exception("I'm too tired to know what I should do here")
         lineItemCount = len(line)
-        for i in xrange(1, lineItemCount):
+        for i in range(1, lineItemCount):
             res = InterpolatedProfile.__line_length(line[:i+1],xid,yid)/l
             if res > value:
                 return i
@@ -455,7 +455,7 @@ class InterpolatedProfile( dict ):
             return 0 #?
 
         lineItemCount = len(line)
-        for i in xrange(1, lineItemCount):
+        for i in range(1, lineItemCount):
             res = InterpolatedProfile.__line_length(line[:i+1])/l
             if res > abscissa:
                 return i
@@ -508,11 +508,11 @@ class InterpolatedProfile( dict ):
         If epsilon is None and the key does not exist, returns None
         """
         if self.__epsilon:
-            for k in mapping.iterkeys():
+            for k in mapping.keys():
                 if abs(key-k)<=self.__epsilon:
                     return k #return the rounded key :)
             return None
-        elif key in mapping.keys():
+        elif key in list(mapping.keys()):
             return key
         return None
 
@@ -548,7 +548,7 @@ if __name__ == "__main__":
     #0.5, crsSect2,
                           1.0, crsSect2)
 
-    from openalea.vpltk.qt import QtGui
+    from openalea.plantgl.gui.qt import QtGui
     app=QtGui.QApplication([])
 
     scene = Scene()

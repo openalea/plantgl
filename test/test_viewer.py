@@ -162,7 +162,7 @@ if __name__=='__main__':
 
     try:
         import avoid_display
-        print 'Avoid display.'
+        print('Avoid display.')
     except:
         test_display()
         test_add()

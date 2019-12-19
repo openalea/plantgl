@@ -21,8 +21,8 @@ This module provide a set of geometrical concepts to express tissue geometry
 __license__= "Cecill-C"
 __revision__=" $Id$ "
 
-from interface.abstract_geometry import AbstractPolyhedra
-from tools import Vmean
+from .interface.abstract_geometry import AbstractPolyhedra
+from .tools import Vmean
 
 class Segment (AbstractPolyhedra) :
 	"""

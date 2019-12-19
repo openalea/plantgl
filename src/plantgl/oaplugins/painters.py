@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from openalea.vpltk.qt import QtCore, QtGui
+from openalea.plantgl.gui.qt import QtCore, QtGui
 from openalea.oalab.plugins.controls.painters  import  AbstractPainter
 
 

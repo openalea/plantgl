@@ -3,31 +3,42 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon et al.
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
+
 
 #include <boost/python.hpp>
 
@@ -40,7 +51,6 @@
 /* ----------------------------------------------------------------------- */
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
 #define bp boost::python
@@ -51,18 +61,18 @@ ExplicitModelPtr d_getDiscretization( Discretizer* d )
 
 /* ----------------------------------------------------------------------- */
 
-bool get_Dis_texCoord(Discretizer * obj){ 
-  return obj->texCoordComputed(); 
-} 
-void set_Dis_texCoord(Discretizer * obj, bool v){ 
-  obj->computeTexCoord(v); 
-} 
+bool get_Dis_texCoord(Discretizer * obj){
+  return obj->texCoordComputed();
+}
+void set_Dis_texCoord(Discretizer * obj, bool v){
+  obj->computeTexCoord(v);
+}
 
 ExplicitModelPtr py_discretize( const GeometryPtr& obj) {
-	if (!obj)throw PythonExc_ValueError("Cannot discretize empty object.");
-	Discretizer d;
-	if (!obj->apply(d))throw PythonExc_ValueError("Error in discretization.");
-	else return d.getDiscretization();
+    if (!obj)throw PythonExc_ValueError("Cannot discretize empty object.");
+    Discretizer d;
+    if (!obj->apply(d))throw PythonExc_ValueError("Error in discretization.");
+    else return d.getDiscretization();
 }
 
 /* ----------------------------------------------------------------------- */
@@ -73,7 +83,7 @@ void export_Discretizer()
     ("Discretizer", init<>("Discretizer() -> Compute the objects discretization" ))
     .def("clear",&Discretizer::clear)
     .add_property("discretization",d_getDiscretization, "Return the last computed discretization.")
-	.add_property("texCoord",get_Dis_texCoord,set_Dis_texCoord)
+    .add_property("texCoord",get_Dis_texCoord,set_Dis_texCoord)
     .add_property("result",d_getDiscretization)
     ;
 
@@ -82,21 +92,21 @@ void export_Discretizer()
 
 /* ----------------------------------------------------------------------- */
 
-TriangleSetPtr 	t_getTriangulation ( Tesselator* t )
+TriangleSetPtr  t_getTriangulation ( Tesselator* t )
 { return t->getTriangulation(); }
 
 TriangleSetPtr py_tesselate( const GeometryPtr& obj) {
-	if (!obj)throw PythonExc_ValueError("Cannot tesselate empty object.");
-	Tesselator t;
-	if (!obj->apply(t))throw PythonExc_ValueError("Error in tesselation.");
-	else return t.getTriangulation();
+    if (!obj)throw PythonExc_ValueError("Cannot tesselate empty object.");
+    Tesselator t;
+    if (!obj->apply(t))throw PythonExc_ValueError("Error in tesselation.");
+    else return t.getTriangulation();
 }
 
 TriangleSetPtr py_triangulation( const GeometryPtr& obj) {
-	if (!obj)throw PythonExc_ValueError("Cannot tesselate empty object.");
-	Tesselator t;
-	if (!obj->apply(t))throw PythonExc_ValueError("Error in tesselation.");
-	else return t.getTriangulation();
+    if (!obj)throw PythonExc_ValueError("Cannot tesselate empty object.");
+    Tesselator t;
+    if (!obj->apply(t))throw PythonExc_ValueError("Error in tesselation.");
+    else return t.getTriangulation();
 }
 
 
@@ -118,12 +128,12 @@ void export_Tesselator()
     .value("eGreeneTriangulation",eGreeneTriangulation)
     .value("eOptimalTriangulation", eOptimalTriangulation)
     .value("eYMonotonePartitioning", eYMonotonePartitioning)
-	  .export_values()
-	  ;
+      .export_values()
+      ;
 
-   def("polygonization",&PGL::polygonization,(bp::arg("contour"),bp::arg("method")=eConvexTriangulation));
-   def("triangulation",&PGL::triangulation,(bp::arg("contour"),bp::arg("method")=eConvexTriangulation));
-   def("is_simple_polygon",&PGL::is_simple_polygon,(bp::arg("contour")));
+   def("polygonization",&polygonization,(bp::arg("contour"),bp::arg("method")=eConvexTriangulation));
+   def("triangulation",&triangulation,(bp::arg("contour"),bp::arg("method")=eConvexTriangulation));
+   def("is_simple_polygon",&is_simple_polygon,(bp::arg("contour")));
 
 }
 

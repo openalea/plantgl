@@ -1,42 +1,49 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2009 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al.
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 
 #include "randompoints.h"
 #include <stdlib.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 Vector3 PGL(random_point_in_box)(const Vector3& minpt, const Vector3& maxpt)
 {
@@ -45,7 +52,7 @@ Vector3 PGL(random_point_in_box)(const Vector3& minpt, const Vector3& maxpt)
 
 Vector3 PGL(random_point_in_tetrahedron)(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3)
 {
-    // from http://vcg.isti.cnr.it/activities/geometryegraphics/pointintetraedro.html    
+    // from http://vcg.isti.cnr.it/activities/geometryegraphics/pointintetraedro.html
     float s = rand()/RAND_MAX;
     float t = rand()/RAND_MAX;
     float u = rand()/RAND_MAX;
@@ -67,7 +74,7 @@ Vector3 PGL(random_point_in_tetrahedron)(const Vector3& p0, const Vector3& p1, c
       s = 1 - t - tmp;
     }
     float a = 1 - s - t - u;
-    
+
     return (p0 * a + p1 * s + p2 * t + p3 * u);
 }
 
@@ -85,7 +92,7 @@ Point3ArrayPtr PGL(random_points_in_tetrahedra)(size_t nb_per_tetra, const Point
     Point3Array::iterator it = res->begin();
     for (Index4Array::iterator ittetra = tetraindices->begin(); ittetra != tetraindices->end(); ++it, ++ittetra){
         const Vector3& p0 = points->getAt(ittetra->getAt(0));
-        const Vector3& p1 = points->getAt(ittetra->getAt(1)); 
+        const Vector3& p1 = points->getAt(ittetra->getAt(1));
         const Vector3& p2 = points->getAt(ittetra->getAt(2));
         const Vector3& p3 = points->getAt(ittetra->getAt(3));
         for (int i = 0; i < nb_per_tetra; ++i)
@@ -94,7 +101,3 @@ Point3ArrayPtr PGL(random_points_in_tetrahedra)(size_t nb_per_tetra, const Point
     return res;
 
 }
-
-
-
-

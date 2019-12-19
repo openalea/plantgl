@@ -1,35 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al.
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 #include "octree.h"
 #include "tile.h"
@@ -37,7 +45,6 @@
 #include "../base/discretizer.h"
 
 
-// #define OCTREE_FACE
 // #define CPL_DEBUG
 
 #include "../base/tesselator.h"
@@ -53,7 +60,6 @@
 #include <plantgl/math/util_math.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 using namespace std;
 
@@ -144,7 +150,7 @@ void Octree::build1()
 
     OctreeNode * node;
 
-    OctreeNode * Complex;
+    OctreeNode * _complex;
     queue<OctreeNode *> _myQueue;
     _myQueue.push(&__root);
     __root.getGeometry() = __scene;
@@ -156,16 +162,16 @@ void Octree::build1()
     t.start();
 
     while(!_myQueue.empty()){
-        Complex = _myQueue.front();
+        _complex = _myQueue.front();
 
-        if(Complex->getType() == Tile::Undetermined && Complex->getScale() < __maxscale){
-          if(Complex->decompose() !=NULL){
+        if(_complex->getType() == Tile::Undetermined && _complex->getScale() < __maxscale){
+          if(_complex->decompose() !=NULL){
             count+=800.0;
 
-            ScenePtr s(Complex->getGeometry());
+            ScenePtr s(_complex->getGeometry());
 
             for(unsigned char i = 0 ; i <  8 ; i++){
-                node = Complex->getComponent(i);
+                node = _complex->getComponent(i);
                 node->setComponents(0);
                 ScenePtr n(new Scene());
                 intersection.setVoxel(node);
@@ -216,7 +222,7 @@ void Octree::build1()
 void Octree::build3()
 /////////////////////////////////////////////////////////////////////////////
 {
-    /** A first implementation of the triangle based octree sorting */      
+    /** A first implementation of the triangle based octree sorting */
     Tesselator discretizer;
     BBoxComputer bboxcomputer(discretizer);
     VoxelIntersection intersection(bboxcomputer);
@@ -236,7 +242,7 @@ void Octree::build3()
 
     OctreeNode * node;
 
-    OctreeNode * Complex;
+    OctreeNode * _complex;
     queue<OctreeNode *> _myQueue;
     _myQueue.push(&__root);
     __root.getGeometry() = __scene;
@@ -248,16 +254,16 @@ void Octree::build3()
     t.start();
 
     while(!_myQueue.empty()){
-        Complex = _myQueue.front();
+        _complex = _myQueue.front();
 
-        if(Complex->getType() == Tile::Undetermined && Complex->getScale() < __maxscale){
-          if(Complex->decompose() !=NULL){
+        if(_complex->getType() == Tile::Undetermined && _complex->getScale() < __maxscale){
+          if(_complex->decompose() !=NULL){
             count+=800.0;
 
-            ScenePtr s(Complex->getGeometry());
+            ScenePtr s(_complex->getGeometry());
 
             for(unsigned char i = 0 ; i <  8 ; i++){
-                node = Complex->getComponent(i);
+                node = _complex->getComponent(i);
                 node->setComponents(0);
                 ScenePtr n(new Scene());
                 Scene::iterator _it;
@@ -273,7 +279,7 @@ void Octree::build3()
                       nb_triangles+= triangles->size();
                       TriangleSetPtr tri(new TriangleSet( ts->getPointList(),
                                                           triangles,
-														  ts->getNormalPerVertex(),
+                                                          ts->getNormalPerVertex(),
                                                           ts->getCCW(),
                                                           ts->getSolid(),
                                                           ts->getSkeleton()));
@@ -331,10 +337,10 @@ void Octree::build3()
 void Octree::build2()
 /////////////////////////////////////////////////////////////////////////////
 {
-    /** Implementation of the triangle based octree sorting 
+    /** Implementation of the triangle based octree sorting
         with max number of triangles per voxel condition used
-        and fast overestimating marking of intercepted voxel 
-        based on triangle bounding box */      
+        and fast overestimating marking of intercepted voxel
+        based on triangle bounding box */
     Tesselator discretizer;
 
     BBoxComputer bboxcomputer(discretizer);
@@ -357,7 +363,7 @@ void Octree::build2()
     __scene->applyGeometryOnly(discretizer);
 
     OctreeNode * node;
-    OctreeNode * Complex;
+    OctreeNode * _complex;
 
     queue<OctreeNode *> _myQueue;
 
@@ -370,15 +376,15 @@ void Octree::build2()
     while(!_myQueue.empty())
       {
       max_count2+= 8;
-      Complex = _myQueue.front();
+      _complex = _myQueue.front();
       _myQueue.pop();
 
-      if( Complex->getType() == Tile::Undetermined &&
-          Complex->getScale() < __maxscale )
+      if( _complex->getType() == Tile::Undetermined &&
+          _complex->getScale() < __maxscale )
         {
-        if( Complex->decompose() )
+        if( _complex->decompose() )
           {
-          ScenePtr s(Complex->getGeometry());
+          ScenePtr s(_complex->getGeometry());
           ScenePtr n[8];
           uint_t nb_triangles[8];
           double xm[8], ym[8], zm[8];
@@ -389,7 +395,7 @@ void Octree::build2()
             xm[i]= 0.; ym[i]= 0.; zm[i]= 0.;
             }
 
-          // on parcourt tous les triangles du noeud complex (pere)
+          // on parcourt tous les triangles du noeud _complex (pere)
           // on les repartit dans le fils adequat
           Scene::iterator _it;
           for( _it = s->begin(); _it!=s->end(); _it++ )
@@ -400,7 +406,7 @@ void Octree::build2()
 
               Index3ArrayPtr triangles[8];
               real_t _xm[8], _ym[8], _zm[8];
-              topDown(Complex, ts, triangles, _xm, _ym, _zm);
+              topDown(_complex, ts, triangles, _xm, _ym, _zm);
               for( i = 0 ; i <  8 ; i++ )
                 {
                 if( ! triangles[i]->empty() )
@@ -409,7 +415,7 @@ void Octree::build2()
                   xm[i]+= _xm[i]; ym[i]+= _ym[i]; zm[i]+= _zm[i];
                   TriangleSetPtr tri(new TriangleSet( ts->getPointList(),
                                                       triangles[i],
-													  ts->getNormalPerVertex(),
+                                                      ts->getNormalPerVertex(),
                                                       ts->getCCW(),
                                                       ts->getSolid(),
                                                       ts->getSkeleton()));
@@ -422,7 +428,7 @@ void Octree::build2()
 
           for( i = 0 ; i <  8 ; i++ )
             {
-            node = Complex->getComponent(i);
+            node = _complex->getComponent(i);
             if( ! nb_triangles[i] )
               node->getType() = Tile::Empty;
             else
@@ -738,8 +744,8 @@ bool Octree::intersect( const Ray& ray,
 }
 
 /////////////////////////////////////////////////////////////////////////////
-const OctreeNode* Octree::getLeafNode( const TOOLS(Vector3)& point,
-                                       const TOOLS(Vector3)& dir,
+const OctreeNode* Octree::getLeafNode( const Vector3& point,
+                                       const Vector3& dir,
                                        const OctreeNode* iComplex ) const
 /////////////////////////////////////////////////////////////////////////////
 {
@@ -766,7 +772,7 @@ bool Octree::contains(const Vector3& v) const
   return __root.intersect(v);
 }
 
-bool Octree::findFirstPoint(const Ray& ray, TOOLS(Vector3)& pt ) const
+bool Octree::findFirstPoint(const Ray& ray, Vector3& pt ) const
 {
     real_t tnear,tfar;
     if(!ray.intersect(BoundingBox(__root.getMinCoord(),__root.getMaxCoord()),tnear,tfar))return false;

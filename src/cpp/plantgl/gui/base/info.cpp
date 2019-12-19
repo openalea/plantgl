@@ -1,35 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr)
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 #include "info.h"
 
@@ -49,7 +57,7 @@
 #include <QtGui/qevent.h>
 
 #include <QtGlobal>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/qlayout.h>
     #include <QtWidgets/qlabel.h>
     #include <QtWidgets/qpushbutton.h>
@@ -78,7 +86,7 @@
 /* ----------------------------------------------------------------------- */
 
 #ifndef  GL_SHADING_LANGUAGE_VERSION_ARB
-#define  GL_SHADING_LANGUAGE_VERSION_ARB		0x8B8C
+#define  GL_SHADING_LANGUAGE_VERSION_ARB        0x8B8C
 #endif
 
 #ifdef _WIN32
@@ -98,7 +106,7 @@
 #if defined(__MINGW32__) || defined(__APPLE__)
 #else
 #include <GL/glx.h>
-#include <QtGui/QX11Info>
+#include <QX11Info>
 #endif
 #endif
 
@@ -438,12 +446,12 @@ static const char * wheel_logo[] = {
 "      %         "};
 
 #define TYPEITEMINFO(item, type) \
-	item->setText( 0, tr( #type ) );  \
+    item->setText( 0, tr( #type ) );  \
     item->setText( 1, QString::number(sizeof(type)*8 )+" bits" );  \
 
 #define TYPEITEM(item, itemfather, type) \
     item = new QTreeWidgetItem( itemfather , item); \
-	TYPEITEMINFO(item, type)
+    TYPEITEMINFO(item, type)
 
 
 /* ----------------------------------------------------------------------- */
@@ -452,9 +460,9 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
   : QDialog( parent, fl )
 {
 /* ----------------------------------------------------------------------- */
-	if(name)setObjectName(name);
+    if(name)setObjectName(name);
     QString qname = name;
-	setModal(modal);
+    setModal(modal);
     QPixmap image0( ( const char** ) info_logo );
     resize( 563, 503 );
     setWindowTitle( tr( "Technical Characteristics" ) );
@@ -483,7 +491,7 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
     font1.setPointSize( 15 );
     font1.setBold( true );
     Title->setFont( font1 );
-	Title->setText( (name ? qname : tr( "PlantGL Viewer" ) ) );
+    Title->setText( (name ? qname : tr( "PlantGL Viewer" ) ) );
 
     Icon = new QLabel( this );
     Icon->setGeometry( QRect( 10, 10, 60, 60 ) );
@@ -808,7 +816,7 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
 #if __cplusplus != 1
     item = new QTreeWidgetItem( item2bis, item );
     item->setText( 0, tr( "C++ Standard's Version" ) );
-	item->setText( 1, QString::number(__cplusplus) );
+    item->setText( 1, QString::number(__cplusplus) );
 #endif
 #endif
 
@@ -818,25 +826,25 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
     QTreeWidgetItem * item2tris1 = new QTreeWidgetItem( item2tris );
     item2tris1->setText( 0, tr( "Basic Types" ) );
     item = new QTreeWidgetItem( item2tris1);
-	TYPEITEMINFO(item,  char)
-	TYPEITEM(item, item2tris1, int)
-	TYPEITEM(item, item2tris1, short int)
-	TYPEITEM(item, item2tris1, long int)
-	TYPEITEM(item, item2tris1, float)
-	TYPEITEM(item, item2tris1, double)
-	TYPEITEM(item, item2tris1, size_t)
+    TYPEITEMINFO(item,  char)
+    TYPEITEM(item, item2tris1, int)
+    TYPEITEM(item, item2tris1, short int)
+    TYPEITEM(item, item2tris1, long int)
+    TYPEITEM(item, item2tris1, float)
+    TYPEITEM(item, item2tris1, double)
+    TYPEITEM(item, item2tris1, size_t)
 
     QTreeWidgetItem * item2tris2 = new QTreeWidgetItem( item2tris, item2tris1 );
     item2tris2->setText( 0, tr( "Custom Types" ) );
     item = new QTreeWidgetItem( item2tris2);
-	TYPEITEMINFO(item, uchar_t)
-	TYPEITEM(item, item2tris2, int16_t)
-	TYPEITEM(item, item2tris2, uint16_t)
-	TYPEITEM(item, item2tris2, int32_t)
-	TYPEITEM(item, item2tris2, uint32_t)
-	TYPEITEM(item, item2tris2, int_t)
-	TYPEITEM(item, item2tris2, uint_t)
-	TYPEITEM(item, item2tris2, real_t)
+    TYPEITEMINFO(item, uchar_t)
+    TYPEITEM(item, item2tris2, int16_t)
+    TYPEITEM(item, item2tris2, uint16_t)
+    TYPEITEM(item, item2tris2, int32_t)
+    TYPEITEM(item, item2tris2, uint32_t)
+    TYPEITEM(item, item2tris2, int_t)
+    TYPEITEM(item, item2tris2, uint_t)
+    TYPEITEM(item, item2tris2, real_t)
 
 /* ----------------------------------------------------------------------- */
 
@@ -1040,15 +1048,15 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
 
     QStringList ext = QString((char*)glGetString(GL_EXTENSIONS)).split ( ' ');
 
-	if(ext.contains("GL_ARB_shading_language_100")){
-		item = new QTreeWidgetItem( item5, item );
-		item->setText( 0, tr( "Shading Language" ) );
-		QString shading((char*)glGetString(GL_SHADING_LANGUAGE_VERSION_ARB));
-		if(glGetError() == GL_NO_ERROR)
-			item->setText( 1, shading );
-		else
-			item->setText( 1, "1.051" );
-	}
+    if(ext.contains("GL_ARB_shading_language_100")){
+        item = new QTreeWidgetItem( item5, item );
+        item->setText( 0, tr( "Shading Language" ) );
+        QString shading((char*)glGetString(GL_SHADING_LANGUAGE_VERSION_ARB));
+        if(glGetError() == GL_NO_ERROR)
+            item->setText( 1, shading );
+        else
+            item->setText( 1, "1.051" );
+    }
 
     QTreeWidgetItem * item5bis = new QTreeWidgetItem( item5, item );
     item5bis->setText( 0, tr( "Extension(s)" ) );
@@ -1127,7 +1135,7 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
 
     PROC f = wglGetProcAddress("wglGetExtensionsStringEXT");
     if(f != NULL){
-		typedef const char*(APIENTRY * glExtFunc)(void);
+        typedef const char*(APIENTRY * glExtFunc)(void);
         glExtFunc wglGetExtensionsString ;
         wglGetExtensionsString = (glExtFunc)f;
         if(wglGetExtensionsString != NULL){
@@ -1503,7 +1511,7 @@ QTreeWidgetItem* nextSibling(QTreeWidgetItem* item ){
 void
 ViewSysInfo::saveAsFile(const QString& file) const {
         QFile f(file);
-		if(f.open(QIODevice::WriteOnly)){
+        if(f.open(QIODevice::WriteOnly)){
                 QTextStream stream(&f);
                 QString indent;
                 QTreeWidgetItem* current = RootItem;

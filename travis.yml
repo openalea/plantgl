@@ -11,7 +11,7 @@ services:
 
 env:
  - CONDA_RECIPE=conda
-   CONDA_VERSION=2
+   CONDA_VERSION=3
 
 install:
   - git clone https://github.com/openalea/travis-ci.git

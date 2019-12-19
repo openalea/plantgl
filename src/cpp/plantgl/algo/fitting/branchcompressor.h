@@ -1,36 +1,44 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al.
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
- * 
- *                      GNU General Public Licence
- *           
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
+ *
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
-				
+
+
 /*! \file branchcompressor.h
     \brief An algorithm to compress geometry of lineic component.
 */
@@ -45,7 +53,7 @@
 #include "../algo_config.h"
 #include <plantgl/scenegraph/geometry/nurbscurve.h>
 #include <plantgl/scenegraph/appearance/appearance.h>
-#include <plantgl/scenegraph/container/pointarray.h> 
+#include <plantgl/scenegraph/container/pointarray.h>
 #include <plantgl/scenegraph/scene/scene.h>
 #include <vector>
 
@@ -62,27 +70,27 @@ struct ALGO_API BranchInput {
 class ALGO_API BranchCompressor {
 public :
     static Curve2DPtr DEFAULT_CROSS_SECTION;
-	BranchCompressor();
-	~BranchCompressor(){};
+    BranchCompressor();
+    ~BranchCompressor(){};
 
-	void setVerbose(bool b) { __verbose = b; }
-	void setData(const std::vector<BranchInput>&, int sorttype = 0);
-	void clear();
+    void setVerbose(bool b) { __verbose = b; }
+    void setData(const std::vector<BranchInput>&, int sorttype = 0);
+    void clear();
 
   ScenePtr
-	compress(real_t taux = 50,
-			 real_t * obtainedrate = NULL,
-			 real_t * computationtime = NULL, 
-			 real_t * fittime = NULL, 
-			 real_t ErreurBound = 1.0, 
-			 int degre = 3, 
-			 int option = 0);
+    compress(real_t taux = 50,
+             real_t * obtainedrate = NULL,
+             real_t * computationtime = NULL,
+             real_t * fittime = NULL,
+             real_t ErreurBound = 1.0,
+             int degre = 3,
+             int option = 0);
 
-	std::vector<BranchInput> sortByIncSize(const std::vector<BranchInput>&);
+    std::vector<BranchInput> sortByIncSize(const std::vector<BranchInput>&);
     std::vector<BranchInput> sortByDecSize(const std::vector<BranchInput>&);
-	std::vector<BranchInput> sortByIncOrder(const std::vector<BranchInput>&);
+    std::vector<BranchInput> sortByIncOrder(const std::vector<BranchInput>&);
     std::vector<BranchInput> sortByDecOrder(const std::vector<BranchInput>&);
-	ScenePtr inputScene() const;
+    ScenePtr inputScene() const;
 
 public :
   std::vector<BranchInput> __inputs;
@@ -93,34 +101,34 @@ private :
 
   void interConnection(ScenePtr& scene);
 
-  TOOLS(Vector3) connectionTo(const TOOLS(Vector3)& p, 
-					   const ScenePtr& scene,
-					   int fid);
-  TOOLS(Vector4) connectionTo(const TOOLS(Vector4)& p, 
-					   const ScenePtr& scene,
-					   int fid);
+  Vector3 connectionTo(const Vector3& p,
+                       const ScenePtr& scene,
+                       int fid);
+  Vector4 connectionTo(const Vector4& p,
+                       const ScenePtr& scene,
+                       int fid);
 
   void addScene(ScenePtr scene, int c_branch,LineicModelPtr axis) const;
   void addScene(ScenePtr scene, int c_branch,GeometryPtr geom) const;
   void addScene(ScenePtr scene, int c_branch,
-				const TOOLS(Vector3)& p1,const TOOLS(Vector3)& p2) const;
+                const Vector3& p1,const Vector3& p2) const;
 
-  void removeDouble(Point2ArrayPtr&,TOOLS(RealArrayPtr)&) const;
-  bool isDefault(TOOLS(RealArrayPtr)&) const;
+  void removeDouble(Point2ArrayPtr&,RealArrayPtr&) const;
+  bool isDefault(RealArrayPtr&) const;
 };
 
 /* ----------------------------------------------------------------------- */
 
-ALGO_API Point3ArrayPtr  
+ALGO_API Point3ArrayPtr
 discretizeWithCurvature(NurbsCurvePtr C,int NumberOfPoint);
 
-ALGO_API Point3ArrayPtr  
+ALGO_API Point3ArrayPtr
 compressPolyline(Point3ArrayPtr C,int NumberOfPoint);
 
 ALGO_API NurbsCurvePtr
-fitt(const Point3ArrayPtr&  MyVector, 
-	 int deg, int CPbegin, int nbPtCtrlMax, 
-	 real_t ErreurBound, int &  Nbloop, real_t & SommeEk);
+fitt(const Point3ArrayPtr&  MyVector,
+     int deg, int CPbegin, int nbPtCtrlMax,
+     real_t ErreurBound, int &  Nbloop, real_t & SommeEk);
 
 /* ----------------------------------------------------------------------- */
 

@@ -1,33 +1,44 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Plant Graphic Library
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR Cirad/Inria/Inra Dap - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
+
 
 
 #include <plantgl/scenegraph/scene/factory.h>
@@ -50,7 +61,7 @@ BOOST_INITIALIZE_WRAPPER_FIX_DECLARE(PySceneCodec)
 #include <boost/python/make_constructor.hpp>
 
 // PGL_USING_NAMESPACE
-// TOOLS_USING_NAMESPACE
+// PGL_USING_NAMESPACE
 
 // using namespace std;
 #define bp boost::python
@@ -66,22 +77,22 @@ DEF_POINTEE(SceneFactory)
 
 
 std::string get_scodec_name(SceneCodec * codec) {
-        return codec->getName(); 
+        return codec->getName();
 }
 
 
 class PySceneCodec : public SceneCodec, public bp::wrapper<SceneCodec>
 {
 public:
-    PySceneCodec(const std::string& name = "", Mode mode = None) : 
-     SceneCodec(name,mode), bp::wrapper<SceneCodec>() 
+    PySceneCodec(const std::string& name = "", Mode mode = Mode::Nothing) :
+     SceneCodec(name,mode), bp::wrapper<SceneCodec>()
       {  }
 
     virtual SceneFormatList formats() const
-    { 
+    {
         PythonInterpreterAcquirer py;
         try{
-            return bp::call<SceneFormatList>(this->get_override("formats").ptr()); 
+            return bp::call<SceneFormatList>(this->get_override("formats").ptr());
         }
         catch(bp::error_already_set) { PyErr_Print(); }
         return SceneFormatList();
@@ -89,12 +100,12 @@ public:
 
     bool default_test(const std::string& fname, Mode openingMode)
     {  return SceneCodec::test(fname,openingMode); }
-	virtual bool test(const std::string& fname, Mode openingMode)
+    virtual bool test(const std::string& fname, Mode openingMode)
     {
         PythonInterpreterAcquirer py;
         if (bp::override func = this->get_override("test")){
             try{
-                return bp::call<bool>(func.ptr(),bp::object(fname),bp::object(openingMode)); 
+                return bp::call<bool>(func.ptr(),bp::object(fname),bp::object(openingMode));
             }
             catch(bp::error_already_set) { PyErr_Print(); }
             return false;
@@ -102,15 +113,15 @@ public:
         return default_test(fname,openingMode);
     }
 
-	ScenePtr default_read(const std::string& fname) 
+    ScenePtr default_read(const std::string& fname)
     { return SceneCodec::read(fname); }
-	virtual ScenePtr read(const std::string& fname)
+    virtual ScenePtr read(const std::string& fname)
     {
         {
             PythonInterpreterAcquirer py;
             if (bp::override func = this->get_override("read")){
                 try{
-                    return bp::call<ScenePtr>(func.ptr(),bp::object(fname)); 
+                    return bp::call<ScenePtr>(func.ptr(),bp::object(fname));
                 }
                 catch(bp::error_already_set) { PyErr_Print(); }
                 return ScenePtr();
@@ -119,15 +130,15 @@ public:
         return default_read(fname);
     }
 
-	bool default_write(const std::string& fname,const ScenePtr&	scene) 
+    bool default_write(const std::string& fname,const ScenePtr& scene)
     { return SceneCodec::write(fname,scene); }
-	virtual bool write(const std::string& fname,const ScenePtr&	scene)
+    virtual bool write(const std::string& fname,const ScenePtr& scene)
     {
         {
             PythonInterpreterAcquirer py;
             if (bp::override func = this->get_override("write")){
                 try{
-                     boost::python::object res = bp::call<boost::python::object>(func.ptr(),bp::object(fname),bp::object(scene)); 
+                     boost::python::object res = bp::call<boost::python::object>(func.ptr(),bp::object(fname),bp::object(scene));
                      if (res == boost::python::object()) return true;
                      return boost::python::extract<bool>(res)();
                 }
@@ -146,7 +157,7 @@ DEF_POINTEE(PySceneCodec)
 BOOST_INITIALIZE_WRAPPER_FIX(PySceneCodec)
 
 bp::object scformat_get_suffixes(SceneFormat * sf){
-    return make_list(sf->suffixes)(); 
+    return make_list(sf->suffixes)();
 }
 
 void scformat_set_suffixes(SceneFormat * sf, bp::object suf){
@@ -178,11 +189,11 @@ SceneFormat * make_sformat(const std::string& name, bp::list suffixes, const std
 SceneFormatList * make_sformatlist(bp::list formats)
 { return new SceneFormatList(extract_vec<SceneFormat>(formats)()); }
 
-void pydel_scenecodec (PySceneCodec * c) { 
+void pydel_scenecodec (PySceneCodec * c) {
 #ifdef MAINTAIN_PYTHON_OBJECT_ID
-	boost::intrusive_ptr_clear_pyobject(c);
+    boost::intrusive_ptr_clear_pyobject(c);
 #endif
-	SceneFactory::get().unregisterCodec(PGL(SceneCodecPtr)(c));
+    SceneFactory::get().unregisterCodec(SceneCodecPtr(c));
 }
 
 
@@ -190,24 +201,24 @@ void pydel_scenecodec (PySceneCodec * c) {
 void export_SceneCodec()
 {
   bp::class_<SceneFormat>("SceneFormat", "A scene description format.", bp::no_init)
-      .def( "__init__", bp::make_constructor( make_sformat ) ) 
+      .def( "__init__", bp::make_constructor( make_sformat ) )
       .def_readwrite("name",&SceneFormat::name)
       .def_readwrite("comment",&SceneFormat::comment)
       .add_property("suffixes",&scformat_get_suffixes,&scformat_get_suffixes)
       .def("__repr__",&scformat_repr)
-      ;  
+      ;
 
   bp::class_<std::vector<SceneFormat> >("SceneFormatList", "A list of scene description format.")
-    .def( "__init__", bp::make_constructor( make_sformatlist ) ) 
+    .def( "__init__", bp::make_constructor( make_sformatlist ) )
     .def(bp::vector_indexing_suite<std::vector<SceneFormat> >())
     ;
   pgllist_from_list <std::vector<SceneFormat> >();
 
 
   bp::scope codec = bp::class_< PySceneCodec,PySceneCodecPtr,boost::noncopyable >("SceneCodec",
-	    "Coder/Decoder of a scene description.",
+        "Coder/Decoder of a scene description.",
         bp::init<bp::optional<const std::string&,SceneCodec::Mode> >("SceneCodec([name,mode])",bp::args("name","mode")))
-	.def("__del__",&pydel_scenecodec)
+    .def("__del__",&pydel_scenecodec)
     .def("formats",bp::pure_virtual(&SceneCodec::formats))
     .def("test", &SceneCodec::test,&PySceneCodec::default_test)
     .def("read", &SceneCodec::read,&PySceneCodec::default_read)
@@ -216,18 +227,18 @@ void export_SceneCodec()
     .add_property("mode",&SceneCodec::getMode,&SceneCodec::setMode)
     ;
 
-  bp::implicitly_convertible<PySceneCodecPtr, PGL(SceneCodecPtr)>();
+  bp::implicitly_convertible<PySceneCodecPtr, SceneCodecPtr>();
 
   bp::enum_<SceneCodec::Mode>("Mode"
 #if BOOST_VERSION >= 103500
-	  ,"Enum representing coding and decoding capabilities of a codec."
+      ,"Enum representing coding and decoding capabilities of a codec."
 #endif
-	  )
-      .value("No",SceneCodec::None)
+      )
+      .value("No",SceneCodec::Nothing)
       .value("Read",SceneCodec::Read)
       .value("Write",SceneCodec::Write)
       .value("ReadWrite",SceneCodec::ReadWrite)
-  	  .export_values()
+      .export_values()
       ;
 }
 
@@ -241,7 +252,7 @@ void export_SceneFactory()
 
   bp::class_<SceneFactory,SceneFactoryPtr, boost::noncopyable>("SceneFactory","A factory of Scene that register and use SceneCodec to read scene from files.",bp::no_init)
       .def("get", &SceneFactory::get,bp::return_value_policy<bp::reference_existing_object>())
-      .staticmethod("get") 
+      .staticmethod("get")
       .def("formats", &SceneFactory::formats)
       .def("formats", &sf_formats)
       .def("registerCodec", &SceneFactory::registerCodec)

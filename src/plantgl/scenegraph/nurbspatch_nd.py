@@ -1,4 +1,4 @@
-import _pglsg as sg
+from . import _pglsg as sg
 from openalea.plantgl.math import Vector4, Vector3
 
 class NurbsPatch3D:
@@ -53,23 +53,23 @@ class NurbsPatch3D:
         wspan = sg.NurbsCurve.findSpan(w,wdeg,self.wknots)
         Nw = sg.NurbsCurve.basisFunctions(wspan, w, wdeg, self.wknots)
         
-        tmp = [[None for i in xrange(vdeg+1)] for j in xrange(wdeg+1)]
-        for i in xrange(0,wdeg+1):
-            for j in xrange(0,vdeg+1):
+        tmp = [[None for i in range(vdeg+1)] for j in range(wdeg+1)]
+        for i in range(0,wdeg+1):
+            for j in range(0,vdeg+1):
                 tmpVec = Vector4(0,0,0,0)
-                for k in xrange(0,udeg+1):
+                for k in range(0,udeg+1):
                     tmpVec += self.points[uspan-udeg+k][vspan-vdeg+j][wspan-wdeg+i] * Nu[k]
                 tmp[i][j] = tmpVec
                 
-        tmp2 = [None for i in xrange(wdeg+1)]
-        for i in xrange(0,wdeg+1):
+        tmp2 = [None for i in range(wdeg+1)]
+        for i in range(0,wdeg+1):
             tmpVec = Vector4(0,0,0,0)
-            for j in xrange(0,vdeg+1):
+            for j in range(0,vdeg+1):
                 tmpVec += tmp[i][j] * Nv[j]
             tmp2[i] = tmpVec
         
         res = Vector4(0,0,0,0)
-        for i in xrange(0,wdeg+1):
+        for i in range(0,wdeg+1):
             res += tmp2[i] * Nw[i]
             
         if res.w != 0:
@@ -93,24 +93,24 @@ class NurbsPatch3D:
         wspan = sg.NurbsCurve.findSpan(w,wdeg,self.wknots)
         Nw = sg.NurbsCurve.derivatesBasisFunctions(1, w, wspan, wdeg, self.wknots)
         
-        tmp = [[None for i in xrange(vdeg+1)] for j in xrange(wdeg+1)]
-        for i in xrange(0,wdeg+1):
-            for j in xrange(0,vdeg+1):
+        tmp = [[None for i in range(vdeg+1)] for j in range(wdeg+1)]
+        for i in range(0,wdeg+1):
+            for j in range(0,vdeg+1):
                 tmpVec = Vector4(0,0,0,0)
-                for k in xrange(0,udeg+1):
+                for k in range(0,udeg+1):
                     tmpVec += self.points[uspan-udeg+k][vspan-vdeg+j][wspan-wdeg+i] * Nu[k]
                 tmp[i][j] = tmpVec
         
-        tmp2 = [None for i in xrange(self.wdegree+1)]
-        for i in xrange(0,wdeg+1):
+        tmp2 = [None for i in range(self.wdegree+1)]
+        for i in range(0,wdeg+1):
             tmpVec = Vector4(0,0,0,0)
-            for j in xrange(0,vdeg+1):
+            for j in range(0,vdeg+1):
                 tmpVec += tmp[i][j] * Nv[j]
             tmp2[i] = tmpVec
         
-        res = [Vector4() for i in xrange(2)]
-        for j in xrange(2):
-          for i in xrange(0,wdeg+1):
+        res = [Vector4() for i in range(2)]
+        for j in range(2):
+          for i in range(0,wdeg+1):
             res[j] += tmp2[i] * Nw[j,i]
         return res[1]
     def getWPatch(self,w):
@@ -118,11 +118,11 @@ class NurbsPatch3D:
         wspan = sg.NurbsCurve.findSpan(w,wdeg,self.wknots)
         Nw = sg.NurbsCurve.basisFunctions(wspan, w, wdeg, self.wknots)
        
-        tmp = [[None for j in xrange(self.vdim)] for i in xrange(self.udim)]
-        for i in xrange(0,self.udim):
-            for j in xrange(0,self.vdim):
+        tmp = [[None for j in range(self.vdim)] for i in range(self.udim)]
+        for i in range(0,self.udim):
+            for j in range(0,self.vdim):
                 tmpVec = Vector4(0,0,0,0)
-                for k in xrange(0,wdeg+1):
+                for k in range(0,wdeg+1):
                     tmpVec += self.points[i][j][wspan-wdeg+k] * Nw[k]
                 tmp[i][j] = tmpVec
         return sg.NurbsPatch(tmp,self.uknots,self.vknots,self.udegree,self.vdegree,self.ustride,self.vstride)
@@ -131,11 +131,11 @@ class NurbsPatch3D:
         uspan = sg.NurbsCurve.findSpan(u,udeg,self.uknots)        
         Nu = sg.NurbsCurve.basisFunctions(uspan, u, udeg, self.uknots)
        
-        tmp = [[None for j in xrange(self.wdim)] for i in xrange(self.vdim)]
-        for i in xrange(0,self.vdim):
-            for j in xrange(0,self.wdim):
+        tmp = [[None for j in range(self.wdim)] for i in range(self.vdim)]
+        for i in range(0,self.vdim):
+            for j in range(0,self.wdim):
                 tmpVec = Vector4(0,0,0,0)
-                for k in xrange(0,udeg+1):
+                for k in range(0,udeg+1):
                     tmpVec += self.points[uspan-udeg+k][i][j] * Nu[k]
                 tmp[i][j] = tmpVec
         return sg.NurbsPatch(tmp,self.vknots,self.wknots,self.vdegree,self.wdegree,self.vstride,self.wstride)
@@ -144,11 +144,11 @@ class NurbsPatch3D:
         vspan = sg.NurbsCurve.findSpan(v,vdeg,self.vknots)
         Nv = sg.NurbsCurve.basisFunctions(vspan, v, vdeg, self.vknots)
        
-        tmp = [[None for j in xrange(self.wdim)] for i in xrange(self.udim)]
-        for i in xrange(0,self.udim):
-            for j in xrange(0,self.wdim):
+        tmp = [[None for j in range(self.wdim)] for i in range(self.udim)]
+        for i in range(0,self.udim):
+            for j in range(0,self.wdim):
                 tmpVec = Vector4(0,0,0,0)
-                for k in xrange(0,vdeg+1):
+                for k in range(0,vdeg+1):
                     tmpVec += self.points[i][vspan-vdeg+k][j] * Nv[k]
                 tmp[i][j] = tmpVec
         return sg.NurbsPatch(tmp,self.uknots,self.wknots,self.udegree,self.wdegree,self.ustride,self.wstride)

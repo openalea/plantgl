@@ -23,8 +23,8 @@ def grid2D (shape) :
 		eid=t.add_wisp(2,ind)
 		positions[eid]=Vector3(xincr*i,yincr*j,0)
 	#murs verticaux
-	for j in xrange(NBJ) :
-		for i in xrange(NBI+1) :
+	for j in range(NBJ) :
+		for i in range(NBI+1) :
 			wid=t.add_wisp(1)
 			t.link(1,wid,point_grid.index( (i,j) ))
 			t.link(1,wid,point_grid.index( (i,j+1) ))
@@ -33,8 +33,8 @@ def grid2D (shape) :
 			if i>0 :
 				t.link(0,cell_grid.index( (i-1,j) ),wid)
 	#murs horizontaux
-	for i in xrange(NBI) :
-		for j in xrange(NBJ+1) :
+	for i in range(NBI) :
+		for j in range(NBJ+1) :
 			wid=t.add_wisp(1)
 			t.link(1,wid,point_grid.index( (i,j) ))
 			t.link(1,wid,point_grid.index( (i+1,j) ))
@@ -59,7 +59,7 @@ def grid3D (shape) :
 	yincr=1./NBJ
 	zincr=1./NBK
 	cell_grid=Grid( (NBI,NBJ,NBK) )
-	for ind in xrange(len(cell_grid)) :
+	for ind in range(len(cell_grid)) :
 		cid=t.add_wisp(0,ind)
 	point_grid=Grid( (NBI+1,NBJ+1,NBK+1) )
 	for ind in point_grid :
@@ -91,9 +91,9 @@ def grid3D (shape) :
 								Point(point_grid.index( (i,j,k+1) ))] ))
 		IJ[(i,j,k)]=eid
 	#murs
-	for k in xrange(NBK+1) :
-		for j in xrange(NBJ) :
-			for i in xrange(NBI) :
+	for k in range(NBK+1) :
+		for j in range(NBJ) :
+			for i in range(NBI) :
 				wid=t.add_wisp(1)
 				t.link(1,wid,IK[(i,j,k)])
 				t.link(1,wid,IK[(i+1,j,k)])
@@ -103,9 +103,9 @@ def grid3D (shape) :
 					t.link(0,cell_grid.index( (i,j,k) ),wid)
 				if k>0 :
 					t.link(0,cell_grid.index( (i,j,k-1) ),wid)
-	for k in xrange(NBK) :
-		for j in xrange(NBJ+1) :
-			for i in xrange(NBI) :
+	for k in range(NBK) :
+		for j in range(NBJ+1) :
+			for i in range(NBI) :
 				wid=t.add_wisp(1)
 				t.link(1,wid,IJ[(i,j,k)])
 				t.link(1,wid,IJ[(i+1,j,k)])
@@ -115,9 +115,9 @@ def grid3D (shape) :
 					t.link(0,cell_grid.index( (i,j,k) ),wid)
 				if j>0 :
 					t.link(0,cell_grid.index( (i,j-1,k) ),wid)
-	for k in xrange(NBK) :
-		for j in xrange(NBJ) :
-			for i in xrange(NBI+1) :
+	for k in range(NBK) :
+		for j in range(NBJ) :
+			for i in range(NBI+1) :
 				wid=t.add_wisp(1)
 				t.link(1,wid,IK[(i,j,k)])
 				t.link(1,wid,IK[(i,j,k+1)])

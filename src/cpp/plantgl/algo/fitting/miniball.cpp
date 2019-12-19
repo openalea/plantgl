@@ -36,23 +36,23 @@
    #include<cassert>
 #endif
 
-	#include "miniball.h"
+    #include "miniball.h"
 
    // Miniball
    // --------
-   
-   
+
+
    void Miniball::check_in (const Vector3& p)
    {
        L.push_back(p);
    }
-   
+
    void Miniball::check_in (const Point3ArrayPtr& p)
    {
        L.insert(L.end(),p->begin(),p->end());
    }
-   
-   
+
+
    void Miniball::build (bool pivoting)
    {
        B.reset();
@@ -62,9 +62,9 @@
        else
            mtf_mb (L.end());
    }
-   
-   
-   
+
+
+
    void Miniball::mtf_mb (It i)
    {
        support_end = L.begin();
@@ -80,17 +80,17 @@
            }
        }
    }
-   
-   
+
+
    void Miniball::move_to_front (It j)
    {
        if (support_end == j)
            support_end++;
        L.splice (L.begin(), L, j);
    }
-   
-   
-   
+
+
+
    void Miniball::pivot_mb (It i)
    {
        It t = ++L.begin();
@@ -110,17 +110,17 @@
            }
        } while ((max_e > 0) && (B.squared_radius() > old_sqr_r));
    }
-   
-   
-   
+
+
+
    double Miniball::max_excess (It t, It i, It& pivot) const
    {
        const Vector3 c = B.center();
-	   const double sqr_r = B.squared_radius();
+       const double sqr_r = B.squared_radius();
        double e, max_e = 0;
        for (It k=t; k!=i; ++k) {
            e = -sqr_r;
-		   e += normSquared(*k-c);
+           e += normSquared(*k-c);
            if (e > max_e) {
                max_e = e;
                pivot = k;
@@ -128,62 +128,62 @@
        }
        return max_e;
     }
-   
-   
-   
-   
+
+
+
+
    Vector3 Miniball::center () const
    {
        return Vector3(B.center());
    }
-   
-   
+
+
    double Miniball::squared_radius () const
    {
        return B.squared_radius();
    }
-   
-   
-   
+
+
+
    int Miniball::nr_points () const
    {
        return L.size();
    }
-   
-   
+
+
    Miniball::Cit Miniball::points_begin () const
    {
        return L.begin();
    }
-   
-   
+
+
    Miniball::Cit Miniball::points_end () const
    {
        return L.end();
    }
-   
-   
-   
+
+
+
    int Miniball::nr_support_points () const
    {
        return B.support_size();
    }
-   
-   
+
+
    Miniball::Cit Miniball::support_points_begin () const
    {
        return L.begin();
    }
-   
-   
+
+
    Miniball::Cit Miniball::support_points_end () const
    {
        return support_end;
    }
-   
-   
-   
-   
+
+
+
+
    double Miniball::accuracy (double& slack) const
    {
        double e, max_e = 0;
@@ -192,66 +192,66 @@
        for (i=L.begin(); i!=support_end; ++i,++n_supp)
            if ((e = abs (B.excess (*i))) > max_e)
                max_e = e;
-   
+
        // you've found a non-numerical problem if the following ever fails
        assert (n_supp == nr_support_points());
-   
+
        for (i=support_end; i!=L.end(); ++i)
           if ((e = B.excess (*i)) > max_e)
                max_e = e;
-   
+
        slack = B.slack();
        return (max_e/squared_radius());
    }
-   
-   
-   
+
+
+
    bool Miniball::is_valid (double tolerance) const
    {
        double slack;
        return ( (accuracy (slack) < tolerance) && (slack == 0) );
    }
-   
-   
+
+
 
    // Basis
    // -----
-   
-   
+
+
    const Vector3& Basis::center () const
    {
        return *current_c;
    }
-   
-   
+
+
    double Basis::squared_radius() const
    {
        return current_sqr_r;
    }
-   
-   
+
+
    int Basis::size() const
    {
        return m;
    }
-   
-   
+
+
    int Basis::support_size() const
    {
        return s;
    }
-   
-   
+
+
    double Basis::excess (const Vector3& p) const
    {
        double e = -current_sqr_r;
        e += normSquared(p-*current_c);
        return e;
    }
-   
-   
-   
-   
+
+
+
+
    void Basis::reset ()
    {
        m = s = 0;
@@ -261,36 +261,36 @@
        current_c = &c[0];
        current_sqr_r = -1;
    }
-   
-   
-   
+
+
+
    Basis::Basis ()
    {
        reset();
    }
-   
-   
-   
+
+
+
    void Basis::pop ()
    {
        --m;
    }
-   
-   
-   
+
+
+
    bool Basis::push (const Vector3& p)
    {
        int i, j;
        double eps = 1e-32;
        if (m==0) {
-		   q0 = p;
+           q0 = p;
            c[0] = q0;
            sqr_r[0] = 0;
-       } 
-	   else {
+       }
+       else {
           // set v_m to Q_m
           v[m] = p-q0;
-   
+
           // compute the a_{m,i}, i< m
           for (i=1; i<m; ++i) {
                a[m].getAt(i) = 0;
@@ -298,28 +298,28 @@
                    a[m].getAt(i) += v[i].getAt(j) * v[m].getAt(j);
                a[m].getAt(i)*=(2/z[i]);
           }
-   
+
           // update v_m to Q_m-\bar{Q}_m
           for (i=1; i<m; ++i) {
                for (j=0; j<3; ++j)
                    v[m].getAt(j) -= a[m].getAt(i)*v[i].getAt(j);
           }
-   
+
           // compute z_m
           z[m]=0;
           z[m]+= normSquared(v[m]);
           z[m]*=2;
-   
+
           // reject push if z_m too small
           if (z[m]<eps*current_sqr_r) {
                return false;
           }
-   
+
           // update c, sqr_r
           double e = -sqr_r[m-1];
           e += normSquared(p-c[m-1]);
           f[m]=e/z[m];
-   
+
           c[m] = c[m-1]+v[m]*f[m];
           sqr_r[m] = sqr_r[m-1] + e*f[m]/2;
        }
@@ -328,10 +328,10 @@
        s = ++m;
        return true;
    }
-   
-   
-   
-   
+
+
+
+
    double Basis::slack () const
    {
        double l[4], min_l=0;
@@ -346,6 +346,6 @@
        if (l[0] < min_l) min_l = l[0];
        return ( (min_l < 0) ? -min_l : 0);
    }
-   
-   
+
+
 

@@ -1,33 +1,44 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Plant Graphic Library
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2003 UMR Cirad/Inria/Inra Dap - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
+
 
 #ifndef __export_matrix_h__
 #define __export_matrix_h__
@@ -39,18 +50,18 @@
 using namespace boost::python;
 
 template<class Matrix>
-real_t matrix_getElt( const Matrix & m, boost::python::tuple t ) 
-{ 
-  if( PyObject_Size(t.ptr()) != 2 ) throw PythonExc_ValueError(); 
-  return m(boost::python::extract<uchar_t>(t[0]),boost::python::extract<uchar_t>(t[1])); 
-} 
+real_t matrix_getElt( const Matrix & m, boost::python::tuple t )
+{
+  if( PyObject_Size(t.ptr()) != 2 ) throw PythonExc_ValueError();
+  return m(boost::python::extract<uchar_t>(t[0]),boost::python::extract<uchar_t>(t[1]));
+}
 
 template<class Matrix>
-void matrix_setElt( Matrix & m, boost::python::tuple t, real_t v ) 
-{ 
-  if( PyObject_Size(t.ptr()) != 2 ) throw PythonExc_ValueError(); 
-  m(boost::python::extract<uchar_t>(t[0]),boost::python::extract<uchar_t>(t[1])) = v ; 
-} 
+void matrix_setElt( Matrix & m, boost::python::tuple t, real_t v )
+{
+  if( PyObject_Size(t.ptr()) != 2 ) throw PythonExc_ValueError();
+  m(boost::python::extract<uchar_t>(t[0]),boost::python::extract<uchar_t>(t[1])) = v ;
+}
 
 template<class Matrix>
 Matrix matrix_adjoint(const Matrix& mat) { return adjoint(mat); }
@@ -68,9 +79,9 @@ template<class Matrix>
 real_t matrix_trace(const Matrix& mat) { return trace(mat); }
 
 template<class Matrix,int size>
-boost::python::list 
-matrix_data(const Matrix& mat) 
-{ 
+boost::python::list
+matrix_data(const Matrix& mat)
+{
     boost::python::list l;
     for (const real_t * it = mat.getData() ; it != mat.getData()+size; ++it)
         l.append(*it);
@@ -84,7 +95,7 @@ class vector_matrix_func : public boost::python::def_visitor<vector_matrix_func<
 
     template <class classT>
     void visit(classT& c) const
-    {          
+    {
         c.def( self == self )
          .def( self != self )
          .def( self += self )

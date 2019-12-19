@@ -3,31 +3,41 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon et al.
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 
 /*! \file scne_scene.h
@@ -58,9 +68,9 @@ PGL_BEGIN_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 struct SG_API SceneFormat {
-	std::string name;
-	std::vector<std::string> suffixes;
-	std::string comment;
+    std::string name;
+    std::vector<std::string> suffixes;
+    std::string comment;
     bool operator==(const SceneFormat& sf) const
     { return name == sf.name && suffixes == sf.suffixes && comment == comment; }
 };
@@ -69,27 +79,27 @@ typedef std::vector<SceneFormat> SceneFormatList;
 
 class SceneFactory;
 
-class SG_API SceneCodec : public TOOLS(RefCountObject){
+class SG_API SceneCodec : public RefCountObject{
 public :
-	friend class SceneFactory;
+    friend class SceneFactory;
 
-	enum Mode {
-		None      = 0,
-		Read  = 1,
-		Write = 2,
-		ReadWrite = 3,
-	};
+    enum Mode {
+        Nothing = 0,
+        Read  = 1,
+        Write = 2,
+        ReadWrite = 3,
+    };
 
-	SceneCodec(const std::string& name, Mode mode = None);
-	virtual ~SceneCodec();
+    SceneCodec(const std::string& name, Mode mode = Nothing);
+    virtual ~SceneCodec();
 
-	virtual SceneFormatList formats() const = 0;
+    virtual SceneFormatList formats() const = 0;
 
-	virtual bool test(const std::string& fname, Mode openingMode);
+    virtual bool test(const std::string& fname, Mode openingMode);
 
-	virtual ScenePtr read(const std::string& fname) { return ScenePtr(); }
+    virtual ScenePtr read(const std::string& fname) { return ScenePtr(); }
 
-	virtual bool write(const std::string& fname,const ScenePtr&	scene) { return false; }
+    virtual bool write(const std::string& fname,const ScenePtr& scene) { return false; }
 
     void setName(const std::string& name) { __name = name; }
     const std::string& getName() const { return __name; }
@@ -97,56 +107,56 @@ public :
     void setMode(Mode mode) { __mode = mode; }
     Mode getMode() const { return __mode; }
 protected:
-	std::string __name;
-	Mode __mode;
+    std::string __name;
+    Mode __mode;
 };
 
 typedef RCPtr<SceneCodec> SceneCodecPtr;
 
 typedef RCPtr<SceneFactory> SceneFactoryPtr;
 
-class SG_API SceneFactory : public TOOLS(RefCountObject)
+class SG_API SceneFactory : public RefCountObject
 {
 
 public:
-	typedef std::vector<SceneCodecPtr> CodecList;
+    typedef std::vector<SceneCodecPtr> CodecList;
 
-	~SceneFactory();
-	static SceneFactory& get();
-	static void finalize();
+    ~SceneFactory();
+    static SceneFactory& get();
+    static void finalize();
 
-	SceneFormatList formats( SceneCodec::Mode openingMode = SceneCodec::None ) const;
+    SceneFormatList formats( SceneCodec::Mode openingMode = SceneCodec::Mode::Nothing ) const;
 
     bool isReadable(const std::string& fname);
     bool isWritable(const std::string& fname);
 
     ScenePtr read(const std::string& fname);
-	bool write(const std::string& fname,const ScenePtr&	scene);
+    bool write(const std::string& fname,const ScenePtr& scene);
 
-	ScenePtr read(const std::string& fname, const std::string& codecname);
-	bool write(const std::string& fname,const ScenePtr&	scene, const std::string& codecname);
+    ScenePtr read(const std::string& fname, const std::string& codecname);
+    bool write(const std::string& fname,const ScenePtr& scene, const std::string& codecname);
 
-	void registerCodec(const SceneCodecPtr& codec);
-	void unregisterCodec(const SceneCodecPtr& codec);
+    void registerCodec(const SceneCodecPtr& codec);
+    void unregisterCodec(const SceneCodecPtr& codec);
 
-	bool installLib(const std::string& libname);
-	bool installDefaultLib();
-	void clear();
+    bool installLib(const std::string& libname);
+    bool installDefaultLib();
+    void clear();
 
     typedef CodecList::const_iterator const_iterator;
     const_iterator begin() const { return __codecs.begin(); }
     const_iterator end() const { return __codecs.end(); }
 protected:
 
-	SceneFactory();
-	SceneFactory& operator=(const SceneFactory&);
+    SceneFactory();
+    SceneFactory& operator=(const SceneFactory&);
 
-	SceneCodecPtr findCodec(const std::string& codecname);
+    SceneCodecPtr findCodec(const std::string& codecname);
 
-	CodecList __codecs;
+    CodecList __codecs;
 
 private:
-	static SceneFactoryPtr __factory;
+    static SceneFactoryPtr __factory;
 };
 
 
