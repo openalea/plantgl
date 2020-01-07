@@ -429,23 +429,6 @@ Point4MatrixPtr  NurbsPatch::deriveAtH(real_t u, real_t v, int d, int uspan, int
     RealArray2Ptr UderF = derivatesBasisFunctions(du,u,uspan,__udegree,__uKnotList);
     RealArray2Ptr VderF = derivatesBasisFunctions(dv,v,vspan,__vdegree,__vKnotList);
 
-/*
-    printf("very slow initialization\n");
-    for(int k=__udegree;k<=d;++k){
-        for(int j=0;j<=d-k;++j){
-            //cout<<"set patchders"<<k<<j<<d<<endl;
-            patchders->setAt(k,j, Vector4::ORIGIN) ;
-        }
-    }
-    for(int j=__vdegree;j>=d;++j){
-        for(int k=0;k<=d-j;++k){
-            //cout<<"set patchders"<<k<<j<<endl;
-            patchders->setAt(k,j, Vector4::ORIGIN) ;
-        }
-    }
-    printf("end of very slow initialization\n");
-    */
-
     for(int k=0;k<=du;++k){
         for(int s=0;s<=__vdegree;++s){
             for(int r=0;r<=__udegree;++r){
@@ -494,7 +477,7 @@ Point4MatrixPtr NurbsPatch::deriveAt(real_t  u, real_t  v, int d, int uspan, int
                 vec -= patchders->getAt(k,l-i)*Bin.getAt(l,i)*dersW->getAt(0,i).w() ;
 
             for (int j = 1 ; j <= k ; j++){
-                vec += patchders->getAt(k-j,l)*Bin.getAt(k,j)*dersW->getAt(j,0).w() ;
+                vec -= patchders->getAt(k-j,l)*Bin.getAt(k,j)*dersW->getAt(j,0).w() ;
                 Vector4 v2 = Vector4(0,0,0,0) ;
                 for (int  i = 1 ; i <= l ; i++ )
                     v2 += patchders->getAt(k-j,l-i)*Bin.getAt(l,i)*dersW->getAt(j,i).w() ;
