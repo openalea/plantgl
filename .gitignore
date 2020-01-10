@@ -78,3 +78,7 @@ target/
 # Doxygen Files
 doc/doxygen
 src/cpp/plantgl/doxygenFile
+
+.qglviewer.xml
+_pgl*.dylib
+.ipynb_checkpoints

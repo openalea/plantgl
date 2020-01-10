@@ -123,12 +123,13 @@ ScenePtr AscCodec::read(const std::string &fname) {
       pts->push_back(Vector3(x, y, z));
       if (values.size() > 3) {
         int r, g, b;
-        if (!isptsfile && !istxtfile) {
+        if (!isptsfile && !istxtfile && (values.size() > 5)) {
           std::stringstream(values.at(3)) >> r;
           std::stringstream(values.at(4)) >> g;
           std::stringstream(values.at(5)) >> b;
           col->push_back(Color4(r, g, b, 0));
-        } else {
+        } else if (values.size() > 6) {
+
           std::stringstream(values.at(4)) >> r;
           std::stringstream(values.at(5)) >> g;
           std::stringstream(values.at(6)) >> b;

@@ -21,7 +21,7 @@ class MaterialPanelView (QGLWidget):
         self.lightcheck = [0.9,0.9,0.9]
         self.checklist = None
         self.selectedBorderList = None
-        self.turtle = None # PglTurtle()
+        self.turtle = PglTurtle()
         self.mousepos = None
         self.initpos = None
         self.menuselection = None        
