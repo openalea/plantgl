@@ -82,7 +82,7 @@ PGL_USING_NAMESPACE
 // #define PGL_OLD_MIPMAP_STYLE
 
 #ifdef GEOM_TREECALLDEBUG
-#define GEOM_ASSERT_OBJ(obj) printf("Look at %sobject %zu of type '%s' in mode %i\n", (!obj->unique()?"shared ":""),obj->getId(), typeid(*obj).name(), __compil);
+#define GEOM_ASSERT_OBJ(obj) printf("Look at %sobject %zu of type '%s' in mode %i\n", (!obj->unique()?"shared ":""),obj->getObjectId(), typeid(*obj).name(), __compil);
 #else
 #define GEOM_ASSERT_OBJ(obj)
 #endif
@@ -107,7 +107,7 @@ PGL_USING_NAMESPACE
 #define GEOM_GLRENDERER_PRECOMPILE_BEG(geom) \
     if (__compil == ePreCompileMode) { \
         if (!geom->unique()) { \
-            Cache<GLuint>::Iterator _it = __cache.find((uint_t)geom->getId()); \
+            Cache<GLuint>::Iterator _it = __cache.find((uint_t)geom->getObjectId()); \
             if (_it != __cache.end()) return true; \
             ++__precompildepth; \
         } \
@@ -142,14 +142,14 @@ PGL_USING_NAMESPACE
   GLuint _displaylist = 0; \
   if (!geom->unique()) { \
         if (__compil == 0) { \
-            if (check(geom->getId(),_displaylist)) return true; \
+            if (check(geom->getObjectId(),_displaylist)) return true; \
         }  \
-        else if (call(geom->getId()))return true; \
+        else if (call(geom->getObjectId()))return true; \
   } \
 
 
 #define GEOM_GLRENDERER_UPDATE_CACHE(geom) \
-  if (__compil == 0 && !geom->unique()) update(geom->getId(),_displaylist); \
+  if (__compil == 0 && !geom->unique()) update(geom->getObjectId(),_displaylist); \
 
 #define GEOM_GLRENDERER_CHECK_APPEARANCE(app) \
   if (__appearance.get() == app) return true;
@@ -370,20 +370,20 @@ void GLRenderer::update(size_t id, GLuint displaylist) {
 }
 
 void GLRenderer::registerTexture(ImageTexture *texture, GLuint id, bool erasePreviousIfExists) {
-  Cache<GLuint>::Iterator it = __cachetexture.find(texture->getId());
+  Cache<GLuint>::Iterator it = __cachetexture.find(texture->getObjectId());
   if (it != __cachetexture.end()) {
     GLuint oldid = it->second;
     if (erasePreviousIfExists)glDeleteTextures(1, &(it->second));
     it->second = id;
   }
   else {
-    __cachetexture.insert(texture->getId(), id);
+    __cachetexture.insert(texture->getObjectId(), id);
   }
 }
 
 
 GLuint GLRenderer::getTextureId(ImageTexture *texture) {
-  Cache<GLuint>::Iterator it = __cachetexture.find(texture->getId());
+  Cache<GLuint>::Iterator it = __cachetexture.find(texture->getObjectId());
   if (it != __cachetexture.end()) return it->second;
   else return 0;
 }
@@ -552,7 +552,7 @@ bool GLRenderer::processGeometry(Shape *geomshape) {
       glPushName(GLuint(geomshape->getId()));
     }
     else if ((__selectMode & SceneObjectId) == SceneObjectId) {
-      glPushName(GLuint(geomshape->SceneObject::getId()));
+      glPushName(GLuint(geomshape->getObjectId()));
     }
   }
 
@@ -562,7 +562,7 @@ bool GLRenderer::processGeometry(Shape *geomshape) {
 
 /*  GLuint _displayList = 0;
   if (__compil == 1) {
-    if (check(Shape->SceneObject::getId(),_displayList)) {
+    if (check(Shape->getObjectId(),_displayList)) {
       if (__Mode == Selection)glPopName();
       return true;
     }
@@ -575,13 +575,13 @@ bool GLRenderer::processGeometry(Shape *geomshape) {
 
   geomshape->geometry->apply(*this);
 
-  //update(Shape->SceneObject::getId(),_displayList);
+  //update(Shape->getObjectId(),_displayList);
   if (__Mode == Selection && (__selectMode != PrimitiveId)) glPopName();
   return true;
 /*  }
   }
   else {
-    if (!call(Shape->SceneObject::getId()))Shape->geometry->apply(*this);
+    if (!call(Shape->getObjectId()))Shape->geometry->apply(*this);
     if (__Mode == Selection)glPopName();
     return true;
   }*/
@@ -593,7 +593,7 @@ bool GLRenderer::process(Inline *geomInline) {
   GEOM_ASSERT_OBJ(geomInline);
   if (geomInline->getScene()) {
     if (__Mode == Selection) {
-      glPushName(GLuint(geomInline->getId()));
+      glPushName(GLuint(geomInline->getObjectId()));
     }
     if (!geomInline->isTranslationToDefault() || !geomInline->isScaleToDefault()) {
       glPushMatrix();
@@ -966,7 +966,7 @@ bool GLRenderer::process(Group * group) {
   for (GeometryArray::const_iterator it = group->getGeometryList()->begin();
       it != group->getGeometryList()->end(); ++it) {
 #ifdef GEOM_TREECALLDEBUG
-      printf("Look at child of group %zu in mode %i\n", group->getId(),  __compil);
+      printf("Look at child of group %zu in mode %i\n", group->getObjectId(),  __compil);
 #endif
       GEOM_GLRENDERER_PRECOMPILE_SUB((*it));
   }
@@ -1070,7 +1070,7 @@ bool GLRenderer::process(ImageTexture * texture) {
   GEOM_ASSERT_OBJ(texture);
 
 
-  Cache<GLuint>::Iterator it = __cachetexture.find(texture->getId());
+  Cache<GLuint>::Iterator it = __cachetexture.find(texture->getObjectId());
   if (it != __cachetexture.end()) {
     //  printf("bind texture : %i\n", it->second);
     glEnable(GL_TEXTURE_2D);
@@ -1133,7 +1133,7 @@ bool GLRenderer::process(ImageTexture * texture) {
         }
         // printf("gen texture : %i\n",id);
         // registerTexture(texture,id);
-        __cachetexture.insert(texture->getId(), id);
+        __cachetexture.insert(texture->getObjectId(), id);
       }
     }
 #endif

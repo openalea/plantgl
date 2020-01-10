@@ -68,7 +68,7 @@ PGL_USING_NAMESPACE
 #else
 
 #define GEOM_VOLCOMPUTER_CHECK_CACHE(geom) \
-  Cache<real_t>::Iterator _it = __cache.find(geom->getId()); \
+  Cache<real_t>::Iterator _it = __cache.find(geom->getObjectId()); \
   if (! (_it == __cache.end())) { \
     __result = _it->second; \
     return true; \
@@ -76,7 +76,7 @@ PGL_USING_NAMESPACE
 
 
 #define GEOM_VOLCOMPUTER_UPDATE_CACHE(geom) \
-  __cache.insert(geom->getId(),__result);
+  __cache.insert(geom->getObjectId(),__result);
 
 
 #endif

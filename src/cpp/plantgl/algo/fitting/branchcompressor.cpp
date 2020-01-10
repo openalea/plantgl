@@ -996,12 +996,12 @@ BranchCompressor::interConnection(ScenePtr& scene){
   int father = 0;
   Vector3 origin;
   for(Scene::iterator _it = scene->begin(); _it != scene->end(); _it++){
-    id = (*_it)->getId();
+    id = (*_it)->getObjectId();
     father = graph[id];
-    while(father > 0 && !(scene->getShapeId(father)))
+    while(father > 0 && !(scene->findSceneObjectId(father)))
           father = graph[father];
     if(father > 0){
-      ShapePtr sh = dynamic_pointer_cast<Shape>(scene->getShapeId(id));
+      ShapePtr sh = dynamic_pointer_cast<Shape>(scene->findSceneObjectId(id));
       if(sh){
         ExtrusionPtr ex = dynamic_pointer_cast<Extrusion>(sh->getGeometry());
         if(ex){
@@ -1081,7 +1081,7 @@ BranchCompressor::connectionTo(const Vector3& p,
   if(fid <= 0 || !scene){
     return p;
   }
-  ShapePtr sh = dynamic_pointer_cast<Shape>(scene->getShapeId(fid));
+  ShapePtr sh = dynamic_pointer_cast<Shape>(scene->findShapeId(fid));
   if(!sh) {
     return p;
   }

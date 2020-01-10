@@ -54,8 +54,8 @@ using namespace boost::python;
 
 /* ----------------------------------------------------------------------- */
 
-PyStrPrinter::~PyStrPrinter()   {}
-PyFilePrinter::~PyFilePrinter() {}
+PyStrPrinter::~PyStrPrinter()   { _mystream << std::endl;  }
+PyFilePrinter::~PyFilePrinter() { _mystream << std::endl; _mystream.close(); }
 
 /* ----------------------------------------------------------------------- */
 
@@ -103,6 +103,7 @@ void export_PglPrinter()
     .def("clear",&Printer::clear)
     .def("incrementIndentation",&Printer::addIndent)
     .def("isPrinted",&Printer::isPrinted)
+    .def("flush",&Printer::flush)
     .def("header",&print_header0)
     .def("header",&print_header)
     ;

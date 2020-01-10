@@ -333,9 +333,12 @@ ViewGeomSceneGL::addProperties(QTabWidget * tab)
       TextLabel2->setGeometry( QRect( 178, 20, 190, 30 ) );
       SelectionCache::const_iterator _it = __selectedShapes.begin();
 
-      QString listid = QString::number(get_item_value(_it)->getId()==Shape::NOID?get_item_key(_it):get_item_value(_it)->getId());
-      for(_it++;_it != __selectedShapes.end();_it++)
-            listid += ','+QString::number(get_item_value(_it)->getId()==Shape::NOID?get_item_key(_it):get_item_value(_it)->getId());
+      uint_t sid = dynamic_pointer_cast<Shape>(get_item_value(_it))->getId();
+      QString listid = QString::number(sid==Shape::NOID?get_item_key(_it):sid);
+      for(_it++;_it != __selectedShapes.end();_it++) {
+            uint_t sid = dynamic_pointer_cast<Shape>(get_item_value(_it))->getId();
+            listid += ','+QString::number(sid==Shape::NOID?get_item_key(_it):sid);
+      }
 
       TextLabel2->setText( listid );
 

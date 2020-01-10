@@ -42,10 +42,11 @@
 #ifndef __extract_list_h__
 #define __extract_list_h__
 
-#include <boost/python.hpp>
 #include <vector>
 #include <map>
+#include "boost_python.h"
 #include "exception.h"
+#include "pyseq_iterator.h"
 
 /* ----------------------------------------------------------------------- */
 
@@ -64,32 +65,12 @@ struct extract_vec {
         result_type result;
         if (pylist.ptr() == Py_None) return result;
 
-#ifdef PYTHON_EXTRACT_WITH_EXCEPTION
-        boost::python::object iter_obj = boost::python::object( boost::python::handle<PyObject>( PyObject_GetIter( pylist.ptr() ) ) );
-        while( true )
-          {
-            boost::python::object obj;
-            try {  obj = iter_obj.attr( "next" )(); }
-            catch( boost::python::error_already_set ){ PyErr_Clear(); break; }
-            element_type val = extractor_type( obj )();
-            result.push_back( val );
-          }
-
-#else
-        PyObject *seq = PyObject_GetIter(pylist.ptr());
-
-        if(!seq)
-            return result;
-
-        PyObject *item;
-        while( (item=PyIter_Next(seq))) {
-            element_type val = extractor_type( item )();
+        PySeqIterator iter_obj ( pylist );
+        while(iter_obj.is_valid()){
+            element_type val = extractor_type( iter_obj.next() )();
             result.push_back( val );
 
-            Py_DECREF(item);
         }
-        Py_DECREF(seq);        
-#endif
 
         return result;
     }
@@ -118,34 +99,15 @@ struct extract_vec_pair {
         result_type result;
         if (pylist.ptr() == Py_None) return result;
 
-#ifdef PYTHON_EXTRACT_WITH_EXCEPTION
-        boost::python::object iter_obj = boost::python::object( boost::python::handle<PyObject>( PyObject_GetIter( pylist.ptr() ) ) );
-        while( true )
-          {
-            boost::python::object obj;
-            try {  obj = iter_obj.attr( "next" )(); }
-            catch( boost::python::error_already_set ){ PyErr_Clear(); break; }
+        PySeqIterator iter_obj ( pylist );
+        while(iter_obj.is_valid()){
+            boost::python::object obj = iter_obj.next() ;
             element_type0 val0 = extractor_type0( obj[0] )();
             element_type1 val1 = extractor_type1( obj[1] )();
             result.push_back( std::pair<element_type0,element_type1>(val0,val1) );
-          }
-#else
-       PyObject *seq = PyObject_GetIter(pylist.ptr());
 
-        if(!seq)
-            return result;
-
-        PyObject *item;
-        while( (item=PyIter_Next(seq)) )  {
-            if ( PyTuple_Check(item) ) {
-                element_type0 val0 = extractor_type0( PyTuple_GetItem(item, 0) )();
-                element_type1 val1 = extractor_type1( PyTuple_GetItem(item, 1) )();
-                result.push_back( std::pair<element_type0,element_type1>(val0,val1) );
-            }
-            Py_DECREF(item);
         }
-        Py_DECREF(seq);
-#endif
+
         return result;
     }
 
@@ -203,12 +165,10 @@ struct extract_dict {
 
     result_type extract() const {
         result_type result;
-        boost::python::object iter_obj =  pydict.iteritems();
-        while( true )
-        {
-            boost::python::object obj;
-            try {  obj = iter_obj.attr( "next" )(); }
-            catch( boost::python::error_already_set ){ PyErr_Clear(); break; }
+
+        PySeqIterator iter_obj(pydict.iteritems(), true);
+        while(iter_obj.is_valid()){
+            boost::python::object obj = iter_obj.next();
             key_type k = key_extractor_type( obj[0] );
             value_type v = value_extractor_type( obj[1] );
             result[k] = v ;

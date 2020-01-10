@@ -71,7 +71,7 @@ using namespace std;
 
 
 #define GEOM_POVPRINT_DECLARE(stream,obj) \
-  if (! __cache.insert(obj->getId()).second) return true; \
+  if (! __cache.insert(obj->getObjectId()).second) return true; \
   stream << __indent << "#declare " << obj->getName() << " = ";
 
 
@@ -86,7 +86,7 @@ using namespace std;
 
 #define GEOM_POVPRINT_BEGIN(stream,type,obj) \
     if (obj->isNamed()){ \
-      if(!(__cache.insert(obj->getId()).second)){ \
+      if(!(__cache.insert(obj->getObjectId()).second)){ \
         GEOM_POVPRINT_BEG_(stream,"object"); \
         stream << __indent << obj->getName() << endl; \
         GEOM_POVPRINT_TEXTURE_REF; \
@@ -114,7 +114,7 @@ using namespace std;
 
 #define GEOM_POVPRINT_BEGIN_DIS(stream,obj) \
     if (obj->isNamed()){ \
-      if(!(__cache.insert(obj->getId()).second)){ \
+      if(!(__cache.insert(obj->getObjectId()).second)){ \
         GEOM_POVPRINT_BEG_(stream,"object"); \
         stream << __indent << obj->getName() << endl; \
         GEOM_POVPRINT_TEXTURE_REF;  \

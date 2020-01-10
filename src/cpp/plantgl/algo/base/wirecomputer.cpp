@@ -62,7 +62,7 @@ PGL_USING_NAMESPACE
 
 #define GEOM_WireComputer_CHECK_CACHE(geom) \
   if (!geom->unique()) { \
-    Cache<GeometryPtr>::Iterator _it = __cache.find(geom->getId()); \
+    Cache<GeometryPtr>::Iterator _it = __cache.find(geom->getObjectId()); \
     if (! (_it == __cache.end())) { \
        __wire = GeometryPtr(_it->second); \
       if(__wire)return true; \
@@ -73,7 +73,7 @@ PGL_USING_NAMESPACE
 
 #define GEOM_WireComputer_UPDATE_CACHE(geom) \
   if (!geom->unique()) \
-    __cache.insert(geom->getId(),__wire);
+    __cache.insert(geom->getObjectId(),__wire);
 
 
 #define GEOM_WireComputer_TRANSFORM(transformed) \

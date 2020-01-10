@@ -1,6 +1,5 @@
 from openalea.plantgl.all import *
 import sys
-from nose import with_setup
 
 def get_qapp():
     qtversion = get_pgl_qt_version() >> 16

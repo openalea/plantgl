@@ -167,7 +167,7 @@ public:
   virtual bool apply( Action& action ) = 0;
 
   /// Returns a unique id to identify \e self.
-  virtual size_t getId( ) const ;
+  virtual size_t getObjectId( ) const ;
 
   /// Returns the name of \e self.
   const std::string& getName( ) const ;

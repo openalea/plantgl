@@ -208,17 +208,17 @@ ViewGeomSceneGL::getSelectionIds() const
   std::vector<uint_t> res;
   for(SelectionCache::const_iterator _it = __selectedShapes.begin();
   _it !=__selectedShapes.end(); _it++)
-      res.push_back(get_item_value(_it)->getId());
+      res.push_back(get_item_value(_it)->getObjectId());
   return res;
 }
 
 uint_t
 ViewGeomSceneGL::translateId(uint_t id) const
 {
-    Shape3DPtr ptr;
+    ShapePtr ptr;
     for(Scene::iterator _it = __scene->begin();
         _it != __scene->end(); _it++){
-      if( (ptr = dynamic_pointer_cast<Shape3D>(*_it)) && (ptr->SceneObject::getId() == id))
+      if( (ptr = dynamic_pointer_cast<Shape>(*_it)) && (ptr->getObjectId() == id))
         return ptr->getId();
     }
     return id;
@@ -241,7 +241,7 @@ ViewGeomSceneGL::getNotSelection( ) const
   ScenePtr scene(new Scene);
   uint_t id;
   for(Scene::const_iterator _it = __scene->begin(); _it !=__scene->end(); _it++){
-    id = (*_it)->SceneObject::getId();
+    id = (*_it)->getObjectId();
     if(__selectedShapes.find(id)==__selectedShapes.end())
       scene->add(*_it);
   }
@@ -567,22 +567,22 @@ ViewGeomSceneGL::selectionEvent(uint_t id)
 {
   SelectionCache::iterator _it =__selectedShapes.find(id);
   if(_it!=__selectedShapes.end()){
-    Shape3DPtr ptr = get_item_value(_it);
+    ShapePtr ptr = dynamic_pointer_cast<Shape>(get_item_value(_it));
     __selectedShapes.erase(_it);
-    uint_t _id = (ptr->getId() == Shape::NOID?id:ptr->getId());
+    uint_t _id = (ptr->getId() == Shape::NOID?id:ptr->getObjectId());
     info("*** Comment : "+tr("Shape")+" " +QString::number(_id)+ " "+tr("unselected")+".");
     status(tr("Shape")+" "
       + (ptr->isNamed()?QString((ptr->getName()+" ").c_str()):"")+"(Id=" +QString::number(_id)
       + ") "+tr("unselected")+".",20000);
   }
   else {
-    Shape3DPtr ptr;
+    ShapePtr ptr;
     for(Scene::iterator _it = __scene->begin();
         _it != __scene->end(); _it++){
       if((ptr = dynamic_pointer_cast<Shape>(*_it)) &&
-        ((uint_t)ptr->SceneObject::getId() == id)){
+        ((uint_t)ptr->getObjectId() == id)){
         __selectedShapes[id]=ptr;
-        uint_t _id = (ptr->getId() == Shape::NOID?id:ptr->getId());
+        uint_t _id = (ptr->getId() == Shape::NOID?id:ptr->getObjectId());
         info("*** Comment : "+tr("Shape")+" " +QString::number(_id)+ " "+tr("selected")+".");
         status(tr("Shape")+" "
                + (ptr->isNamed()?QString((ptr->getName()+" ").c_str()):"")+"(Id=" +QString::number(_id)
@@ -616,8 +616,8 @@ ViewGeomSceneGL::selectionEvent(const vector<uint_t>& id)
     Shape3DPtr ptr;
     for(Scene::iterator _it = __scene->begin(); _it != __scene->end(); _it++){
         if( (ptr = dynamic_pointer_cast<Shape>(*_it)) &&
-            selection.find((uint_t)ptr->SceneObject::getId()) != selection.end()){
-            __selectedShapes[ptr->SceneObject::getId()]=ptr;
+            selection.find((uint_t)ptr->getObjectId()) != selection.end()){
+            __selectedShapes[ptr->getObjectId()]=ptr;
             selected++;
         }
     }
@@ -652,8 +652,8 @@ ViewGeomSceneGL::selectionIdEvent(const vector<uint_t>& id)
                       _it != __scene->end();
                       _it++){
         ShapePtr ptr = dynamic_pointer_cast<Shape>(*_it);
-        if(ptr && ptr->getId() == *_id){
-          __selectedShapes[ptr->SceneObject::getId()]=ptr;
+        if(ptr && (ptr->getId() == *_id || ptr->getObjectId() == *_id)){
+          __selectedShapes[ptr->getObjectId()]=ptr;
           selected++;
         }
       }
@@ -685,9 +685,13 @@ ViewGeomSceneGL::selectionEvent(QTreeWidgetItem * item)
     for(Scene::iterator _it = __scene->begin();
     !found && _it != __scene->end(); _it++){
       if((*_it)->getName() == name){
-        uint_t id = (*_it)->getId();
-        if((*_it)->getId() == Shape::NOID){
-          id = (*_it)->SceneObject::getId();
+        uint_t id = (*_it)->getObjectId(); 
+        ShapePtr sh = dynamic_pointer_cast<Shape>(*_it);
+        if (is_valid_ptr(sh)){
+            id = sh->getId();
+            if(id == Shape::NOID){
+                id = (*_it)->getObjectId();
+            }
         }
         SelectionCache::iterator _it2
           =__selectedShapes.find(id);
@@ -766,7 +770,7 @@ ViewGeomSceneGL::wireSelection()
       if(sh->apply(wire)){
         sh->geometry = wire.getWire();
         scene->add(Shape3DPtr(new Shape(*sh)));
-        selection[sh->SceneObject::getId()] = sh;
+        selection[sh->getObjectId()] = sh;
       }
     }
     else {
@@ -795,7 +799,7 @@ ViewGeomSceneGL::discretizeSelection()
       if(sh->apply(__discretizer)){
         sh->geometry = GeometryPtr(__discretizer.getDiscretization());
         scene->add(Shape3DPtr(new Shape(*sh)));
-        selection[sh->SceneObject::getId()] = sh;
+        selection[sh->getObjectId()] = sh;
       }
     }
     else {
@@ -826,7 +830,7 @@ ViewGeomSceneGL::triangulateSelection()
       if(sh->apply(t)){
         sh->geometry = GeometryPtr(t.getDiscretization());
         scene->add(Shape3DPtr(new Shape(*sh)));
-        selection[sh->SceneObject::getId()] = sh;
+        selection[sh->getObjectId()] = sh;
       }
     }
     else {
@@ -864,7 +868,7 @@ ViewGeomSceneGL::getProjectionSizes(const ScenePtr& sc){
         nsc->add(*it);
         setScene(nsc);
         if(frame->isPixelBufferUsed())frame->paintPixelBuffer();
-        res.push_back(pair<uint_t,double>((*it)->getId(),frame->getProjectionSize()));
+        res.push_back(pair<uint_t,double>((*it)->getObjectId(),frame->getProjectionSize()));
         cur++;
         if(cur % per == 0){
             printf("\x0d Projections %.0f%% done.",cur*100./tot);
@@ -911,7 +915,7 @@ ViewGeomSceneGL::castRays(const ScenePtr& sc, bool back_test){
     for(Scene::const_iterator it = sc->begin(); it != sc->end(); it++){
         nsc->clear();
         nsc->add(*it);
-        uint_t id = (*it)->getId();
+        uint_t id = (*it)->getObjectId();
         setScene(nsc);
         if(frame->isPixelBufferUsed())frame->paintPixelBuffer();
         else if (!autoredraw) frame->updateGL();
@@ -971,7 +975,7 @@ ViewGeomSceneGL::getPixelPerShape(double* pixelwidth)
         ScenePtr nsc(new Scene());
         QHash<uint_t,uint_t> coloridmap;
         for(Scene::const_iterator it = __scene->begin(); it != __scene->end(); it++){
-            uint_t id = (*it)->getId();
+            uint_t id = (*it)->getObjectId();
             Color4 c = Color4::fromUint(id);
             MaterialPtr mat = new Material(Color3(c),1);
             mat->getTransparency() = c.getAlphaClamped();

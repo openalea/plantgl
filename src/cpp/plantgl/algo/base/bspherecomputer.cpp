@@ -60,7 +60,7 @@ using namespace std;
 
 #define GEOM_BSPHERECOMPUTER_CHECK_CACHE(geom) \
   if (!geom->unique()) { \
-    Cache<BoundingSpherePtr>::Iterator _it = __cache.find(geom->getId()); \
+    Cache<BoundingSpherePtr>::Iterator _it = __cache.find(geom->getObjectId()); \
     if (! (_it == __cache.end())) { \
        __result = _it->second; \
       return true; \
@@ -70,7 +70,7 @@ using namespace std;
 
 #define GEOM_BSPHERECOMPUTER_UPDATE_CACHE(geom) \
   if (!geom->unique()) \
-     __cache.insert(geom->getId(),__result);
+     __cache.insert(geom->getObjectId(),__result);
 
 
 #define GEOM_BSPHERECOMPUTER_DISCRETIZE(geom) \

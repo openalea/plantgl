@@ -68,7 +68,7 @@ TOOLS_USING_NAMESPACE
 
 
 #ifdef GEOM_TREECALLDEBUG
-    #define GEOM_ASSERT_OBJ(obj) printf("Look at %sobject %zu of type '%s'\n", (!obj->unique()?"shared ":""),obj->getId(), typeid(*obj).name());
+    #define GEOM_ASSERT_OBJ(obj) printf("Look at %sobject %zu of type '%s'\n", (!obj->unique()?"shared ":""),obj->getObjectId(), typeid(*obj).name());
 #else
     #define GEOM_ASSERT_OBJ(obj)
 #endif
@@ -84,7 +84,7 @@ template<class T>
 bool QGLRenderer::discretize_and_render(T *geom) {
   GEOM_ASSERT_OBJ(geom);
   bool b = false;
-  GeometryCache::Iterator it = __geometrycache.find((uint_t)geom->getId());
+  GeometryCache::Iterator it = __geometrycache.find((uint_t)geom->getObjectId());
   if (it != __geometrycache.end()) {
      b = it->second->apply(*this);
   }
@@ -94,7 +94,7 @@ bool QGLRenderer::discretize_and_render(T *geom) {
       else __discretizer.computeTexCoord(false);
       b = geom->apply(__discretizer);
       if (b && (b = (__discretizer.getDiscretization()))) {
-        __geometrycache.insert((uint_t)geom->getId(), __discretizer.getDiscretization());
+        __geometrycache.insert((uint_t)geom->getObjectId(), __discretizer.getDiscretization());
         b = __discretizer.getDiscretization()->apply(*this);
       }
   }
@@ -719,7 +719,7 @@ bool QGLRenderer::process(ImageTexture *texture) {
 
 /*
 
-  Cache<GLuint>::Iterator it = __cachetexture.find(texture->getId());
+  Cache<GLuint>::Iterator it = __cachetexture.find(texture->getObjectId());
   if (it != __cachetexture.end()) {
     //  printf("bind texture : %i\n", it->second);
     glEnable(GL_TEXTURE_2D);
@@ -781,7 +781,7 @@ bool QGLRenderer::process(ImageTexture *texture) {
         }
         // printf("gen texture : %i\n",id);
         // registerTexture(texture,id);
-        __cachetexture.insert(texture->getId(), id);
+        __cachetexture.insert(texture->getObjectId(), id);
       }
     }
 #endif
@@ -1340,7 +1340,7 @@ bool QGLRenderer::process(TriangleSet *triangleSet)
     __currentprogram->setUniformValue(modelMatrixID, toQMatrix44(__modelmatrix.getMatrix()));
 
 
-    BufferCache::Iterator _it = __buffercache.find((uint_t)triangleSet->getId()); 
+    BufferCache::Iterator _it = __buffercache.find((uint_t)triangleSet->getObjectId()); 
     bool tocreate = _it == __buffercache.end();
     if (tocreate) {
       m_vao = new QOpenGLVertexArrayObject;
@@ -1392,7 +1392,7 @@ bool QGLRenderer::process(TriangleSet *triangleSet)
       mcache.colorBuf = colorBuf;
       mcache.indexBuf = indexBuf;
 
-      __buffercache.insert((uint_t) triangleSet->getId(), mcache);
+      __buffercache.insert((uint_t) triangleSet->getObjectId(), mcache);
 
       if (vertices) delete [] vertices;
       if (normals) delete [] normals;
