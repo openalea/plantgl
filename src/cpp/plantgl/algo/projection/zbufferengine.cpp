@@ -527,13 +527,13 @@ void ZBufferEngine::iprocess(PointSetPtr pointset, MaterialPtr material, uint32_
 
 ImagePtr ZBufferEngine::getTexture(const ImageTexturePtr imgdef)
 {
-    Cache<ImagePtr>::const_Iterator it = __cachetexture.find(imgdef->getId());
+    Cache<ImagePtr>::const_Iterator it = __cachetexture.find(imgdef->getObjectId());
     if (it != __cachetexture.end()){
         return it->second;
     }
     else {
         ImagePtr img(new Image(imgdef->getFilename()));
-        __cachetexture.insert(imgdef->getId(),img);
+        __cachetexture.insert(imgdef->getObjectId(),img);
         return img;
     }
 }

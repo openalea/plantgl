@@ -58,7 +58,7 @@ using namespace std;
 
 #define GEOM_SKELCOMPUTER_CHECK_CACHE(geom) \
   if (!geom->unique()) { \
-    Cache<PolylinePtr>::Iterator _it = __cache.find(geom->getId()); \
+    Cache<PolylinePtr>::Iterator _it = __cache.find(geom->getObjectId()); \
     if (! (_it == __cache.end())) { \
        __skeleton = _it->second; \
       return true; \
@@ -68,7 +68,7 @@ using namespace std;
 
 #define GEOM_SKELCOMPUTER_UPDATE_CACHE(geom) \
   if (!geom->unique()) \
-     __cache.insert(geom->getId(),__skeleton);
+     __cache.insert(geom->getObjectId(),__skeleton);
 
 
 /* ----------------------------------------------------------------------- */

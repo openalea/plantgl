@@ -79,7 +79,7 @@ using namespace std;
 
 #define GEOM_PRINT_BEGIN(stream,type,obj) \
   if (obj->isNamed()) { \
-    if (! __cache.insert(obj->getId()).second) { \
+    if (! __cache.insert(obj->getObjectId()).second) { \
       stream << obj->getName().c_str() << endl; \
       return true; \
     }; \
@@ -91,7 +91,8 @@ using namespace std;
 
 #define GEOM_PRINT_END(stream) \
   GEOM_PRINT_DECREMENT_INDENT; \
-  stream << __indent << "}";
+  stream << __indent << "}"; \
+  if (__indent.empty()) stream << endl;
 
 
 #define GEOM_PRINT_APPEARANCE(stream,val) \
@@ -316,10 +317,17 @@ Printer::Printer( ostream& shapeStream, ostream& geomStream, ostream& matStream 
 }
 
 Printer::~Printer( ) {
+    flush();
 }
 
 void Printer::clear( ) {
   __cache.clear();
+}
+
+void Printer::flush( ) {
+    __shapeStream << std::flush;
+    __geomStream << std::flush;
+    __matStream << std::flush;
 }
 
 void Printer::addIndent(uint_t i){
@@ -359,7 +367,7 @@ bool Printer::header(ostream & _ostream,const char * filename,const char * comme
 
 bool Printer::isPrinted(SceneObjectPtr obj){
   if (!obj->isNamed()) return false;
-  return !( (__cache.find(obj->getId())) == (__cache.end()));
+  return !( (__cache.find(obj->getObjectId())) == (__cache.end()));
 }
 
 /* ----------------------------------------------------------------------- */
@@ -387,9 +395,9 @@ bool Printer::process(Shape * Shape){
     GEOM_ASSERT(Shape);
 
     if( Shape->geometry ){
-        if ( (__cache.find(Shape->geometry->getId())) == (__cache.end())) {
+        if ( (__cache.find(Shape->geometry->getObjectId())) == (__cache.end())) {
             if(!Shape->geometry->isNamed()){
-                Shape->geometry->setName("Geometry_"+number(Shape->geometry->getId()));
+                Shape->geometry->setName("Geometry_"+number(Shape->geometry->getObjectId()));
             }
             __geomStream << __indent;
             Shape->geometry->apply(*this);
@@ -398,9 +406,9 @@ bool Printer::process(Shape * Shape){
         }
     }
     if(Shape->appearance){
-      if ( (__cache.find(Shape->appearance->getId())) == (__cache.end())) {
+      if ( (__cache.find(Shape->appearance->getObjectId())) == (__cache.end())) {
       if(!Shape->appearance->isNamed()){
-        Shape->geometry->setName("Appearance_"+number(Shape->appearance->getId()));
+        Shape->geometry->setName("Appearance_"+number(Shape->appearance->getObjectId()));
       }
         __matStream << __indent;
         Shape->appearance->apply(*this);
@@ -597,8 +605,11 @@ bool Printer::process( AmapSymbol * amapSymbol ) {
 
 
 bool Printer::process( AsymmetricHull * asymmetricHull ) {
+  printf("AsymmetricHull beg\n" );
   GEOM_ASSERT(asymmetricHull);
   GEOM_PRINT_BEGIN(__geomStream,"AsymmetricHull",asymmetricHull);
+
+  printf("AsymmetricHull prop beg\n" );
 
   if (! asymmetricHull->isNegXRadiusToDefault())
     GEOM_PRINT_FIELD(__geomStream,asymmetricHull,NegXRadius,REAL);
@@ -642,7 +653,10 @@ bool Printer::process( AsymmetricHull * asymmetricHull ) {
   if (! asymmetricHull->isStacksToDefault())
     GEOM_PRINT_FIELD(__geomStream,asymmetricHull,Stacks,INTEGER);
 
+  printf("AsymmetricHull prop end %lu\n", __indent.size() );
+
   GEOM_PRINT_END(__geomStream);
+  printf("AsymmetricHull end %lu\n", __indent.size() );
   return true;
 }
 

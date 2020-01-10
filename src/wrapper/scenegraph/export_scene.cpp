@@ -104,14 +104,14 @@ Shape3DPtr sc_getitem( Scene* s, int pos )
 
 ShapePtr sc_find( Scene* s, size_t id )
 {
-  ShapePtr res = s->getShapeId( id );
+  ShapePtr res = s->findShapeId( id );
   if (res) return res;
   else throw PythonExc_IndexError();
 }
 
 Shape3DPtr sc_findSceneObject( Scene* s, size_t id )
 {
-  Shape3DPtr res = s->getSceneObjectId( id );
+  Shape3DPtr res = s->findSceneObjectId( id );
   if (res) return res;
   else throw PythonExc_IndexError();
 }
@@ -202,7 +202,8 @@ boost::python::dict sc2dict(Scene * sc) {
     boost::python::dict result;
     for(Scene::const_iterator it = sc->begin(); it != sc->end(); ++it)
     {
-        uint32_t sid = (*it)->getId();
+        ShapePtr sh = dynamic_pointer_cast<Shape>(*it);
+        uint32_t sid = (is_valid_ptr(sh)?sh->getId():(*it)->getObjectId());
         boost::python::list clist(result.get(sid,boost::python::list()));
         clist.append(*it);
         result[sid] = clist;

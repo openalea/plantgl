@@ -89,7 +89,7 @@ set(Boost_USE_STATIC_LIBS OFF)
 #set(Boost_DEBUG ON)
 set(BUILD_SHARED_LIBS ON)
 
-find_package(Boost COMPONENTS thread system python chrono) # numpy)
+find_package(Boost COMPONENTS thread system python chrono numpy)
 
 if (Boost_FOUND)
     # Build with Boost
@@ -113,11 +113,12 @@ endif()
 # Other Libraries
 find_package(OpenGL REQUIRED)
 find_package(PNG REQUIRED)
+find_package(JPEG REQUIRED)
 find_package(ZLIB REQUIRED)
 
 find_package(ANN)
 find_package(BISON)
-#find_package(CGAL QUIET)
+find_package(CGAL QUIET)
 find_package(Eigen)
 find_package(FLEX)
 find_package(GMP)

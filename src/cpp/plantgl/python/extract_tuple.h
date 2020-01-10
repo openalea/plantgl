@@ -45,6 +45,7 @@
 #include "boost_python.h"
 #include <plantgl/tool/util_tuple.h>
 #include "exception.h"
+#include "pyseq_iterator.h"
 
 /* ----------------------------------------------------------------------- */
 
@@ -68,10 +69,11 @@ struct extract_tuple {
     result_type extract() const {
         result_type result;
         if (pylist.ptr() == Py_None) return result;
-        boost::python::object iter_obj = boost::python::object( boost::python::handle<PyObject>( PyObject_GetIter( pylist.ptr() ) ) );
-        for(size_t i = 0 ; i < result_type::SIZE ; ++i)
+        // boost::python::object iter_obj = boost::python::object( boost::python::handle<PyObject>( PyObject_GetIter( pylist.ptr() ) ) );
+        PySeqIterator iter_obj ( pylist );
+        for(size_t i = 0 ; i < result_type::SIZE && iter_obj.is_valid() ; ++i)
         {
-            boost::python::object obj = iter_obj.attr( "next" )();
+            boost::python::object obj = iter_obj.next();
             result[i] = extractor_type( obj )();
         }
         return result;

@@ -305,7 +305,7 @@ ViewEditGeomSceneGL::dissociateMaterial()
     return;
   }
   mat = MaterialPtr(new Material(*(mat)));
-  mat->setName("APP_"+number(mat->getId()));
+  mat->setName("APP_"+number(mat->getObjectId()));
   for( SelectionCache::const_iterator _it = __selectedShapes.begin();
        _it !=__selectedShapes.end(); _it++){
     ShapePtr shape = dynamic_pointer_cast<Shape>(get_item_value(_it));

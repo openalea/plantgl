@@ -68,17 +68,17 @@ using namespace std;
 #else
 
 #define GEOM_SURFCOMPUTER_CHECK_CACHE(geom) \
-  Cache<real_t>::Iterator _it = __cache.find(geom->SceneObject::getId()); \
+  Cache<real_t>::Iterator _it = __cache.find(geom->getObjectId()); \
   if (! (_it == __cache.end())) { \
     __result = _it->second; \
-    cerr << geom->getName() <<"> Use of cache " << __result << " for " << geom->SceneObject::getId() << endl; \
+    cerr << geom->getName() <<"> Use of cache " << __result << " for " << geom->getObjectId() << endl; \
     return true; \
   };
 
 
 #define GEOM_SURFCOMPUTER_UPDATE_CACHE(geom) \
-  __cache.insert(geom->SceneObject::getId(),__result); \
-    cerr << geom->getName()  << "> Fill cache " << __result << " for " << geom->SceneObject::getId() << endl; \
+  __cache.insert(geom->getObjectId(),__result); \
+    cerr << geom->getName()  << "> Fill cache " << __result << " for " << geom->getObjectId() << endl; \
 
 #endif
 

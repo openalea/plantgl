@@ -67,10 +67,8 @@ PGL_USING_NAMESPACE
 
 #ifdef CGAL_AND_SVD_SOLVER_ENABLED
 
-# ifdef WITH_LAPACK
-#define CGAL_LAPACK_ENABLED
-# else
-#define CGAL_EIGEN3_ENABLED
+# ifndef CGAL_EIGEN3_ENABLED
+# define CGAL_EIGEN3_ENABLED
 # endif
 
 #include <CGAL/Monge_via_jet_fitting.h>

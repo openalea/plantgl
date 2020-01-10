@@ -147,7 +147,7 @@ Inline::~Inline()
 /// set a default name to \e this
 void Inline::setDefaultName()
 {
-    __name = "INLINE_"+number(getId());
+    __name = "INLINE_"+number(getObjectId());
 }
 
 const string&

@@ -1,9 +1,10 @@
 from openalea.plantgl.all import *
 import matplotlib.pyplot as plot
 import numpy as np
+from os.path import join, dirname, abspath, exists
 
-path = "../share/plantgl/pixmap/geomviewer.png"
-def test_image():
+path = abspath(join(dirname(__file__),'../share/plantgl/pixmap/geomviewer.png'))
+def test_image(view = False):
     print('read')
     i = Image(path)
     print('convert')
@@ -15,7 +16,8 @@ def test_image():
     print(b[0:10,100])
     print(npimg[0:10,100])
 
-    i.plot()
+    if view:
+        i.plot()
 
 
 def test_image2():
@@ -32,14 +34,15 @@ def test_image2():
     print("a")
     print(a)
 
-def test_image3():
+def test_image3(view = False):
     npimg = plot.imread(path)
     npimg *= 255
     npimg = npimg.astype(np.uint8)
     i = Image()
     print(i.from_array(npimg))
-    i.plot()
+    if view:
+        i.plot()
 
 
 if __name__ == '__main__':
-    test_image3()
+    test_image3(True)

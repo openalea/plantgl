@@ -39,75 +39,69 @@
  */
 
 
-#include "sceneobject.h"
-#include "deepcopier.h"
-#include <plantgl/tool/util_string.h>
+#ifndef __pyseqiterator_h__
+#define __pyseqiterator_h__
 
-PGL_USING_NAMESPACE
-
-/* ----------------------------------------------------------------------- */
-
-/*
-std::ostream * SceneObject::commentStream =  & std::cerr ;
-std::ostream * SceneObject::warningStream = & std::cerr ;
-std::ostream * SceneObject::errorStream = & std::cerr ;
-*/
+#include "boost_python.h"
 
 /* ----------------------------------------------------------------------- */
 
+class PySeqIterator {
+public:
 
-SceneObject::Builder::Builder() {
-  // nothing to do
-}
+    PySeqIterator(boost::python::object seq, bool isiterator = false) :
+        __iter_obj( ), __valid(true)
+        {
+            if (isiterator){
+                __iter_obj = seq;
+                __valid = (__iter_obj != boost::python::object());
+            }
+            else {
+                PyObject * pyiter = PyObject_GetIter( seq.ptr() ) ;
+                __valid = (pyiter != NULL);
+                __iter_obj =  boost::python::object(boost::python::handle<>( pyiter ) );
 
+            }
+            _next();
+        }
 
-SceneObject::Builder::~Builder() {
-  // nothing to do
-}
+    inline bool is_valid() const { return __valid;}
 
+    inline boost::python::object next() ;
 
-/* ----------------------------------------------------------------------- */
+protected:
+    inline void _next() ;
 
+    boost::python::object __iter_obj;
+    boost::python::object __next_obj;
+    bool __valid;
 
-SceneObject::~SceneObject( ){
-#ifdef GEOM_DEBUG
-    if(!__name.empty())cerr << __name << " destroyed" << endl;
-#endif
-}
-
-void SceneObject::setName( const std::string& name ) {
-  __name = name;
-}
-
-void SceneObject::setDefaultName( ) {
-  setName("OBJECT_"+number(getObjectId()));
-}
-
-size_t SceneObject::getObjectId( ) const {
-  return (size_t)this;
-}
-
-const std::string&
-SceneObject::getName( ) const {
-  return __name;
-}
-
-bool
-SceneObject::isNamed( ) const {
-  return ! __name.empty();
-}
+};
 
 
-/// Deep copy of \e this.
-SceneObjectPtr SceneObject::deepcopy() const {
-    DeepCopier map;
-    return deepcopy(map);
-}
-
-SceneObjectPtr SceneObject::deepcopy(DeepCopier& objmap) const
+boost::python::object PySeqIterator::next() 
 {
-  return objmap.copy(this);
+    boost::python::object result = __next_obj;
+    _next();
+    return result;   
+
 }
+
+void PySeqIterator::_next() 
+{
+    if (__valid) {
+        PyObject * item = PyIter_Next(__iter_obj.ptr());
+        __valid = (item != NULL); 
+        if (__valid)
+            __next_obj = boost::python::object( boost::python::handle<PyObject>(item));
+        else
+            __next_obj = boost::python::object();
+    }
+}
+
+
+
+#endif
 
 /* ----------------------------------------------------------------------- */
 

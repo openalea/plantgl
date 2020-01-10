@@ -12,6 +12,8 @@ if (QT5_FOUND)
     target_link_libraries(pglsg Qt5::Core)
 endif()
 
+target_link_libraries(pglsg PNG::PNG JPEG::JPEG)
+
 # --- Dependencies
 
 add_dependencies(pglsg pgltool pglmath)

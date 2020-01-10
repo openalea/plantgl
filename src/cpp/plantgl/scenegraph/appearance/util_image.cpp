@@ -41,6 +41,10 @@
 
 #define cimg_use_cpp11 0
 #define cimg_display 0
+#define cimg_use_png 1
+#define cimg_use_jpeg 1
+#define cimg_use_jpeg 1
+
 #include "CImg.h"
 
 #include "util_image.h"

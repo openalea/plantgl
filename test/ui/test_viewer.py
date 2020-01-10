@@ -2,7 +2,6 @@ from openalea.plantgl.all import *
 from math import *
 import os
 import openalea.plantgl.all as pgl
-from nose import with_setup
 
 def get_qapp():
     qtversion = get_pgl_qt_version() >> 16
@@ -44,7 +43,6 @@ def test_selection():
     Viewer.selection = [1]
     assert len(Viewer.selection) == 1 and Viewer.selection[0] == 1, "Invalid Viewer.selection"
 
-#@with_setup(setup_func)
 def test_scene_interaction():
     s = Scene()
     s += Sphere()
