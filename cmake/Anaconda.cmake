@@ -38,18 +38,19 @@ if (DEFINED ENV{CONDA_BUILD})
     #CMAKE_OBJCOPY
     #CMAKE_OBJDUMP
 
-    set(CMAKE_OSX_ARCHITECTURES $ENV{OSX_ARCH})
+    #set(CMAKE_OSX_ARCHITECTURES $ENV{OSX_ARCH})
    
     set(CMAKE_CXX_COMPILER $ENV{CXX})
     set(CMAKE_CXX_COMPILER_RANLIB $ENV{RANLIB})
     set(CMAKE_CXX_COMPILER_AR $ENV{AR})
 
     # where is the target environment
-    set(CMAKE_FIND_ROOT_PATH $ENV{PREFIX} )
+     set(CMAKE_FIND_ROOT_PATH $ENV{PREFIX} $ENV{BUILD_PREFIX} $ENV{BUILD_PREFIX}/$ENV{HOST}/sysroot)
 
     # search for programs in the build host directories
     set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
     # for libraries and headers in the target directories
-    set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY NEVER)
-    set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE NEVER)
+    set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+    set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+
 endif()

@@ -189,7 +189,4 @@ if (Boost_FOUND)
 endif()
 
 #add_subdirectory("src/cpp/plantgl/math")
-
-#if (Boost_FOUND)
-#    add_subdirectory("src/wrapper/math")
-#endif()
+#add_subdirectory("src/wrapper/math")
