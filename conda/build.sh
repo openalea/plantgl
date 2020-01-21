@@ -9,7 +9,8 @@ cd build
 if [ `uname` = "Darwin" ]; then
     SYSTEM_DEPENDENT_ARGS=(
         "-DCMAKE_OSX_SYSROOT=${CONDA_BUILD_SYSROOT}"
-    )
+   )
+    export LDFLAGS="-undefined dynamic_lookup ${LDFLAGS}"
 else
     SYSTEM_DEPENDENT_ARGS=(
         "-DOPENGL_opengl_LIBRARY=${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64/libGL.so"
@@ -17,14 +18,19 @@ else
     )
 fi
 
+export CXXFLAGS="-O2 -DNDEBUG ${CXXFLAGS}"
+
+
+echo
 echo "****** CMAKE"
 which cmake
-echo $CONDA_BUILD_SYSROOT
+echo 'CONDA_BUILD_SYSROOT:' $CONDA_BUILD_SYSROOT
+echo
 echo "****** ENV"
 env
 
+echo
 echo "****** CMAKE CONFIG"
-#export VERBOSE=1
 
 cmake -DCMAKE_INSTALL_PREFIX=${PREFIX} \
       -DCMAKE_PREFIX_PATH=${PREFIX} \
@@ -32,8 +38,12 @@ cmake -DCMAKE_INSTALL_PREFIX=${PREFIX} \
        ${SYSTEM_DEPENDENT_ARGS[@]} \
       -LAH .. 
 
-
+echo
+echo "****** PGL CONFIG"
+cat $SRC_DIR/src/cpp/plantgl/userconfig.h
+echo
 echo "****** COMPILE"
+export VERBOSE=1
 make -j${CPU_COUNT}
 echo "****** INSTALL CXX LIB"
 make install
@@ -44,8 +54,8 @@ echo "PYTHON:" ${PYTHON}
 #${PYTHON} --version
 #echo "PYTHON VERSION" ${PY_VER}
 
-echo "** PYTHON CALL"
-export PYTHONPATH=${PREFIX}/lib/python${PY_VER}/site-packages/
+#echo "** PYTHON CALL"
+#export PYTHONPATH=${PREFIX}/lib/python${PY_VER}/site-packages/
 ${PYTHON} setup.py install --prefix=${PREFIX} 
 
 echo "****** END OF BUILD PROCESS"

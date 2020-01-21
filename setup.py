@@ -3,6 +3,7 @@ __revision__ = "$Id$"
 
 import os, sys
 from setuptools import setup, find_packages
+from hexversion import *
 pj = os.path.join
 
 def getMetaInfo():
@@ -13,7 +14,8 @@ def getMetaInfo():
 globals().update(getMetaInfo())
 
 # Setup script
-version = '3.0.1'
+#version = '3.0.1'
+version = HexVersion.from_cpp_define('PGL_VERSION',pj('src','cpp','plantgl','version.h')).to_string()
 print(pkg_name + ' : version = ' + version)
 
 # Main setup

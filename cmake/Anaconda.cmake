@@ -18,8 +18,11 @@ if (DEFINED ENV{CONDA_PREFIX})
 
     set(CONDA_PYTHON_ENV "${TMP_CONDA_ENV}/")
 
+    set(USE_CONDA ON)
+
 else()
     message(STATUS "Compilation outside an anaconda environment.")
+    set(USE_CONDA OFF)
 endif()
 
 
@@ -38,14 +41,16 @@ if (DEFINED ENV{CONDA_BUILD})
     #CMAKE_OBJCOPY
     #CMAKE_OBJDUMP
 
-    #set(CMAKE_OSX_ARCHITECTURES $ENV{OSX_ARCH})
+    if (APPLE)
+        set(CMAKE_OSX_ARCHITECTURES $ENV{OSX_ARCH})
+    endif()
    
     set(CMAKE_CXX_COMPILER $ENV{CXX})
     set(CMAKE_CXX_COMPILER_RANLIB $ENV{RANLIB})
     set(CMAKE_CXX_COMPILER_AR $ENV{AR})
 
     # where is the target environment
-     set(CMAKE_FIND_ROOT_PATH $ENV{PREFIX} $ENV{BUILD_PREFIX} $ENV{BUILD_PREFIX}/$ENV{HOST}/sysroot)
+    set(CMAKE_FIND_ROOT_PATH $ENV{PREFIX} $ENV{BUILD_PREFIX} $ENV{BUILD_PREFIX}/$ENV{HOST}/sysroot $ENV{CONDA_BUILD_SYSROOT})
 
     # search for programs in the build host directories
     set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
@@ -53,4 +58,11 @@ if (DEFINED ENV{CONDA_BUILD})
     set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
     set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 
+
+    set(USE_CONDA_BUILD ON)
+else()
+    set(USE_CONDA_BUILD OFF)
 endif()
+
+
+

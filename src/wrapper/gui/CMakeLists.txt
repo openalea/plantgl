@@ -8,20 +8,11 @@ add_library(_pglgui SHARED ${SRC_FILES})
 
 target_link_libraries(_pglgui pglmath pglgui pglsg pgltool)
 
-if (Python3_FOUND)
-	target_link_libraries(_pglgui Python3::Python)
-elseif (Python2_FOUND)
-    target_link_libraries(_pglgui Python2::Python)
-endif()
-
 if (QT5_FOUND)
     target_link_libraries(_pglgui Qt5::Core Qt5::Widgets Qt5::OpenGL Qt5::Network)
 endif()
 
-# Disable Boost Auto-Link
-target_compile_definitions(_pglgui PRIVATE BOOST_ALL_NO_LIB)
-
-target_link_libraries(_pglgui Boost::system Boost::thread Boost::python )
+pglwrapper_link_python(_pglgui)
 
 if(APPLE)
   target_link_libraries(_pglgui "-framework AGL")
@@ -33,14 +24,5 @@ add_dependencies(_pglgui pglmath pglgui pglsg pgltool)
 
 # --- Output Library
 
-set_target_properties(_pglgui PROPERTIES PREFIX "")
+pglwrapper_install(_pglgui gui)
 
-if (WIN32)
-    set_target_properties(_pglgui PROPERTIES SUFFIX ".pyd")
-endif()
-
-if (APPLE)
-    set_target_properties(_pglgui PROPERTIES SUFFIX ".so")
-endif()
-
-install(TARGETS _pglgui DESTINATION "${CMAKE_SOURCE_DIR}/src/plantgl/gui")

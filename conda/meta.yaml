@@ -1,8 +1,8 @@
-{% set version = "3.0.0" %}
+{% set data = load_setup_py_data() %}
 
 package:
   name: openalea.plantgl
-  version: {{ version }}
+  version: {{ data.get('version') }}
 
 source:
   path: ..
