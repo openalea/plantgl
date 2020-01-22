@@ -18,8 +18,8 @@ else
     )
 fi
 
-export CXXFLAGS="-O2 -DNDEBUG ${CXXFLAGS}"
 
+ 
 
 echo
 echo "****** CMAKE"
@@ -41,21 +41,31 @@ cmake -DCMAKE_INSTALL_PREFIX=${PREFIX} \
 echo
 echo "****** PGL CONFIG"
 cat $SRC_DIR/src/cpp/plantgl/userconfig.h
+
 echo
 echo "****** COMPILE"
 export VERBOSE=1
-make -j${CPU_COUNT}
+make -j${CPU_COUNT} 
 echo "****** INSTALL CXX LIB"
 make install
 
+echo
 echo "****** INSTALL PYTHON LIB"
 cd ..
 echo "PYTHON:" ${PYTHON}
-#${PYTHON} --version
-#echo "PYTHON VERSION" ${PY_VER}
 
 #echo "** PYTHON CALL"
 #export PYTHONPATH=${PREFIX}/lib/python${PY_VER}/site-packages/
 ${PYTHON} setup.py install --prefix=${PREFIX} 
 
+echo
+echo "****** CHECK PYTHON LIB"
+# To check if Python lib is not in the dependencies with conda-forge distribution.
+# See https://github.com/conda-forge/boost-feedstock/issues/81
+if [ `uname` = "Darwin" ]; then
+    otool -L `python -c "import openalea.plantgl.math._pglmath as pm ; print(pm.__file__)"`
+    otool -L `python -c "import openalea.plantgl.scenegraph._pglsg as pm ; print(pm.__file__)"`
+    otool -L `python -c "import openalea.plantgl.algo._pglalgo as pm ; print(pm.__file__)"`
+    otool -L `python -c "import openalea.plantgl.gui._pglgui as pm ; print(pm.__file__)"`
+fi
 echo "****** END OF BUILD PROCESS"

@@ -79,8 +79,6 @@ else(APPLE)
   target_link_libraries(pglalgo OpenGL::GL OpenGL::GLU)
 endif(APPLE)
 
-target_link_libraries(pglalgo Python3::Python)
-
 if (NOT MSVC)
     target_link_libraries(pglalgo Boost::system Boost::thread)
 endif()

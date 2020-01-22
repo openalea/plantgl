@@ -26,10 +26,10 @@ endif("${isSystemDir}" STREQUAL "-1")
 
 # ---  CXX11 Compilation
 
-#set(CMAKE_CXX_STANDARD 14)
-#set(CMAKE_CXX_STANDARD_REQUIRED ON)
-#set(CMAKE_CXX_EXTENSIONS OFF)
-#set(CMAKE_CXX_FLAGS_RELEASE "-O2")
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_FLAGS_RELEASE "-O2  -DNDEBUG")
 
 # --- Define a Preprocessor Macro
 
@@ -101,7 +101,14 @@ include_directories(${Python3_INCLUDE_DIRS})
 find_package(Threads REQUIRED)
 find_package(Qt)
 
-set(BOOST_ROOT $ENV{CONDA_PREFIX})
+if (USE_CONDA)
+    set(BOOST_ROOT ${CONDA_ENV})
+endif()
+
+set(Boost_NO_SYSTEM_PATHS ON)
+set(Boost_USE_MULTITHREAD ON)
+set(Boost_USE_STATIC_LIBS OFF)
+set(BUILD_SHARED_LIBS ON)
 
 find_package(Boost COMPONENTS thread system python chrono numpy)
 
