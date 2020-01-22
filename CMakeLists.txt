@@ -29,7 +29,7 @@ endif("${isSystemDir}" STREQUAL "-1")
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-set(CMAKE_CXX_FLAGS_RELEASE "-O2  -DNDEBUG")
+set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG")
 
 # --- Define a Preprocessor Macro
 
@@ -110,7 +110,7 @@ set(Boost_USE_MULTITHREAD ON)
 set(Boost_USE_STATIC_LIBS OFF)
 set(BUILD_SHARED_LIBS ON)
 
-find_package(Boost COMPONENTS thread system python chrono numpy)
+find_package(Boost COMPONENTS thread system chrono python numpy)
 
 if (Boost_FOUND)
     # Build with Boost
@@ -192,5 +192,4 @@ if (Boost_FOUND)
     add_subdirectory("src/wrapper")
 endif()
 
-#add_subdirectory("src/cpp/plantgl/math")
-#add_subdirectory("src/wrapper/math")
+

@@ -18,8 +18,7 @@ else
     )
 fi
 
-
- 
+export SYSTEM_DEPENDENT_ARGS
 
 echo
 echo "****** CMAKE"
