@@ -1,8 +1,8 @@
-{% set version = "3.0.0" %}
+{% set data = load_setup_py_data() %}
 
 package:
   name: openalea.plantgl
-  version: {{ version }}
+  version: {{ data.get('version') }}
 
 source:
   path: ..
@@ -13,7 +13,7 @@ about:
   summary: An open-source graphic toolkit for the creation, simulation and analysis of 3D virtual plants.
 
 build:
-  number: 1
+  number: 2
   preserve_egg_dir: True
 
 requirements:
@@ -22,7 +22,7 @@ requirements:
       - numpy
       - eigen
       - gmp                                # [unix]
-      - cgal                               # [unix]
+      - cgal-cpp                           # [unix]
       - qhull
       - ann
       - qt >=5
@@ -34,8 +34,10 @@ requirements:
       - openalea.deploy
       - setuptools
       - pip
+      - xorg-libxfixes                    # [linux]
           
   build:
+      - python {{PY_VER}}
       - binutils_impl_linux-64<2.31.0     # [linux]
       - {{ compiler('cxx') }}
       - bison                             # [unix]
@@ -44,8 +46,8 @@ requirements:
       - m2-flex                           # [win]
       - menuinst                          # [win]
       - cmake >=3.12.0
-      - pkg-config                         # [linux]
-      - make                               # [unix]
+      - pkg-config                        # [linux]
+      - make                              # [unix]
       - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
       - {{ cdt('libx11-devel') }}          # [linux]
       - {{ cdt('libxext-devel') }}         # [linux]
@@ -60,13 +62,12 @@ requirements:
       - {{ cdt('libxxf86vm') }}            # [linux]
       - {{ cdt('libxxf86vm-devel') }}      # [linux]
       - {{ cdt('libselinux-devel') }}      # [linux]
-
   run:
       - python {{PY_VER}}
       - {{ pin_compatible('numpy') }}
       - eigen
       - gmp                                # [unix]
-      - cgal                               # [unix]
+      - cgal-cpp                           # [unix]
       - qhull
       - ann
       - qt >=5

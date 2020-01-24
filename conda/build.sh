@@ -9,7 +9,8 @@ cd build
 if [ `uname` = "Darwin" ]; then
     SYSTEM_DEPENDENT_ARGS=(
         "-DCMAKE_OSX_SYSROOT=${CONDA_BUILD_SYSROOT}"
-    )
+   )
+    export LDFLAGS="-undefined dynamic_lookup ${LDFLAGS}"
 else
     SYSTEM_DEPENDENT_ARGS=(
         "-DOPENGL_opengl_LIBRARY=${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64/libGL.so"
@@ -17,14 +18,18 @@ else
     )
 fi
 
+export SYSTEM_DEPENDENT_ARGS
+
+echo
 echo "****** CMAKE"
 which cmake
-echo $CONDA_BUILD_SYSROOT
+echo 'CONDA_BUILD_SYSROOT:' $CONDA_BUILD_SYSROOT
+echo
 echo "****** ENV"
 env
 
+echo
 echo "****** CMAKE CONFIG"
-#export VERBOSE=1
 
 cmake -DCMAKE_INSTALL_PREFIX=${PREFIX} \
       -DCMAKE_PREFIX_PATH=${PREFIX} \
@@ -32,20 +37,34 @@ cmake -DCMAKE_INSTALL_PREFIX=${PREFIX} \
        ${SYSTEM_DEPENDENT_ARGS[@]} \
       -LAH .. 
 
+echo
+echo "****** PGL CONFIG"
+cat $SRC_DIR/src/cpp/plantgl/userconfig.h
 
+echo
 echo "****** COMPILE"
-make -j${CPU_COUNT}
+export VERBOSE=1
+make -j${CPU_COUNT} 
 echo "****** INSTALL CXX LIB"
 make install
 
+echo
 echo "****** INSTALL PYTHON LIB"
 cd ..
 echo "PYTHON:" ${PYTHON}
-#${PYTHON} --version
-#echo "PYTHON VERSION" ${PY_VER}
 
-echo "** PYTHON CALL"
-export PYTHONPATH=${PREFIX}/lib/python${PY_VER}/site-packages/
+#echo "** PYTHON CALL"
+#export PYTHONPATH=${PREFIX}/lib/python${PY_VER}/site-packages/
 ${PYTHON} setup.py install --prefix=${PREFIX} 
 
+echo
+echo "****** CHECK PYTHON LIB"
+# To check if Python lib is not in the dependencies with conda-forge distribution.
+# See https://github.com/conda-forge/boost-feedstock/issues/81
+if [ `uname` = "Darwin" ]; then
+    otool -L `python -c "import openalea.plantgl.math._pglmath as pm ; print(pm.__file__)"`
+    otool -L `python -c "import openalea.plantgl.scenegraph._pglsg as pm ; print(pm.__file__)"`
+    otool -L `python -c "import openalea.plantgl.algo._pglalgo as pm ; print(pm.__file__)"`
+    otool -L `python -c "import openalea.plantgl.gui._pglgui as pm ; print(pm.__file__)"`
+fi
 echo "****** END OF BUILD PROCESS"
