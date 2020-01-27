@@ -66,10 +66,10 @@ endif()
 if (CGAL_FOUND)
     include_directories(${CGAL_INCLUDE_DIRS})
     target_link_libraries(pglalgo CGAL::CGAL)
+    target_link_libraries(pglalgo ${GMP_LIBRARIES})
 endif()
 
 target_link_libraries(pglalgo ${ANN_LIBRARIES})
-target_link_libraries(pglalgo ${GMP_LIBRARIES})
 target_link_libraries(pglalgo ${QHULL_LIBRARIES})
 
 if(APPLE)

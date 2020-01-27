@@ -31,6 +31,8 @@ env
 echo
 echo "****** CMAKE CONFIG"
 
+export GMPDIR=${PREFIX}
+
 cmake -DCMAKE_INSTALL_PREFIX=${PREFIX} \
       -DCMAKE_PREFIX_PATH=${PREFIX} \
       -DCMAKE_BUILD_TYPE=Release  \

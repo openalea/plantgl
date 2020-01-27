@@ -1,1 +1,1 @@
-conda build . -c conda-forge -c defaults  --python=3.7
+conda build . -c conda-forge -c fredboudon -c defaults  --python=3.7

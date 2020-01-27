@@ -13,7 +13,7 @@ about:
   summary: An open-source graphic toolkit for the creation, simulation and analysis of 3D virtual plants.
 
 build:
-  number: 2
+  number: 3
   preserve_egg_dir: True
 
 requirements:
@@ -79,7 +79,7 @@ requirements:
       - ipython
       - setuptools
       - pyopengl
-   #  - pyqglviewer
+      - pyqglviewer
    #  - scipy
    #  - matplotlib
    #  - vs2015_runtime [win and py37]
