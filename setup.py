@@ -8,10 +8,12 @@ pj = os.path.join
 
 def getMetaInfo():
     metainfo = {}
-    exec(open(pj('src', 'plantgl', '__init__.py')).read(), metainfo, metainfo)
+    exec(open(pj('src', 'openalea','plantgl', '__init__.py')).read(), metainfo, metainfo)
     return metainfo['__metainfo__']
 
 globals().update(getMetaInfo())
+
+namepace = 'openalea'
 
 # Setup script
 #version = '3.0.1'
@@ -29,11 +31,12 @@ setup(
     url = url,
     license = license,
 
-    namespace_packages = ["openalea"],
-    create_namespaces = True,
+    namespace_packages = [namepace],
+    create_namespaces = False,
 
     # pure python packages
     packages = [ 
+        namepace,
         pkg_name, 
         pkg_name + '.math', 
         pkg_name + '.scenegraph', 
@@ -55,7 +58,6 @@ setup(
     
     # python packages directory
     package_dir = {
-        pkg_name: pj('src', 'plantgl'),
         '' : 'src'
     },
 

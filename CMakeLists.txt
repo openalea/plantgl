@@ -144,7 +144,6 @@ find_package(BISON)
 find_package(CGAL QUIET)
 find_package(Eigen)
 find_package(FLEX)
-#find_package(GMP)
 find_package(Qhull)
 
 if (BISON_FOUND AND FLEX_FOUND)
@@ -163,12 +162,15 @@ if (CGAL_FOUND)
     # Build with CGAL
     define_macro(WITH_CGAL 1)
     define_py_macro(PGL_WITH_CGAL "True")
+    message(STATUS "Found CGAL")
 
-    if (GMP_LIBRARIES)
+    if (DEFINED GMP_LIBRARIES)
         define_macro(CGAL_USE_GMP 1)
+        message(STATUS "Found GMP")
+    else()
+        message(STATUS "Building without GMP - Library not found. Use CGAL without it.")
     endif()
     
-    message(STATUS "Found CGAL")
 else()
     message(STATUS "Building without CGAL - Library not found.")
     

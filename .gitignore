@@ -4,8 +4,7 @@ __pycache__/
 
 options.py
 src/cpp/plantgl/userconfig.h
-src/plantgl/config.py
-src/openalea
+src/openalea/plantgl/config.py
 
 # C extensions
 build-scons

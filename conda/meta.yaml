@@ -13,7 +13,7 @@ about:
   summary: An open-source graphic toolkit for the creation, simulation and analysis of 3D virtual plants.
 
 build:
-  number: 3
+  number: 0
   preserve_egg_dir: True
 
 requirements:
@@ -21,8 +21,7 @@ requirements:
       - python {{PY_VER}}
       - numpy
       - eigen
-      - gmp                                # [unix]
-      - cgal-cpp                           # [unix]
+      - cgal-cpp
       - qhull
       - ann
       - qt >=5
@@ -31,7 +30,6 @@ requirements:
       - libpng
       - zlib
       - libglu                            # [linux]
-      - openalea.deploy
       - setuptools
       - pip
       - xorg-libxfixes                    # [linux]
@@ -66,8 +64,7 @@ requirements:
       - python {{PY_VER}}
       - {{ pin_compatible('numpy') }}
       - eigen
-      - gmp                                # [unix]
-      - cgal-cpp                           # [unix]
+      - cgal-cpp                          
       - qhull
       - ann
       - qt >=5
