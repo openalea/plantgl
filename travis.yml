@@ -17,7 +17,7 @@ install:
   - git clone https://github.com/openalea/travis-ci.git
   - cd travis-ci
   - source install.sh
-  - conda config --prepend channels conda-forge
+  - conda config --prepend channels conda-forge fredboudon
 
 before_script:
   - source before_script.sh
