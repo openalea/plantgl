@@ -14,7 +14,7 @@ function(pglwrapper_link_python libwrapname)
     # Disable Boost Auto-Link
     target_compile_definitions(${libwrapname} PRIVATE BOOST_ALL_NO_LIB)
 
-    target_link_libraries(${libwrapname} Boost::system Boost::thread Boost::python )
+    target_link_libraries(${libwrapname} Boost::system Boost::thread Boost::python Boost::dynamic_linking Boost::disable_autolinking)
 
 endfunction()
 
@@ -31,5 +31,5 @@ function(pglwrapper_install libwrapname repository)
         set_target_properties(${libwrapname} PROPERTIES SUFFIX ".so")
     endif()
 
-    install(TARGETS ${libwrapname} DESTINATION "${CMAKE_SOURCE_DIR}/src/plantgl/${repository}")
+    install(TARGETS ${libwrapname} DESTINATION "${CMAKE_SOURCE_DIR}/src/openalea/plantgl/${repository}")
 endfunction()

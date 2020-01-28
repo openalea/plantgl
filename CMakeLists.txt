@@ -34,7 +34,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG")
 # --- Define a Preprocessor Macro
 
 set(CONFIG_HEADER "${CMAKE_CURRENT_SOURCE_DIR}/src/cpp/plantgl/userconfig.h")
-set(CONFIG_PYFILE "${CMAKE_CURRENT_SOURCE_DIR}/src/plantgl/config.py")
+set(CONFIG_PYFILE "${CMAKE_CURRENT_SOURCE_DIR}/src/openalea/plantgl/config.py")
 
 macro(define_macro DEF_NAME DEF_VALUE)
     # Preprocessor
