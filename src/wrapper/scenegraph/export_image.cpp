@@ -46,7 +46,9 @@
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
 #include "export_sceneobject.h"
-#include <boost/python/numpy.hpp>
+#if WITH_BOOST_NUMPY
+    #include <boost/python/numpy.hpp>
+#endif
 #include <QtGui/QImage>
 #include <QtCore/QResource>
 
@@ -54,10 +56,14 @@ PGL_USING_NAMESPACE
 using namespace boost::python;
 
 #define bp boost::python
+
+#if WITH_BOOST_NUMPY
 #define np boost::python::numpy
+#endif
 
 DEF_POINTEE(Image)
 
+#if WITH_BOOST_NUMPY
 np::ndarray img_to_array(Image * img)
 {
     np::dtype dt = np::dtype::get_builtin<uint8_t>();
@@ -104,6 +110,7 @@ Image * img_from_array(np::ndarray array){
     return img;
 
 }
+#endif
 
 boost::python::object py_histogram(Image * img){
     pgl_hash_map<uint_t,uint_t> res = img->histogram();
@@ -126,7 +133,9 @@ void export_Image()
                   bp::arg("nbChannels")=4,
                   bp::arg("defaultColor")=Color4(0,0,0,0))))
         .def(init< const std::string& >("Image(filename)",(boost::python::arg("filename"))))
+#if WITH_BOOST_NUMPY
         .def( "__init__", make_constructor( img_from_array ) )
+#endif
         .def( "setPixelAt", (void (Image::*)(uint_t , uint_t, const Color4 &))&Image::setPixelAt )
         .def( "getPixelAt", &Image::getPixelAt )
         .def( "width", &Image::width )
@@ -135,9 +144,11 @@ void export_Image()
         .def( "fill", &Image::fill )
         .def( "read", &Image::read )
         .def( "save", &Image::save )
+#if WITH_BOOST_NUMPY
         .def( "to_array", &img_to_array )
         .def( "to_interlaced_array", &img_to_interlaced_array )
         .def( "from_array", &from_array )
+#endif
         .def( "transpose", &Image::transpose )
         .def( "histogram", &py_histogram )
        // .def( "_register_image_content_in_qt", &register_image_content_in_qt)

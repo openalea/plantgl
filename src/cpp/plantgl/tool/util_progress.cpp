@@ -39,6 +39,7 @@
  */
 
 #include "util_progress.h"
+
 #include <boost/thread.hpp>
 
 PGL_USING_NAMESPACE

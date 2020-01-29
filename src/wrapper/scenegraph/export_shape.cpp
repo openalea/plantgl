@@ -77,8 +77,6 @@ struct sh_pickle_suite : boost::python::pickle_suite
     }
 };
 
-uint_t sh_getptrid(const Shape * sh) { return sh->SceneObject::getId(); }
-
 void export_Shape()
 {
   class_< Shape, ShapePtr, bases< Shape3D > , boost::noncopyable >("Shape",
@@ -102,7 +100,6 @@ void export_Shape()
     .DEC_PTR_PROPERTY(geometry, Shape, Geometry,GeometryPtr)
     .def_readwrite("id", &Shape::id)
     .def_readwrite("parentId", &Shape::parentId)
-    .def("getSceneObjectId", &sh_getptrid)
     .def("setComputedName", &Shape::setComputedName)
     .def_pickle(sh_pickle_suite());
     ;

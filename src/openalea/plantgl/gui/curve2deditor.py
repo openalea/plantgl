@@ -420,7 +420,7 @@ class Curve2DEditor (QGLViewer):
         glColor4fv(self.gridColor)
         cxval = round(self.start[0]/(10*xdelta))*(10*xdelta)
         glBegin(GL_LINES)
-        for i in range((nbiter/10)+1):
+        for i in range(int(nbiter/10)+1):
             self.drawVLine(cxval,self.start[1],self.end[1])
             cxval += (10*xdelta)
         glEnd()
@@ -447,7 +447,7 @@ class Curve2DEditor (QGLViewer):
         glColor4fv(self.gridColor)
         cyval = round(self.start[1]/(10*xdelta))*(10*xdelta)
         glBegin(GL_LINES)
-        for i in range((nbiter/10)+1):
+        for i in range(int(nbiter/10)+1):
             self.drawHLine(self.start[0],self.end[0], cyval)
             cyval += (10*xdelta)
         glEnd()

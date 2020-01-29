@@ -6,13 +6,15 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 file(GLOB_RECURSE UI_FILES_BASE "${CMAKE_CURRENT_SOURCE_DIR}/base/*.ui")
 file(GLOB_RECURSE UI_FILES_VIEWER "${CMAKE_CURRENT_SOURCE_DIR}/viewer/*.ui")
+file(GLOB_RECURSE UI_FILES_VIEWER2 "${CMAKE_CURRENT_SOURCE_DIR}/viewer2/*.ui")
 
 # --- Source Files
 
 file(GLOB_RECURSE SRC_FILES_BASE "${CMAKE_CURRENT_SOURCE_DIR}/base/*.cpp")
 file(GLOB_RECURSE SRC_FILES_VIEWER "${CMAKE_CURRENT_SOURCE_DIR}/viewer/*.cpp")
+file(GLOB_RECURSE SRC_FILES_VIEWER2 "${CMAKE_CURRENT_SOURCE_DIR}/viewer2/*.cpp")
 
-add_library(pglgui SHARED ${UI_FILES_BASE} ${SRC_FILES_BASE} ${UI_FILES_VIEWER} ${SRC_FILES_VIEWER})
+add_library(pglgui SHARED ${UI_FILES_BASE} ${SRC_FILES_BASE} ${UI_FILES_VIEWER} ${SRC_FILES_VIEWER} ${UI_FILES_VIEWER2} ${SRC_FILES_VIEWER2})
 
 # --- Linked Libraries
 
@@ -45,3 +47,4 @@ install(TARGETS pglgui LIBRARY DESTINATION "lib")
 # --- Viewer Program
 
 add_subdirectory("exe")
+add_subdirectory("exe2")

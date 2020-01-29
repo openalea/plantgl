@@ -1181,11 +1181,12 @@ inline ShapePointPtr toShapePoint(const Point_2& ppp,
     ShapePointSet::const_iterator point_it = m_shape.findVec(vvv);
     if (point_it == m_shape.end())
     {
-        if (!cdt.is_infinite((V_handle)&ppp))
-        {
+        // NOTE: Fred: Ce code ne compile plus. Etrange de tester si un point est infini en iterant sur des arcs finis.s
+        // if (!cdt.is_infinite((V_handle)&ppp))
+        // {
             result = new ShapePoint(vvv, m_shape.size());
             m_shape.insert(result);
-        }
+        //}
     }
     else result = *point_it;
     return result;

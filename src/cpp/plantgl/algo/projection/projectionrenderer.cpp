@@ -168,7 +168,7 @@ bool ProjectionRenderer::process(Shape * geomshape) {
 
 bool ProjectionRenderer::process(Inline *geomInline) {
   GEOM_ASSERT_OBJ(geomInline);
-  __id = geomInline->getId();
+  __id = geomInline->getObjectId();
   if (geomInline->getScene()) {
     if (!geomInline->isTranslationToDefault() || !geomInline->isScaleToDefault()) {
        __camera->pushModelTransformation(); 

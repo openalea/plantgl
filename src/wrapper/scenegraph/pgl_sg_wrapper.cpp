@@ -48,11 +48,12 @@
 #include <plantgl/python/pyinterpreter.h>
 #include <plantgl/python/export_list.h>
 #include <iostream>
+#if WITH_BOOST_NUMPY
 #include <boost/python/numpy.hpp>
+#endif
 
 
 using namespace boost::python;
-namespace np = boost::python::numpy;
 
 PGL_USING_NAMESPACE
 
@@ -99,13 +100,16 @@ boost::python::object py_get_pgl_supported_extensions() {
 
 void module_sg()
 {
+#if WITH_BOOST_NUMPY
+    boost::python::numpy::initialize();
+#endif
+    
     // check lib version.
     PGL_LIB_VERSION_CHECK
 
     define_stl_exceptions();
     set_python_error_style(true);
 
-    np::initialize();
 
     export_SceneObject();
 

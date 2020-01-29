@@ -60,7 +60,7 @@ using namespace std;
 
 #define GEOM_BEGIN(obj) \
   if (obj->isNamed()) { \
-    if (! __cache.insert(obj->SceneObject::getId()).second) { \
+    if (! __cache.insert(obj->getObjectId()).second) { \
       return true; \
     }; \
     __named++; \

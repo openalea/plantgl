@@ -250,7 +250,7 @@ bool LinetreePrinter::symbolProcess( Geometry* object )
         Vector3 scaling;
 
         SmbMap::const_iterator
-                _it = __smbcache.find(object->getId());
+                _it = __smbcache.find(object->getObjectId());
         if(_it == __smbcache.end()){
                 if(!object->apply(__translator))return false;
                 _symbol = __translator.getSymbol();
@@ -259,7 +259,7 @@ bool LinetreePrinter::symbolProcess( Geometry* object )
                         translation = __translator.getTranslation();
                         scaling = __translator.getNormalizationFactors();
                         pair<Vector3,Vector3> t(translation,scaling);
-                        __smbcache[object->getId()] = pair<AmapSymbolPtr,pair<Vector3,Vector3> > (_symbol,t);
+                        __smbcache[object->getObjectId()] = pair<AmapSymbolPtr,pair<Vector3,Vector3> > (_symbol,t);
                 }
                 else return false;
         }
@@ -283,7 +283,7 @@ bool LinetreePrinter::endProcess(){
         __dtastream << "  " << __dta.size() << "  symbole(s)" << endl;
         for(DtaList::const_iterator
                 _it = __dta.begin(); _it != __dta.end(); _it++){
-                string file = __smbfilecache[_it->second.first->getId()];
+                string file = __smbfilecache[_it->second.first->getObjectId()];
                 if(!file.empty()){
                         file = get_filename(file);
                         size_t pos = file.find_last_of('.');
@@ -308,9 +308,9 @@ bool LinetreePrinter::endProcess(){
 bool LinetreePrinter::process( AmapSymbol * amapSymbol ) {
 
         Cache::const_iterator
-                _it = __cache.find(amapSymbol->getId());
+                _it = __cache.find(amapSymbol->getObjectId());
         if(_it != __cache.end()){
-                CacheUnit::const_iterator _it2 = _it->second.find(__mat->getId());
+                CacheUnit::const_iterator _it2 = _it->second.find(__mat->getObjectId());
                 if(_it2 != _it->second.end()){
                         __ligstream << _it2->second;
                         printTransformation();
@@ -327,11 +327,11 @@ bool LinetreePrinter::process( AmapSymbol * amapSymbol ) {
                         __smbpath += '/';
                 if(amapSymbol->isNamed())
                         filename = __smbpath + amapSymbol->getName() + ".smb";
-                else filename = __smbpath +"smb" + number(amapSymbol->getId()) + ".smb";
+                else filename = __smbpath +"smb" + number(amapSymbol->getObjectId()) + ".smb";
                 beofstream stream(filename);
                 if(stream){
                         amapSymbol->write(stream);
-                        __smbfilecache[amapSymbol->getId()] = filename;
+                        __smbfilecache[amapSymbol->getObjectId()] = filename;
                 }
                 else return false;
         }
@@ -344,21 +344,21 @@ bool LinetreePrinter::process( AmapSymbol * amapSymbol ) {
                         absolute_dirname(amapSymbol->getFileName())){
                         if(exists(amapSymbol->getFileName())){
                                 if(!copy(amapSymbol->getFileName(),filename))return false;
-                                __smbfilecache[amapSymbol->getId()] = filename;
+                                __smbfilecache[amapSymbol->getObjectId()] = filename;
                         }
                         else {
                                 beofstream stream(filename);
                                 if(stream){
                                         amapSymbol->write(stream);
-                                        __smbfilecache[amapSymbol->getId()] = filename;
+                                        __smbfilecache[amapSymbol->getObjectId()] = filename;
                                 }
                                 else return false;
                         }
                 }
-                else __smbfilecache[amapSymbol->getId()] = filename;
+                else __smbfilecache[amapSymbol->getObjectId()] = filename;
 
         }
-        __cache[amapSymbol->getId()][__mat->getId()] = __smbNumber;
+        __cache[amapSymbol->getObjectId()][__mat->getObjectId()] = __smbNumber;
         __dta.push_back(pair<long, pair<AmapSymbolPtr,MaterialPtr> >(__smbNumber,
                 pair<AmapSymbolPtr,MaterialPtr> (AmapSymbolPtr(amapSymbol),__mat)));
         return true;
@@ -372,7 +372,7 @@ bool LinetreePrinter::process(Shape * Shape) {
   GEOM_ASSERT(Shape);
   if(Shape->getId() != Shape::NOID)
         __entity_number = Shape->getId();
-  else __entity_number = Shape->SceneObject::getId();
+  else __entity_number = Shape->getObjectId();
   bool b=Shape->appearance->apply(*this);
   return ( b && (Shape->geometry->apply(*this)));
 }

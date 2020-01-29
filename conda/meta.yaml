@@ -1,9 +1,8 @@
-# do not edit the following line. It will be updated automatically
-{% set version = "2.24.0" %}
+{% set data = load_setup_py_data() %}
 
 package:
   name: openalea.plantgl
-  version: {{ version }}
+  version: {{ data.get('version') }}
 
 source:
   path: ..
@@ -14,61 +13,76 @@ about:
   summary: An open-source graphic toolkit for the creation, simulation and analysis of 3D virtual plants.
 
 build:
+  number: 0
   preserve_egg_dir: True
-  number: 1
-  features:
-    - vc9         [win and py27]
-    - vc14        [win and py37]
-  track_features:
-    - vc9         [win and py27]
-    - vc14        [win and py37]
 
 requirements:
+  host:
+      - python {{PY_VER}}
+      - numpy
+      - eigen
+      - cgal-cpp
+      - qhull
+      - ann
+      - qt >=5
+      - pyqt >=5
+      - boost # boost module of conda-forge install boost.python and dependency boost-cpp for the cpp libs.
+      - libpng
+      - zlib
+      - libglu                            # [linux]
+      - setuptools
+      - pip
+      - xorg-libxfixes                    # [linux]
+          
   build:
-   - python
-   - qt =5
-   - boost
-   - bison [unix]
-   - flex [unix]
-   - gmp [unix]
-   - cgal [unix]
-   - m2-bison [win]
-   - m2-flex [win]
-   - qhull
-   - eigen
-   - ann
-   - pyqglviewer
-   - menuinst [win]
-   - setuptools
-   - openalea.deploy
-   - cmake >=3.12.0
-   #- {{ compiler('cxx') }}
+      - binutils_impl_linux-64<2.31.0     # [linux]
+      - {{ compiler('cxx') }}
+      - bison                             # [unix]
+      - flex                              # [unix]
+      - m2-bison                          # [win]
+      - m2-flex                           # [win]
+      - menuinst                          # [win]
+      - cmake >=3.12.0
+      - pkg-config                        # [linux]
+      - make                              # [unix]
+      - {{ cdt('mesa-libgl-devel') }}      # [linux]
+      - {{ cdt('mesa-dri-drivers') }}      # [linux]
+      - {{ cdt('libselinux') }}            # [linux]
+      - {{ cdt('libxdamage') }}            # [linux]
+      - {{ cdt('libxxf86vm') }}            # [linux]
+      - {{ cdt('libxext') }}               # [linux]
+      - libglu                             # [linux]
   run:
-   - python
-   - qt =5
-   - boost
-   - gmp [unix]
-   - cgal [unix]
-   - qhull
-   - ann
-   - pyqt
-   - ipython
-   - qtconsole
-   - pyopengl
-   - pyqglviewer
-   - scipy
-   - matplotlib
-   - vs2008_runtime [win and py27]
-   - vs2015_runtime [win and py37]
+      - python {{PY_VER}}
+      - {{ pin_compatible('numpy') }}
+      - eigen
+      - cgal-cpp                          
+      - qhull
+      - ann
+      - qt >=5
+      - pyqt >=5
+      - boost # boost module of conda-forge install boost.python and dependency boost-cpp for the cpp libs.
+      - libpng
+      - zlib
+      - xorg-libxfixes                     # [linux]
+      - libglu                             # [linux]
+      - ipython
+      - setuptools
+      - pyopengl
+      - pyqglviewer
+   #  - scipy
+   #  - matplotlib
+   #  - vs2015_runtime [win and py37]
 
-test:
-  requires:
-    - nose
-  imports:
-    - openalea.plantgl
-  source_files:
-    - test/test_*.py
-    - test/data
-    - share/
-  commands:
-    - nosetests -v -I test_viewer.py -I test_projpershape.py -I thread.py -I test_geomprinter.py -I test_coneofperception.py -I test_pointgrid.py -I test_depthsortengine.py -I test_zbufferengine.py -I test_shared_data.py -I test_light.py -I test_image.py
+  test:
+     requires:
+       - pytest
+       - matplotlib-base
+     imports:
+       - openalea.plantgl
+       - openalea.plantgl.all
+     source_files:
+       - test/**
+       - share/**
+     commands:
+       - pytest -v 

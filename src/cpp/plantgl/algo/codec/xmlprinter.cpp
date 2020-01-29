@@ -155,7 +155,7 @@ using namespace std;
 #define GEOM_XMLPRINT_BEGINOBJ(type,obj,finish) \
   GEOM_ASSERT( obj ); \
   if (obj->isNamed()) { \
-    if (! __cache.insert(obj->getId()).second) { \
+    if (! __cache.insert(obj->getObjectId()).second) { \
       __stream  <<  __indent << "<" << type << " Name=\"" << obj->getName().c_str() << "\" > " << endl; \
       return true; \
     } \
@@ -260,7 +260,7 @@ XMLPrinter::process( Material * material )
   return false;
 /*
   if (material->isNamed()) {
-    if (! __cache.insert(material->getId()).second) {
+    if (! __cache.insert(material->getObjectId()).second) {
       __stream  <<  __indent << "<Appearance USE " << material->getName().c_str() << " > " << endl;
       return true;
     }

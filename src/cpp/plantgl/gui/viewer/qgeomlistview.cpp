@@ -156,11 +156,11 @@ void GeomListViewBuilder::addNode(const SceneObject * node,
                                   const QString& type,
                                   int pixmaptouse){
 
-   QString ptrid = QString("ptr=0x%1").arg(node->SceneObject::getId(),8,16,QChar('0'));
+   QString ptrid = QString("ptr=0x%1").arg(node->SceneObject::getObjectId(),8,16,QChar('0'));
    QString name = QString(node->getName().c_str());
    QStringList labels;
    labels << name << ptrid << type;
-   if (name.isEmpty()) name = type.toLower()+"_"+QString::number(node->getId());
+   if (name.isEmpty()) name = type.toLower()+"_"+QString::number(node->getObjectId());
    QTreeWidgetItem * item = new QTreeWidgetItem(__currentNodeItem,labels);
    switch (pixmaptouse){
     default:

@@ -362,7 +362,7 @@ void Scene::setAt(uint_t i, const Shape3DPtr& ptr) {
 }
 
 const ShapePtr
-Scene::getShapeId(uint_t id ) const {
+Scene::findShapeId(uint_t id ) const {
   lock();
   for(Scene::const_iterator _it = __shapeList.begin() ;
                       _it != __shapeList.end();
@@ -379,13 +379,13 @@ Scene::getShapeId(uint_t id ) const {
 }
 
 const Shape3DPtr
-Scene::getSceneObjectId(uint_t id ) const {
+Scene::findSceneObjectId(uint_t id ) const {
   lock();
   for(Scene::const_iterator _it = __shapeList.begin() ;
                       _it != __shapeList.end();
                       _it++)
     {
-        if(*_it && (*_it)->SceneObject::getId() == id){
+        if(*_it && (*_it)->SceneObject::getObjectId() == id){
           unlock();
           return *_it;
       }

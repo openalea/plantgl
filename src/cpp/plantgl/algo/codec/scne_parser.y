@@ -354,7 +354,7 @@ void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuild
 // %define api.pure full
 // %locations
 
-%name-prefix "scne_yy"
+%name-prefix = "scne_yy"
 %parse-param {void * parser}
 %lex-param {GENERIC_LEXER * YYLEX_PARAM }
 
@@ -367,13 +367,13 @@ void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuild
 %union {
   /* basic types readed with the lexer */
   bool *                       bool_t;
-  int_t *                    int32_o;
+  int_t *                      int32_o;
   real_t *                     real_o;
   std::string *                string_t;
   /* extended types */
   uchar_t *                    uchar_o;
-  uint_t *                   uint32_o;
-  std::list<uint_t> *        uint32_l;
+  uint32_t *                   uint32_o;
+  std::list<uint32_t> *        uint32_l;
   Color3 *                     color3_t;
   Color4 *                     color4_t;
   std::list<Color4> *          color4_l;
@@ -391,20 +391,20 @@ void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuild
   RealArrayPtr *               real_a;
   Array2<real_t> *             real_m;
   RealArray2Ptr *              real_mp;
-  Vector2 *             vector2_t;
-  std::list<Vector2> *  vector2_l;
+  Vector2 *                    vector2_t;
+  std::list<Vector2> *         vector2_l;
   Point2ArrayPtr *             vector2_a;
-  Array2<Vector2> *     vector2_m;
+  Array2<Vector2> *            vector2_m;
   Point2MatrixPtr *            vector2_mp;
-  Vector3 *             vector3_t;
-  std::list<Vector3> *  vector3_l;
+  Vector3 *                    vector3_t;
+  std::list<Vector3> *         vector3_l;
   Point3ArrayPtr *             vector3_a;
-  Array2<Vector3> *     vector3_m;
+  Array2<Vector3> *            vector3_m;
   Point3MatrixPtr *            vector3_mp;
-  Vector4 *             vector4_t;
-  std::list<Vector4> *  vector4_l;
+  Vector4 *                    vector4_t;
+  std::list<Vector4> *         vector4_l;
   Point4ArrayPtr *             vector4_a;
-  Array2<Vector4> *     vector4_m;
+  Array2<Vector4> *            vector4_m;
   Point4MatrixPtr *            vector4_mp;
 
   // Transformation object
@@ -422,8 +422,8 @@ void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuild
   SceneObjectPtr *             sceneobject_o;
   ScenePtr *                   scene_o;
   // Shape Builder
-  Shape::Builder *         Shape_b;
-  Inline::Builder *        inline_b;
+  Shape::Builder *             Shape_b;
+  Inline::Builder *            inline_b;
   // Appearance objects
   AppearancePtr *              appearance_o;
   // Appearance builders
@@ -440,7 +440,7 @@ void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuild
   GeometryPtr *                geometry_o;
   GeometryArrayPtr *           geometry_a;
   std::list<GeometryPtr> *     geometry_l;
-  PolylinePtr *            polyline_o;
+  PolylinePtr *                polyline_o;
   PrimitivePtr *               primitive_o;
   LineicModelPtr *             curve_o;
   Curve2DPtr *                 curve2D_o;
@@ -493,6 +493,7 @@ void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuild
 /* association of types to tokens and non terminals */
 
 %token <int32_o>       TokInt
+%token <uint32_o>      TokUInt
 %token <bool_t>        TokBool
 %token <real_o>        TokReal
 %token <string_t>      TokName
@@ -2860,7 +2861,7 @@ Real :
  | '(' Real ')' { $$ = $2 ;};
 
 RealAtom :
- TokInt { $$ = new real_t(*$1); delete $1; }
+ TokUInt { $$ = new real_t(*$1); delete $1; }
  | TokReal { $$ = $1; }
  | TokPi { $$ = new real_t(180); };
 
@@ -2891,14 +2892,14 @@ RealMatrix:
    };
 
 Integer :
-   TokInt {$$ = $1;}
+   TokUInt {$$ = new int_t(*$1); }
  | Integer TokPLUS  Integer {$$ = new int_t(*$1 + *$3); delete $1; delete $3;}
  | Integer TokMINUS Integer {$$ = new int_t(*$1 - *$3); delete $1; delete $3;}
  | Integer TokTIMES Integer {$$ = new int_t(*$1 * *$3); delete $1; delete $3;}
  | Integer TokSLASH Integer {$$ = new int_t(*$1 / *$3); delete $1; delete $3;}
  | TokMINUS Integer %prec UMINUS {$$ =  new int_t(- *$2); delete $2;}
- | TokPLUS  Integer %prec UPLUS  {$$ =  $2;}
- | '(' Integer ')' { $$ = $2 ;};
+ | TokPLUS  Integer %prec UPLUS  {$$ =  new int_t(*$2); delete $2;}
+ | '(' Integer ')' { $$ =  new int_t(*$2); delete $2;};
 
 
 Uchar:
@@ -2912,13 +2913,14 @@ Uchar:
    };
 
 Uint32:
-  Integer {
+  TokUInt {
      GEOM_ASSERT($1);
-     if (*$1 >= 0)
+     /* if (*$1 >= 0)
        $$ = new uint_t(*$1);
      else
-       $$ = NULL;
-     delete $1;
+       $$ = NULL;        
+     delete $1;*/
+     $$ = $1;
   };
 
 Uint32List:

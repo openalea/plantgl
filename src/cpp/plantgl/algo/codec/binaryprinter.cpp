@@ -326,21 +326,21 @@ leofstream& operator<<( leofstream& stream, TokenCode& c ){
 
 #define GEOM_PRINT_BEGIN(type,obj) \
   if (!obj->unique()) { \
-    if (! __cache.insert(obj->SceneObject::getId()).second) { \
-      DEBUG_INFO(TokReference,obj->getName(),obj->SceneObject::getId()) \
+    if (! __cache.insert(obj->getObjectId()).second) { \
+      DEBUG_INFO(TokReference,obj->getName(),obj->getObjectId()) \
       printType(TokReference); \
-      writeUint32(obj->SceneObject::getId()); \
+      writeUint32(obj->getObjectId()); \
       return true; \
     } \
     else { \
-     DEBUG_INFO(#type,obj->getName(),obj->SceneObject::getId()) \
+     DEBUG_INFO(#type,obj->getName(),obj->getObjectId()) \
      printType(#type);    \
      writeString(obj->getName()); \
-     writeUint32(obj->SceneObject::getId()); \
+     writeUint32(obj->getObjectId()); \
     } \
   } \
   else { \
-    DEBUG_INFO(#type,"",obj->SceneObject::getId())  \
+    DEBUG_INFO(#type,"",obj->getObjectId())  \
     printType(#type); writeString("") ; writeUint32(0); \
   }
 
@@ -693,7 +693,7 @@ bool BinaryPrinter::process(Shape * Shape){
     GEOM_ASSERT(Shape);
 
 
-    DEBUG_INFO("Shape",Shape->getName(),Shape->SceneObject::getId());
+    DEBUG_INFO("Shape",Shape->getName(),Shape->getObjectId());
     printType("Shape");
     writeString(Shape->getName());
     writeUint32(Shape->id);
@@ -736,7 +736,7 @@ bool BinaryPrinter::process(Inline * geomInline){
       for(Scene::iterator _it = geomInline->getScene()->begin();_it != geomInline->getScene()->end();_it++ ){
         ShapePtr shape = dynamic_pointer_cast<Shape>(*_it);
         if(shape){
-          DEBUG_INFO("Shape",shape->getName(),shape->SceneObject::getId());
+          DEBUG_INFO("Shape",shape->getName(),shape->getObjectId());
           printType("Shape");
           writeString(shape->getName());
           writeUint32(shape->id);
@@ -1783,7 +1783,7 @@ bool BinaryPrinter::process( Swung * swung )
   GEOM_ASSERT(swung);
   GEOM_PRINT_BEGIN(Swung,swung);
 #ifdef GEOM_DEBUG
-  std::cerr << "Name : '" << swung->getName() << "', Id : " << swung->SceneObject::getId() << std::endl;
+  std::cerr << "Name : '" << swung->getName() << "', Id : " << swung->getObjectId() << std::endl;
   std::cerr << "Pos : " << __outputStream.getStream().tellp() << std::endl;
 #endif
 

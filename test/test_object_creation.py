@@ -1,8 +1,8 @@
 from openalea.plantgl.all import *
-from os.path import join, dirname, exists
+from os.path import join, dirname, abspath, exists
 
 def create_default_objects():
-    yield AsymmetricHull()
+    yield AsymmetricHull(negXRadius = 3)
     bc = BezierCurve([(0,0,0,1),(.5,1,0,1),(1.,1,0,1),(1.5,0,0,1)])
     yield bc
     bc2 = BezierCurve2D([(0,0,1),(.5,1,1),(1.,1,1),(1.5,0,1)])
@@ -35,7 +35,7 @@ def create_default_objects():
 #`    yield Swung([bc2],[0])
     yield Text('test')
     yield TriangleSet([(0,0,0),(1,0,0),(0,1,0)],[list(range(3))])
-    fname = join(dirname(__file__),'../share/plantgl/database/amapsymbols/nentn105.smb')
+    fname = abspath(join(dirname(__file__),'../share/plantgl/database/amapsymbols/nentn105.smb'))
     if exists(fname):
         am = AmapSymbol(fname)
         assert am.isValid()
@@ -55,11 +55,12 @@ def create_default_transforms():
 def create_default_shapes():
     m = Material()
     ds = Sphere()
-    yield Shape(ds,m)
-    fname = join(dirname(__file__),'../share/plantgl/pixmap/geomviewer.png')
+    yield Shape(ds,m, 1)
+    fname = abspath(join(dirname(__file__),'../share/plantgl/pixmap/geomviewer.png'))
     if exists(fname):
+        print(fname)
         t = ImageTexture(fname)
-        yield Shape(Cylinder(),t)
+        yield Shape(Cylinder(),t, 2)
 
 def create_default_scene():
     s = Scene()
@@ -75,6 +76,14 @@ def create_default_scene():
         s += sh
     return s
 
+def defaultobj_generator():
+    for geom in create_default_objects():
+        yield geom
+    for geom in create_default_transforms():
+        yield geom
+    for sh in create_default_shapes():
+        yield sh
+
 def defaultobj_func_generator(testfunc):
     for geom in create_default_objects():
         yield testfunc, geom
@@ -82,6 +91,7 @@ def defaultobj_func_generator(testfunc):
         yield testfunc, geom
     for i,sh in enumerate(create_default_shapes()):
         yield testfunc, sh
+
     
 def test_create_default_objects():
     s = create_default_scene()
@@ -254,12 +264,24 @@ def randmaterial():
     diffuse = float(randint(0,255)) / max(amb)    
     return Material(ambient=amb,diffuse=diffuse,specular=randinttuple(3,0,255),emission=randinttuple(3,0,255),shininess= uniform(0,1),transparency=uniform(0,1))    
 
+def randomobj_generator():
+    for geom in create_random_objects():
+        yield geom
+    for geom in create_random_transforms():
+        yield geom
+    
+def randomshape_generator():
+    for geom in create_random_objects():
+        yield Shape(geom,randmaterial())
+    for geom in create_random_transforms():
+        yield Shape(geom,randmaterial())
+
 def randomobj_func_generator(testfunc):
     for geom in create_random_objects():
         yield testfunc, geom
     for geom in create_random_transforms():
         yield testfunc, geom
-    
+
 def randomshape_func_generator(testfunc):
     for geom in create_random_objects():
         yield testfunc, Shape(geom,randmaterial())
@@ -275,6 +297,23 @@ def create_random_scene():
         assert geom.isValid()
         s += Shape(Translated((maxdim*2,i*maxdim,0),geom),randmaterial())
     return s
+
+def shapebenchmark_generator():
+    for geom in create_default_objects():
+        yield geom
+    for geom in create_default_transforms():
+        yield geom
+    for sh in create_default_shapes():
+        yield sh
+    for geom in create_random_objects():
+        yield geom
+    for geom in create_random_transforms():
+        yield geom
+    for geom in create_random_objects():
+        yield Shape(geom,randmaterial())
+    for geom in create_random_transforms():
+        yield Shape(geom,randmaterial())
+
 
 def test_create_random_objects():
     s = create_random_scene()

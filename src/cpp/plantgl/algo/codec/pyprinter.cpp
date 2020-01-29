@@ -58,7 +58,7 @@ inline string compute_name(T * obj) {
     if(obj->isNamed()) return obj->getName();
     
     string _name;
-    _name = "PGL_"+number(obj->getId());
+    _name = "PGL_"+number(obj->getObjectId());
     if(obj->use_count() > 1){
         obj->setName(_name);
     }
@@ -389,7 +389,7 @@ inline void PyPrinter::print_object_end(ostream& os)
 #define GEOM_BEGIN(obj) \
     GEOM_ASSERT(obj) \
     if (obj->use_count() > 1) { \
-        if (! __cache.insert(obj->getId()).second) return true; \
+        if (! __cache.insert(obj->getObjectId()).second) return true; \
     } \
 
 /* ----------------------------------------------------------------------- */

@@ -72,55 +72,13 @@ using namespace std;
 #define GEOM_VRMLPRINT_DECREMENT_INDENT \
   __indent.erase(__indent.end() - 4,__indent.end());
 
-/*
-#define GEOM_VRMLPRINT_BEGINSHAPE(obj){ \
-  if (obj->isNamed()) { \
-    uint_t appid = 0; \
-    if(__app)appid= __app->getId(); \
-    if (! __shapecache.insert((number(obj->getId())+"_"+number(appid)).c_str()).second){ \
-      __geomStream << "USE SHAPE_" << obj->getId() <<"_" << appid << endl; \
-      return true; \
-    } \
-      __geomStream << "DEF SHAPE_" << obj->getId() <<"_" << appid << " Shape { " << endl; \
-  } \
-  else { \
-    __geomStream << "Shape { " << endl; \
-  } \
-  GEOM_VRMLPRINT_INCREMENT_INDENT; \
-  __geomStream << __indent << "appearance Appearance {" << endl; \
-  if(__app){ \
-  GEOM_VRMLPRINT_INCREMENT_INDENT; \
-  __geomStream << __indent << "material "; \
-  __app->apply(*this); \
-  GEOM_VRMLPRINT_DECREMENT_INDENT \
-  } \
-  __geomStream << __indent << '}' << endl; \
-  __geomStream << __indent << "geometry "; \
- };
-*/
-
-/*  if (obj->isNamed()) { \
-    uint_t appid = 0; \
-    if(__app)appid= __app->getId(); \
-    if (!__shapecache.insert(pair<uint_t,uint_t>(obj->getId(),appid)).second ){ \
-      __geomStream << "USE SHAPE_" << obj->getId() <<"_" << appid << endl; \
-      return true; \
-    } \
-    else { \
-      __geomStream << "DEF SHAPE_" << obj->getId() <<"_" << appid << " Shape { " << endl; \
-    } \
-  } \
-  else { \
-    __geomStream << "Shape { " << endl; \
-  } \
-*/
 
 #define GEOM_VRMLPRINT_BEGINSHAPE(obj) \
   bool shapeused = false; \
   if (obj->isNamed()) { \
     uint_t appid = 0; \
-    if(__app)appid= __app->getId(); \
-    if (!__shapecache.insert(pair<uint_t,uint_t>(obj->getId(),appid)).second ){ \
+    if(__app)appid= __app->getObjectId(); \
+    if (!__shapecache.insert(pair<uint_t,uint_t>(obj->getObjectId(),appid)).second ){ \
       if(__app->isNamed())  \
       __geomStream << "USE SHAPE_" << obj->getName().c_str() <<"_" << __app->getName().c_str() << endl; \
       else __geomStream << "USE SHAPE_" << obj->getName().c_str() <<"_" << appid << endl; \
@@ -152,14 +110,14 @@ using namespace std;
 #define GEOM_VRMLPRINT_BEGINOBJ(type,obj) \
   bool used = shapeused; \
   if (obj->isNamed()) { \
-    if (! __cache.insert(obj->getId()).second) { \
+    if (! __cache.insert(obj->getObjectId()).second) { \
       __geomStream  <<  "USE " << obj->getName().c_str() << endl; \
-      __geomStream  <<  __indent << "#" << obj->getId() << endl; \
+      __geomStream  <<  __indent << "#" << obj->getObjectId() << endl; \
       used = true; \
     } \
     else { \
       __geomStream  <<  "DEF " << obj->getName().c_str() << " " << type << " { " << endl; \
-      __geomStream  <<  __indent << "#" << obj->getId() << endl; \
+      __geomStream  <<  __indent << "#" << obj->getObjectId() << endl; \
        GEOM_VRMLPRINT_INCREMENT_INDENT; \
     } \
   } \
@@ -172,8 +130,8 @@ using namespace std;
   bool used = false; \
   if (obj->isNamed()) { \
     uint_t appid = 0; \
-    if(__app)appid= __app->getId(); \
-    if (!__shapecache.insert(pair<uint_t,uint_t>(obj->getId(),appid)).second ){ \
+    if(__app)appid= __app->getObjectId(); \
+    if (!__shapecache.insert(pair<uint_t,uint_t>(obj->getObjectId(),appid)).second ){ \
       if(__app->isNamed())  \
       __geomStream << "USE " << obj->getName().c_str() << "_" << __app->getName().c_str() << endl; \
       else __geomStream << "USE " << obj->getName().c_str() << "_" << appid << endl; \

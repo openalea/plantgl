@@ -80,10 +80,10 @@ void SceneObject::setName( const std::string& name ) {
 }
 
 void SceneObject::setDefaultName( ) {
-  setName("OBJECT_"+number(getId()));
+  setName("OBJECT_"+number(getObjectId()));
 }
 
-size_t SceneObject::getId( ) const {
+size_t SceneObject::getObjectId( ) const {
   return (size_t)this;
 }
 

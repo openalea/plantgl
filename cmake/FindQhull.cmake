@@ -1,11 +1,23 @@
 # Include Directory
-find_path(QHULL_INCLUDE_DIR "qhull/qhull_a.h" "libqhull/qhull_a.h" PATHS $ENV{PATH} $ENV{CONDA_PREFIX}/include)
+if (DEFINED ENV{CONDA_PREFIX})
+    find_path(QHULL_INCLUDE_DIR "libqhull/qhull_a.h" "qhull/qhull_a.h"  $ENV{CONDA_PREFIX}/include)
+else ()
+    find_path(QHULL_INCLUDE_DIR "libqhull/qhull_a.h" "qhull/qhull_a.h" $ENV{PATH} PATHS)
+endif()
 
 # Library Directory
 if (WIN32)
-    find_library(QHULL_LIBRARY NAMES "qhullstatic" "libqhullstatic" PATHS $ENV{PATH} $ENV{CONDA_PREFIX}/lib)
+    if (DEFINED ENV{CONDA_PREFIX})
+        find_library(QHULL_LIBRARY NAMES "qhullstatic" "libqhullstatic" $ENV{CONDA_PREFIX}/lib)
+    else()
+        find_library(QHULL_LIBRARY NAMES "qhullstatic" "libqhullstatic" PATHS $ENV{PATH} )
+    endif()
 else()
-    find_library(QHULL_LIBRARY NAMES "qhull" "libqhull" PATHS $ENV{PATH} $ENV{CONDA_PREFIX}/lib)
+    if (DEFINED ENV{CONDA_PREFIX})
+        find_library(QHULL_LIBRARY NAMES "qhull" "libqhull" $ENV{CONDA_PREFIX}/lib)
+    else()
+        find_library(QHULL_LIBRARY NAMES "qhull" "libqhull" PATHS $ENV{PATH})
+    endif()
 endif()
 
 if (QHULL_INCLUDE_DIR AND QHULL_LIBRARY)

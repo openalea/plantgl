@@ -1,5 +1,5 @@
 # Include Directory
-find_path(EIGEN_INCLUDE_DIR_1 "Eigen/Core" PATHS $ENV{PATH} $ENV{CONDA_PREFIX}/include)
+find_path(EIGEN_INCLUDE_DIR_1 "Core" PATHS $ENV{PATH} $ENV{CONDA_PREFIX}/include)
 
 if (EIGEN_INCLUDE_DIR_1)
     set(EIGEN_INCLUDE_DIR ${EIGEN_INCLUDE_DIR_1})
