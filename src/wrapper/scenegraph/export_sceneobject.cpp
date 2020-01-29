@@ -84,7 +84,7 @@ void export_SceneObject()
     .add_property("name",get_sco_name,&SceneObject::setName)
     .def("isValid", &SceneObject::isValid)
     .def("apply", &SceneObject::apply)
-    .def("getId", &SceneObject::getId)
+    .def("getObjectId", &SceneObject::getObjectId)
     .enable_pickling()
     ;
 

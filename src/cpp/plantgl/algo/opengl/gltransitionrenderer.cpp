@@ -50,7 +50,7 @@ PGL_USING_NAMESPACE
 
 #define GEOM_GLRENDERER_CHECK_APPEARANCE(app) \
   if ((__appearance) && \
-      (__appearance->getId() == app->getId())) return true;
+      (__appearance->getObjectId() == app->getObjectId())) return true;
 
 
 #define GEOM_GLRENDERER_UPDATE_APPEARANCE(app) \

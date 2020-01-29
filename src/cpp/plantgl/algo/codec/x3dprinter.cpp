@@ -122,7 +122,7 @@ using namespace std;
 #define GEOM_VRMLPRINT_BEGINOBJ(type,obj) \
   GEOM_ASSERT( obj ); \
   if (obj->isNamed()) { \
-    if (! __cache.insert(obj->getId()).second) { \
+    if (! __cache.insert(obj->getObjectId()).second) { \
       __geomStream  <<  __indent << "<" << type << " USE name=\"" << obj->getName().c_str() << "\" > " << endl; \
       return true; \
     } \
@@ -135,7 +135,7 @@ using namespace std;
 #define GEOM_VRMLPRINT_INDFACESET(obj,index) \
   GEOM_ASSERT( obj ); \
   if (obj->isNamed()) { \
-    if (! __cache.insert(obj->getId()).second) { \
+    if (! __cache.insert(obj->getObjectId()).second) { \
       __geomStream  <<  __indent << "<IndexedFaceSet USE name=\"" << obj->getName().c_str() << "\" > " << endl; \
       return true; \
     } \
@@ -239,7 +239,7 @@ X3DPrinter::process( Material * material )
   GEOM_ASSERT( material );
 
   if (material->isNamed()) {
-    if (! __cache.insert(material->getId()).second) {
+    if (! __cache.insert(material->getObjectId()).second) {
       __geomStream  <<  __indent << "<Appearance USE " << material->getName().c_str() << " > " << endl;
       return true;
     }

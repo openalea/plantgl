@@ -137,9 +137,9 @@ object pgl_load_data(const std::string& fname)
 }
 
 
-#define SAVETYPE(type) if (extract<type *>(a).check()) bp.dumpArray<type>(*extract<type *>(a)());
+#define SAVETYPE(type) if (extract<type *>(a).check()) bprinter.dumpArray<type>(*extract<type *>(a)());
 
-void pgl_save_one_data(const boost::python::object& a, BinaryPrinter& bp)
+void pgl_save_one_data(const boost::python::object& a, BinaryPrinter& bprinter)
 {
             SAVETYPE(RealArray)
             else SAVETYPE(Point2Array)

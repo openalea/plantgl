@@ -66,7 +66,7 @@ using namespace std;
 template <class T> bool Discretizer::check_cache(T * geom)
 {
   if (!geom->unique()) {
-    Cache<ExplicitModelPtr>::Iterator _it = __cache.find(geom->getId());
+    Cache<ExplicitModelPtr>::Iterator _it = __cache.find(geom->getObjectId());
     if (! (_it == __cache.end())) {
        __discretization = ExplicitModelPtr(_it->second);
       if (__discretization) return true;
@@ -80,7 +80,7 @@ template <class T> bool Discretizer::check_cache(T * geom)
 template <class T> bool Discretizer::check_cache_with_tex(T * geom)
 {
   if (!geom->unique()) {
-    Cache<ExplicitModelPtr>::Iterator _it = __cache.find(geom->getId());
+    Cache<ExplicitModelPtr>::Iterator _it = __cache.find(geom->getObjectId());
     if ((_it != __cache.end()) && (dynamic_pointer_cast<Mesh>(_it->second))->hasTexCoordList()) {
        __discretization = ExplicitModelPtr(_it->second);
       if (__discretization) return true;
@@ -95,7 +95,7 @@ template <class T>
 void Discretizer::update_cache(T * geom) {
   if (!geom->unique()) {
     if(__discretization && geom->isNamed())__discretization->setName(geom->getName());
-    __cache.insert(geom->getId(),__discretization);
+    __cache.insert(geom->getObjectId(),__discretization);
   }
 }
 

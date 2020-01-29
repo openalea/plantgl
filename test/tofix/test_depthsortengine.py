@@ -45,7 +45,7 @@ def process_triset_basic(listpts, visual = False, translation = 2, model = None)
         e.processTriangle(*(pts2+[100*i]))
     s = e.getResult(eABGR, False)
     for sh in s:
-        print sh.geometry.pointList
+        print (sh.geometry.pointList)
     if visual : Viewer.add(s)
 
 
@@ -98,7 +98,7 @@ def process_scene_basic(sc, visual = False, translation = 1):
     t = Tesselator() 
     sc.apply(t)
     for tr in t.result.indexList:
-        print [tuple(t.result.pointList[tid]) for tid in tr]
+        print ([tuple(t.result.pointList[tid]) for tid in tr])
 
     cam = (-2,0,0)
     if visual : 
@@ -281,7 +281,7 @@ if __name__ == '__main__':
     mid = None
     if len(argv) > 1 :
         mid = int(argv[1])
-        print 'Model', mid
+        print ('Model', mid)
     if type(i) == int:
         globals()['test_tri'+str(i)](visual, model = mid)
     else:

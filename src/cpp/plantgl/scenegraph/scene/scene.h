@@ -187,10 +187,10 @@ public:
   void setAt(uint_t i, const Shape3DPtr& );
 
   /// Returns the \e i-th element of \e self.
-  const ShapePtr getShapeId(uint_t id ) const ;
+  const ShapePtr findShapeId(uint_t id ) const ;
 
   /// Returns the \e i-th element of \e self.
-  const Shape3DPtr getSceneObjectId(uint_t id ) const ;
+  const Shape3DPtr findSceneObjectId(uint_t id ) const ;
 
   /// Returns the size of \e self.
   uint_t size( ) const ;

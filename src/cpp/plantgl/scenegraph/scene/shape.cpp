@@ -120,8 +120,9 @@ Shape::Shape( ) :
     Shape3D(),
     appearance(),
     geometry(),
-    id(getSceneObjectId()),
+    id(),
     parentId(NOID){
+        setDefaultId();
 }
 
 Shape::Shape( const GeometryPtr& _geom,
@@ -133,7 +134,7 @@ Shape::Shape( const GeometryPtr& _geom,
     geometry(_geom),
     id(_id),
     parentId(_parentId){
-    if(id == NOID)id = getSceneObjectId();
+    if(id == NOID)setDefaultId();
     setComputedName();
 }
 
@@ -147,7 +148,7 @@ Shape::Shape( const string& name,
     geometry(_geom),
     id(_id),
     parentId(_parentId) {
-    if(id == NOID)id = getSceneObjectId();
+    if(id == NOID)setDefaultId();
     setName(name);
 }
 
@@ -160,7 +161,7 @@ Shape::Shape( const GeometryPtr& _geom,
     geometry(_geom),
     id(_id),
     parentId(_parentId){
-    if(id == NOID)id = getSceneObjectId();
+    if(id == NOID)setDefaultId();
     setComputedName();
 }
 
@@ -174,7 +175,7 @@ Shape::Shape( const string& name,
     geometry(_geom),
     id(_id),
     parentId(_parentId) {
-    if(id == NOID)id = getSceneObjectId();
+    if(id == NOID)setDefaultId();
     setName(name);
 }
 Shape::~Shape() {
@@ -182,6 +183,12 @@ Shape::~Shape() {
     cerr <<"Shape " <<  __name << " destroyed" << endl;
 #endif
 }
+
+void Shape::setDefaultId()
+{
+    id = (uintptr_t)getObjectId();    
+}
+
 
 /* ----------------------------------------------------------------------- */
 
@@ -191,9 +198,9 @@ void Shape::setComputedName(){
         if (! geometry->isNamed()) {
           string _name;
           if(id != NOID)
-            _name = "GEOMID_"+number(id)+"_"+number(geometry->getId());
+            _name = "GEOMID_"+number(id)+"_"+number(geometry->getObjectId());
           else
-            _name = "GEOM_"+number(geometry->getId());
+            _name = "GEOM_"+number(geometry->getObjectId());
           geometry->setName(_name);
         };
 
@@ -202,18 +209,18 @@ void Shape::setComputedName(){
       if (! appearance->isNamed()) {
         string _name;
         if(id != NOID)
-          _name = "APPID_"+number(id)+"_"+number(appearance->getId());
+          _name = "APPID_"+number(id)+"_"+number(appearance->getObjectId());
         else
-          _name = "APP_"+number(appearance->getId());
+          _name = "APP_"+number(appearance->getObjectId());
         appearance->setName(_name);
       }
 
     // Sets the label to the self
     if ( __name.empty() ) {
       if(id != NOID)
-        __name = "SHAPEID_"+number(id)+"_"+number(SceneObject::getId());
+        __name = "SHAPEID_"+number(id)+"_"+number(getObjectId());
       else
-        __name = "SHAPE_"+number(SceneObject::getId());
+        __name = "SHAPE_"+number(getObjectId());
     };
 }
 
@@ -266,7 +273,7 @@ AppearancePtr& Shape::getAppearance(){
   return appearance;
 }
 
-size_t Shape::getId() const {
+uint_t Shape::getId() const {
   return id;
 }
 
@@ -274,10 +281,12 @@ uint_t& Shape::getId(){
   return id;
 }
 
+#ifndef PGL_NO_DEPRECATED
 size_t Shape::getSceneObjectId() const
 {
     return (size_t)this;
 }
+#endif
 
 /* ----------------------------------------------------------------------- */
 

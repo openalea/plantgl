@@ -568,18 +568,20 @@ OZ                {TRACE; return TokOZ;}
                                            current_macro_args= "";
                                            current_macro= "";
                                            BEGIN(INITIAL);
-                                          }
+                                           }
                                         }
 <definarg>[^()\n]+  {TRACE;current_macro_args += std::string(YYText());}
 <definarg>\n        {TRACE;_columno=1;}
 
-{FILE}            {TRACE; std::string _str(YYText());
+{FILE}            {TRACE; 
+                   std::string _str(YYText());
                    VAL->string_t = new std::string(_str.begin()+1,_str.end()-1);
                    return TokFile;
                   }
-{I}               {TRACE;
-                   VAL->int32_o = new int_t(atoi(YYText()));
-                   return TokInt;
+{I}               {TRACE; // We need to consider unsigned int to avoid error with id.
+                   long long int v = atoll(YYText());
+                   VAL->uint32_o = new uint32_t(v);
+                   return TokUInt;
                   }
 {R}               {TRACE; 
                    setlocale(LC_ALL,"C");

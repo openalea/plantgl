@@ -19,12 +19,16 @@
 
 # -- Project information -----------------------------------------------------
 
-import os,sys
-from openalea.sconsx.util.config_deploy import HexVersion
+import os,sys,inspect
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0,parentdir) 
+
+from hexversion import HexVersion
 
 def getMetaInfo():
     metainfo = {}
-    execfile(os.path.join(os.pardir, 'src','plantgl','__init__.py'),{},metainfo)
+    execfile(os.path.join(os.pardir, 'src','openalea','plantgl','__init__.py'),{},metainfo)
     return metainfo['__metainfo__']
 
 globals().update(getMetaInfo())
@@ -135,7 +139,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
-latex_documents = [('contents', 'main.tex', project + ' documentation', authors, 'manual')]
+latex_documents = [('contents', 'main.tex', namespace + ' documentation', authors, 'manual')]
 
 
 # -- Options for manual page output ------------------------------------------
@@ -155,6 +159,6 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     (master_doc, 'Plantgl', u'Plantgl Documentation',
-     author, 'Plantgl', 'One line description of project.',
+     author, 'Plantgl', description,
      'Miscellaneous'),
 ]

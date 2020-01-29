@@ -1911,7 +1911,7 @@ void PglTurtle::_frame(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius
      if (group) group->getGeometryList()->setAt(1,stick);
      else arrow = stick;
   }
-  arrow->setName("Frame_"+number(arrow->getId()));
+  arrow->setName("Frame_"+number(arrow->getObjectId()));
   AppearancePtr hmat(HEADING_FRAME_MATERIAL);
   AppearancePtr umat(UP_FRAME_MATERIAL);
   AppearancePtr lmat(LEFT_FRAME_MATERIAL);

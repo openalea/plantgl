@@ -93,6 +93,9 @@ public:
   /// Destructor
   virtual ~Printer( );
 
+  /// Flush \e self.
+  void flush( );
+
   /// Clears \e self.
   void clear( );
 

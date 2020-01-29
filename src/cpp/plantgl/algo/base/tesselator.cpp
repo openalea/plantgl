@@ -71,7 +71,7 @@ using namespace std;
 
 #define GEOM_TESSELATOR_CHECK_CACHE(geom) \
 if(!geom->unique()){ \
-  Cache<ExplicitModelPtr>::Iterator _it = __cache.find(geom->getId()); \
+  Cache<ExplicitModelPtr>::Iterator _it = __cache.find(geom->getObjectId()); \
   if (! (_it == __cache.end())) { \
     __discretization = _it->second; \
     return true; \
@@ -81,7 +81,7 @@ if(!geom->unique()){ \
 #define GEOM_TESSELATOR_UPDATE_CACHE(geom) \
 if(!geom->unique()){ \
   if(geom->isNamed())__discretization->setName(geom->getName()); \
-  __cache.insert(geom->getId(),__discretization); \
+  __cache.insert(geom->getObjectId(),__discretization); \
 }
 
 
@@ -368,7 +368,7 @@ bool Tesselator::process( Extrusion * extrusion ){
     d.process(extrusion);
     if(d.getDiscretization()){
       d.getDiscretization()->apply(*this);
-      __cache.remove(d.getDiscretization()->getId());
+      __cache.remove(d.getDiscretization()->getObjectId());
     }
     GEOM_TESSELATOR_UPDATE_CACHE(extrusion);
     return true;

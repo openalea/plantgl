@@ -246,13 +246,18 @@ public:
   AppearancePtr& getAppearance();
 
   /// Return the Id of \e self.
-  virtual size_t getId() const;
+  uint_t getId() const;
 
   /// Return the Id of \e self.
   uint_t& getId();
 
+  /// Set a default Id to \e self.
+  void setDefaultId();
+
+#ifndef PGL_NO_DEPRECATED
   /// Return the SceneObject Id of \e self.
-  size_t getSceneObjectId() const;
+  attribute_deprecated size_t getSceneObjectId() const;
+#endif
 
   /// Return the ParentId of \e self.
   uint_t getParentId() const { return parentId; }
