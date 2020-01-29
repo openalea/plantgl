@@ -35,7 +35,6 @@ requirements:
       - xorg-libxfixes                    # [linux]
           
   build:
-      - python {{PY_VER}}
       - binutils_impl_linux-64<2.31.0     # [linux]
       - {{ compiler('cxx') }}
       - bison                             # [unix]
@@ -51,6 +50,7 @@ requirements:
       - {{ cdt('libselinux') }}            # [linux]
       - {{ cdt('libxdamage') }}            # [linux]
       - {{ cdt('libxxf86vm') }}            # [linux]
+      - {{ cdt('libxext') }}               # [linux]
       - libglu                             # [linux]
   run:
       - python {{PY_VER}}
