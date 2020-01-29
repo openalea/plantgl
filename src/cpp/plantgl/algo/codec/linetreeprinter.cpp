@@ -1,35 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr)
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 
 #include <fstream>
@@ -48,7 +56,6 @@
 #include <plantgl/tool/bfstream.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 using namespace std;
 using namespace STDEXT;
@@ -200,10 +207,10 @@ void LinetreePrinter::printTransformation(){
   // val1 = 1 ; val2 = 1 ; range = 1;
   __ligstream << long(1) << long(1) << long(1);
 
-  Vector3 a(__matrix(0,0),__matrix(1,0),__matrix(2,0));
-  Vector3 b(__matrix(0,1),__matrix(1,1),__matrix(2,1));
-  Vector3 c(__matrix(0,2),__matrix(1,2),__matrix(2,2));
-  Vector3 t(__matrix(0,3),__matrix(1,3),__matrix(2,3));
+  Vector3 a(getMatrix()(0,0),getMatrix()(1,0),getMatrix()(2,0));
+  Vector3 b(getMatrix()(0,1),getMatrix()(1,1),getMatrix()(2,1));
+  Vector3 c(getMatrix()(0,2),getMatrix()(1,2),getMatrix()(2,2));
+  Vector3 t(getMatrix()(0,3),getMatrix()(1,3),getMatrix()(2,3));
 
   //  real_t scale_z = c.normalize();
   float scale_x = norm(a);
@@ -243,7 +250,7 @@ bool LinetreePrinter::symbolProcess( Geometry* object )
         Vector3 scaling;
 
         SmbMap::const_iterator
-                _it = __smbcache.find(object->getId());
+                _it = __smbcache.find(object->getObjectId());
         if(_it == __smbcache.end()){
                 if(!object->apply(__translator))return false;
                 _symbol = __translator.getSymbol();
@@ -252,7 +259,7 @@ bool LinetreePrinter::symbolProcess( Geometry* object )
                         translation = __translator.getTranslation();
                         scaling = __translator.getNormalizationFactors();
                         pair<Vector3,Vector3> t(translation,scaling);
-                        __smbcache[object->getId()] = pair<AmapSymbolPtr,pair<Vector3,Vector3> > (_symbol,t);
+                        __smbcache[object->getObjectId()] = pair<AmapSymbolPtr,pair<Vector3,Vector3> > (_symbol,t);
                 }
                 else return false;
         }
@@ -262,11 +269,11 @@ bool LinetreePrinter::symbolProcess( Geometry* object )
                 scaling = _it->second.second.second;
         }
 
-        pushMatrix();
-        translate(translation);
-        scale(scaling);
+        __matrix.push();
+        __matrix.translate(translation);
+        __matrix.scale(scaling);
         bool result = _symbol->apply(*this);
-        popMatrix();
+        __matrix.pop();
         return result;
 }
 
@@ -276,7 +283,7 @@ bool LinetreePrinter::endProcess(){
         __dtastream << "  " << __dta.size() << "  symbole(s)" << endl;
         for(DtaList::const_iterator
                 _it = __dta.begin(); _it != __dta.end(); _it++){
-                string file = __smbfilecache[_it->second.first->getId()];
+                string file = __smbfilecache[_it->second.first->getObjectId()];
                 if(!file.empty()){
                         file = get_filename(file);
                         size_t pos = file.find_last_of('.');
@@ -301,9 +308,9 @@ bool LinetreePrinter::endProcess(){
 bool LinetreePrinter::process( AmapSymbol * amapSymbol ) {
 
         Cache::const_iterator
-                _it = __cache.find(amapSymbol->getId());
+                _it = __cache.find(amapSymbol->getObjectId());
         if(_it != __cache.end()){
-                CacheUnit::const_iterator _it2 = _it->second.find(__mat->getId());
+                CacheUnit::const_iterator _it2 = _it->second.find(__mat->getObjectId());
                 if(_it2 != _it->second.end()){
                         __ligstream << _it2->second;
                         printTransformation();
@@ -320,11 +327,11 @@ bool LinetreePrinter::process( AmapSymbol * amapSymbol ) {
                         __smbpath += '/';
                 if(amapSymbol->isNamed())
                         filename = __smbpath + amapSymbol->getName() + ".smb";
-                else filename = __smbpath +"smb" + number(amapSymbol->getId()) + ".smb";
+                else filename = __smbpath +"smb" + number(amapSymbol->getObjectId()) + ".smb";
                 beofstream stream(filename);
                 if(stream){
                         amapSymbol->write(stream);
-                        __smbfilecache[amapSymbol->getId()] = filename;
+                        __smbfilecache[amapSymbol->getObjectId()] = filename;
                 }
                 else return false;
         }
@@ -337,21 +344,21 @@ bool LinetreePrinter::process( AmapSymbol * amapSymbol ) {
                         absolute_dirname(amapSymbol->getFileName())){
                         if(exists(amapSymbol->getFileName())){
                                 if(!copy(amapSymbol->getFileName(),filename))return false;
-                                __smbfilecache[amapSymbol->getId()] = filename;
+                                __smbfilecache[amapSymbol->getObjectId()] = filename;
                         }
                         else {
                                 beofstream stream(filename);
                                 if(stream){
                                         amapSymbol->write(stream);
-                                        __smbfilecache[amapSymbol->getId()] = filename;
+                                        __smbfilecache[amapSymbol->getObjectId()] = filename;
                                 }
                                 else return false;
                         }
                 }
-                else __smbfilecache[amapSymbol->getId()] = filename;
+                else __smbfilecache[amapSymbol->getObjectId()] = filename;
 
         }
-        __cache[amapSymbol->getId()][__mat->getId()] = __smbNumber;
+        __cache[amapSymbol->getObjectId()][__mat->getObjectId()] = __smbNumber;
         __dta.push_back(pair<long, pair<AmapSymbolPtr,MaterialPtr> >(__smbNumber,
                 pair<AmapSymbolPtr,MaterialPtr> (AmapSymbolPtr(amapSymbol),__mat)));
         return true;
@@ -365,7 +372,7 @@ bool LinetreePrinter::process(Shape * Shape) {
   GEOM_ASSERT(Shape);
   if(Shape->getId() != Shape::NOID)
         __entity_number = Shape->getId();
-  else __entity_number = Shape->SceneObject::getId();
+  else __entity_number = Shape->getObjectId();
   bool b=Shape->appearance->apply(*this);
   return ( b && (Shape->geometry->apply(*this)));
 }
@@ -449,10 +456,10 @@ bool LinetreePrinter::process( BezierPatch * bezierPatch ) {
 
 
 bool LinetreePrinter::process( Box * box ) {
-  pushMatrix();
-  scale(box->getSize()*2);
+  __matrix.push();
+  __matrix.scale(box->getSize()*2);
   symbolProcess(UNIT_BOX.get());
-  popMatrix();
+  __matrix.pop();
   return true;
 }
 
@@ -463,18 +470,18 @@ bool LinetreePrinter::process( Box * box ) {
 bool LinetreePrinter::process( Cone * cone ) {
   GEOM_ASSERT(cone);
 
-  pushMatrix();
+  __matrix.push();
   real_t top = __top_radius;
   __top_radius = 0.001f;
 
-  scale(Vector3(cone->getRadius()*2,
+  __matrix.scale(Vector3(cone->getRadius()*2,
                                 cone->getRadius()*2,
                                 cone->getHeight()));
   if(cone->getSolid())symbolProcess(UNIT_SOLID_CYLINDER.get());
   else symbolProcess(UNIT_CYLINDER.get());
 
   __top_radius = top;
-  popMatrix();
+  __matrix.pop();
   return true;
 }
 
@@ -486,15 +493,15 @@ bool LinetreePrinter::process( Cylinder * cylinder ) {
 //  return symbolProcess(cylinder);
   GEOM_ASSERT(cylinder);
 
-  pushMatrix();
+  __matrix.push();
 
-  scale(Vector3(cylinder->getRadius()*2,
+  __matrix.scale(Vector3(cylinder->getRadius()*2,
                             cylinder->getRadius()*2,
                                 cylinder->getHeight()));
   if(cylinder->getSolid())symbolProcess(UNIT_SOLID_CYLINDER.get());
   else symbolProcess(UNIT_CYLINDER.get());
 
-  popMatrix();
+  __matrix.pop();
 
   return true;
 }
@@ -531,18 +538,18 @@ bool LinetreePrinter::process( Frustum * cylinder) {
   GEOM_ASSERT(cylinder);
 
 
-  pushMatrix();
+  __matrix.push();
   real_t top = __top_radius;
   __top_radius *= cylinder->getTaper();
 
-  scale(Vector3(cylinder->getRadius()*2,
+  __matrix.scale(Vector3(cylinder->getRadius()*2,
                                 cylinder->getRadius()*2,
                                 cylinder->getHeight()));
   if(cylinder->getSolid())symbolProcess(UNIT_SOLID_CYLINDER.get());
   else symbolProcess(UNIT_CYLINDER.get());
 
   __top_radius = top;
-  popMatrix();
+  __matrix.pop();
 
   return true;
 }
@@ -640,13 +647,13 @@ bool LinetreePrinter::process( QuadSet * quadSet ) {
 bool LinetreePrinter::process( Sphere * sphere ) {
   GEOM_ASSERT(sphere);
 
-  pushMatrix();
+  __matrix.push();
 
   real_t r = sphere->getRadius()*2;
   Vector3 scales(r,r,r);
-  scale(scales);
+  __matrix.scale(scales);
   symbolProcess(UNIT_SPHERE.get());
-  popMatrix();
+  __matrix.pop();
 
   return true;
 }
@@ -693,13 +700,13 @@ bool LinetreePrinter::process( BezierCurve2D * bezierCurve ) {
 bool LinetreePrinter::process( Disc * disc ) {
 //  return symbolProcess(disc);
 
-  pushMatrix();
+  __matrix.push();
 
   real_t r = disc->getRadius()*2;
   Vector3 scales(r,r,1);
-  scale(scales);
+  __matrix.scale(scales);
   symbolProcess(UNIT_DISC.get());
-  popMatrix();
+  __matrix.pop();
   return true;
 }
 

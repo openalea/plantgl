@@ -1,0 +1,31 @@
+name: plantgl-devel
+channels:
+    - local
+    - defaults
+    #- conda-forge
+    - openalea
+    - ethan13310
+dependencies:
+    - python =3.7
+    - boost
+    - qt =5
+    - pyqt
+    - ipython
+    - qtconsole
+    - pyopengl
+    #- pyqglviewer
+    - nose
+    - bison [unix]
+    - flex [unix]
+    - gmp [unix]
+    - mpfr [unix]
+    - cgal [unix]
+    - qhull
+    - eigen
+    - ann
+    - patch
+    - setuptools
+    - openalea.deploy
+    - cmake >=3.12.0
+    - scipy
+    - matplotlib

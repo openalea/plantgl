@@ -67,9 +67,9 @@ void RedirectIOToConsole()
 
         // make cout, wcout, cin, wcin, wcerr, cerr, wclog and clog
         // point to console as well
-		ios::sync_with_stdio();
-        if(!ios::sync_with_stdio(true)) 
-		  printf("* Error for sync_with_stdio of cout, wcout, cin, wcin, wcerr, cerr, wclog and clog\n");
+        ios::sync_with_stdio();
+        if(!ios::sync_with_stdio(true))
+          printf("* Error for sync_with_stdio of cout, wcout, cin, wcin, wcerr, cerr, wclog and clog\n");
 
         isrunning = true;
         printf("* In/Output Console for STD[IN|OUT|ERR]\n");

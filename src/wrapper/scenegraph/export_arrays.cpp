@@ -1,33 +1,44 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Plant Graphic Library
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR Cirad/Inria/Inra Dap - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
+
 
 #include <plantgl/tool/util_array.h>
 #include <plantgl/tool/util_tuple.h>
@@ -42,7 +53,6 @@
 #include "arrays_macro.h"
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 using namespace boost::python;
 
@@ -99,7 +109,7 @@ typedef RealArray (RealArray::* Array2ArrayFunc) (const RealArray&) const;
 object pgl_load_data(const std::string& fname)
 {
     std::string cwd = get_cwd();
-	chg_dir(get_dirname(fname));
+    chg_dir(get_dirname(fname));
     BinaryParser _bp(*PglErrorStream::error);
     boost::python::list result;
     if ( _bp.open(fname) && _bp.readHeader()){
@@ -120,16 +130,16 @@ object pgl_load_data(const std::string& fname)
         }
         _bp.close();
     }
-	chg_dir(cwd);
+    chg_dir(cwd);
     if (len(result) == 1) return result[0];
     return boost::python::tuple(result);
 
 }
 
 
-#define SAVETYPE(type) if (extract<type *>(a).check()) bp.dumpArray<type>(*extract<type *>(a)());
+#define SAVETYPE(type) if (extract<type *>(a).check()) bprinter.dumpArray<type>(*extract<type *>(a)());
 
-void pgl_save_one_data(const boost::python::object& a, BinaryPrinter& bp)
+void pgl_save_one_data(const boost::python::object& a, BinaryPrinter& bprinter)
 {
             SAVETYPE(RealArray)
             else SAVETYPE(Point2Array)
@@ -152,8 +162,8 @@ bool pgl_save_data(const boost::python::object& a, const std::string& fname)
     leofstream stream(fname.c_str());
     if(!stream)return false;
     else {
-	    std::string cwd = get_cwd();
-		chg_dir(get_dirname(fname));
+        std::string cwd = get_cwd();
+        chg_dir(get_dirname(fname));
         BinaryPrinter _bp(stream);
         _bp.header();
         if (extract<RefCountObject *>(a).check()){
@@ -162,17 +172,17 @@ bool pgl_save_data(const boost::python::object& a, const std::string& fname)
         }
         else {
             _bp.writeUint32(len(a));
-            
-		    boost::python::object iter_obj = boost::python::object( boost::python::handle<>( PyObject_GetIter( a.ptr() ) ) );
-		    while( true )
-		    {
-			    boost::python::object obj; 
-			    try  {  obj = iter_obj.attr( "next" )(); }
-			    catch( boost::python::error_already_set ){ PyErr_Clear(); break; }
+
+            boost::python::object iter_obj = boost::python::object( boost::python::handle<PyObject>( PyObject_GetIter( a.ptr() ) ) );
+            while( true )
+            {
+                boost::python::object obj;
+                try  {  obj = boost::python::object(boost::python::handle<PyObject>(PyIter_Next(iter_obj.ptr()))); }
+                catch( boost::python::error_already_set ){ PyErr_Clear(); break; }
                 pgl_save_one_data(obj,_bp);
-		    }
+            }
         }
-		chg_dir(cwd);
+        chg_dir(cwd);
         return true;
     }
 }
@@ -226,7 +236,7 @@ struct IdValueSorter {
 
 IndexArrayPtr py_cut(RealArray * a, RealArrayPtr bins, bool filteremptygroups = true)
 {
-    Index ids = TOOLS(range)<Index>(a->size(),0,1);
+    Index ids = PGL::range<Index>(a->size(),0,1);
     std::stable_sort(ids.begin(),ids.end(),IdValueSorter(a));
     IndexArrayPtr result(new IndexArray());
     RealArray::const_iterator itbins = bins->begin();
@@ -273,16 +283,16 @@ void export_arrays()
     .def("exp",&RealArray::exp)
     .def("sqrt",&RealArray::sqrt)
     .def("pow",&RealArray::pow,args("exponent"))
-    // .def( "__add__",      &wrap_array_func<TOOLS::RealArray::operator + >   , boost::python::return_value_policy<boost::python::manage_new_object>() ) 
-    // .def( "__add__",      (RealArray(RealArray::*)(real_t)const)           &RealArray::operator+   , boost::python::return_value_policy<boost::python::manage_new_object>() ) 
-    // .def( "add",          &wrap_array_func<(RealArray(RealArray::*)(const RealArray&)const) &RealArray::operator+>   , boost::python::return_value_policy<boost::python::manage_new_object>() ) 
-    // .def( "add",          (RealArray(RealArray::*)(real_t)const)           &RealArray::operator+   , boost::python::return_value_policy<boost::python::manage_new_object>() ) 
-    .def( "__iadd__",     (RealArray&(RealArray::*)(real_t))               &RealArray::operator+=  , return_self<>() ) 
-    .def( "__iadd__",     (RealArray&(RealArray::*)(const RealArray&))     &RealArray::operator+=  , return_self<>() ) 
-    .def( "__isub__",     (RealArray&(RealArray::*)(real_t))               &RealArray::operator-=  , return_self<>() ) 
-    .def( "__isub__",     (RealArray&(RealArray::*)(const RealArray&))     &RealArray::operator-=  , return_self<>() ) 
-    .def( "__imul__",     (RealArray&(RealArray::*)(real_t))               &RealArray::operator*=  , return_self<>() ) 
-    .def( "__idiv__",     (RealArray&(RealArray::*)(real_t))               &RealArray::operator/=  , return_self<>() ) 
+    // .def( "__add__",      &wrap_array_func<TOOLS::RealArray::operator + >   , boost::python::return_value_policy<boost::python::manage_new_object>() )
+    // .def( "__add__",      (RealArray(RealArray::*)(real_t)const)           &RealArray::operator+   , boost::python::return_value_policy<boost::python::manage_new_object>() )
+    // .def( "add",          &wrap_array_func<(RealArray(RealArray::*)(const RealArray&)const) &RealArray::operator+>   , boost::python::return_value_policy<boost::python::manage_new_object>() )
+    // .def( "add",          (RealArray(RealArray::*)(real_t)const)           &RealArray::operator+   , boost::python::return_value_policy<boost::python::manage_new_object>() )
+    .def( "__iadd__",     (RealArray&(RealArray::*)(real_t))               &RealArray::operator+=  , return_self<>() )
+    .def( "__iadd__",     (RealArray&(RealArray::*)(const RealArray&))     &RealArray::operator+=  , return_self<>() )
+    .def( "__isub__",     (RealArray&(RealArray::*)(real_t))               &RealArray::operator-=  , return_self<>() )
+    .def( "__isub__",     (RealArray&(RealArray::*)(const RealArray&))     &RealArray::operator-=  , return_self<>() )
+    .def( "__imul__",     (RealArray&(RealArray::*)(real_t))               &RealArray::operator*=  , return_self<>() )
+    .def( "__idiv__",     (RealArray&(RealArray::*)(real_t))               &RealArray::operator/=  , return_self<>() )
     .def( "getMinAndMax", &ra_getMinAndMax , (boost::python::arg("filterinf")=false))
     .def( "getMinAndMaxIndex", &ra_getMinAndMaxIndex , (boost::python::arg("filterinf")=false))
     .def( "getMin", &ra_getMin )
@@ -305,12 +315,14 @@ void export_arrays()
 
   class_<IndexArrayPreOrderConstIterator>("IndexArrayPreOrderConstIterator",init<IndexArrayPtr,uint32_t>())
     .def("next",&py_next_iter<IndexArrayPreOrderConstIterator>)
+    .def("__next__",&py_next_iter<IndexArrayPreOrderConstIterator>)
     .def("atEnd",&IndexArrayPreOrderConstIterator::atEnd)
     .def("__iter__",&nullfunc<IndexArrayPreOrderConstIterator>, return_self<>())
     ;
 
    class_<IndexArrayPostOrderConstIterator>("IndexArrayPostOrderConstIterator",init<IndexArrayPtr,uint32_t>())
     .def("next",&py_next_iter<IndexArrayPostOrderConstIterator>)
+    .def("__next__",&py_next_iter<IndexArrayPostOrderConstIterator>)
     .def("atEnd",&IndexArrayPostOrderConstIterator::atEnd)
     .def("__iter__",&nullfunc<IndexArrayPostOrderConstIterator>, return_self<>())
     ;

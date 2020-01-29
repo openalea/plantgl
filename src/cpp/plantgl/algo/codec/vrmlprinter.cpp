@@ -1,35 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al.
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 
 
@@ -51,7 +59,6 @@
 #include <plantgl/math/util_math.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 using namespace std;
 
@@ -65,55 +72,13 @@ using namespace std;
 #define GEOM_VRMLPRINT_DECREMENT_INDENT \
   __indent.erase(__indent.end() - 4,__indent.end());
 
-/*
-#define GEOM_VRMLPRINT_BEGINSHAPE(obj){ \
-  if (obj->isNamed()) { \
-    uint_t appid = 0; \
-    if(__app)appid= __app->getId(); \
-    if (! __shapecache.insert((number(obj->getId())+"_"+number(appid)).c_str()).second){ \
-      __geomStream << "USE SHAPE_" << obj->getId() <<"_" << appid << endl; \
-      return true; \
-    } \
-      __geomStream << "DEF SHAPE_" << obj->getId() <<"_" << appid << " Shape { " << endl; \
-  } \
-  else { \
-    __geomStream << "Shape { " << endl; \
-  } \
-  GEOM_VRMLPRINT_INCREMENT_INDENT; \
-  __geomStream << __indent << "appearance Appearance {" << endl; \
-  if(__app){ \
-  GEOM_VRMLPRINT_INCREMENT_INDENT; \
-  __geomStream << __indent << "material "; \
-  __app->apply(*this); \
-  GEOM_VRMLPRINT_DECREMENT_INDENT \
-  } \
-  __geomStream << __indent << '}' << endl; \
-  __geomStream << __indent << "geometry "; \
- };
-*/
-
-/*  if (obj->isNamed()) { \
-    uint_t appid = 0; \
-    if(__app)appid= __app->getId(); \
-    if (!__shapecache.insert(pair<uint_t,uint_t>(obj->getId(),appid)).second ){ \
-      __geomStream << "USE SHAPE_" << obj->getId() <<"_" << appid << endl; \
-      return true; \
-    } \
-    else { \
-      __geomStream << "DEF SHAPE_" << obj->getId() <<"_" << appid << " Shape { " << endl; \
-    } \
-  } \
-  else { \
-    __geomStream << "Shape { " << endl; \
-  } \
-*/
 
 #define GEOM_VRMLPRINT_BEGINSHAPE(obj) \
   bool shapeused = false; \
   if (obj->isNamed()) { \
     uint_t appid = 0; \
-    if(__app)appid= __app->getId(); \
-    if (!__shapecache.insert(pair<uint_t,uint_t>(obj->getId(),appid)).second ){ \
+    if(__app)appid= __app->getObjectId(); \
+    if (!__shapecache.insert(pair<uint_t,uint_t>(obj->getObjectId(),appid)).second ){ \
       if(__app->isNamed())  \
       __geomStream << "USE SHAPE_" << obj->getName().c_str() <<"_" << __app->getName().c_str() << endl; \
       else __geomStream << "USE SHAPE_" << obj->getName().c_str() <<"_" << appid << endl; \
@@ -145,14 +110,14 @@ using namespace std;
 #define GEOM_VRMLPRINT_BEGINOBJ(type,obj) \
   bool used = shapeused; \
   if (obj->isNamed()) { \
-    if (! __cache.insert(obj->getId()).second) { \
+    if (! __cache.insert(obj->getObjectId()).second) { \
       __geomStream  <<  "USE " << obj->getName().c_str() << endl; \
-      __geomStream  <<  __indent << "#" << obj->getId() << endl; \
+      __geomStream  <<  __indent << "#" << obj->getObjectId() << endl; \
       used = true; \
     } \
     else { \
       __geomStream  <<  "DEF " << obj->getName().c_str() << " " << type << " { " << endl; \
-      __geomStream  <<  __indent << "#" << obj->getId() << endl; \
+      __geomStream  <<  __indent << "#" << obj->getObjectId() << endl; \
        GEOM_VRMLPRINT_INCREMENT_INDENT; \
     } \
   } \
@@ -165,8 +130,8 @@ using namespace std;
   bool used = false; \
   if (obj->isNamed()) { \
     uint_t appid = 0; \
-    if(__app)appid= __app->getId(); \
-    if (!__shapecache.insert(pair<uint_t,uint_t>(obj->getId(),appid)).second ){ \
+    if(__app)appid= __app->getObjectId(); \
+    if (!__shapecache.insert(pair<uint_t,uint_t>(obj->getObjectId(),appid)).second ){ \
       if(__app->isNamed())  \
       __geomStream << "USE " << obj->getName().c_str() << "_" << __app->getName().c_str() << endl; \
       else __geomStream << "USE " << obj->getName().c_str() << "_" << appid << endl; \
@@ -475,7 +440,7 @@ bool VrmlPrinter::setCamera(const Vector3& position,
 
 #define MIN3(a,b,c) min(a,min(b,c))
 
-bool VrmlPrinter::setLight(const TOOLS(Vector3)& location,
+bool VrmlPrinter::setLight(const Vector3& location,
                                                    const Color3& ambient,
                                                    const Color3& diffuse,
                                                    const real_t& radius){
@@ -558,7 +523,7 @@ bool VrmlPrinter::process( Texture2D * texture ) {
 
   GEOM_VRMLPRINT_FIELD("texture",texture->getImage(),SUBNODE);
   if(!texture->isTransformationToDefault()){
-	GEOM_VRMLPRINT_FIELD("textureTransform",texture->getTransformation(),SUBNODE);
+    GEOM_VRMLPRINT_FIELD("textureTransform",texture->getTransformation(),SUBNODE);
   }
   
   
@@ -641,7 +606,7 @@ bool VrmlPrinter::process( AmapSymbol * amapSymbol ) {
   GEOM_VRMLPRINT_FIELD("coord",amapSymbol->getPointList(),POINT3ARRAY);
   GEOM_VRMLPRINT_FIELD("coordIndex",amapSymbol->getIndexList(),INDEXARRAY);
   if(amapSymbol->getNormalList())
-	GEOM_VRMLPRINT_FIELD("normal",amapSymbol->getNormalList(),NORMAL3ARRAY);
+    GEOM_VRMLPRINT_FIELD("normal",amapSymbol->getNormalList(),NORMAL3ARRAY);
   GEOM_VRMLPRINT_FIELD("normalPerVertex",true,BOOLEAN);
   GEOM_VRMLPRINT_FIELD("solid",amapSymbol->getSolid(),BOOLEAN);
   GEOM_VRMLPRINT_ENDOBJ;
@@ -1022,7 +987,7 @@ bool VrmlPrinter::process( QuadSet * quadSet ) {
   GEOM_VRMLPRINT_FIELD("coord",quadSet->getPointList(),POINT3ARRAY);
   GEOM_VRMLPRINT_FIELD("coordIndex",quadSet->getIndexList(),INDEXARRAY4);
   if(quadSet->getNormalList())
-	GEOM_VRMLPRINT_FIELD("normal",quadSet->getNormalList(),NORMAL3ARRAY);
+    GEOM_VRMLPRINT_FIELD("normal",quadSet->getNormalList(),NORMAL3ARRAY);
   GEOM_VRMLPRINT_FIELD("normalPerVertex",quadSet->getNormalPerVertex(),BOOLEAN);
   GEOM_VRMLPRINT_FIELD("solid",quadSet->getSolid(),BOOLEAN);
   GEOM_VRMLPRINT_ENDOBJ;
@@ -1094,7 +1059,7 @@ bool VrmlPrinter::process( TriangleSet * triangleSet ) {
   GEOM_VRMLPRINT_FIELD("coord",triangleSet->getPointList(),POINT3ARRAY);
   GEOM_VRMLPRINT_FIELD("coordIndex",triangleSet->getIndexList(),INDEXARRAY3);
   if(triangleSet->getNormalList())
-	GEOM_VRMLPRINT_FIELD("normal",triangleSet->getNormalList(),NORMAL3ARRAY);
+    GEOM_VRMLPRINT_FIELD("normal",triangleSet->getNormalList(),NORMAL3ARRAY);
   GEOM_VRMLPRINT_FIELD("normalPerVertex",triangleSet->getNormalPerVertex(),BOOLEAN);
   GEOM_VRMLPRINT_FIELD("solid",triangleSet->getSolid(),BOOLEAN);
   GEOM_VRMLPRINT_ENDOBJ;

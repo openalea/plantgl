@@ -11,31 +11,31 @@ else:
     s = Scene()
     sh = Shape(Sphere(),Material())
     if verbose:
-        print sh
-        print sys.getrefcount(sh)-1,sh.getPglReferenceCount()
+        print(sh)
+        print(sys.getrefcount(sh)-1,sh.getPglReferenceCount())
     s += sh
     if verbose:
-        print sys.getrefcount(sh)-1,sh.getPglReferenceCount(),sys.getrefcount(s[0])-1
-        print s[0]
+        print(sys.getrefcount(sh)-1,sh.getPglReferenceCount(),sys.getrefcount(s[0])-1)
+        print(s[0])
     assert sh is s[0] and "__getitem__ failed"
     if verbose:
-        print sys.getrefcount(sh)-1,sh.getPglReferenceCount(),sys.getrefcount(s[0])-1
+        print(sys.getrefcount(sh)-1,sh.getPglReferenceCount(),sys.getrefcount(s[0])-1)
     shf = s.find(sh.id)
     if verbose:
-        print shf
+        print(shf)
     assert sh is shf and "find failed"
     if verbose:
-        print sys.getrefcount(sh)-1,sys.getrefcount(shf)-1,sh.getPglReferenceCount()
+        print(sys.getrefcount(sh)-1,sys.getrefcount(shf)-1,sh.getPglReferenceCount())
     del shf
     if verbose:
         a,b,c = sys.getrefcount(sh)-1,sys.getrefcount(s[0])-1,sh.getPglReferenceCount()
-        print a,b,c
+        print(a,b,c)
     sh.toto = True
     assert s[0].toto == True and '"property transmission failed'
     del sh
     if verbose:
         a,b = sys.getrefcount(s[0])-1,s[0].getPglReferenceCount()
-        print a,b
+        print(a,b)
     assert s[0].toto == True and '"property persistence failed'
     del s
 

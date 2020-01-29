@@ -3,31 +3,41 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon et al.
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 /*! \file geom_nurbspatch.h
     \brief Definition of the geometry class NurbsPatch.
@@ -44,14 +54,14 @@
 
 /* ----------------------------------------------------------------------- */
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 class RealArray;
 typedef RCPtr<RealArray> RealArrayPtr;
 class RealArray2;
 typedef RCPtr<RealArray2> RealArray2Ptr;
 
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -72,14 +82,14 @@ public:
   /// The \b Degree field default value.
   static const uint_t DEFAULT_NURBS_DEGREE;
 
-  /// A structure which helps to build a NurbsPatch when parsing. 
-  struct SG_API Builder : public BezierPatch::Builder { 
+  /// A structure which helps to build a NurbsPatch when parsing.
+  struct SG_API Builder : public BezierPatch::Builder {
 
     /// A pointer to the \b UKnotList field.
-    TOOLS(RealArrayPtr) * UKnotList;
+    RealArrayPtr * UKnotList;
 
     /// A pointer to the \b VKnotList field.
-    TOOLS(RealArrayPtr) * VKnotList;
+    RealArrayPtr * VKnotList;
 
 
     /// Constructor.
@@ -98,7 +108,7 @@ public:
 
   /// Default Constructor. Build object is invalid.
   NurbsPatch();
-  
+
   /** Constructs a NurbsPatch of degrees \e udegree and \e vdegree with the control points matrix \e ctrlPoints and the knots lists \e uKnotList and \e vKnotList.
       \pre
       - \e degrees must be strictly positive;
@@ -107,32 +117,32 @@ public:
       - the number of \e vknot must be equal to \e vdegree + 1 +  number of \e control points in a colum.
       \post
       - \e self is valid. */
-  NurbsPatch( const Point4MatrixPtr& ctrlPoints, 
-	      const TOOLS(RealArrayPtr)& uKnotList = TOOLS(RealArrayPtr()), 
-	      const TOOLS(RealArrayPtr)& vKnotList = TOOLS(RealArrayPtr()), 
-	      uint_t uDegree = DEFAULT_NURBS_DEGREE, 
-	      uint_t vDegree = DEFAULT_NURBS_DEGREE, 
-	      uint_t ustride = DEFAULT_STRIDE, 
-	      uint_t vstride = DEFAULT_STRIDE, 
-	      bool ccw = DEFAULT_CCW );
+  NurbsPatch( const Point4MatrixPtr& ctrlPoints,
+          const RealArrayPtr& uKnotList = TOOLS(RealArrayPtr()),
+          const RealArrayPtr& vKnotList = TOOLS(RealArrayPtr()),
+          uint_t uDegree = DEFAULT_NURBS_DEGREE,
+          uint_t vDegree = DEFAULT_NURBS_DEGREE,
+          uint_t ustride = DEFAULT_STRIDE,
+          uint_t vstride = DEFAULT_STRIDE,
+          bool ccw = DEFAULT_CCW );
 
-  NurbsPatch( const Point4MatrixPtr& ctrlPoints, 
-	      uint_t uDegree, 
-	      uint_t vDegree = DEFAULT_NURBS_DEGREE, 
-	      const TOOLS(RealArrayPtr)& uKnotList = TOOLS(RealArrayPtr()), 
-	      const TOOLS(RealArrayPtr)& vKnotList = TOOLS(RealArrayPtr()), 
-	      uint_t ustride = DEFAULT_STRIDE, 
-	      uint_t vstride = DEFAULT_STRIDE, 
-	      bool ccw = DEFAULT_CCW );
+  NurbsPatch( const Point4MatrixPtr& ctrlPoints,
+          uint_t uDegree,
+          uint_t vDegree = DEFAULT_NURBS_DEGREE,
+          const RealArrayPtr& uKnotList = TOOLS(RealArrayPtr()),
+          const RealArrayPtr& vKnotList = TOOLS(RealArrayPtr()),
+          uint_t ustride = DEFAULT_STRIDE,
+          uint_t vstride = DEFAULT_STRIDE,
+          bool ccw = DEFAULT_CCW );
 
-  NurbsPatch( const Point3MatrixPtr& ctrlPoints, 
-	      uint_t uDegree = DEFAULT_NURBS_DEGREE, 
-	      uint_t vDegree = DEFAULT_NURBS_DEGREE, 
-	      const TOOLS(RealArrayPtr)& uKnotList = TOOLS(RealArrayPtr()), 
-	      const TOOLS(RealArrayPtr)& vKnotList = TOOLS(RealArrayPtr()), 
-	      uint_t ustride = DEFAULT_STRIDE, 
-	      uint_t vstride = DEFAULT_STRIDE, 
-	      bool ccw = DEFAULT_CCW );
+  NurbsPatch( const Point3MatrixPtr& ctrlPoints,
+          uint_t uDegree = DEFAULT_NURBS_DEGREE,
+          uint_t vDegree = DEFAULT_NURBS_DEGREE,
+          const RealArrayPtr& uKnotList = TOOLS(RealArrayPtr()),
+          const RealArrayPtr& vKnotList = TOOLS(RealArrayPtr()),
+          uint_t ustride = DEFAULT_STRIDE,
+          uint_t vstride = DEFAULT_STRIDE,
+          bool ccw = DEFAULT_CCW );
 
   /// Destructor
   virtual ~NurbsPatch( ) ;
@@ -158,10 +168,10 @@ public:
   virtual uint_t isVDegreeToDefault( ) const ;
 
   /// Returns \e uknotsList value.
-  virtual const TOOLS(RealArrayPtr)& getUKnotList( ) const;
+  virtual const RealArrayPtr& getUKnotList( ) const;
 
   /// Returns \e uknotsList field.
-  TOOLS(RealArrayPtr)& getUKnotList( );
+  RealArrayPtr& getUKnotList( );
 
   /// Returns the \e fist uknots value.
   virtual const real_t getFirstUKnot( ) const ;
@@ -181,10 +191,10 @@ public:
   bool isUKnotListToDefault( ) const;
 
   /// Returns \e knotsList value.
-  virtual const TOOLS(RealArrayPtr)& getVKnotList( ) const ;
+  virtual const RealArrayPtr& getVKnotList( ) const ;
 
   /// Returns \e knotsList field.
-  TOOLS(RealArrayPtr)& getVKnotList( );
+  RealArrayPtr& getVKnotList( );
 
   /// Returns the \e fist knots value.
   virtual real_t getFirstVKnot( ) const ;
@@ -204,16 +214,16 @@ public:
   bool isVKnotListToDefault( ) const;
 
   /*! Returns the \e Point for u = \e u and v= \e v.
-      using the Nurbs book algorithm A4.3 p.134. 
-     \pre 
+      using the Nurbs book algorithm A4.3 p.134.
+     \pre
       - \e u must be in [0,1];
       - \e v must be in [0,1];*/
-  virtual TOOLS(Vector3) getPointAt(real_t u,real_t v) const;
+  virtual Vector3 getPointAt(real_t u,real_t v) const;
 
   /* Returns the \e Metric for  u = \e u and v = \e v.
       (see Differential Geometry, Kreyszig p. 82)
      \author Michael Walker
-     \pre 
+     \pre
       - \e u must be in [0,1];
       - \e v must be in [0,1];*/
   // Point4MatrixPtr getMetric(real_t u, real_t v) const;
@@ -221,7 +231,7 @@ public:
   /* Returns the determinant of the metric for u = \e u and v = \e v.
       (see Differential Geometry, Kreyszig p. 82)
      \author Michael Walker
-     \pre 
+     \pre
       - \e u must be in [0,1];
       - \e v must be in [0,1];*/
   // real_t getDetMetric(real_t u, real_t v) const;
@@ -229,7 +239,7 @@ public:
   /* Returns the \e Inverse \e Metric for  u = \e u and v = \e v.
       (see Differential Geometry, Kreyszig p. 104)
      \author Michael Walker
-     \pre 
+     \pre
       - \e u must be in [0,1];
       - \e v must be in [0,1];*/
   //Point4MatrixPtr getInvMetric(real_t u, real_t v) const;
@@ -237,55 +247,55 @@ public:
   /* Returns the \e Connection \e Coefficients for  u = \e u and v = \e v.
       (see Differential Geometry, Kreyszig p. 140)
      \author Michael Walker
-     \pre 
+     \pre
       - \e u must be in [0,1];
       - \e v must be in [0,1];*/
   //Point4MatrixPtr getConnectCoeffs(real_t  u, real_t  v, int d, int uspan, int vspan ) const;
 
   /* Returns the \e Tangent for u = \e u and v = \e v.
-      (see the Nurbs book p.12) 
-     \pre 
+      (see the Nurbs book p.12)
+     \pre
       - \e u, \e v must be in [0,1];*/
-  virtual TOOLS(Vector3) getUTangentAt(real_t u,real_t v) const;
+  virtual Vector3 getUTangentAt(real_t u,real_t v) const;
 
   /* Returns the \e Tangent for u = \e u and v = \e v.
-      (see the Nurbs book p.12) 
-     \pre 
+      (see the Nurbs book p.12)
+     \pre
       - \e u, \e v must be in [0,1];*/
-  virtual TOOLS(Vector3) getVTangentAt(real_t u,real_t v) const;
+  virtual Vector3 getVTangentAt(real_t u,real_t v) const;
 
   /* Returns the principal \e Normal for u,v = \e u, \e v.
-     \pre 
+     \pre
       - \e u, \e v must be in [0,1];*/
-  virtual TOOLS(Vector3) getNormalAt(real_t u,real_t v) const;
+  virtual Vector3 getNormalAt(real_t u,real_t v) const;
 
   /*!
-    \brief Computes the derivative of degree \a d of the 
+    \brief Computes the derivative of degree \a d of the
     curve at parameters \a u and \a v in the homogeneous domain
     \author Michael Walker
   */
   Point4MatrixPtr deriveAtH(real_t u, real_t v, int d, int uspan, int vspan) const;
-  
+
   /*!
     \brief Computes the derivatives of the curve at the parameter \a u, \a v
     \author Michael Walker
-  */  
+  */
   Point4MatrixPtr deriveAt(real_t  u, real_t v, int d, int uspan , int vspan  ) const;
-  
-  
-  /*! Returns the \e derivative of degree \e d for u = \e u, v = \e v.
-     \pre 
-     - \e u, \e v must be in [0,1];*/
-  virtual TOOLS(Vector4) getDerivativeAt(real_t u, real_t v, int du, int dv) const;
+
 
   /*! Returns the \e derivative of degree \e d for u = \e u, v = \e v.
-     \pre 
+     \pre
+     - \e u, \e v must be in [0,1];*/
+  virtual Vector4 getDerivativeAt(real_t u, real_t v, int du, int dv) const;
+
+  /*! Returns the \e derivative of degree \e d for u = \e u, v = \e v.
+     \pre
      - \e u, \e v must be in [0,1];*/
   virtual Point4MatrixPtr getDerivativesAt(real_t u, real_t v) const;
 
 
 
-  
+
   /*!
     Compute a section line of the patch corresponding to a constant u value
    */
@@ -301,10 +311,10 @@ public:
 protected:
 
   /// The \b uKnotList field.
-  TOOLS(RealArrayPtr) __uKnotList;
+  RealArrayPtr __uKnotList;
 
   /// The \b vKnotList field.
-  TOOLS(RealArrayPtr) __vKnotList;
+  RealArrayPtr __vKnotList;
 
   /// The \b udegree field.
   uint_t __udegree;

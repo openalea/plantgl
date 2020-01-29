@@ -1,35 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al.
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 
 
@@ -45,7 +53,6 @@
 #include <plantgl/math/util_math.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 using namespace std;
 
@@ -112,7 +119,7 @@ bool VgstarPrinter::header(const char * comment){
 void VgstarPrinter::printTransformation(){
     Vector3 scaling, rotation, translation;
 
-    getTransformation(scaling, rotation, translation);
+    __matrix.getTransformation(scaling, rotation, translation);
     rotation *= GEOM_DEG;
 
 //      Matrix4 test;
@@ -254,16 +261,16 @@ bool VgstarPrinter::process( Cone * cone ) {
 
   Vector3 scaling, rotation, translation;
 
-  getTransformation(scaling, rotation, translation);
+  __matrix.getTransformation(scaling, rotation, translation);
 
   if(scaling.x() == scaling.y()){
 
-          pushMatrix();
-          axisRotate(Vector3::OY,-GEOM_HALF_PI);
+          __matrix.push();
+          __matrix.axisRotation(Vector3::OY,-GEOM_HALF_PI);
 
           real_t diam_base= cone->getRadius( ) * 2.;
           Vector3 scales(cone->getHeight(),diam_base,0.0001);
-          scale(scales);
+          __matrix.scale(scales);
 
           GEOM_VGSTARPRINT_BEGIN(__vgstarStream,"33");
 
@@ -272,7 +279,7 @@ bool VgstarPrinter::process( Cone * cone ) {
           printNullTriangle();
 
           GEOM_VGSTARPRINT_END(__vgstarStream);
-          popMatrix();
+          __matrix.pop();
           return true;
   }
   else {
@@ -288,13 +295,13 @@ bool VgstarPrinter::process( Cylinder * cylinder ) {
 //  return triangle_process(cylinder);
   GEOM_ASSERT(cylinder);
 
-  pushMatrix();
+  __matrix.push();
 
   real_t r = cylinder->getRadius()*2;
   Vector3 scales(r,r,cylinder->getHeight());
-  scale(scales);
+  __matrix.scale(scales);
 
-  axisRotate(Vector3::OY,-GEOM_HALF_PI);
+  __matrix.axisRotation(Vector3::OY,-GEOM_HALF_PI);
 
 
   GEOM_VGSTARPRINT_BEGIN(__vgstarStream,"32");
@@ -304,7 +311,7 @@ bool VgstarPrinter::process( Cylinder * cylinder ) {
   printNullTriangle();
 
   GEOM_VGSTARPRINT_END(__vgstarStream);
-  popMatrix();
+  __matrix.pop();
 
   return true;
 }
@@ -343,17 +350,17 @@ bool VgstarPrinter::process( Frustum * cone ) {
   Vector3 scaling, rotation, translation;
   Matrix4 gmatrix = getMatrix();
 
-  getTransformation(scaling, rotation, translation);
+  __matrix.getTransformation(scaling, rotation, translation);
 
   if(scaling.x() == scaling.y()){
 
-          pushMatrix();
-          axisRotate(Vector3::OY,-GEOM_HALF_PI);
+          __matrix.push();
+          __matrix.axisRotation(Vector3::OY,-GEOM_HALF_PI);
 
           real_t diam_base= cone->getRadius( ) * 2.;
           real_t diam_up= cone->getRadius( ) * cone->getTaper() * 2.;
           Vector3 scales(cone->getHeight(),diam_base,diam_up);
-          scale(scales);
+          __matrix.scale(scales);
 
           GEOM_VGSTARPRINT_BEGIN(__vgstarStream,"33");
 
@@ -362,7 +369,7 @@ bool VgstarPrinter::process( Frustum * cone ) {
           printNullTriangle();
 
           GEOM_VGSTARPRINT_END(__vgstarStream);
-          popMatrix();
+          __matrix.pop();
   }
   else {
           return triangle_process(cone);
@@ -428,19 +435,19 @@ bool VgstarPrinter::process( PointSet * pointSet ) {
   const Point3ArrayPtr& points = pointSet->getPointList();
   for (uint_t _i = 0; _i < points->size(); ++_i)
   {
-	  GEOM_VGSTARPRINT_BEGIN(__vgstarStream,"40");
-	  printNullTransformation();
-	  if(hasColor){
-		  const Color4& col = pointSet->getColorList()->getAt(_i);
-		  __color = Color3(col.getRed(),col.getGreen(),col.getBlue());
-	  }
-	  printColor();
-	  Vector3 _vertex1 = points->getAt(_i);
-	  _vertex1 = getMatrix() * _vertex1 ;
-	  GEOM_VGSTARPRINT_VECTOR3(__vgstarStream,_vertex1);
-	  GEOM_VGSTARPRINT_VECTOR3(__vgstarStream,_vertex1);
-	  GEOM_VGSTARPRINT_VECTOR3(__vgstarStream,_vertex1);
-	  GEOM_VGSTARPRINT_END(__vgstarStream);
+      GEOM_VGSTARPRINT_BEGIN(__vgstarStream,"40");
+      printNullTransformation();
+      if(hasColor){
+          const Color4& col = pointSet->getColorList()->getAt(_i);
+          __color = Color3(col.getRed(),col.getGreen(),col.getBlue());
+      }
+      printColor();
+      Vector3 _vertex1 = points->getAt(_i);
+      _vertex1 = getMatrix() * _vertex1 ;
+      GEOM_VGSTARPRINT_VECTOR3(__vgstarStream,_vertex1);
+      GEOM_VGSTARPRINT_VECTOR3(__vgstarStream,_vertex1);
+      GEOM_VGSTARPRINT_VECTOR3(__vgstarStream,_vertex1);
+      GEOM_VGSTARPRINT_END(__vgstarStream);
   }
   __color = oldcolor;
   return true;
@@ -490,11 +497,11 @@ bool VgstarPrinter::process( QuadSet * quadSet ) {
 bool VgstarPrinter::process( Sphere * sphere ) {
   GEOM_ASSERT(sphere);
 
-  pushMatrix();
+  __matrix.push();
 
   real_t r = sphere->getRadius()*2;
   Vector3 scales(r,r,r);
-  scale(scales);
+  __matrix.scale(scales);
 
   GEOM_VGSTARPRINT_BEGIN(__vgstarStream,"31");
 
@@ -503,7 +510,7 @@ bool VgstarPrinter::process( Sphere * sphere ) {
   printNullTriangle();
 
   GEOM_VGSTARPRINT_END(__vgstarStream);
-  popMatrix();
+  __matrix.pop();
 
   return true;
 }
@@ -560,12 +567,12 @@ bool VgstarPrinter::process( BezierCurve2D * bezierCurve ) {
 
 bool VgstarPrinter::process( Disc * disc ) {
 //  return triangle_process(disc);
-  pushMatrix();
+  __matrix.push();
 
   real_t r = disc->getRadius()*2;
   Vector3 scales(r,r,r);
-  scale(scales);
-  translate(Vector3(-0.5,0,0));
+  __matrix.scale(scales);
+  __matrix.translate(Vector3(-0.5,0,0));
 
   GEOM_VGSTARPRINT_BEGIN(__vgstarStream,"21");
 
@@ -574,7 +581,7 @@ bool VgstarPrinter::process( Disc * disc ) {
   printNullTriangle();
 
   GEOM_VGSTARPRINT_END(__vgstarStream);
-  popMatrix();
+  __matrix.pop();
   return true;
 }
 

@@ -6,13 +6,15 @@ environment:
   matrix:
   # Add here environement variables to control the Travis CI build
     - CONDA_RECIPE: conda
-      CONDA_VERSION: 2
+      CONDA_VERSION: 3
 
 install:
   - git clone https://github.com/OpenAlea/appveyor-ci.git appveyor-ci
   - cd appveyor-ci
   - call install.bat
   - conda config --prepend channels msys2
+  - conda config --prepend channels conda-forge
+  - conda config --prepend channels fredboudon
 
 before_build:
   - call before_build.bat

@@ -1,35 +1,45 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Plant Graphic Library
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2003 UMR Cirad/Inria/Inra Dap - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
 
-/*! \file overlay.h
+
+/*! \file intersection.h
     \brief Some algorithms to compute intersection between polygons.
 */
 
@@ -61,16 +71,16 @@ ALGO_API std::pair<Point2ArrayPtr, IndexArrayPtr> polygon2ds_intersection(Point2
 
 
 // Check if a plane and segment intersect. result contains intersection if true.
-ALGO_API bool plane_segment_intersection(const Plane3& plane, 
-                                         const TOOLS(Vector3)& p1, 
-                                         const TOOLS(Vector3)& p2,
-                                         TOOLS(Vector3)& result);
+ALGO_API bool plane_segment_intersection(const Plane3& plane,
+                                         const Vector3& p1,
+                                         const Vector3& p2,
+                                         Vector3& result);
 
 // Compute the actual intersection
-TOOLS(Vector3) _plane_segment_intersection(const Plane3& plane, 
+Vector3 _plane_segment_intersection(const Plane3& plane,
                                     real_t d1,
-                                    const TOOLS(Vector3)& p1, 
-                                    const TOOLS(Vector3)& p2);
+                                    const Vector3& p1,
+                                    const Vector3& p2);
 
 
 enum IntersectionType {
@@ -80,13 +90,13 @@ enum IntersectionType {
 } ;
 
 // Check if a plane and segment intersect. result contains intersection if true.
-ALGO_API IntersectionType triangle_triangle_intersection(const TOOLS(Vector3)& t11, const TOOLS(Vector3)& t12, const TOOLS(Vector3)& t13, 
-                                                 const TOOLS(Vector3)& t21, const TOOLS(Vector3)& t22, const TOOLS(Vector3)& t23, 
-                                                 TOOLS(Vector3)& intersectionstart, TOOLS(Vector3)& intersectionend);
+ALGO_API IntersectionType triangle_triangle_intersection(const Vector3& t11, const Vector3& t12, const Vector3& t13,
+                                                 const Vector3& t21, const Vector3& t22, const Vector3& t23,
+                                                 Vector3& intersectionstart, Vector3& intersectionend);
 
 
 
-std::pair<std::vector<std::pair<uint32_t,uint32_t> >,GeometryArrayPtr> 
+std::pair<std::vector<std::pair<uint32_t,uint32_t> >,GeometryArrayPtr>
 auto_intersection(Point3ArrayPtr points, Index3ArrayPtr triangles);
 
 /* ----------------------------------------------------------------------- */
@@ -97,4 +107,3 @@ PGL_END_NAMESPACE
 
 // __intersection_h__
 #endif
-

@@ -1,33 +1,43 @@
-/* -*-c++-*- 
+/* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Plant Graphic Library
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2003 UMR Cirad/Inria/Inra Dap - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): Ch. Nouguier (christophe.nouguier@cirad.fr) 
- *               
- *  ----------------------------------------------------------------------------
- * 
- *                      GNU General Public Licence
- *           
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
- *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
- */				
+ *
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
+ *
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
+ *
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
+ *
+ *  ----------------------------------------------------------------------------
+ */
+
 
 
 
@@ -44,6 +54,7 @@
 #include "tools_config.h"
 #include "util_assert.h" // For #include <assert.h>
 #include "util_types.h"  // For #include <stddef.h> and typedef long int32_t;
+#include <atomic>
 
 #ifdef RCOBJECT_DEBUG
 #include <typeinfo>
@@ -68,7 +79,7 @@
    \class RefCountPtr
    \brief A smart pointer to reference-counted objects.
 
-   This implementation is taken from the book \b More \b Effective \b C++ 
+   This implementation is taken from the book \b More \b Effective \b C++
    (Scott Meyers).
    \warning
    - T must inherit from RefCountObject..
@@ -77,59 +88,59 @@
 #ifdef BOOST_REFCOUNTPTR
 
   #ifdef BOOST_SHAREDPTR
-	/// Using Boost shared_ptr
-	#include <boost/shared_ptr.hpp>
+  /// Using Boost shared_ptr
+  #include <boost/shared_ptr.hpp>
 
-	// using boost::shared_ptr;
+  // using boost::shared_ptr;
 
-	template<class T> struct intrusive_deleter
-	{
-		void operator()(T * p) { if(p) boost::intrusive_ptr_release(p); }
-	};
+  template<class T> struct intrusive_deleter
+  {
+    void operator()(T * p) { if(p) boost::intrusive_ptr_release(p); }
+  };
 
-	template<class X> 
-	boost::shared_ptr<X> make_shared_from_intrusive(X * p)
-	{
-		if(p) boost::intrusive_ptr_add_ref(p);
-		boost::shared_ptr<X> px(p, intrusive_deleter<X>());
-		return px;
-	}
+  template<class X>
+  boost::shared_ptr<X> make_shared_from_intrusive(X * p)
+  {
+    if(p) boost::intrusive_ptr_add_ref(p);
+    boost::shared_ptr<X> px(p, intrusive_deleter<X>());
+    return px;
+  }
 
-	template <class T>
-	class my_shared_ptr : public boost::shared_ptr<T> {
-	public:
+  template <class T>
+  class my_shared_ptr : public boost::shared_ptr<T> {
+  public:
 
-		my_shared_ptr(): shared_ptr() { }
+    my_shared_ptr(): shared_ptr() { }
 
-		template<class Y>
-		explicit my_shared_ptr( Y * p ): shared_ptr<T>( p, intrusive_deleter<Y>() )
-		{ if(p) boost::intrusive_ptr_add_ref(p);   }
+    template<class Y>
+    explicit my_shared_ptr( Y * p ): shared_ptr<T>( p, intrusive_deleter<Y>() )
+    { if(p) boost::intrusive_ptr_add_ref(p);   }
 
-		template<class Y>
-		my_shared_ptr(shared_ptr<Y> const & r): shared_ptr(r) // never throws
-		{
-		}
+    template<class Y>
+    my_shared_ptr(shared_ptr<Y> const & r): shared_ptr(r) // never throws
+    {
+    }
 
-	};
+  };
 
-	/// Tools Reference Counting Pointer 
-	#define RCPtr my_shared_ptr
+  /// Tools Reference Counting Pointer
+  #define RCPtr my_shared_ptr
 
 
   #else // BOOST_INSTRUSIVEPTR
     /// Using Boost intrusive_ptr
-	#include <boost/intrusive_ptr.hpp>
+  #include <boost/intrusive_ptr.hpp>
 
-	using boost::intrusive_ptr;
-	/// Tools Reference Counting Pointer 
-	#define RCPtr intrusive_ptr
+  using boost::intrusive_ptr;
+  /// Tools Reference Counting Pointer
+  #define RCPtr intrusive_ptr
 
 #endif
 
 #else // PGL_SMARTPTR
 /// Using home made smart_ptr
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 template <class T>
 class RefCountPtr
@@ -152,7 +163,7 @@ public:
 
   /// Copy constructor.
   RefCountPtr( const RefCountPtr& ptr ) :  __ptr(ptr.__ptr) { if (__ptr) __ptr->addReference(); }
-  
+
 #if _MSC_VER > 1200
   /// Copy constructor.
   template<class U>
@@ -178,21 +189,21 @@ public:
   RefCountPtr& operator=( const RefCountPtr& ptr )
   {
     if (__ptr != ptr.__ptr)
-	{
-	  if (__ptr) __ptr->removeReference();
-	  __ptr = ptr.__ptr;
-	  if (__ptr) __ptr->addReference();
-	};
+  {
+    if (__ptr) __ptr->removeReference();
+    __ptr = ptr.__ptr;
+    if (__ptr) __ptr->addReference();
+  };
     return *this;
   }
 
-  
+
 #if _MSC_VER > 1200
   /// Assignement operator with RefCountPtr<T> \e ptr.
   template<class U>
   RefCountPtr& operator=( const RefCountPtr<U>& ptr )
   {
-	 return operator=(ptr.get());
+   return operator=(ptr.get());
   }
 #endif
 
@@ -200,11 +211,11 @@ public:
   RefCountPtr& operator=( T * ptr )
   {
     if (__ptr != ptr)
-	{
-	  if (__ptr) __ptr->removeReference();
-	  __ptr = ptr;
-	  if (__ptr) __ptr->addReference();
-	};
+  {
+    if (__ptr) __ptr->removeReference();
+    __ptr = ptr;
+    if (__ptr) __ptr->addReference();
+  };
     return *this;
   }
 
@@ -219,11 +230,11 @@ public:
   attribute_deprecated inline RefCountPtr& cast( const RefCountPtr<U>& ptr )
   {
     if (__ptr != ptr.get())
-	{
-	  if (__ptr) __ptr->removeReference();
-	  __ptr = dynamic_cast<T *>(ptr.get());
-	  if (__ptr) __ptr->addReference();
-	};
+  {
+    if (__ptr) __ptr->removeReference();
+    __ptr = dynamic_cast<T *>(ptr.get());
+    if (__ptr) __ptr->addReference();
+  };
     return *this;
   }
 
@@ -295,11 +306,11 @@ public:
 
   /// Implicit conversion into normal pointer.
   operator T * ( ) const { return __ptr; }
-  
+
   /// Return a conversion of \e self into T *
   T * get( ) const { return __ptr; }
 
-  
+
 #ifndef PGL_NO_DEPRECATED
   /// Return a conversion of \e self into bool
   attribute_deprecated bool toBool( ) const { return __ptr != 0; }
@@ -311,15 +322,15 @@ public:
   attribute_deprecated size_t toSizeT( ) const { return (size_t)__ptr; }
 
   /// Return a conversion of \e self into uint_t
-  attribute_deprecated uint32_t toUint32( ) const 
+  attribute_deprecated uint32_t toUint32( ) const
 #if __WORDSIZE == 64
   { return (uintptr_t)__ptr; }
 #else
   { return (uint32_t)__ptr; }
 #endif
 #endif
-  
-  
+
+
   //@}
   /// @name Nullness testing operators
   //@{
@@ -345,49 +356,49 @@ private:
 
 /* ------------------------------------------------------------------------- */
 
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
-/// Tools Reference Counting Pointer 
-#define RCPtr TOOLS(RefCountPtr)
+/// Tools Reference Counting Pointer
+#define RCPtr PGL(RefCountPtr)
 
 /* ----------------------------------------------------------------------- */
 
 #endif
 /* ----------------------------------------------------------------------- */
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /**
    \class RefCountObject
    \brief A base class for reference-counted objects.
 
-   This implementation is taken from the book \b More \b Effective \b C++ 
+   This implementation is taken from the book \b More \b Effective \b C++
    (Scott Meyers).
-   \warning Destructor must always be implemented even if they are pure 
-   virtual and do nothing. When implemeting an object inheriting from 
-   RefCountObject, you can use the macro DECLARE_REF_COUNT_OBJECT(your 
-   object) in the object specification section in order to be sure to 
+   \warning Destructor must always be implemented even if they are pure
+   virtual and do nothing. When implemeting an object inheriting from
+   RefCountObject, you can use the macro DECLARE_REF_COUNT_OBJECT(your
+   object) in the object specification section in order to be sure to
    declare the virtual destructor. You need then to implement it.
 */
 
 #ifdef WITH_REFCOUNTLISTENER
 /**
-    \class RefCountListener 
-	\brief RefCountListener are used to propagate reference count changed.
-	       For instance, it can be used to link with PyObject representation.
+    \class RefCountListener
+  \brief RefCountListener are used to propagate reference count changed.
+         For instance, it can be used to link with PyObject representation.
 */
 class RefCountObject;
 class TOOLS_API RefCountListener {
 public:
-	virtual ~RefCountListener() { }
-	virtual void referenceAdded(RefCountObject *) = 0;
-	virtual void referenceRemoved(RefCountObject *) = 0;
-	virtual void objectDeleted(RefCountObject *) = 0;
+  virtual ~RefCountListener() { }
+  virtual void referenceAdded(RefCountObject *) = 0;
+  virtual void referenceRemoved(RefCountObject *) = 0;
+  virtual void objectDeleted(RefCountObject *) = 0;
 };
 
 #endif
 
-class TOOLS_API RefCountObject 
+class TOOLS_API RefCountObject
 {
 
 public:
@@ -398,7 +409,7 @@ public:
   RefCountObject( ) :
     _ref_count(0)
 #ifdef WITH_REFCOUNTLISTENER
-	,_ref_count_listener(0)
+  ,_ref_count_listener(0)
 #endif
   {
   }
@@ -407,11 +418,11 @@ public:
   RefCountObject( const RefCountObject& ) :
     _ref_count(0)
 #ifdef WITH_REFCOUNTLISTENER
-	,_ref_count_listener(0)
+  ,_ref_count_listener(0)
 #endif
   {
   }
-  
+
   //@}
 
   /// @name Destructor
@@ -421,18 +432,18 @@ public:
   virtual ~RefCountObject( )
   {
 #ifdef WITH_REFCOUNTLISTENER
-	  if(_ref_count_listener) {
-		  _ref_count_listener->objectDeleted(this);
-		  if(_ref_count_listener) { delete _ref_count_listener; _ref_count_listener = NULL; }
-	  }
+    if(_ref_count_listener) {
+      _ref_count_listener->objectDeleted(this);
+      if(_ref_count_listener) { delete _ref_count_listener; _ref_count_listener = NULL; }
+    }
 #endif
   }
 
   //@}
-  
+
   /// @name Assignement operator
   //@{
-  
+
   /// Assignement operator
   RefCountObject& operator=( const RefCountObject& )
   {
@@ -453,12 +464,12 @@ public:
     std::cerr << "\t(" << typeid(*this).name() << ")" << std::endl;
 #endif
 #ifdef WITH_REFCOUNTLISTENER
-	if(_ref_count_listener) _ref_count_listener->referenceAdded(this);
+  if(_ref_count_listener) _ref_count_listener->referenceAdded(this);
 #endif
   }
 
   /// Returns the number of reference to \e self.
-  inline size_t use_count( ) const 
+  inline size_t use_count( ) const
   {
     return _ref_count;
   }
@@ -472,7 +483,7 @@ public:
 
 #ifndef PGL_NO_DEPRECATED
   /// Returns the number of reference to \e self.
-  attribute_deprecated inline size_t getReferenceCount( ) const 
+  attribute_deprecated inline size_t getReferenceCount( ) const
   {
     return _ref_count;
   }
@@ -484,20 +495,20 @@ public:
   }
 #endif
 
-  /// Decrements the reference counter.  
+  /// Decrements the reference counter.
   inline void removeReference( )
   {
-    --_ref_count;
+    size_t refcount = --_ref_count;
 #ifdef RCOBJECT_DEBUG
     std::cerr << this << " ref-- => " << getReferenceCount();
     std::cerr << "\t(" << typeid(*this).name() << ")" << std::endl;
 #endif
 #ifdef WITH_REFCOUNTLISTENER
-	if(_ref_count_listener) _ref_count_listener->referenceRemoved(this);
+  if(_ref_count_listener) _ref_count_listener->referenceRemoved(this);
 #endif
-    if (_ref_count == 0) delete this;
+    if (refcount == 0) delete this;
   }
-  
+
   //@}
 
   /// Returns unique id.
@@ -505,16 +516,17 @@ public:
 
 
 #ifdef WITH_REFCOUNTLISTENER
-  inline void setRefCountListener(RefCountListener * r) 
+  inline void setRefCountListener(RefCountListener * r)
   {  _ref_count_listener = r;   }
 
-  inline RefCountListener * getRefCountListener() const 
+  inline RefCountListener * getRefCountListener() const
   { return _ref_count_listener; }
 #endif
 
 private:
 
-  size_t _ref_count;
+  std::atomic<size_t> _ref_count;
+
 #ifdef WITH_REFCOUNTLISTENER
   RefCountListener * _ref_count_listener;
 #endif
@@ -523,15 +535,15 @@ private:
 
 typedef RefCountPtr<RefCountObject> RefCountObjectPtr;
 
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 #ifdef BOOST_REFCOUNTPTR
     // Use of intrusive_ptr or shared_ptr
-	namespace boost
-	{
-		inline void intrusive_ptr_add_ref(TOOLS(RefCountObject) * obj) { obj->addReference(); }
-		inline void intrusive_ptr_release(TOOLS(RefCountObject) * obj) { obj->removeReference(); }
-	};
+  namespace boost
+  {
+    inline void intrusive_ptr_add_ref(RefCountObject * obj) { obj->addReference(); }
+    inline void intrusive_ptr_release(RefCountObject * obj) { obj->removeReference(); }
+  };
 #endif
 
 
@@ -555,15 +567,11 @@ RCPtr<T> const_pointer_cast(const RCPtr<U>& r) {  return RCPtr<T>(const_cast<T *
 /// Return a conversion of \e ptr into size_t
 template <class U>
 inline size_t ptr_to_size_t( const RCPtr<U>& p ) { return (size_t)p.get(); }
-  
+
 /// Return a conversion of \e ptr into uint_t
 template <class U>
-inline uint32_t ptr_to_uint32( const RCPtr<U>& p ) 
-#if __WORDSIZE == 64
+inline uint32_t ptr_to_uint32( const RCPtr<U>& p )
   { return (uintptr_t)p.get(); }
-#else
-  { return (uint32_t)p.get(); }
-#endif
 
 /// Returns true if and only if \e ptr is not null.
 template <class U>

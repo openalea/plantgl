@@ -1,35 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr)
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
- * 
- *                      GNU General Public Licence
- *           
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
+ *
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
+
 /*! \file view_info.h
     \brief Definition of the viewer class ViewSysInfo.
 */
@@ -43,7 +51,7 @@
 
 #include <QtGlobal>
 #include <QtCore/qvariant.h>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/QDialog>
 #else
     #include <QtGui/QDialog>
@@ -51,9 +59,9 @@
 
 /* ----------------------------------------------------------------------- */
 
-class QVBoxLayout; 
-class QHBoxLayout; 
-class QGridLayout; 
+class QVBoxLayout;
+class QHBoxLayout;
+class QGridLayout;
 class QLabel;
 class QTreeWidget;
 class QTreeWidgetItem;
@@ -62,7 +70,7 @@ class QGLWidget;
 
 /* ----------------------------------------------------------------------- */
 
-/** 
+/**
     \class ViewSysInfo
     \brief A Dialog to display information of the system such as driver use by openGL.
     Must be build with a QGLWidget to obtain all the information.
@@ -71,23 +79,23 @@ class QGLWidget;
 /* ----------------------------------------------------------------------- */
 
 class VIEW_API ViewSysInfo : public QDialog
-{ 
+{
   Q_OBJECT
 
 public:
 
-  /*! Constructor 
-   *  Constructs a ViewSysInfo which is a child of 'parent', with the 
-   *  name 'name' and widget flags set to 'f' 
+  /*! Constructor
+   *  Constructs a ViewSysInfo which is a child of 'parent', with the
+   *  name 'name' and widget flags set to 'f'
    *
    *  The dialog will by default be modeless, unless you set 'modal' to
    *  TRUE to construct a modal dialog.
    */
   ViewSysInfo( QWidget* parent = 0,
-		     QGLWidget * FrameGL = 0,
-		     const char* name = 0,	      
-		     bool modal = false, 
-		     Qt::WindowFlags fl = 0 );
+             QGLWidget * FrameGL = 0,
+             const char* name = 0,
+             bool modal = false,
+             Qt::WindowFlags fl = 0 );
 
   /*!  Destructor.
    *  Destroys the object and frees any allocated resources
@@ -106,13 +114,13 @@ public:
 
 protected slots:
 
-	void saveAsFile() ;
+    void saveAsFile() ;
 
 protected:
 
-	void saveAsFile(const QString&) const;
+    void saveAsFile(const QString&) const;
 
-	/// Cancel Button.
+    /// Cancel Button.
   QPushButton* CancelButton;
 
   /// Ok Button.
@@ -138,7 +146,7 @@ protected:
    */
   bool event( QEvent* );
 
-    
+
   /*! Resize event handler.
    *  Reimplemented to move objects of the dialog when resizing.
    */

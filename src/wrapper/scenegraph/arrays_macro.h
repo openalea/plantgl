@@ -1,33 +1,44 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Plant Graphic Library
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR Cirad/Inria/Inra Dap - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
+
 
 // Array Macro
 #include <plantgl/python/extract_pgl.h>
@@ -41,59 +52,59 @@ PGL_USING(Index)
 
 template<class T>
 RCPtr<T> extract_array_from_list( boost::python::object l )
-{ 
-  boost::python::extract<int> e_int( l ); 
+{
+  boost::python::extract<int> e_int( l );
   if( e_int.check() )
     { return RCPtr<T>(new T( e_int() ));  }
 
   return extract_pgllist<T>(l).toRCPtr(true);
-} 
+}
 
 template<class T>
 struct array_from_list {
-  array_from_list() { 
-	boost::python::converter::registry::push_back( &convertible, &construct, boost::python::type_id<T>()); 
-  } 
-  static void* convertible(PyObject* py_obj){ 
-    if( py_obj !=  Py_None && !PySequence_Check( py_obj )) return 0; 
-    return py_obj; 
-  } 
-  static void construct( PyObject* obj, boost::python::converter::rvalue_from_python_stage1_data* data){ 
-   typedef boost::python::converter::rvalue_from_python_storage<T> vector_storage_t;  
-   vector_storage_t* the_storage = reinterpret_cast<vector_storage_t*>( data ); 
+  array_from_list() {
+    boost::python::converter::registry::push_back( &convertible, &construct, boost::python::type_id<T>());
+  }
+  static void* convertible(PyObject* py_obj){
+    if( py_obj !=  Py_None && !PySequence_Check( py_obj )) return 0;
+    return py_obj;
+  }
+  static void construct( PyObject* obj, boost::python::converter::rvalue_from_python_stage1_data* data){
+   typedef boost::python::converter::rvalue_from_python_storage<T> vector_storage_t;
+   vector_storage_t* the_storage = reinterpret_cast<vector_storage_t*>( data );
    void* memory_chunk = the_storage->storage.bytes;
    if (obj != Py_None){
-        boost::python::list py_sequence( boost::python::handle<>( boost::python::borrowed( obj ) ) ); 
-        RCPtr<T> result= extract_array_from_list<T>(py_sequence); 
-        new (memory_chunk) T (*result); 
+        boost::python::list py_sequence( boost::python::handle<PyObject>( boost::python::borrowed( obj ) ) );
+        RCPtr<T> result= extract_array_from_list<T>(py_sequence);
+        new (memory_chunk) T (*result);
    }
    else { new (memory_chunk) T(0); }
-   data->convertible = memory_chunk; 
-  } 
-}; 
+   data->convertible = memory_chunk;
+  }
+};
 
 template<class T>
-struct array_ptr_from_list { 
-  array_ptr_from_list() { 
-	boost::python::converter::registry::push_back( &convertible, &construct, boost::python::type_id< RCPtr<T> >()); 
-  } 
-  static void* convertible(PyObject* py_obj){ 
-    if( py_obj !=  Py_None && !PySequence_Check( py_obj ) ) return 0; 
-    return py_obj; 
-  } 
-  static void construct( PyObject* obj, boost::python::converter::rvalue_from_python_stage1_data* data){ 
-   typedef boost::python::converter::rvalue_from_python_storage<T> vector_storage_t;  
-   vector_storage_t* the_storage = reinterpret_cast<vector_storage_t*>( data ); 
+struct array_ptr_from_list {
+  array_ptr_from_list() {
+    boost::python::converter::registry::push_back( &convertible, &construct, boost::python::type_id< RCPtr<T> >());
+  }
+  static void* convertible(PyObject* py_obj){
+    if( py_obj !=  Py_None && !PySequence_Check( py_obj ) ) return 0;
+    return py_obj;
+  }
+  static void construct( PyObject* obj, boost::python::converter::rvalue_from_python_stage1_data* data){
+   typedef boost::python::converter::rvalue_from_python_storage<T> vector_storage_t;
+   vector_storage_t* the_storage = reinterpret_cast<vector_storage_t*>( data );
    void* memory_chunk = the_storage->storage.bytes;
    RCPtr<T> result;
    if (obj != Py_None){
-    boost::python::list py_sequence( boost::python::handle<>( boost::python::borrowed( obj ) ) ); 
-    result = extract_array_from_list<T>(py_sequence); 
+    boost::python::list py_sequence( boost::python::handle<PyObject>( boost::python::borrowed( obj ) ) );
+    result = extract_array_from_list<T>(py_sequence);
    }
-   new (memory_chunk) RCPtr<T> (result); 
-   data->convertible = memory_chunk; 
-  } 
-}; 
+   new (memory_chunk) RCPtr<T> (result);
+   data->convertible = memory_chunk;
+  }
+};
 
 
 #define EXPORT_FUNCTION2(PREFIX,ARRAY) \
@@ -108,14 +119,14 @@ std::string PREFIX##_str( ARRAY * a ) \
         if (it != a->begin()) ss << ","; \
         ss << extract<std::string>(boost::python::str(boost::python::object(*it)))(); \
     } \
-	ss << ']'; } \
+    ss << ']'; } \
   ss << ")"; \
   return ss.str(); \
 } \
 
 template<class T>
 typename T::element_type array_bt_getitem( T * a, int pos )
-{ 
+{
   size_t len = a->size();
   if( pos < 0 && pos >= -(int)len ) return a->getAt( len + pos );
   else if( pos < len ) return a->getAt( pos );
@@ -124,7 +135,7 @@ typename T::element_type array_bt_getitem( T * a, int pos )
 
 template<class T>
 typename T::element_type& array_ct_getitem( T * a, int pos )
-{ 
+{
   size_t len = a->size();
   if( pos < 0 && pos >= -(int)len ) return a->getAt( len + pos );
   else if( pos < len ) return a->getAt( pos );
@@ -133,7 +144,7 @@ typename T::element_type& array_ct_getitem( T * a, int pos )
 
 template<class T>
 typename T::element_type array_ptr_getitem( T * a, int pos )
-{ 
+{
   size_t len = a->size();
   if( pos < 0 && pos >= -(int)len ) return a->getAt( len + pos );
   else if( pos < len ) return a->getAt( pos );
@@ -141,19 +152,33 @@ typename T::element_type array_ptr_getitem( T * a, int pos )
 }
 
 template<class T>
-T * array_getslice( T * array, int beg, int end ) 
-{ 
+T * array_getslice( T * array, int beg, int end )
+{
   size_t len = array->size();
-  if( beg >= -(int)len && beg < 0  )  beg += len; 
-  else if( beg >= len ) throw PythonExc_IndexError(); 
-  if( end >= -(int)len && end < 0  )  end += len; 
-  else if( end > len ) throw PythonExc_IndexError(); 
+  if( beg >= -(int)len && beg < 0  )  beg += len;
+  else if( beg >= len ) throw PythonExc_IndexError();
+  if( end >= -(int)len && end < 0  )  end += len;
+  else if( end > len ) throw PythonExc_IndexError();
   return new T(array->begin()+beg,array->begin()+end);
 }
 
 template<class T>
+T * array_getitem_slice( T * array, boost::python::slice sl )
+{
+  int beg = 0;
+  if (sl.start() != boost::python::object()){
+    beg = boost::python::extract<int>(sl.start())();
+  }
+  int end = array->size();
+  if (sl.stop() != boost::python::object()){
+    end = boost::python::extract<int>(sl.stop())();
+  }
+  return array_getslice(array, beg, end);
+}
+
+template<class T>
 typename T::element_type array_popitem( T * a, int pos )
-{ 
+{
   size_t len = a->size();
   if (a->empty()) throw PythonExc_IndexError();
   if( pos < 0 && pos >= -(int)len ) pos = len + pos;
@@ -196,54 +221,54 @@ void array_delitem( T * array, int pos )
 }
 
 template<class T>
-void array_delslice( T * array, int beg, int end ) 
-{ 
-	size_t len = array->size();
-  if( beg >= -(int)len && beg < 0  )  beg += len; 
-  else if( beg >= len ) throw PythonExc_IndexError(); 
-  if( end >= -(int)len && end < 0  )  end += len; 
-  else if( end > len ) throw PythonExc_IndexError(); 
-  array->erase( array->begin()+beg,array->begin()+end); 
-}
-
-template<class T>
-bool array_contains( T * array, typename T::element_type v ) 
+void array_delslice( T * array, int beg, int end )
 {
-  return array->contains(v); 
-} 
-
-
-template<class T>
-T * array_addarray( T * array, T * array2 )  
-{ 
-	T * array3 = new T(array->begin(),array->end());
-	array3->insert(array3->end(),array2->begin(),array2->end()); 
-	return array3;
+    size_t len = array->size();
+  if( beg >= -(int)len && beg < 0  )  beg += len;
+  else if( beg >= len ) throw PythonExc_IndexError();
+  if( end >= -(int)len && end < 0  )  end += len;
+  else if( end > len ) throw PythonExc_IndexError();
+  array->erase( array->begin()+beg,array->begin()+end);
 }
 
 template<class T>
-T * array_iaddarray( T * array, T * array2 ) 
-{ 
-	array->insert(array->end(),array2->begin(),array2->end()); 
-	return array; 
+bool array_contains( T * array, typename T::element_type v )
+{
+  return array->contains(v);
+}
+
+
+template<class T>
+T * array_addarray( T * array, T * array2 )
+{
+    T * array3 = new T(array->begin(),array->end());
+    array3->insert(array3->end(),array2->begin(),array2->end());
+    return array3;
 }
 
 template<class T>
-void array_appenditem( T * array, typename T::element_type v ) 
+T * array_iaddarray( T * array, T * array2 )
+{
+    array->insert(array->end(),array2->begin(),array2->end());
+    return array;
+}
+
+template<class T>
+void array_appenditem( T * array, typename T::element_type v )
 { array->push_back(v); }
 
 template<class T>
-void array_appendarray( T * array, T * array2 ) 
-{ 	array->insert(array->end(),array2->begin(),array2->end()); }
+void array_appendarray( T * array, T * array2 )
+{   array->insert(array->end(),array2->begin(),array2->end()); }
 
 
 template<class T>
-void array_prependitem( T * array, typename T::element_type v ) 
+void array_prependitem( T * array, typename T::element_type v )
 { array->insert(array->begin(),v); }
 
 template<class T>
-void array_prependarray( T * array, T * array2 ) 
-{ 	array->insert(array->begin(),array2->begin(),array2->end()); }
+void array_prependarray( T * array, T * array2 )
+{   array->insert(array->begin(),array2->begin(),array2->end()); }
 
 
 template<class T>
@@ -297,47 +322,52 @@ T * py_subset(T * pts, boost::python::object subsetindices){
         for(Index::const_iterator it = index.begin(); it != index.end(); ++it) {
             subobj->push_back( pts->getAt(*it) );
             if (*it >= nbelem) {
-                delete subobj; 
-                throw PythonExc_IndexError(boost::python::extract<char *>(boost::python::str(*it)+" out of range")()); 
+                delete subobj;
+                throw PythonExc_IndexError(boost::python::extract<char *>(boost::python::str(*it)+" out of range")());
             }
         }
     }
     else {
-    	boost::python::object iter_obj = boost::python::object( boost::python::handle<>( PyObject_GetIter( subsetindices.ptr() ) ) );
-    	while( true )
-    	{
-    		boost::python::object obj; 
-    		try  {  obj = iter_obj.attr( "next" )(); }
-    		catch( boost::python::error_already_set ){ PyErr_Clear(); break; }
-    		int val = boost::python::extract<int>( obj )();
+        boost::python::object iter_obj = boost::python::object( boost::python::handle<PyObject>( PyObject_GetIter( subsetindices.ptr() ) ) );
+        while( true )
+        {
+            boost::python::object obj;
+            try  {  obj = boost::python::object(boost::python::handle<PyObject>(PyIter_Next(iter_obj.ptr()))); }
+            catch( boost::python::error_already_set ){ PyErr_Clear(); break; }
+            int val = boost::python::extract<int>( obj )();
             if (val < 0) val += nbelem;
             if (val < 0 || val >= nbelem) {
                 delete subobj;
-                throw PythonExc_IndexError(boost::python::extract<char *>(boost::python::str(val)+" out of range")()); 
+                throw PythonExc_IndexError(boost::python::extract<char *>(boost::python::str(val)+" out of range")());
             }
-    		subobj->push_back( pts->getAt(val) );
-    	}
+            subobj->push_back( pts->getAt(val) );
+        }
     }
     return subobj;
 }
 
 template <class T>
 T * py_opposite_subset(T * pts, boost::python::object subsetindices){
-    T * subobj = new T(*pts);
+    T * subobj = new T();
     size_t nbelem = pts->size();
+    std::vector<bool> subsetinfo(nbelem);
     std::vector<int> csubsetindices = extract_vec<int>(subsetindices);
+
     for (std::vector<int>::iterator it = csubsetindices.begin(); it != csubsetindices.end(); ++it)
     {
         if (*it < 0) *it += nbelem;
         if (*it < 0 || *it >= nbelem) {
             delete subobj;
-            throw PythonExc_IndexError(boost::python::extract<char *>(boost::python::str(*it)+" out of range")()); 
+            throw PythonExc_IndexError(boost::python::extract<char *>(boost::python::str(*it)+" out of range")());
         }
+        subsetinfo[*it] = true;
     }
-    std::sort(csubsetindices.begin(), csubsetindices.end());
 
-    for(std::vector<int>::const_reverse_iterator it = csubsetindices.rbegin(); it != csubsetindices.rend(); ++it)
-        subobj->erase(subobj->begin()+*it);
+    uint_t index = 0;
+    for (std::vector<bool>::const_iterator it = subsetinfo.begin(); it != subsetinfo.end(); ++it, index++) {
+      if (!*it)
+        subobj->push_back(pts->getAt(index));
+    }
     return subobj;
 }
 
@@ -357,25 +387,25 @@ boost::python::object py_split_subset(T * pts, boost::python::object subsetindic
             insubset[*it] = true;
             if (*it >= nbelem) {
                 delete subobj; delete subobjopp;
-                throw PythonExc_IndexError(boost::python::extract<char *>(boost::python::str(*it)+" out of range")()); 
+                throw PythonExc_IndexError(boost::python::extract<char *>(boost::python::str(*it)+" out of range")());
             }
         }
     }
     else {
-        boost::python::object iter_obj = boost::python::object( boost::python::handle<>( PyObject_GetIter( subsetindices.ptr() ) ) );
+        boost::python::object iter_obj = boost::python::object( boost::python::handle<PyObject>( PyObject_GetIter( subsetindices.ptr() ) ) );
         while( true )
         {
-            boost::python::object obj; 
-            try  {  obj = iter_obj.attr( "next" )(); }
+            boost::python::object obj;
+            try  {  obj = boost::python::object(boost::python::handle<PyObject>(PyIter_Next(iter_obj.ptr()))); }
             catch( boost::python::error_already_set ){ PyErr_Clear(); break; }
             int val = boost::python::extract<int>( obj )();
             if (val < 0) val += nbelem;
             if (val < 0 || val >= nbelem) {
                 delete subobj; delete subobjopp;
-                throw PythonExc_IndexError(boost::python::extract<char *>(boost::python::str(val)+" out of range")()); 
+                throw PythonExc_IndexError(boost::python::extract<char *>(boost::python::str(val)+" out of range")());
             }
             subobj->push_back( pts->getAt(val) );
-        }        
+        }
     }
 
     size_t itv = 0;
@@ -399,13 +429,13 @@ bool save(T * a, std::string fname)
     leofstream stream(fname.c_str());
     if(!stream)return false;
     else {
-	    std::string cwd = get_cwd();
-		chg_dir(get_dirname(fname));
-        PGL(BinaryPrinter) _bp(stream);
+        std::string cwd = get_cwd();
+        chg_dir(get_dirname(fname));
+        BinaryPrinter _bp(stream);
         _bp.header();
         _bp.writeUint32(1);
         _bp.dumpArray(*a);
-		chg_dir(cwd);
+        chg_dir(cwd);
         return true;
     }
 }
@@ -415,29 +445,29 @@ bool save(T * a, std::string fname)
 template<class T>
 RCPtr<T> load(std::string fname)
 {
-	    std::string cwd = get_cwd();
-		chg_dir(get_dirname(fname));
-        PGL(BinaryParser) _bp(*PglErrorStream::error);
+        std::string cwd = get_cwd();
+        chg_dir(get_dirname(fname));
+        BinaryParser _bp(*PglErrorStream::error);
         RCPtr<T> result;
-        if ( _bp.open(fname) && _bp.readHeader()) {            
+        if ( _bp.open(fname) && _bp.readHeader()) {
             uint32_t nbelem = _bp.readUint32();
             if (nbelem > 1) result = _bp.loadArray<T>();
         }
-		chg_dir(cwd);
+        chg_dir(cwd);
         return result;
 }
 
 template<class T>
-struct array_pickle_suite : boost::python::pickle_suite 
-{ 
-    static boost::python::tuple getinitargs(T const& ar) 
-	{ 
-		boost::python::list l; 
-		for(typename T::const_iterator it = ar.begin(); it != ar.end(); ++it) 
-			l.append(*it); 
-		return boost::python::make_tuple(l);  
-	} 
-}; 
+struct array_pickle_suite : boost::python::pickle_suite
+{
+    static boost::python::tuple getinitargs(T const& ar)
+    {
+        boost::python::list l;
+        for(typename T::const_iterator it = ar.begin(); it != ar.end(); ++it)
+            l.append(*it);
+        return boost::python::make_tuple(l);
+    }
+};
 
 template<class ARRAY>
 class array_func : public boost::python::def_visitor<array_func<ARRAY> >
@@ -447,7 +477,8 @@ class array_func : public boost::python::def_visitor<array_func<ARRAY> >
     template <class classT>
     void visit(classT& c) const
     {
-        c.def( "__getslice__", &array_getslice<ARRAY>, boost::python::return_value_policy<boost::python::manage_new_object>() ) \
+        c.def( "__getitem__", &array_getitem_slice<ARRAY>, boost::python::return_value_policy<boost::python::manage_new_object>() ) \
+        .def( "__getslice__", &array_getslice<ARRAY>, boost::python::return_value_policy<boost::python::manage_new_object>() ) \
         .def( "__setitem__",  &array_setitem<ARRAY>   ) \
         .def( "__delitem__",  &array_delitem<ARRAY>   ) \
         .def( "__delslice__", &array_delslice<ARRAY>  ) \
@@ -455,7 +486,7 @@ class array_func : public boost::python::def_visitor<array_func<ARRAY> >
         .def( "__add__",      &array_addarray<ARRAY>   , boost::python::return_value_policy<boost::python::manage_new_object>() ) \
         .def( "__iadd__",     &array_iaddarray<ARRAY> , boost::python::return_internal_reference<1>() ) \
         .def( "__len__",      &array_len<ARRAY> ) \
-		.def( "__iter__",     boost::python::iterator<ARRAY>() ) \
+        .def( "__iter__",     boost::python::iterator<ARRAY>() ) \
         .def( "empty",        &ARRAY::empty ) \
         .def( "reverse",      &ARRAY::reverse ) \
         .def( "clear",        &ARRAY::clear ) \
@@ -472,7 +503,7 @@ class array_func : public boost::python::def_visitor<array_func<ARRAY> >
         .def( "subset",        &py_subset<ARRAY>, "Return a subset of the list. Should gives the indices of the subset as arguments.", boost::python::return_value_policy<boost::python::manage_new_object>() ) \
         .def( "opposite_subset",        &py_opposite_subset<ARRAY>, "Return a subset of the list. Should gives the indices that you do not want in the resulting subset as arguments.", boost::python::return_value_policy<boost::python::manage_new_object>() ) \
         .def( "split_subset", &py_split_subset<ARRAY>, "Return a subset of the list and its complementay subset. Arg is the indices of the first subset.")
-	    .def_pickle(array_pickle_suite<ARRAY>())
+        .def_pickle(array_pickle_suite<ARRAY>())
         ;
     }
 };
@@ -517,19 +548,19 @@ class_< ARRAY, ARRAY##Ptr, bases<RefCountObject> >( #ARRAY , init<size_t>(#ARRAY
 
 #define EXPORT_ARRAY_BT( PREFIX, ARRAY, STRING )\
     EXPORT_CLASS_ARRAY( PREFIX, ARRAY, STRING ) \
-	EXPORT_ARRAY_FUNC_BT( ARRAY, PREFIX ) \
+    EXPORT_ARRAY_FUNC_BT( ARRAY, PREFIX ) \
 
 #define EXPORT_ARRAY_PTR( PREFIX, ARRAY, STRING )\
     EXPORT_CLASS_ARRAY( PREFIX, ARRAY, STRING ) \
-	EXPORT_ARRAY_FUNC_PTR( ARRAY, PREFIX ) \
+    EXPORT_ARRAY_FUNC_PTR( ARRAY, PREFIX ) \
 
 #define EXPORT_ARRAY_CT( PREFIX, ARRAY, STRING )\
     EXPORT_CLASS_ARRAY( PREFIX, ARRAY, STRING ) \
-	EXPORT_ARRAY_FUNC_CT( ARRAY, PREFIX ) \
+    EXPORT_ARRAY_FUNC_CT( ARRAY, PREFIX ) \
 
 #define EXPORT_CONVERTER( ARRAY )\
-	array_from_list<ARRAY>(); \
-	array_ptr_from_list<ARRAY>(); \
+    array_from_list<ARRAY>(); \
+    array_ptr_from_list<ARRAY>(); \
 
 #define EXPORT_FUNCTION( PREFIX, ARRAY) \
   DEF_POINTEE( ARRAY ) \
@@ -664,7 +695,7 @@ ARRAY##Ptr PREFIX##_fromnumpy( boost::python::object l ) \
 
 #else
 
-#define EXPORT_NUMPY( PREFIX, T, ARRAY, DIM0, DIM1, C_TYPE ) 
+#define EXPORT_NUMPY( PREFIX, T, ARRAY, DIM0, DIM1, C_TYPE )
 #define EXPORT_NUMPY_1DIM( PREFIX, T, ARRAY, DIM, C_TYPE )
 
 #define DEFINE_NUMPY( PREFIX )

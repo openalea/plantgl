@@ -1,35 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al.
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 
 #include <plantgl/tool/dirnames.h>
@@ -49,7 +57,6 @@
 #include <plantgl/algo/base/statisticcomputer.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 using namespace std;
 using namespace STDEXT;
@@ -220,7 +227,7 @@ leofstream& TokenCode::printAll(leofstream& stream){
 #endif
   _it = __code.begin();
   for(uchar_t _itVal = 0;_itVal < _maxcode;_itVal++){
-	  _it = __code.find(_itVal);
+      _it = __code.find(_itVal);
       if(_it != __code.end() &&_it->second.second !=0){
           stream << _it->first;
           string label = _it->second.first;
@@ -319,22 +326,22 @@ leofstream& operator<<( leofstream& stream, TokenCode& c ){
 
 #define GEOM_PRINT_BEGIN(type,obj) \
   if (!obj->unique()) { \
-    if (! __cache.insert(obj->SceneObject::getId()).second) { \
-      DEBUG_INFO(TokReference,obj->getName(),obj->SceneObject::getId()) \
+    if (! __cache.insert(obj->getObjectId()).second) { \
+      DEBUG_INFO(TokReference,obj->getName(),obj->getObjectId()) \
       printType(TokReference); \
-      writeUint32(obj->SceneObject::getId()); \
+      writeUint32(obj->getObjectId()); \
       return true; \
     } \
     else { \
-     DEBUG_INFO(#type,obj->getName(),obj->SceneObject::getId())	\
-     printType(#type);	  \
+     DEBUG_INFO(#type,obj->getName(),obj->getObjectId()) \
+     printType(#type);    \
      writeString(obj->getName()); \
-     writeUint32(obj->SceneObject::getId()); \
+     writeUint32(obj->getObjectId()); \
     } \
   } \
   else { \
-    DEBUG_INFO(#type,"",obj->SceneObject::getId())	\
-    printType(#type); writeString("") ; writeUint32(0);	\
+    DEBUG_INFO(#type,"",obj->getObjectId())  \
+    printType(#type); writeString("") ; writeUint32(0); \
   }
 
 #define GEOM_PRINT_APPEARANCE(val) \
@@ -354,7 +361,7 @@ leofstream& operator<<( leofstream& stream, TokenCode& c ){
 void BinaryPrinter::write(const Color3& val) {
   writeUchar(val.getRed()); \
   writeUchar(val.getGreen()); \
-  writeUchar(val.getBlue()); 
+  writeUchar(val.getBlue());
 }
 
 #define GEOM_PRINT_COLOR4(val) write(val);
@@ -390,10 +397,10 @@ void BinaryPrinter::write(const Index4& val) {
 #define GEOM_PRINT_INDEXN(val) write(val);
 
 void BinaryPrinter::write(const Index& val) {
-    uint_t _sizej = val.size(); 
-    writeUint32(_sizej); 
+    uint_t _sizej = val.size();
+    writeUint32(_sizej);
     for(Index::const_iterator it = val.begin(); it != val.end(); ++it)
-        writeUint32(*it); 
+        writeUint32(*it);
 };
 
 
@@ -451,7 +458,7 @@ void BinaryPrinter::write(const Matrix4& val) {
 
 #define GEOM_PRINT_TRANSFO4(obj) { \
     Matrix4 m= obj->getMatrix(); \
-    for( uchar_t _itVec= 0; _itVec < 4; ++_itVec ){	\
+    for( uchar_t _itVec= 0; _itVec < 4; ++_itVec ){ \
       GEOM_PRINT_VECTOR4( m.getColumn(_itVec) ); \
     }};
 
@@ -470,7 +477,7 @@ void BinaryPrinter::write(const Matrix4& val) {
     for (uint_t _i = 0; _i < _sizei; _i++) { \
       GEOM_PRINT_##type(obj->get##field()->getAt(_i)); \
     }; \
-  }; 
+  };
 
 
 #define GEOM_PRINT_FIELD_MATRIX(obj,field,type) { \
@@ -559,11 +566,11 @@ bool BinaryPrinter::print(ScenePtr scene,string filename,const char * comment){
     leofstream stream(filename.c_str());
     if(!stream)return false;
     else {
-	    string cwd = get_cwd();
-		chg_dir(get_dirname(filename));
+        string cwd = get_cwd();
+        chg_dir(get_dirname(filename));
         BinaryPrinter _bp(stream);
         _bp.print(scene,comment);
-		chg_dir(cwd);
+        chg_dir(cwd);
         return true;
     }
 }
@@ -592,17 +599,17 @@ bool BinaryPrinter::header(const char * comment){
     __outputStream << float(BINARY_FORMAT_VERSION) << char(13) << char(10);
   if(__tokens.getVersion() >= 1.6f){
 #ifdef PGL_USE_DOUBLE
-	uchar_t precision = 64 ;
-#else 
+    uchar_t precision = 64 ;
+#else
 #ifdef __GNUC__
-#warning Use simple floating precision 
+#warning Use simple floating precision
 #endif
-	uchar_t precision = 32 ;
-#endif 
+    uchar_t precision = 32 ;
+#endif
     // std::cerr << "Assume "<< (precision==32?"simple":"double")<< " precision." << std::endl;
-	writeUchar(precision);
+    writeUchar(precision);
   }
-	__outputStream << '#';
+    __outputStream << '#';
     __outputStream << ( comment ? string(comment) : string("a GEOM binary File") ) << '#' ;
     return true;
 }
@@ -615,68 +622,68 @@ void BinaryPrinter::printType(const string& _string){
 
 
 /* ----------------------------------------------------------------------- */
-void 
+void
 BinaryPrinter::printFile(const std::string& FileName){
-	writeFile(getCanonicalFilename(FileName));
+    writeFile(getCanonicalFilename(FileName));
 }
 
-std::string 
+std::string
 BinaryPrinter::getCanonicalFilename(const std::string& FileName){
   if(FileName.empty()){
-	return "";
+    return "";
   }
   string plantgl_dir = getPlantGLDir();
   string f = FileName;
   string pref = short_dirname(get_dirname(f));
   if(pref.empty() || pref[0] == '.'){
-	  return f;
+      return f;
   }
   string pref1 = pref;
   string cwd = short_dirname(get_cwd());
   if(cwd.empty() || cwd == "."){
-	  return f;	
+      return f;
   }
   if(pref1.size() > cwd.size())
     pref1 = string(pref1.begin(),pref1.begin()+cwd.size());
     // cerr << "Compare '" << pref1 << "' to '" << cwd << endl;
   if(similar_dir(pref1,cwd)){
-	  int count = 0;
-	  for(string::const_iterator _i = pref1.begin();
-		  _i != pref1.end(); _i++)
-			if(*_i == '\\' || *_i == '/')count++;
-	  string::iterator _j = f.begin();
-	  for(;_j != f.end() && count>0; _j++)
-		if(*_j == '\\' || *_j == '/')count--;
-	  if(*(pref1.end()-1) != '\\' && *(pref1.end()-1) != '/'){
-		while(*_j != '\\' && *_j != '/')_j++;
-	  }
-	  if(*_j == '\\' || *_j == '/')_j++;
-	  string suffix = string(_j,f.end());
+      int count = 0;
+      for(string::const_iterator _i = pref1.begin();
+          _i != pref1.end(); _i++)
+            if(*_i == '\\' || *_i == '/')count++;
+      string::iterator _j = f.begin();
+      for(;_j != f.end() && count>0; _j++)
+        if(*_j == '\\' || *_j == '/')count--;
+      if(*(pref1.end()-1) != '\\' && *(pref1.end()-1) != '/'){
+        while(*_j != '\\' && *_j != '/')_j++;
+      }
+      if(*_j == '\\' || *_j == '/')_j++;
+      string suffix = string(_j,f.end());
       // cerr << "Print '" << suffix << "' " << endl;
-	  return suffix;	
+      return suffix;
   }
   else  {
     // printf("compare '%s' '%s'\n",plantgl_dir.c_str(),pref.c_str());
-	if(pref.size() > plantgl_dir.size()){
-	  pref = string(pref.begin(),pref.begin()+plantgl_dir.size());
-	}
-	  
-	
-	if(similar_dir(pref,plantgl_dir)){
-	  int count = 0;
-	  for(string::const_iterator _i = pref.begin();
-	  _i != pref.end(); _i++)if(*_i == '\\' || *_i == '/')count++;
-	  string::iterator _j = f.begin();
-	  for(;_j != f.end() && count>0; _j++)if(*_j == '\\' || *_j == '/')count--;
-	  if(*(pref.end()-1) != '\\' && *(pref.end()-1) != '/'){
-		while(*_j != '\\' && *_j != '/')_j++;
-	  }
-	  string suffix = string(_j,f.end());
-	  //      f.reserve(suffix.size()+15);
-	  f = "PLANTGL_DIR"+suffix;
-	  return f;
-	}
-	else  return FileName;
+    if(pref.size() > plantgl_dir.size()){
+      pref = string(pref.begin(),pref.begin()+plantgl_dir.size());
+    }
+
+
+    if(similar_dir(pref,plantgl_dir)){
+      int count = 0;
+      for(string::const_iterator _i = pref.begin();
+      _i != pref.end(); _i++)if(*_i == '\\' || *_i == '/')count++;
+      string::iterator _j = f.begin();
+      for(;_j != f.end() && count>0; _j++)if(*_j == '\\' || *_j == '/')count--;
+      if(*(pref.end()-1) != '\\' && *(pref.end()-1) != '/'){
+        while(*_j != '\\' && *_j != '/')_j++;
+      }
+      string suffix = string(_j,f.end());
+      //      f.reserve(suffix.size()+15);
+      f = "PLANTGL_DIR"+suffix;
+      return f;
+    }
+    else  return FileName;
   }
 }
 
@@ -686,7 +693,7 @@ bool BinaryPrinter::process(Shape * Shape){
     GEOM_ASSERT(Shape);
 
 
-    DEBUG_INFO("Shape",Shape->getName(),Shape->SceneObject::getId());
+    DEBUG_INFO("Shape",Shape->getName(),Shape->getObjectId());
     printType("Shape");
     writeString(Shape->getName());
     writeUint32(Shape->id);
@@ -729,10 +736,10 @@ bool BinaryPrinter::process(Inline * geomInline){
       for(Scene::iterator _it = geomInline->getScene()->begin();_it != geomInline->getScene()->end();_it++ ){
         ShapePtr shape = dynamic_pointer_cast<Shape>(*_it);
         if(shape){
-		  DEBUG_INFO("Shape",shape->getName(),shape->SceneObject::getId());
+          DEBUG_INFO("Shape",shape->getName(),shape->getObjectId());
           printType("Shape");
           writeString(shape->getName());
-		  writeUint32(shape->id);
+          writeUint32(shape->id);
           _s->getGeometry() = shape->getGeometry();
           _transf->apply(*this);
           shape->appearance->apply(*this);
@@ -797,13 +804,13 @@ bool BinaryPrinter::process( ImageTexture * texture ) {
   uchar_t _default(0);
 
   if(__tokens.getVersion() < 2.3f) {
-	  _default = 63;
+      _default = 63;
   }
   else {
-	  if (texture->isRepeatSToDefault())
-		  _default+=1;
-	  if (texture->isRepeatTToDefault())
-		  _default+=2;
+      if (texture->isRepeatSToDefault())
+          _default+=1;
+      if (texture->isRepeatTToDefault())
+          _default+=2;
   }
 
   if(__tokens.getVersion() >= 1.8f)
@@ -814,11 +821,11 @@ bool BinaryPrinter::process( ImageTexture * texture ) {
   printFile(texture->getFilename());
 
   if(__tokens.getVersion() > 2.3f) {
-	  if (! texture->isRepeatSToDefault())
-		GEOM_PRINT_FIELD(texture,RepeatS,BOOLEAN);
+      if (! texture->isRepeatSToDefault())
+        GEOM_PRINT_FIELD(texture,RepeatS,BOOLEAN);
 
-	  if (! texture->isRepeatTToDefault())
-		GEOM_PRINT_FIELD(texture,RepeatT,BOOLEAN);
+      if (! texture->isRepeatTToDefault())
+        GEOM_PRINT_FIELD(texture,RepeatT,BOOLEAN);
   }
 
   if(__tokens.getVersion() >= 1.8f){
@@ -845,7 +852,7 @@ bool BinaryPrinter::process( Texture2D * texture ) {
   texture->getImage()->apply(*this);
 
   if (!texture->isTransformationToDefault())
-	texture->getTransformation()->apply(*this);
+    texture->getTransformation()->apply(*this);
 
   if(__tokens.getVersion() > 2.4f) {
       if (! texture->isBaseColorToDefault())
@@ -1083,7 +1090,7 @@ bool BinaryPrinter::process( BezierCurve * bezierCurve ) {
       _default =1;
 
   if(__tokens.getVersion() >= 2.1f){
-	if (bezierCurve->isWidthToDefault()) _default +=2;
+    if (bezierCurve->isWidthToDefault()) _default +=2;
   }
   writeUchar(_default);
 
@@ -1092,7 +1099,7 @@ bool BinaryPrinter::process( BezierCurve * bezierCurve ) {
   }
 
   if(__tokens.getVersion() >= 2.1f){
-	if (! bezierCurve->isWidthToDefault()){
+    if (! bezierCurve->isWidthToDefault()){
       GEOM_PRINT_FIELD(bezierCurve,Width,UCHAR);
     }
   }
@@ -1326,8 +1333,8 @@ bool BinaryPrinter::process( Extrusion * extrusion ) {
   }
   else _default += 28;
   if(__tokens.getVersion() >= 2.2f){
-	if(extrusion->isInitialNormalToDefault() )
-		 _default += 32;
+    if(extrusion->isInitialNormalToDefault() )
+         _default += 32;
   }
 
   writeUchar(_default);
@@ -1382,34 +1389,34 @@ bool BinaryPrinter::process( FaceSet * faceSet ) {
   if (faceSet->isSkeletonToDefault())
       _default += 4;
   if(__tokens.getVersion() >= 1.2f){
-	if (faceSet->isNormalListToDefault())
-		_default += 8;
-	if(faceSet->isNormalPerVertexToDefault() )
-		_default += 16;
-	if (__tokens.getVersion() >= 1.5f){
-		if (faceSet->isNormalIndexListToDefault())
-			_default += 64;
-	}
+    if (faceSet->isNormalListToDefault())
+        _default += 8;
+    if(faceSet->isNormalPerVertexToDefault() )
+        _default += 16;
+    if (__tokens.getVersion() >= 1.5f){
+        if (faceSet->isNormalIndexListToDefault())
+            _default += 64;
+    }
   }
   if (__tokens.getVersion() >= 1.5f){
-	if (faceSet->isColorPerVertexToDefault())
-		_default += 128;
-	if (faceSet->isColorListToDefault())
-		_default += 256;
-	if (faceSet->isColorIndexListToDefault())
-		_default += 512;
+    if (faceSet->isColorPerVertexToDefault())
+        _default += 128;
+    if (faceSet->isColorListToDefault())
+        _default += 256;
+    if (faceSet->isColorIndexListToDefault())
+        _default += 512;
   }
   if(__tokens.getVersion() >= 1.3f){
-	if (faceSet->isTexCoordListToDefault())
-		_default += 32;
-	if (__tokens.getVersion() >= 1.5f){
-		if (faceSet->isTexCoordIndexListToDefault())
-			_default += 1024;
-	}
+    if (faceSet->isTexCoordListToDefault())
+        _default += 32;
+    if (__tokens.getVersion() >= 1.5f){
+        if (faceSet->isTexCoordIndexListToDefault())
+            _default += 1024;
+    }
   }
 
   if (__tokens.getVersion() >= 1.5f)
-	writeUint16(_default);
+    writeUint16(_default);
   else writeUchar(_default);
 
   if (! faceSet->isCCWToDefault())
@@ -1426,42 +1433,42 @@ bool BinaryPrinter::process( FaceSet * faceSet ) {
   GEOM_PRINT_FIELD_ARRAY(faceSet,IndexList,INDEXN);
 
   if(__tokens.getVersion() >= 1.5f){
-	if (!faceSet->isNormalPerVertexToDefault()){
-	  GEOM_PRINT_FIELD(faceSet,NormalPerVertex,BOOLEAN);
-	}
+    if (!faceSet->isNormalPerVertexToDefault()){
+      GEOM_PRINT_FIELD(faceSet,NormalPerVertex,BOOLEAN);
+    }
   }
   if(__tokens.getVersion() >= 1.2f){
-	if (!faceSet->isNormalListToDefault()){
-	  GEOM_PRINT_FIELD_ARRAY(faceSet,NormalList,VECTOR3);
-	}
+    if (!faceSet->isNormalListToDefault()){
+      GEOM_PRINT_FIELD_ARRAY(faceSet,NormalList,VECTOR3);
+    }
   }
   if(__tokens.getVersion() >= 1.5f){
-	if (!faceSet->isNormalIndexListToDefault()){
-	  GEOM_PRINT_FIELD_ARRAY(faceSet,NormalIndexList,INDEXN);
-	}
+    if (!faceSet->isNormalIndexListToDefault()){
+      GEOM_PRINT_FIELD_ARRAY(faceSet,NormalIndexList,INDEXN);
+    }
 
-	if (!faceSet->isColorPerVertexToDefault()){
-	  GEOM_PRINT_FIELD(faceSet,ColorPerVertex,BOOLEAN);
-	}
+    if (!faceSet->isColorPerVertexToDefault()){
+      GEOM_PRINT_FIELD(faceSet,ColorPerVertex,BOOLEAN);
+    }
 
-	if (!faceSet->isColorListToDefault()){
-	  GEOM_PRINT_FIELD_ARRAY(faceSet,ColorList,COLOR4);
-	}
+    if (!faceSet->isColorListToDefault()){
+      GEOM_PRINT_FIELD_ARRAY(faceSet,ColorList,COLOR4);
+    }
 
-	if (!faceSet->isColorIndexListToDefault()){
-	  GEOM_PRINT_FIELD_ARRAY(faceSet,ColorIndexList,INDEXN);
-	}
+    if (!faceSet->isColorIndexListToDefault()){
+      GEOM_PRINT_FIELD_ARRAY(faceSet,ColorIndexList,INDEXN);
+    }
 
   }
   if(__tokens.getVersion() >= 1.3f){
-	if (!faceSet->isTexCoordListToDefault()){
+    if (!faceSet->isTexCoordListToDefault()){
         GEOM_PRINT_FIELD_ARRAY(faceSet,TexCoordList,VECTOR2);
-	}
+    }
   }
   if(__tokens.getVersion() >= 1.5f){
-	if (!faceSet->isTexCoordIndexListToDefault()){
-	  GEOM_PRINT_FIELD_ARRAY(faceSet,TexCoordIndexList,INDEXN);
-	}
+    if (!faceSet->isTexCoordIndexListToDefault()){
+      GEOM_PRINT_FIELD_ARRAY(faceSet,TexCoordIndexList,INDEXN);
+    }
   }
 
   return true;
@@ -1567,7 +1574,7 @@ bool BinaryPrinter::process( NurbsCurve * nurbsCurve ) {
   if (nurbsCurve->isStrideToDefault())
       _default += 4;
   if(__tokens.getVersion() >= 2.1f){
-	if (nurbsCurve->isWidthToDefault()) _default +=8;
+    if (nurbsCurve->isWidthToDefault()) _default +=8;
   }
   writeUchar(_default);
 
@@ -1584,7 +1591,7 @@ bool BinaryPrinter::process( NurbsCurve * nurbsCurve ) {
     }
 
   if(__tokens.getVersion() >= 2.1f){
-	if (! nurbsCurve->isWidthToDefault()){
+    if (! nurbsCurve->isWidthToDefault()){
       GEOM_PRINT_FIELD(nurbsCurve,Width,UCHAR);
     }
   }
@@ -1776,7 +1783,7 @@ bool BinaryPrinter::process( Swung * swung )
   GEOM_ASSERT(swung);
   GEOM_PRINT_BEGIN(Swung,swung);
 #ifdef GEOM_DEBUG
-  std::cerr << "Name : '" << swung->getName() << "', Id : " << swung->SceneObject::getId() << std::endl;
+  std::cerr << "Name : '" << swung->getName() << "', Id : " << swung->getObjectId() << std::endl;
   std::cerr << "Pos : " << __outputStream.getStream().tellp() << std::endl;
 #endif
 
@@ -1843,30 +1850,30 @@ bool BinaryPrinter::process( QuadSet * quadSet ) {
   if (quadSet->isSkeletonToDefault())
       _default += 4;
   if(__tokens.getVersion() >= 1.2f){
-	if(quadSet->getNormalPerVertex())
-		_default += 16;
-	if (quadSet->isNormalListToDefault())
-		_default += 8;
-	if(__tokens.getVersion() >= 1.5f){
-		if (quadSet->isNormalIndexListToDefault())
-			_default += 64;
-	}
+    if(quadSet->getNormalPerVertex())
+        _default += 16;
+    if (quadSet->isNormalListToDefault())
+        _default += 8;
+    if(__tokens.getVersion() >= 1.5f){
+        if (quadSet->isNormalIndexListToDefault())
+            _default += 64;
+    }
   }
   if(__tokens.getVersion() >= 1.5f){
-	if (quadSet->isColorPerVertexToDefault())
-		_default += 128;
-	if (quadSet->isColorListToDefault())
-		_default += 256;
-	if (quadSet->isColorIndexListToDefault())
-		_default += 512;
+    if (quadSet->isColorPerVertexToDefault())
+        _default += 128;
+    if (quadSet->isColorListToDefault())
+        _default += 256;
+    if (quadSet->isColorIndexListToDefault())
+        _default += 512;
   }
   if(__tokens.getVersion() >= 1.3f){
-	if (quadSet->isTexCoordListToDefault())
-		_default += 32;
-	if(__tokens.getVersion() >= 1.5f){
-		if (quadSet->isTexCoordIndexListToDefault())
-			_default += 1024;
-	}
+    if (quadSet->isTexCoordListToDefault())
+        _default += 32;
+    if(__tokens.getVersion() >= 1.5f){
+        if (quadSet->isTexCoordIndexListToDefault())
+            _default += 1024;
+    }
   }
   if(__tokens.getVersion() >= 1.5f) writeUint16(_default);
   else  writeUchar(_default);
@@ -1885,44 +1892,44 @@ bool BinaryPrinter::process( QuadSet * quadSet ) {
   GEOM_PRINT_FIELD_ARRAY(quadSet,IndexList,INDEX4);
 
   if(__tokens.getVersion() >= 1.2f){
-	if(__tokens.getVersion() >= 1.5f){
-	  if (!quadSet->isNormalPerVertexToDefault()){
-		GEOM_PRINT_FIELD(quadSet,NormalPerVertex,BOOLEAN);
-	  }
+    if(__tokens.getVersion() >= 1.5f){
+      if (!quadSet->isNormalPerVertexToDefault()){
+        GEOM_PRINT_FIELD(quadSet,NormalPerVertex,BOOLEAN);
+      }
      }
 
-	 if (!quadSet->isNormalListToDefault()){
-	   GEOM_PRINT_FIELD_ARRAY(quadSet,NormalList,VECTOR3);
-	 }
+     if (!quadSet->isNormalListToDefault()){
+       GEOM_PRINT_FIELD_ARRAY(quadSet,NormalList,VECTOR3);
+     }
 
-	if(__tokens.getVersion() >= 1.5f){
-	  if (!quadSet->isNormalIndexListToDefault()){
-		GEOM_PRINT_FIELD_ARRAY(quadSet,NormalIndexList,INDEX4);
-	  }
+    if(__tokens.getVersion() >= 1.5f){
+      if (!quadSet->isNormalIndexListToDefault()){
+        GEOM_PRINT_FIELD_ARRAY(quadSet,NormalIndexList,INDEX4);
+      }
      }
   }
   if(__tokens.getVersion() >= 1.5f){
    if (!quadSet->isColorPerVertexToDefault()){
- 	GEOM_PRINT_FIELD(quadSet,ColorPerVertex,BOOLEAN);
+    GEOM_PRINT_FIELD(quadSet,ColorPerVertex,BOOLEAN);
    }
 
    if (!quadSet->isColorListToDefault()){
- 	GEOM_PRINT_FIELD_ARRAY(quadSet,ColorList,COLOR4);
+    GEOM_PRINT_FIELD_ARRAY(quadSet,ColorList,COLOR4);
    }
 
    if (!quadSet->isColorIndexListToDefault()){
- 	GEOM_PRINT_FIELD_ARRAY(quadSet,ColorIndexList,INDEX4);
+    GEOM_PRINT_FIELD_ARRAY(quadSet,ColorIndexList,INDEX4);
    }
   }
 
   if(__tokens.getVersion() >= 1.3f){
-	if (!quadSet->isTexCoordListToDefault()){
+    if (!quadSet->isTexCoordListToDefault()){
         GEOM_PRINT_FIELD_ARRAY(quadSet,TexCoordList,VECTOR2);
-	}
-	if(__tokens.getVersion() >= 1.5f){
-	  if (!quadSet->isTexCoordIndexListToDefault()){
-		GEOM_PRINT_FIELD_ARRAY(quadSet,TexCoordIndexList,INDEX4);
-	  }
+    }
+    if(__tokens.getVersion() >= 1.5f){
+      if (!quadSet->isTexCoordIndexListToDefault()){
+        GEOM_PRINT_FIELD_ARRAY(quadSet,TexCoordIndexList,INDEX4);
+      }
      }
   }
 
@@ -1952,13 +1959,13 @@ bool BinaryPrinter::process( ScreenProjected * scp ) {
   GEOM_ASSERT(scp);
   if(__tokens.getVersion() >= 2.4f){
 
-	GEOM_PRINT_BEGIN(ScreenProjected,scp);
+    GEOM_PRINT_BEGIN(ScreenProjected,scp);
 
     GEOM_PRINT_FIELD(scp,KeepAspectRatio,BOOLEAN);
 
-	GEOM_PRINT_FIELD(scp,Geometry,GEOMETRY);
+    GEOM_PRINT_FIELD(scp,Geometry,GEOMETRY);
 
-	return true;
+    return true;
   }
   else return false;
 }
@@ -2049,31 +2056,31 @@ bool BinaryPrinter::process( TriangleSet * triangleSet ) {
   if (triangleSet->isSkeletonToDefault())
       _default += 4;
   if(__tokens.getVersion() >= 1.2f){
-	if(triangleSet->getNormalPerVertex())
-		_default += 16;
-	if (triangleSet->isNormalListToDefault())
-		_default += 8;
+    if(triangleSet->getNormalPerVertex())
+        _default += 16;
+    if (triangleSet->isNormalListToDefault())
+        _default += 8;
     if(__tokens.getVersion() >= 1.5f){
-	  if (triangleSet->isNormalIndexListToDefault())
-		_default += 64;
-	}	
+      if (triangleSet->isNormalIndexListToDefault())
+        _default += 64;
+    }
   }
   if(__tokens.getVersion() >= 1.5f){
    if(triangleSet->getColorPerVertex())
-		_default += 128;
+        _default += 128;
    if (triangleSet->isColorListToDefault())
-		_default += 256;
+        _default += 256;
    if (triangleSet->isColorIndexListToDefault())
-		_default += 512;
-  }	
+        _default += 512;
+  }
   if(__tokens.getVersion() >= 1.3f){
-	if (triangleSet->isTexCoordListToDefault()){
-		_default += 32;
-	}
+    if (triangleSet->isTexCoordListToDefault()){
+        _default += 32;
+    }
     if(__tokens.getVersion() >= 1.5f){
-	  if (triangleSet->isTexCoordIndexListToDefault())
-		_default += 1024;
-	}	
+      if (triangleSet->isTexCoordIndexListToDefault())
+        _default += 1024;
+    }
   }
 
   if(__tokens.getVersion() >= 1.5f) writeUint16(_default);
@@ -2093,40 +2100,40 @@ bool BinaryPrinter::process( TriangleSet * triangleSet ) {
   GEOM_PRINT_FIELD_ARRAY(triangleSet,IndexList,INDEX3);
 
   if(__tokens.getVersion() >= 1.2f){
-	if(__tokens.getVersion() >= 1.5f){
-		if (!triangleSet->isNormalPerVertexToDefault()){
-		  GEOM_PRINT_FIELD(triangleSet,NormalPerVertex,BOOLEAN);
-		}
-	}
-	if (!triangleSet->isNormalListToDefault()){
-	  GEOM_PRINT_FIELD_ARRAY(triangleSet,NormalList,VECTOR3);
-	}
-	if(__tokens.getVersion() >= 1.5f){
-		if (!triangleSet->isNormalIndexListToDefault()){
-		  GEOM_PRINT_FIELD_ARRAY(triangleSet,NormalIndexList,INDEX3);
-		}
-	}
+    if(__tokens.getVersion() >= 1.5f){
+        if (!triangleSet->isNormalPerVertexToDefault()){
+          GEOM_PRINT_FIELD(triangleSet,NormalPerVertex,BOOLEAN);
+        }
+    }
+    if (!triangleSet->isNormalListToDefault()){
+      GEOM_PRINT_FIELD_ARRAY(triangleSet,NormalList,VECTOR3);
+    }
+    if(__tokens.getVersion() >= 1.5f){
+        if (!triangleSet->isNormalIndexListToDefault()){
+          GEOM_PRINT_FIELD_ARRAY(triangleSet,NormalIndexList,INDEX3);
+        }
+    }
   }
   if(__tokens.getVersion() >= 1.5f){
-	if (!triangleSet->isColorPerVertexToDefault()){
-	  GEOM_PRINT_FIELD(triangleSet,ColorPerVertex,BOOLEAN);
-	}
-	if (!triangleSet->isColorListToDefault()){
-	  GEOM_PRINT_FIELD_ARRAY(triangleSet,ColorList,COLOR4);
-	}
-	if (!triangleSet->isColorIndexListToDefault()){
-	  GEOM_PRINT_FIELD_ARRAY(triangleSet,ColorIndexList,INDEX3);
-	}
+    if (!triangleSet->isColorPerVertexToDefault()){
+      GEOM_PRINT_FIELD(triangleSet,ColorPerVertex,BOOLEAN);
+    }
+    if (!triangleSet->isColorListToDefault()){
+      GEOM_PRINT_FIELD_ARRAY(triangleSet,ColorList,COLOR4);
+    }
+    if (!triangleSet->isColorIndexListToDefault()){
+      GEOM_PRINT_FIELD_ARRAY(triangleSet,ColorIndexList,INDEX3);
+    }
   }
   if(__tokens.getVersion() >= 1.3f){
-	if (!triangleSet->isTexCoordListToDefault()){
+    if (!triangleSet->isTexCoordListToDefault()){
         GEOM_PRINT_FIELD_ARRAY(triangleSet,TexCoordList,VECTOR2);
-	}
-	if(__tokens.getVersion() >= 1.5f){
-		if (!triangleSet->isTexCoordIndexListToDefault()){
-		  GEOM_PRINT_FIELD_ARRAY(triangleSet,TexCoordIndexList,INDEX3);
-		}
-	}
+    }
+    if(__tokens.getVersion() >= 1.5f){
+        if (!triangleSet->isTexCoordIndexListToDefault()){
+          GEOM_PRINT_FIELD_ARRAY(triangleSet,TexCoordIndexList,INDEX3);
+        }
+    }
   }
 
   return true;
@@ -2145,7 +2152,7 @@ bool BinaryPrinter::process( BezierCurve2D * bezierCurve ) {
       _default =1;
 
   if(__tokens.getVersion() >= 2.1f){
-	if (bezierCurve->isWidthToDefault()) _default +=2;
+    if (bezierCurve->isWidthToDefault()) _default +=2;
   }
   writeUchar(_default);
 
@@ -2154,7 +2161,7 @@ bool BinaryPrinter::process( BezierCurve2D * bezierCurve ) {
   }
 
   if(__tokens.getVersion() >= 2.1f){
-	if (! bezierCurve->isWidthToDefault()){
+    if (! bezierCurve->isWidthToDefault()){
       GEOM_PRINT_FIELD(bezierCurve,Width,UCHAR);
     }
   }
@@ -2204,7 +2211,7 @@ bool BinaryPrinter::process( NurbsCurve2D * nurbsCurve ) {
   if (nurbsCurve->isStrideToDefault())
       _default += 4;
   if(__tokens.getVersion() >= 2.1f){
-	if (nurbsCurve->isWidthToDefault()) _default +=8;
+    if (nurbsCurve->isWidthToDefault()) _default +=8;
   }
   writeUchar(_default);
 
@@ -2218,7 +2225,7 @@ bool BinaryPrinter::process( NurbsCurve2D * nurbsCurve ) {
     {GEOM_PRINT_FIELD(nurbsCurve,Stride,UINT32);}
 
   if(__tokens.getVersion() >= 2.1f){
-	if (! nurbsCurve->isWidthToDefault()){
+    if (! nurbsCurve->isWidthToDefault()){
       GEOM_PRINT_FIELD(nurbsCurve,Width,UCHAR);
     }
   }
@@ -2273,13 +2280,13 @@ bool BinaryPrinter::process( Text * text ) {
   GEOM_PRINT_FIELD(text,String,STRING);
 
   if (!text->isFontStyleToDefault())
-	GEOM_PRINT_FIELD(text,FontStyle,GEOMETRY);
+    GEOM_PRINT_FIELD(text,FontStyle,GEOMETRY);
 
   if (!text->isPositionToDefault())
-	GEOM_PRINT_FIELD(text,Position,VECTOR3);
+    GEOM_PRINT_FIELD(text,Position,VECTOR3);
 
   if (!text->isScreenCoordinatesToDefault())
-	GEOM_PRINT_FIELD(text,ScreenCoordinates,BOOLEAN);
+    GEOM_PRINT_FIELD(text,ScreenCoordinates,BOOLEAN);
 
   return true;
 }
@@ -2302,13 +2309,13 @@ bool BinaryPrinter::process( Font * font ) {
   GEOM_PRINT_FIELD(font,Family,STRING);
 
   if(!font->isSizeToDefault())
-	GEOM_PRINT_FIELD(font,Size,UINT32);
+    GEOM_PRINT_FIELD(font,Size,UINT32);
 
   if(!font->isBoldToDefault())
-	GEOM_PRINT_FIELD(font,Bold,BOOLEAN);
+    GEOM_PRINT_FIELD(font,Bold,BOOLEAN);
 
   if(!font->isItalicToDefault())
-	GEOM_PRINT_FIELD(font,Italic,BOOLEAN);
+    GEOM_PRINT_FIELD(font,Italic,BOOLEAN);
 
   return true;
 }
