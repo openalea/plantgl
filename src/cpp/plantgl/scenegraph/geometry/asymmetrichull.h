@@ -3,31 +3,41 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon et al.
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 /*! \file geom_asymmetrichull.h
     \brief Definition of the geometry class AsymmetricHull.
@@ -84,10 +94,10 @@ public:
   static const real_t DEFAULT_POS_Y_RADIUS;
 
   /// The \b Bottom field default value.
-  static const TOOLS(Vector3) DEFAULT_BOTTOM;
+  static const Vector3 DEFAULT_BOTTOM;
 
   /// The \b Top field default value.
-  static const TOOLS(Vector3) DEFAULT_TOP;
+  static const Vector3 DEFAULT_TOP;
 
   /// The \b TopShape field default value.
   static const real_t DEFAULT_TOP_SHAPE;
@@ -102,8 +112,8 @@ public:
   static const uchar_t DEFAULT_STACKS;
 
 
-  /// A structure which helps to build a AsymmetricHull when parsing. 
-  struct SG_API Builder : public Hull::Builder { 
+  /// A structure which helps to build a AsymmetricHull when parsing.
+  struct SG_API Builder : public Hull::Builder {
 
     /// A pointer to the \b NegXHeight field.
     real_t * NegXHeight;
@@ -130,10 +140,10 @@ public:
     real_t * PosYRadius;
 
     /// A pointer to the \b Bottom field.
-    TOOLS(Vector3) * Bottom;
+    Vector3 * Bottom;
 
     /// A pointer to the \b Top field.
-    TOOLS(Vector3) * Top;
+    Vector3 * Top;
 
     /// A pointer to the \b BottomShape field.
     real_t * BottomShape;
@@ -164,23 +174,23 @@ public:
 
   /** Constructs a AsymmetricHull
       \pre
-    
+
       \post
       - \e self is valid. */
   AsymmetricHull( const real_t& negXRadius = DEFAULT_NEG_X_RADIUS,
-		  const real_t& posXRadius = DEFAULT_POS_X_RADIUS,
-		  const real_t& negYRadius = DEFAULT_NEG_Y_RADIUS,
-		  const real_t& posYRadius = DEFAULT_POS_Y_RADIUS,
-		  const real_t& negXHeight = DEFAULT_NEG_X_HEIGHT,
-		  const real_t& posXHeight = DEFAULT_POS_X_HEIGHT,
-		  const real_t& negYHeight = DEFAULT_NEG_Y_HEIGHT,
-		  const real_t& posYHeight = DEFAULT_POS_Y_HEIGHT,
-		  const TOOLS(Vector3)& bottom  = DEFAULT_BOTTOM,
-		  const TOOLS(Vector3)& top     = DEFAULT_TOP,
-		  const real_t& bottomShape= DEFAULT_BOTTOM_SHAPE,
-		  const real_t& topShape   = DEFAULT_TOP_SHAPE,
-		  uchar_t slices           = DEFAULT_SLICES,
-		  uchar_t stacks           = DEFAULT_STACKS);
+          const real_t& posXRadius = DEFAULT_POS_X_RADIUS,
+          const real_t& negYRadius = DEFAULT_NEG_Y_RADIUS,
+          const real_t& posYRadius = DEFAULT_POS_Y_RADIUS,
+          const real_t& negXHeight = DEFAULT_NEG_X_HEIGHT,
+          const real_t& posXHeight = DEFAULT_POS_X_HEIGHT,
+          const real_t& negYHeight = DEFAULT_NEG_Y_HEIGHT,
+          const real_t& posYHeight = DEFAULT_POS_Y_HEIGHT,
+          const Vector3& bottom  = DEFAULT_BOTTOM,
+          const Vector3& top     = DEFAULT_TOP,
+          const real_t& bottomShape= DEFAULT_BOTTOM_SHAPE,
+          const real_t& topShape   = DEFAULT_TOP_SHAPE,
+          uchar_t slices           = DEFAULT_SLICES,
+          uchar_t stacks           = DEFAULT_STACKS);
 
   /// Destructor
   virtual ~AsymmetricHull( );
@@ -188,10 +198,10 @@ public:
   PGL_OBJECT(AsymmetricHull)
 
   /// Returns \b Bottom value.
-  const TOOLS(Vector3)& getBottom( ) const;
+  const Vector3& getBottom( ) const;
 
   /// Returns \b Bottom field.
-  TOOLS(Vector3)& getBottom( );
+  Vector3& getBottom( );
 
   /// Returns \b BottomShape value.
   const real_t& getBottomShape( ) const;
@@ -212,8 +222,8 @@ public:
   real_t& getNegXRadius( );
 
   /// Return \b NegX point.
-  TOOLS(Vector3) getNegXPoint( ) const ;
-  
+  Vector3 getNegXPoint( ) const ;
+
   /// Returns \b NegYHeight value.
   const real_t& getNegYHeight( ) const;
 
@@ -227,7 +237,7 @@ public:
   real_t& getNegYRadius( );
 
   /// Return \b NegY point.
-  TOOLS(Vector3) getNegYPoint( ) const ;
+  Vector3 getNegYPoint( ) const ;
 
   /// Returns \b PosXHeight value.
   const real_t& getPosXHeight( ) const;
@@ -242,7 +252,7 @@ public:
   real_t& getPosXRadius( ) ;
 
   /// Return \b PosX point.
-  TOOLS(Vector3) getPosXPoint( ) const ;
+  Vector3 getPosXPoint( ) const ;
 
   /// Returns \b PosYHeight value.
   const real_t& getPosYHeight( ) const;
@@ -257,13 +267,13 @@ public:
   real_t& getPosYRadius( );
 
   /// Return \b PosY point.
-  TOOLS(Vector3) getPosYPoint( ) const ;
+  Vector3 getPosYPoint( ) const ;
 
   /// Returns \b Top value.
-  const TOOLS(Vector3)& getTop( ) const;
+  const Vector3& getTop( ) const;
 
   /// Returns \b Top field.
-  TOOLS(Vector3)& getTop( ) ;
+  Vector3& getTop( ) ;
 
   /// Returns \b TopShape value.
   const real_t& getTopShape( ) const;
@@ -328,7 +338,7 @@ public:
   virtual bool isValid( ) const;
 
 protected:
-  
+
   /// The \b NegXHeight field.
   real_t __negXHeight;
 
@@ -336,7 +346,7 @@ protected:
   real_t __negXRadius;
 
   /// The \b NegXShape field.
-  TOOLS(Vector2) __negXShape;
+  Vector2 __negXShape;
 
   /// The \b NegYHeight field.
   real_t __negYHeight;
@@ -345,7 +355,7 @@ protected:
   real_t __negYRadius;
 
   /// The \b NegYShape field.
-  TOOLS(Vector2) __negYShape;
+  Vector2 __negYShape;
 
   /// The \b PosXHeight field.
   real_t __posXHeight;
@@ -354,7 +364,7 @@ protected:
   real_t __posXRadius;
 
   /// The \b PosXShape field.
-  TOOLS(Vector2) __posXShape;
+  Vector2 __posXShape;
 
   /// The \b PosYHeight field.
   real_t __posYHeight;
@@ -363,13 +373,13 @@ protected:
   real_t __posYRadius;
 
   /// The \b PosYShape field.
-  TOOLS(Vector2) __posYShape;
+  Vector2 __posYShape;
 
   /// The \b Top field.
-  TOOLS(Vector3) __top;
+  Vector3 __top;
 
   /// The \b Bottom field.
-  TOOLS(Vector3) __bottom;
+  Vector3 __bottom;
 
   /// The \b BottomShape field.
   real_t __topShape;

@@ -3,31 +3,41 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon et al.
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 
 
@@ -44,7 +54,6 @@
 //#include <iostream>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 using namespace std;
 
@@ -420,34 +429,17 @@ Point4MatrixPtr  NurbsPatch::deriveAtH(real_t u, real_t v, int d, int uspan, int
     RealArray2Ptr UderF = derivatesBasisFunctions(du,u,uspan,__udegree,__uKnotList);
     RealArray2Ptr VderF = derivatesBasisFunctions(dv,v,vspan,__vdegree,__vKnotList);
 
-/*    
-    printf("very slow initialization\n");
-    for(int k=__udegree;k<=d;++k){
-        for(int j=0;j<=d-k;++j){
-            //cout<<"set patchders"<<k<<j<<d<<endl;
-            patchders->setAt(k,j, Vector4::ORIGIN) ;
-        }
-    }
-    for(int j=__vdegree;j>=d;++j){
-        for(int k=0;k<=d-j;++k){
-            //cout<<"set patchders"<<k<<j<<endl;
-            patchders->setAt(k,j, Vector4::ORIGIN) ;
-        }
-    } 
-    printf("end of very slow initialization\n");
-    */
-
     for(int k=0;k<=du;++k){
         for(int s=0;s<=__vdegree;++s){
             for(int r=0;r<=__udegree;++r){
- 	            temp[s] +=  UderF->getAt(k,r)*__ctrlPointMatrix->getAt(uspan-__udegree+r,vspan-__vdegree+s) ;
+                temp[s] +=  UderF->getAt(k,r)*__ctrlPointMatrix->getAt(uspan-__udegree+r,vspan-__vdegree+s) ;
             }
         }
         int dd = ( (d-k) < dv ? (d-k) : dv); //min(d-k,dv) ;
         for(int r=0;r<=dd;++r){
             // patchders->setAt(k,r, Vector4::ORIGIN) ;
             for(int s=0;s<=__vdegree;++s){
- 	            patchders->getAt(k,r) += VderF->getAt(r,s)*temp[s] ;	//
+                patchders->getAt(k,r) += VderF->getAt(r,s)*temp[s] ;    //
             }
         }
     }
@@ -485,7 +477,7 @@ Point4MatrixPtr NurbsPatch::deriveAt(real_t  u, real_t  v, int d, int uspan, int
                 vec -= patchders->getAt(k,l-i)*Bin.getAt(l,i)*dersW->getAt(0,i).w() ;
 
             for (int j = 1 ; j <= k ; j++){
-                vec += patchders->getAt(k-j,l)*Bin.getAt(k,j)*dersW->getAt(j,0).w() ;
+                vec -= patchders->getAt(k-j,l)*Bin.getAt(k,j)*dersW->getAt(j,0).w() ;
                 Vector4 v2 = Vector4(0,0,0,0) ;
                 for (int  i = 1 ; i <= l ; i++ )
                     v2 += patchders->getAt(k-j,l-i)*Bin.getAt(l,i)*dersW->getAt(j,i).w() ;
@@ -528,7 +520,7 @@ Vector3 NurbsPatch::getPointAt(real_t u, real_t v) const{
 
   uint_t uind = uspan - __udegree;
   for (uint_t l = 0 ; l <= __vdegree ; l++ ){
-	  Vector4 temp( 0 , 0 , 0 ,0 );
+      Vector4 temp( 0 , 0 , 0 ,0 );
       uint_t vind = vspan - __vdegree +l;
       for (uint_t k = 0 ; k <= __udegree ; k++ ) {
            /*
@@ -605,7 +597,7 @@ Point4MatrixPtr NurbsPatch::getConnectCoeffs(real_t  u, real_t  v, int d, int us
       for (uint_t k = 0 ; k <= 1 ; k++ ){
         _chvec = _drve_coord->getAt(l,k);
         for (uint_t j = 0 ; j <= 1 ; j++ ){
-          //_connect_coeffs[(l,k,j)] = _coord_contra[j] * 
+          //_connect_coeffs[(l,k,j)] = _coord_contra[j] *
                 pass
     return _connect_coeffs
 */
@@ -668,10 +660,10 @@ LineicModelPtr NurbsPatch::getIsoVSectionAt(real_t v) const
   uint_t udim = __ctrlPointMatrix->getRowNb();
   Point4ArrayPtr temp(new Point4Array(udim));
   for (uint_t l = 0 ; l < udim ; l++ ){
-	  Vector4 vec;
+      Vector4 vec;
       for (uint_t k = 0 ; k <= __vdegree ; k++ )
           vec += (__ctrlPointMatrix->getAt(l,vspan - __vdegree +k) *  (Nv->getAt(k))) ;
-	  temp->setAt(l,vec);
+      temp->setAt(l,vec);
   }
   return LineicModelPtr(new NurbsCurve(temp,__uKnotList,__udegree,__ustride));
 }

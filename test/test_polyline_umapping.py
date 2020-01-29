@@ -3,7 +3,7 @@ from openalea.plantgl.all import *
 
 
 def test_polyline():
-    p = Polyline2D([(2*i,random()-0.5) for i in xrange(10)])
+    p = Polyline2D([(2*i,random()-0.5) for i in range(10)])
 
     f1 = p.getArcLengthToUMapping()
 

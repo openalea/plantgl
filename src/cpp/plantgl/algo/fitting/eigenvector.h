@@ -1,35 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al.
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
- * 
- *                      GNU General Public Licence
- *           
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
+ *
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
+
 
 /*! \file util_eigenvector.h
     \brief Algorithm to compute eigen vector from points.
@@ -135,37 +143,37 @@ extern void ALGO_API Laxi_VecteursPropres (double mat3x3[3][3],double pc[4],doub
 
 
 /*! vecteurs propres : \n
-	mat3x3	: matrice de l'operateur lineaire ( donnee ) \n
-	val	: valeurs propres associees a l'operateur lineaire ( cherchees ) \n
+    mat3x3  : matrice de l'operateur lineaire ( donnee ) \n
+    val : valeurs propres associees a l'operateur lineaire ( cherchees ) \n
                   si pas de solution, val = Infini \n
-	vect	: vecteurs propres associes aux valeurs propres ( cherchees ) \n
+    vect    : vecteurs propres associes aux valeurs propres ( cherchees ) \n
                   si pas de solution, vect = (Infini,Infini,Infini) \n
 */
 extern void ALGO_API Laxi_ValproVecpro (double mat3x3[3][3],double val[3],double vect[3][3]);
 
 
 /*! vecteurs propres distincts : \n
-	mat3x3	: matrice de l'operateur lineaire ( donnee ) \n
-	val	: valeurs propres associees a l'operateur lineaire ( cherchees ) \n
+    mat3x3  : matrice de l'operateur lineaire ( donnee ) \n
+    val : valeurs propres associees a l'operateur lineaire ( cherchees ) \n
                   si pas de solution, val = Infini \n
-	vect	: vecteurs propres distincts associes aux valeurs propres ( cherchees ) \n
+    vect    : vecteurs propres distincts associes aux valeurs propres ( cherchees ) \n
                   si pas de solution, vect = (Infini,Infini,Infini) \n
 */
 extern void ALGO_API Laxi_Vecpro (double mat3x3[3][3],double vect[3][3],short *marqueur);
 
 
 /*! vecteurs propres distincts : \n
-	mat3x3	: matrice de l'operateur lineaire ( donnee ) \n
-	val	: valeurs propres associees a l'operateur lineaire ( cherchees ) \n
+    mat3x3  : matrice de l'operateur lineaire ( donnee ) \n
+    val : valeurs propres associees a l'operateur lineaire ( cherchees ) \n
                   si pas de solution, val = Infini \n
-	vect	: vecteurs propres distincts associes aux valeurs propres ( cherchees ) \n
+    vect    : vecteurs propres distincts associes aux valeurs propres ( cherchees ) \n
                   si pas de solution, vect = (Infini,Infini,Infini) \n
 */
 extern void ALGO_API Laxi_ComputeVecpro (double vpmat[3][3],float vpvec[3][3],float vpint[3],float vpang[3][3],short vpok[3]);
 
 /*! Calcul de la matrice d'inertie */
 extern real_t ALGO_API Laxi_ComputeInertiaM (float *pts, float * ponderation, int nbp,float vpvec[3][3],float vpint[3],
-			    float vpang[3][3],short vpok[3],float fvpmat[3][3]);
+                float vpang[3][3],short vpok[3],float fvpmat[3][3]);
 
 
 extern void ALGO_API Laxi_ComputeInertia (Point3ArrayPtr pts,float vpvec[3][3],float vpint[3],float vpang[3][3],short vpok[3]);

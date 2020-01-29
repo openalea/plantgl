@@ -1,35 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al.
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 
 
@@ -55,7 +63,6 @@
 #include <plantgl/math/util_math.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 using namespace std;
 
@@ -64,17 +71,17 @@ using namespace std;
 
 #define GEOM_TESSELATOR_CHECK_CACHE(geom) \
 if(!geom->unique()){ \
-  Cache<ExplicitModelPtr>::Iterator _it = __cache.find(geom->getId()); \
+  Cache<ExplicitModelPtr>::Iterator _it = __cache.find(geom->getObjectId()); \
   if (! (_it == __cache.end())) { \
     __discretization = _it->second; \
     return true; \
-  }} else __discretization= ExplicitModelPtr(); 
+  }} else __discretization= ExplicitModelPtr();
 
 
 #define GEOM_TESSELATOR_UPDATE_CACHE(geom) \
 if(!geom->unique()){ \
   if(geom->isNamed())__discretization->setName(geom->getName()); \
-  __cache.insert(geom->getId(),__discretization); \
+  __cache.insert(geom->getObjectId(),__discretization); \
 }
 
 
@@ -99,18 +106,18 @@ bool Tesselator::process( AmapSymbol * amapSymbol ) {
   GEOM_ASSERT(amapSymbol);
   GEOM_TESSELATOR_CHECK_CACHE(amapSymbol);
   __discretization = ExplicitModelPtr(new TriangleSet(amapSymbol->getPointList(),
-				     amapSymbol->getIndexList()->triangulate(),
-				     amapSymbol->getNormalList(),
-					 (amapSymbol->getNormalIndexList()?amapSymbol->getNormalIndexList()->triangulate():Index3ArrayPtr()),
-				     amapSymbol->getColorList(),
-					 (amapSymbol->getColorIndexList()?amapSymbol->getColorIndexList()->triangulate():Index3ArrayPtr()),
-				     amapSymbol->getTexCoordList(),
-					 (amapSymbol->getTexCoordIndexList()?amapSymbol->getTexCoordIndexList()->triangulate():Index3ArrayPtr()),
-				     amapSymbol->getNormalPerVertex(),
-				     amapSymbol->getColorPerVertex(),
-				     amapSymbol->getCCW(),
-				     amapSymbol->getSolid(),
-				     amapSymbol->getSkeleton()));
+                     amapSymbol->getIndexList()->triangulate(),
+                     amapSymbol->getNormalList(),
+                     (amapSymbol->getNormalIndexList()?amapSymbol->getNormalIndexList()->triangulate():Index3ArrayPtr()),
+                     amapSymbol->getColorList(),
+                     (amapSymbol->getColorIndexList()?amapSymbol->getColorIndexList()->triangulate():Index3ArrayPtr()),
+                     amapSymbol->getTexCoordList(),
+                     (amapSymbol->getTexCoordIndexList()?amapSymbol->getTexCoordIndexList()->triangulate():Index3ArrayPtr()),
+                     amapSymbol->getNormalPerVertex(),
+                     amapSymbol->getColorPerVertex(),
+                     amapSymbol->getCCW(),
+                     amapSymbol->getSolid(),
+                     amapSymbol->getSkeleton()));
   GEOM_TESSELATOR_UPDATE_CACHE(amapSymbol);
   return true;
 }
@@ -198,15 +205,15 @@ bool Tesselator::process( BezierPatch * bezierPatch ) {
     for (real_t _v = 0; _v < _vStride1; _v ++) {
 
       _pointList->setAt(_pointCount++,
-			bezierPatch->getPointAt((_u/_uStride1),
-						(_v/_vStride1)));
-      _indexList->setAt(_indexCount++,Index3(_cur, 
-					     _cur + 1,
-					     _cur + _vStride + 1));
+            bezierPatch->getPointAt((_u/_uStride1),
+                        (_v/_vStride1)));
+      _indexList->setAt(_indexCount++,Index3(_cur,
+                         _cur + 1,
+                         _cur + _vStride + 1));
 
-      _indexList->setAt(_indexCount++,Index3(_cur, 
-					     _cur + _vStride + 1,
-					     _cur + _vStride));
+      _indexList->setAt(_indexCount++,Index3(_cur,
+                         _cur + _vStride + 1,
+                         _cur + _vStride));
 
       _cur++;
 
@@ -259,8 +266,8 @@ bool Tesselator::process( Cylinder * cylinder ) {
   Point2ArrayPtr _texCoordList;
   Index3ArrayPtr _texIndexList;
   if(__computeTexCoord){
-	_texCoordList = Point2ArrayPtr(new Point2Array(((_slices+1) * (2 + (_solid ? 1 : 0))) + (_solid ? 1 : 0)));
-	_texIndexList= Index3ArrayPtr(new Index3Array(_slices * (2 + _offset) ));
+    _texCoordList = Point2ArrayPtr(new Point2Array(((_slices+1) * (2 + (_solid ? 1 : 0))) + (_solid ? 1 : 0)));
+    _texIndexList= Index3ArrayPtr(new Index3Array(_slices * (2 + _offset) ));
   }
 
   uint_t _cur = 0;
@@ -282,13 +289,13 @@ bool Tesselator::process( Cylinder * cylinder ) {
 
   if (_solid){
     _pointList->setAt(_top,Vector3(0,0,_height));
-	if(__computeTexCoord)
-		_texCoordList->setAt(_basetex,Vector2(0.5,0.5));
+    if(__computeTexCoord)
+        _texCoordList->setAt(_basetex,Vector2(0.5,0.5));
   }
 
   for (uint_t _i = 0; _i < _slices; _i++) {
     real_t cosa = cos(_i * _angleStep);
-	real_t sina = sin(_i * _angleStep);
+    real_t sina = sin(_i * _angleStep);
     real_t _x = cosa * _radius;
     real_t _y = sina * _radius;
 
@@ -303,33 +310,33 @@ bool Tesselator::process( Cylinder * cylinder ) {
       _indexList->setAt(_facesCount++,Index3(_cur,_base,_next));
     }
 
-	if(__computeTexCoord){
-		real_t u = real_t(_i)/_slices;
-		_texCoordList->setAt(_texCoordCount++,Vector2(u,0));
-		_texCoordList->setAt(_texCoordCount++,Vector2(u,1));
+    if(__computeTexCoord){
+        real_t u = real_t(_i)/_slices;
+        _texCoordList->setAt(_texCoordCount++,Vector2(u,0));
+        _texCoordList->setAt(_texCoordCount++,Vector2(u,1));
 
-		_texIndexList->setAt(_texFacesCount++,Index3(_curtex,_nexttex ,_curtex + 1));
-		_texIndexList->setAt(_texFacesCount++,Index3(_curtex+1,_nexttex ,_nexttex+1));
+        _texIndexList->setAt(_texFacesCount++,Index3(_curtex,_nexttex ,_curtex + 1));
+        _texIndexList->setAt(_texFacesCount++,Index3(_curtex+1,_nexttex ,_nexttex+1));
 
-		if (_solid){
-			_texCoordList->setAt(_texCoordCount++,Vector2(0.5 * cosa + 0.5 , 0.5 * sina + 0.5));
-			_texIndexList->setAt(_texFacesCount++,Index3(_curtex+2,_nexttex+2,_basetex));
-			_texIndexList->setAt(_texFacesCount++,Index3(_curtex+2,_basetex,_nexttex+2));
-		}
-	}
+        if (_solid){
+            _texCoordList->setAt(_texCoordCount++,Vector2(0.5 * cosa + 0.5 , 0.5 * sina + 0.5));
+            _texIndexList->setAt(_texFacesCount++,Index3(_curtex+2,_nexttex+2,_basetex));
+            _texIndexList->setAt(_texFacesCount++,Index3(_curtex+2,_basetex,_nexttex+2));
+        }
+    }
 
 
     _cur = _next;
     _next = (_next + 2 ) % (2 * _slices);
     _curtex = _nexttex;
-	_nexttex += _nexttexstep ; 
+    _nexttex += _nexttexstep ;
   }
 
   if(__computeTexCoord){
-		_texCoordList->setAt(_texCoordCount++,Vector2(1,0));
-		_texCoordList->setAt(_texCoordCount++,Vector2(1,1));
-		if (_solid)
-			_texCoordList->setAt(_texCoordCount++,Vector2(1.0, 0.5));
+        _texCoordList->setAt(_texCoordCount++,Vector2(1,0));
+        _texCoordList->setAt(_texCoordCount++,Vector2(1,1));
+        if (_solid)
+            _texCoordList->setAt(_texCoordCount++,Vector2(1.0, 0.5));
   }
 
 
@@ -337,8 +344,8 @@ bool Tesselator::process( Cylinder * cylinder ) {
                                      Vector3(0,0,_height)));
 
   TriangleSet * t = new TriangleSet(_pointList,_indexList,
-								    true, true, // CCW
-									_solid, _skeleton);
+                                    true, true, // CCW
+                                    _solid, _skeleton);
 
   t->getTexCoordList() = _texCoordList;
   t->getTexCoordIndexList() = _texIndexList;
@@ -356,13 +363,13 @@ bool Tesselator::process( Extrusion * extrusion ){
     GEOM_ASSERT(extrusion);
     GEOM_TESSELATOR_CHECK_CACHE(extrusion);
     /// Hack for bug with tesselation of curve.
-	Discretizer d;
-	d.computeTexCoord(texCoordComputed());
-	d.process(extrusion);
-	if(d.getDiscretization()){
-	  d.getDiscretization()->apply(*this);
-	  __cache.remove(d.getDiscretization()->getId());
-	}
+    Discretizer d;
+    d.computeTexCoord(texCoordComputed());
+    d.process(extrusion);
+    if(d.getDiscretization()){
+      d.getDiscretization()->apply(*this);
+      __cache.remove(d.getDiscretization()->getObjectId());
+    }
     GEOM_TESSELATOR_UPDATE_CACHE(extrusion);
     return true;
 }
@@ -374,52 +381,52 @@ bool Tesselator::process( FaceSet * faceSet ) {
   GEOM_TESSELATOR_CHECK_CACHE(faceSet);
 
   TriangleSet * tr = new TriangleSet(faceSet->getPointList(),
-				     faceSet->getIndexList()->triangulate(),
-				     faceSet->getNormalList(),
-					 (faceSet->getNormalIndexList()?faceSet->getNormalIndexList()->triangulate():Index3ArrayPtr()),
-				     faceSet->getColorList(),
-					 (faceSet->getColorIndexList()?faceSet->getColorIndexList()->triangulate():Index3ArrayPtr()),
-				     faceSet->getTexCoordList(),
-					 (faceSet->getTexCoordIndexList()?faceSet->getTexCoordIndexList()->triangulate():Index3ArrayPtr()),
-				     faceSet->getNormalPerVertex(),
-				     faceSet->getColorPerVertex(),
-				     faceSet->getCCW(),
-				     faceSet->getSolid(),
-				     faceSet->getSkeleton());
+                     faceSet->getIndexList()->triangulate(),
+                     faceSet->getNormalList(),
+                     (faceSet->getNormalIndexList()?faceSet->getNormalIndexList()->triangulate():Index3ArrayPtr()),
+                     faceSet->getColorList(),
+                     (faceSet->getColorIndexList()?faceSet->getColorIndexList()->triangulate():Index3ArrayPtr()),
+                     faceSet->getTexCoordList(),
+                     (faceSet->getTexCoordIndexList()?faceSet->getTexCoordIndexList()->triangulate():Index3ArrayPtr()),
+                     faceSet->getNormalPerVertex(),
+                     faceSet->getColorPerVertex(),
+                     faceSet->getCCW(),
+                     faceSet->getSolid(),
+                     faceSet->getSkeleton());
 
   if (!faceSet->getNormalPerVertex() && faceSet->getNormalList()){
-	  Point3ArrayPtr _nml( new Point3Array(tr->getIndexList()->size()));
-	  Point3Array::iterator _it = _nml->begin();
-	  Point3Array::const_iterator _it2 = faceSet->getNormalList()->begin();
-	  
-	  for (IndexArray::iterator _itInd = faceSet->getIndexList()->begin();
-		   _itInd != faceSet->getIndexList()->end(); ++_itInd)
-	  {
-		  if(_itInd->size() >=3){
-			  for (uint_t i = 0 ; i < _itInd->size() - 2; ++i)
-			  { *_it = *_it2; ++_it; }
-		  }
-		  ++_it2;
-	  }
-	  tr->getNormalList() = _nml;
+      Point3ArrayPtr _nml( new Point3Array(tr->getIndexList()->size()));
+      Point3Array::iterator _it = _nml->begin();
+      Point3Array::const_iterator _it2 = faceSet->getNormalList()->begin();
+
+      for (IndexArray::iterator _itInd = faceSet->getIndexList()->begin();
+           _itInd != faceSet->getIndexList()->end(); ++_itInd)
+      {
+          if(_itInd->size() >=3){
+              for (uint_t i = 0 ; i < _itInd->size() - 2; ++i)
+              { *_it = *_it2; ++_it; }
+          }
+          ++_it2;
+      }
+      tr->getNormalList() = _nml;
   }
 
   if (!faceSet->getColorPerVertex() && faceSet->getColorList()){
-	  Color4ArrayPtr _cl( new Color4Array(tr->getIndexList()->size()));
-	  Color4Array::iterator _it = _cl->begin();
-	  Color4Array::const_iterator _it2 = faceSet->getColorList()->begin();
+      Color4ArrayPtr _cl( new Color4Array(tr->getIndexList()->size()));
+      Color4Array::iterator _it = _cl->begin();
+      Color4Array::const_iterator _it2 = faceSet->getColorList()->begin();
 
-	  for (IndexArray::iterator _itInd = faceSet->getIndexList()->begin();
-		   _itInd != faceSet->getIndexList()->end(); ++_itInd)
-	  {
-		  if(_itInd->size() >=3){
-			for (uint_t i = 0 ; i < _itInd->size() - 2; ++i)
-				{ *_it = *_it2; ++_it; }
-		  }
-		  ++_it2;
-	  }
+      for (IndexArray::iterator _itInd = faceSet->getIndexList()->begin();
+           _itInd != faceSet->getIndexList()->end(); ++_itInd)
+      {
+          if(_itInd->size() >=3){
+            for (uint_t i = 0 ; i < _itInd->size() - 2; ++i)
+                { *_it = *_it2; ++_it; }
+          }
+          ++_it2;
+      }
 
-	  tr->getColorList() = _cl;
+      tr->getColorList() = _cl;
   }
 
   __discretization = ExplicitModelPtr(tr);
@@ -451,8 +458,8 @@ bool Tesselator::process( Frustum * frustum ) {
   Point2ArrayPtr _texCoordList;
   Index3ArrayPtr _texIndexList;
   if(__computeTexCoord){
-	_texCoordList = Point2ArrayPtr(new Point2Array(((_slices+1) * (2 + (_solid ? 1 : 0))) + (_solid ? 1 : 0)));
-	_texIndexList = Index3ArrayPtr(new Index3Array(_slices * (2 + _offset)));
+    _texCoordList = Point2ArrayPtr(new Point2Array(((_slices+1) * (2 + (_solid ? 1 : 0))) + (_solid ? 1 : 0)));
+    _texIndexList = Index3ArrayPtr(new Index3Array(_slices * (2 + _offset)));
   }
 
   uint_t _cur = 0;
@@ -475,13 +482,13 @@ bool Tesselator::process( Frustum * frustum ) {
 
   if (_solid){
     _pointList->setAt(_top,Vector3(0,0,_height));
-	if(__computeTexCoord)
-		_texCoordList->setAt(_basetex,Vector2(0.5,0.5));
+    if(__computeTexCoord)
+        _texCoordList->setAt(_basetex,Vector2(0.5,0.5));
   }
 
   for (uint_t _i = 0; _i < _slices; _i++) {
     real_t cosa = cos(_i * _angleStep);
-	real_t sina = sin(_i * _angleStep);
+    real_t sina = sin(_i * _angleStep);
     real_t _x = cosa * _radius;
     real_t _y = sina * _radius;
 
@@ -498,40 +505,40 @@ bool Tesselator::process( Frustum * frustum ) {
       _indexList->setAt(_facesCount++,Index3(_cur,_base,_next));
     };
 
-	if(__computeTexCoord){
-		real_t u = real_t(_i)/_slices;
-		_texCoordList->setAt(_texCoordCount++,Vector2(u,0));
-		_texCoordList->setAt(_texCoordCount++,Vector2(u,1));
+    if(__computeTexCoord){
+        real_t u = real_t(_i)/_slices;
+        _texCoordList->setAt(_texCoordCount++,Vector2(u,0));
+        _texCoordList->setAt(_texCoordCount++,Vector2(u,1));
 
-		_texIndexList->setAt(_texFacesCount++,Index3(_curtex,_nexttex ,_curtex + 1));
-		_texIndexList->setAt(_texFacesCount++,Index3(_curtex+1,_nexttex ,_nexttex+1));
+        _texIndexList->setAt(_texFacesCount++,Index3(_curtex,_nexttex ,_curtex + 1));
+        _texIndexList->setAt(_texFacesCount++,Index3(_curtex+1,_nexttex ,_nexttex+1));
 
-		if (_solid){
-			_texCoordList->setAt(_texCoordCount++,Vector2(0.5 * cosa + 0.5 , 0.5 * sina + 0.5));
-			_texIndexList->setAt(_texFacesCount++,Index3(_curtex+2,_nexttex+2,_basetex));
-			_texIndexList->setAt(_texFacesCount++,Index3(_curtex+2,_basetex,_nexttex+2));
-		}
-	}
+        if (_solid){
+            _texCoordList->setAt(_texCoordCount++,Vector2(0.5 * cosa + 0.5 , 0.5 * sina + 0.5));
+            _texIndexList->setAt(_texFacesCount++,Index3(_curtex+2,_nexttex+2,_basetex));
+            _texIndexList->setAt(_texFacesCount++,Index3(_curtex+2,_basetex,_nexttex+2));
+        }
+    }
 
     _cur = _next;
     _next = (_next + 2 ) % (2 * _slices);
     _curtex = _nexttex;
-	_nexttex += _nexttexstep ; 
+    _nexttex += _nexttexstep ;
   }
 
   if(__computeTexCoord){
-		_texCoordList->setAt(_texCoordCount++,Vector2(1,0));
-		_texCoordList->setAt(_texCoordCount++,Vector2(1,1));
-		if (_solid)
-			_texCoordList->setAt(_texCoordCount++,Vector2(1.0, 0.5));
+        _texCoordList->setAt(_texCoordCount++,Vector2(1,0));
+        _texCoordList->setAt(_texCoordCount++,Vector2(1,1));
+        if (_solid)
+            _texCoordList->setAt(_texCoordCount++,Vector2(1.0, 0.5));
   }
 
   PolylinePtr _skeleton(new Polyline(Vector3(0,0,0),
                                      Vector3(0,0,_height)));
 
   TriangleSet * t = new TriangleSet(_pointList, _indexList,
-									true, true, // CCW 
-									_solid, _skeleton);
+                                    true, true, // CCW
+                                    _solid, _skeleton);
 
   t->getTexCoordList() = _texCoordList;
   t->getTexCoordIndexList() = _texIndexList;
@@ -550,41 +557,41 @@ bool Tesselator::process( QuadSet * quadSet ) {
 
 
   TriangleSet * tr = new TriangleSet(quadSet->getPointList(),
-				     quadSet->getIndexList()->triangulate(),
-				     quadSet->getNormalList(),
-					 (quadSet->getNormalIndexList()?quadSet->getNormalIndexList()->triangulate():Index3ArrayPtr()),
-				     quadSet->getColorList(),
-					 (quadSet->getColorIndexList()?quadSet->getColorIndexList()->triangulate():Index3ArrayPtr()),
-				     quadSet->getTexCoordList(),
-					 (quadSet->getTexCoordIndexList()?quadSet->getTexCoordIndexList()->triangulate():Index3ArrayPtr()),
-				     quadSet->getNormalPerVertex(),
-				     quadSet->getColorPerVertex(),
-				     quadSet->getCCW(),
-				     quadSet->getSolid(),
-				     quadSet->getSkeleton());
+                     quadSet->getIndexList()->triangulate(),
+                     quadSet->getNormalList(),
+                     (quadSet->getNormalIndexList()?quadSet->getNormalIndexList()->triangulate():Index3ArrayPtr()),
+                     quadSet->getColorList(),
+                     (quadSet->getColorIndexList()?quadSet->getColorIndexList()->triangulate():Index3ArrayPtr()),
+                     quadSet->getTexCoordList(),
+                     (quadSet->getTexCoordIndexList()?quadSet->getTexCoordIndexList()->triangulate():Index3ArrayPtr()),
+                     quadSet->getNormalPerVertex(),
+                     quadSet->getColorPerVertex(),
+                     quadSet->getCCW(),
+                     quadSet->getSolid(),
+                     quadSet->getSkeleton());
 
   if (!quadSet->getNormalPerVertex() && quadSet->getNormalList()){
-	  Point3ArrayPtr _nml( new Point3Array(quadSet->getNormalList()->size()*2));
-	  Point3Array::iterator _it = _nml->begin();
-	  for (Point3Array::const_iterator _it2 = quadSet->getNormalList()->begin();
-		   _it2 != quadSet->getNormalList()->end(); ++_it2)
-	  {
-		  *_it = *_it2; ++_it;
-		  *_it = *_it2; ++_it;	
-	  }
-	  tr->getNormalList() = _nml;
+      Point3ArrayPtr _nml( new Point3Array(quadSet->getNormalList()->size()*2));
+      Point3Array::iterator _it = _nml->begin();
+      for (Point3Array::const_iterator _it2 = quadSet->getNormalList()->begin();
+           _it2 != quadSet->getNormalList()->end(); ++_it2)
+      {
+          *_it = *_it2; ++_it;
+          *_it = *_it2; ++_it;
+      }
+      tr->getNormalList() = _nml;
   }
 
   if (!quadSet->getColorPerVertex() && quadSet->getColorList()){
-	  Color4ArrayPtr _cl( new Color4Array(quadSet->getColorList()->size()*2));
-	  Color4Array::iterator _it = _cl->begin();
-	  for (Color4Array::const_iterator _it2 = quadSet->getColorList()->begin();
-		   _it2 != quadSet->getColorList()->end(); ++_it2)
-	  {
-		  *_it = *_it2; ++_it;
-		  *_it = *_it2; ++_it;	
-	  }
-	  tr->getColorList() = _cl;
+      Color4ArrayPtr _cl( new Color4Array(quadSet->getColorList()->size()*2));
+      Color4Array::iterator _it = _cl->begin();
+      for (Color4Array::const_iterator _it2 = quadSet->getColorList()->begin();
+           _it2 != quadSet->getColorList()->end(); ++_it2)
+      {
+          *_it = *_it2; ++_it;
+          *_it = *_it2; ++_it;
+      }
+      tr->getColorList() = _cl;
   }
 
   __discretization = ExplicitModelPtr(tr);
@@ -671,7 +678,7 @@ bool Tesselator::process( NurbsPatch * nurbsPatch ) {
                                      Vector3(0,0,0)));
 
   TriangleSet * t = new TriangleSet(_pointList,_indexList, true, nurbsPatch->getCCW(), // CCW
-									false, _skeleton);
+                                    false, _skeleton);
 
   if(__computeTexCoord)t->getTexCoordList() = gridTexCoord(_pointList,_uStride,_vStride);
 
@@ -773,9 +780,9 @@ IndexArrayPtr PGL(polygonization)(Point2ArrayPtr contour, TriangulationMethod me
     if (method == eStarTriangulation) {
 #endif
         size_t s = contour->size();
-	    IndexArrayPtr iarray(new IndexArray(1));
+        IndexArrayPtr iarray(new IndexArray(1));
         Index ind(s);
-	    for (int i=0; i < s; i++)  ind.setAt(i,i);
+        for (int i=0; i < s; i++)  ind.setAt(i,i);
         iarray->setAt(0,ind);
         return iarray;
 #ifdef WITH_CGAL
@@ -792,7 +799,7 @@ IndexArrayPtr PGL(polygonization)(Point2ArrayPtr contour, TriangulationMethod me
         pglWarningEx(__FILE__,__LINE__,"Provided contour auto intersect. Cannot apply triangulation");
         return polygonization(contour,eStarTriangulation);
    }
-    
+
    if (!polygon.is_counterclockwise_oriented()){
         polygon.reverse_orientation();
    }
@@ -832,7 +839,7 @@ IndexArrayPtr PGL(polygonization)(Point2ArrayPtr contour, TriangulationMethod me
    for(Polygon_list::const_iterator pollistit =  partition_polys.begin(); pollistit  !=  partition_polys.end(); ++pollistit)
    {
        Index ind;
-       for(Polygon_2::Vertex_iterator polit = pollistit->vertices_begin(); polit != pollistit->vertices_end(); ++polit){            
+       for(Polygon_2::Vertex_iterator polit = pollistit->vertices_begin(); polit != pollistit->vertices_end(); ++polit){
             ind.push_back(std::distance(contour->begin(),std::find(contour->begin(),contour->end(),Vector2(polit->x(),polit->y()))));
        }
        iarray->push_back(ind);
@@ -846,7 +853,7 @@ IndexArrayPtr PGL(polygonization)(Point2ArrayPtr contour, TriangulationMethod me
     #warning "function 'polygonization' disabled. CGAL needed"
     #endif
 
-#endif   
+#endif
 }
 
 Index3ArrayPtr PGL(triangulation)(Point2ArrayPtr contour, TriangulationMethod method)

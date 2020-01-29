@@ -3,31 +3,42 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon et al.
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
+
 
 #include <plantgl/algo/modelling/turtle.h>
 #include <plantgl/python/export_property.h>
@@ -36,11 +47,10 @@
 using namespace boost::python;
 #define bp boost::python
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 void py_error_handler(const std::string& msg){
     PyErr_SetString(PyExc_ValueError, msg.c_str() );
-	throw_error_already_set();
+    throw_error_already_set();
 }
 
 void py_warning_handler(const std::string& msg){
@@ -68,8 +78,8 @@ void export_Turtle()
     .def("nF", (void (Turtle::*) (real_t,real_t))&Turtle::nF, (bp::arg("length"),bp::arg("dlength")), return_self<>())
     .def("nF", (void (Turtle::*) (real_t,real_t,real_t,const QuantisedFunctionPtr))&Turtle::nF, (bp::arg("length"),bp::arg("dlength"),bp::arg("radius")=1.0,bp::arg("radiusvariation")=QuantisedFunctionPtr()), return_self<>())
 
-	.def("setColor", &Turtle::setColor, return_self<>() )
-	.def("setCustomAppearance", &Turtle::setCustomAppearance, return_self<>() )
+    .def("setColor", &Turtle::setColor, return_self<>() )
+    .def("setCustomAppearance", &Turtle::setCustomAppearance, return_self<>() )
     .def("incColor", &Turtle::incColor, return_self<>() )
     .def("decColor", &Turtle::decColor, return_self<>() )
     .def("interpolateColors", &Turtle::interpolateColors, return_self<>() )
@@ -83,28 +93,28 @@ void export_Turtle()
     .def("setTextureVScale", &Turtle::setTextureVScale, return_self<>() )
     .def("setTextureUScale", &Turtle::setTextureUScale, return_self<>() )
 
-	.def("setTextureRotation",(void (Turtle::*)(real_t,real_t,real_t)) &Turtle::setTextureRotation ,(bp::arg("angle")=0,bp::arg("ucenter")=0.5,bp::arg("vcenter")=0.5), return_self<>())
-	.def("setTextureRotation",(void (Turtle::*)(real_t,const Vector2&)) &Turtle::setTextureRotation ,(bp::arg("angle")=0,bp::arg("center")=Vector2(0.5,0.5)), return_self<>())
-	.def("setTextureTranslation", (void (Turtle::*)(real_t,real_t))&Turtle::setTextureTranslation ,(bp::arg("u")=0,bp::arg("v")=0), return_self<>())
-	.def("setTextureTranslation", (void (Turtle::*)(const Vector2&))&Turtle::setTextureTranslation ,(bp::arg("t")), return_self<>())
-	.def("setTextureTransformation", (void (Turtle::*)(real_t,real_t,real_t,real_t,real_t,real_t,real_t))&Turtle::setTextureTransformation ,
-		(bp::arg("uscaling")=1,bp::arg("vscaling")=1,
-		 bp::arg("utranslation")=0,bp::arg("vtranslation")=0,
-		 bp::arg("angle")=0,bp::arg("urotcenter")=0.5,bp::arg("vrotcenter")=0.5), return_self<>())
-	.def("setTextureTransformation", (void (Turtle::*)(const Vector2&,const Vector2&,real_t,const Vector2&))&Turtle::setTextureTransformation ,
-		(bp::arg("scaling")=Vector2(1,1),
-		 bp::arg("translation")=Vector2(0,0),
-		 bp::arg("angle")=0,bp::arg("rotcenter")=Vector2(0.5,0.5)), return_self<>())
-    
+    .def("setTextureRotation",(void (Turtle::*)(real_t,real_t,real_t)) &Turtle::setTextureRotation ,(bp::arg("angle")=0,bp::arg("ucenter")=0.5,bp::arg("vcenter")=0.5), return_self<>())
+    .def("setTextureRotation",(void (Turtle::*)(real_t,const Vector2&)) &Turtle::setTextureRotation ,(bp::arg("angle")=0,bp::arg("center")=Vector2(0.5,0.5)), return_self<>())
+    .def("setTextureTranslation", (void (Turtle::*)(real_t,real_t))&Turtle::setTextureTranslation ,(bp::arg("u")=0,bp::arg("v")=0), return_self<>())
+    .def("setTextureTranslation", (void (Turtle::*)(const Vector2&))&Turtle::setTextureTranslation ,(bp::arg("t")), return_self<>())
+    .def("setTextureTransformation", (void (Turtle::*)(real_t,real_t,real_t,real_t,real_t,real_t,real_t))&Turtle::setTextureTransformation ,
+        (bp::arg("uscaling")=1,bp::arg("vscaling")=1,
+         bp::arg("utranslation")=0,bp::arg("vtranslation")=0,
+         bp::arg("angle")=0,bp::arg("urotcenter")=0.5,bp::arg("vrotcenter")=0.5), return_self<>())
+    .def("setTextureTransformation", (void (Turtle::*)(const Vector2&,const Vector2&,real_t,const Vector2&))&Turtle::setTextureTransformation ,
+        (bp::arg("scaling")=Vector2(1,1),
+         bp::arg("translation")=Vector2(0,0),
+         bp::arg("angle")=0,bp::arg("rotcenter")=Vector2(0.5,0.5)), return_self<>())
+
     .def("setId", &Turtle::setId, return_self<>() )
     .def("incId", &Turtle::incId, return_self<>() )
     .def("decId", &Turtle::decId, return_self<>() )
 
     .def("isValid", &Turtle::isValid)
     .def("__str__", &Turtle::str)
-    .def("getParameters", 
-		 (const TurtleParam& (Turtle::*) () const) &Turtle::getParameters,
-		 return_value_policy<copy_const_reference>())
+    .def("getParameters",
+         (const TurtleParam& (Turtle::*) () const) &Turtle::getParameters,
+         return_value_policy<copy_const_reference>())
     .def("start", &Turtle::start, return_self<>())
     .def("stop", &Turtle::stop, return_self<>())
     .def("emptyStack", &Turtle::emptyStack)
@@ -120,7 +130,7 @@ void export_Turtle()
     .def("getTransformationMatrix", &Turtle::getTransformationMatrix)
 
     .def("getColorListSize",  &Turtle::getColorListSize )
-    
+
     .def("reset", &Turtle::reset)
     .def("resetValues", &Turtle::resetValues)
     .def("dump", &Turtle::dump)
@@ -198,8 +208,8 @@ void export_Turtle()
     .def("quad", (void (Turtle::*) (real_t,real_t))   &Turtle::quad , return_self<>())
     .def("surface", &Turtle::surface , return_self<>())
     .def("label", &Turtle::label , (bp::arg("text"),bp::arg("size")=-1.), return_self<>())
-	.def("frame", (void (Turtle::*) ())&Turtle::frame , return_self<>())
-	.def("frame", (void (Turtle::*) (real_t,real_t,real_t,real_t,real_t))&Turtle::frame, (bp::arg("heigth"),bp::arg("cap_heigth_ratio")=0.2,bp::arg("cap_radius_ratio")=2,bp::arg("color")=1.0,bp::arg("transparency")=0.0) , return_self<>())
+    .def("frame", (void (Turtle::*) ())&Turtle::frame , return_self<>())
+    .def("frame", (void (Turtle::*) (real_t,real_t,real_t,real_t,real_t))&Turtle::frame, (bp::arg("heigth"),bp::arg("cap_heigth_ratio")=0.2,bp::arg("cap_radius_ratio")=2,bp::arg("color")=1.0,bp::arg("transparency")=0.0) , return_self<>())
 
     .def("setDefaultStep",    &Turtle::setDefaultStep, return_self<>() )
     .def("setAngleIncrement", &Turtle::setAngleIncrement, return_self<>() )
@@ -207,25 +217,25 @@ void export_Turtle()
     .def("setColorIncrement", &Turtle::setColorIncrement, return_self<>() )
     .def("setScaleMultiplier",&Turtle::setScaleMultiplier, return_self<>() )
 
-	.def("setCrossSection", &Turtle::setCrossSection, args("curve"), return_self<>())
-	.def("setDefaultCrossSection", &setDefaultCrossSection1, args("slices"))
-	.def("setDefaultCrossSection", &setDefaultCrossSection0)
+    .def("setCrossSection", &Turtle::setCrossSection, args("curve"), return_self<>())
+    .def("setDefaultCrossSection", &setDefaultCrossSection1, args("slices"))
+    .def("setDefaultCrossSection", &setDefaultCrossSection0)
 
-	.def("setGuide",   (void(Turtle::*)(const LineicModelPtr&, real_t))&Turtle::setGuide, args("curve","length"), return_self<>(), return_self<>())
-	.def("setGuide",   (void(Turtle::*)(const Curve2DPtr&, real_t, bool, bool))&Turtle::setGuide, (bp::arg("curve"),bp::arg("length"),bp::arg("yorientation")=false,bp::arg("ccw")=false), return_self<>())
-	.def("clearGuide", &Turtle::clearGuide, return_self<>())
-	.def("setPositionOnGuide", &Turtle::setPositionOnGuide, return_self<>())
+    .def("setGuide",   (void(Turtle::*)(const LineicModelPtr&, real_t))&Turtle::setGuide, args("curve","length"), return_self<>(), return_self<>())
+    .def("setGuide",   (void(Turtle::*)(const Curve2DPtr&, real_t, bool, bool))&Turtle::setGuide, (bp::arg("curve"),bp::arg("length"),bp::arg("yorientation")=false,bp::arg("ccw")=false), return_self<>())
+    .def("clearGuide", &Turtle::clearGuide, return_self<>())
+    .def("setPositionOnGuide", &Turtle::setPositionOnGuide, return_self<>())
 
     .def("sweep", (void (Turtle::*) (const Curve2DPtr&,const Curve2DPtr&,real_t,real_t,real_t,const QuantisedFunctionPtr))&Turtle::sweep, (bp::arg("path"),bp::arg("section"),bp::arg("length"),bp::arg("dlength"),bp::arg("radiusmagnitude")=1.0,bp::arg("radiusvariation")=QuantisedFunctionPtr()), return_self<>())
     .def("sweep", (void (Turtle::*) (const LineicModelPtr&,const Curve2DPtr&,real_t,real_t,real_t,const QuantisedFunctionPtr))&Turtle::sweep, (bp::arg("path"),bp::arg("section"),bp::arg("length"),bp::arg("dlength"),bp::arg("radiusmagnitude")=1.0,bp::arg("radiusvariation")=QuantisedFunctionPtr()), return_self<>())
 
-	.add_property("elasticity",&get_prop_bt_from_class<real_t,Turtle,&Turtle::getElasticity>,&Turtle::setElasticity)
-	.add_property("tropism",&get_prop_bt_from_class<Vector3,Turtle,&Turtle::getTropism>,(void(Turtle::*)(const Vector3&))&Turtle::setTropism)
-	.def("setTropism", (void(Turtle::*)(real_t,real_t,real_t))&Turtle::setTropism, return_self<>())
+    .add_property("elasticity",&get_prop_bt_from_class<real_t,Turtle,&Turtle::getElasticity>,&Turtle::setElasticity)
+    .add_property("tropism",&get_prop_bt_from_class<Vector3,Turtle,&Turtle::getTropism>,(void(Turtle::*)(const Vector3&))&Turtle::setTropism)
+    .def("setTropism", (void(Turtle::*)(real_t,real_t,real_t))&Turtle::setTropism, return_self<>())
 
     .def("setScreenCoordinatesEnabled", &Turtle::setScreenCoordinatesEnabled, (bp::arg("enabled")=true), return_self<>())
 
-	.add_property("sectionResolution",&get_prop_bt_from_class<uint_t,Turtle,&Turtle::getSectionResolution>,&Turtle::setSectionResolution)
+    .add_property("sectionResolution",&get_prop_bt_from_class<uint_t,Turtle,&Turtle::getSectionResolution>,&Turtle::setSectionResolution)
 
     .def_readwrite("warn_on_error",&Turtle::warn_on_error)
     .def_readwrite("path_info_cache_enabled",&Turtle::path_info_cache_enabled)
@@ -237,6 +247,6 @@ void export_Turtle()
     .def("_sphere",&Turtle::_sphere )
     .def("_circle",&Turtle::_circle )
     .def("_surface",&Turtle::_surface )
-	.def("_label",&Turtle::_label )*/
+    .def("_label",&Turtle::_label )*/
     ;
 }

@@ -1,38 +1,46 @@
-/*
+/* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr)
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
- * 
- *                      GNU General Public Licence
- *           
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
+ *
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
+
 
 #include <QtGlobal>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/qmenu.h>
     #include <QtWidgets/qcombobox.h>
     #include <QtWidgets/qpushbutton.h>
@@ -52,7 +60,7 @@
 #include "fog.h"
 #include "icons.h"
 #include "util_qwidget.h"
-#include "interface/fogwidget.h"
+#include "interface/ui_fogwidget.h"
 #include <assert.h>
 #include <iostream>
 
@@ -76,7 +84,7 @@ ViewFogGL::ViewFogGL(ViewCameraGL *camera,QGLWidget * parent, const char * name)
   __fogw->setupUi(__control);
   QPixmap col(__fogw->ColorButton->size());
   col.fill(__color);
-  __fogw->ColorButton->setIcon(QIcon(col));  
+  __fogw->ColorButton->setIcon(QIcon(col));
   __fogw->EndEdit->setText(QString::number(__end));
   __fogw->StartEdit->setText(QString::number(__start));
   __fogw->DensitySlider->setValue(50);
@@ -95,7 +103,7 @@ ViewFogGL::~ViewFogGL()
 {
 }
 
-QMenu * 
+QMenu *
 ViewFogGL::createToolsMenu(QWidget * parent)
 {
   QPixmap wheel(ViewerIcon::getPixmap(ViewerIcon::wheel));
@@ -109,7 +117,7 @@ ViewFogGL::createToolsMenu(QWidget * parent)
 }
 
 
-void 
+void
 ViewFogGL::changeStepEvent(double newStep, double oldStep)
 {
   real_t r = real_t(newStep)/real_t(oldStep);
@@ -120,49 +128,49 @@ ViewFogGL::changeStepEvent(double newStep, double oldStep)
   __density /= r;
 }
 
-bool 
+bool
 ViewFogGL::enable() const
 {
   return __enable;
 }
 
-int 
+int
 ViewFogGL::getMode() const
 {
   return __mode;
 }
 
-int 
+int
 ViewFogGL::getHintMode() const
 {
   return __hintmode;
 }
 
-const QColor& 
+const QColor&
 ViewFogGL::getColor() const
 {
   return __color;
 }
 
-double 
+double
 ViewFogGL::getDensity() const
 {
   return __density;
 }
 
-double 
+double
 ViewFogGL::getStart() const
 {
   return __start;
 }
 
-double 
+double
 ViewFogGL::getEnd() const
 {
   return __end;
 }
 
-void 
+void
 ViewFogGL::setEnable(bool b)
 {
   if(__enable != b){
@@ -172,7 +180,7 @@ ViewFogGL::setEnable(bool b)
   }
 }
 
-void 
+void
 ViewFogGL::setEnable()
 {
   __enable = ! __enable;
@@ -180,7 +188,7 @@ ViewFogGL::setEnable()
   emit valueChanged();
 }
 
-void 
+void
 ViewFogGL::setMode(int i)
 {
   if(__mode != i){
@@ -190,7 +198,7 @@ ViewFogGL::setMode(int i)
   }
 }
 
-void 
+void
 ViewFogGL::setHints(int i)
 {
   if(__hintmode != i){
@@ -200,7 +208,7 @@ ViewFogGL::setHints(int i)
   }
 }
 
-void 
+void
 ViewFogGL::changeColor()
 {
   QColor m = QColorDialog::getColor(__color,__control);
@@ -208,69 +216,69 @@ ViewFogGL::changeColor()
   emit colorChanged(m);
 }
 
-void 
+void
 ViewFogGL::setColor(const QColor& m){
   if(m.isValid()){
     __color=m;
     QPixmap col(__fogw->ColorButton->size());
     col.fill(__color);
-    __fogw->ColorButton->setIcon(QIcon(col));  
+    __fogw->ColorButton->setIcon(QIcon(col));
     if(__frame->isVisible())emit valueChanged();
   }
 }
 
-void 
+void
 ViewFogGL::setDensity(int i)
 {
   __density = float(i)/(100.0*getStep());
   emit valueChanged();
 }
 
-void 
+void
 ViewFogGL::setDensity(const double& d)
 {
   __density = d;
   emit valueChanged();
 }
 
-void 
+void
 ViewFogGL::setStart(const QString& s)
 {
   __start = s.toDouble();
 }
 
-void 
+void
 ViewFogGL::setStart(const double& s)
 {
   __start = s;
 }
 
-void 
+void
 ViewFogGL::setEnd(const QString& e)
 {
   __end = e.toDouble();
 }
 
 
-void 
+void
 ViewFogGL::setEnd(const double& e)
 {
   __end = e;
 }
 
 
-void 
+void
 ViewFogGL::validValue()
 {
   emit valueChanged();
 }
 
-void 
+void
 ViewFogGL::initializeGL()
 {
 }
 
-void 
+void
 ViewFogGL::paintGL()
 {
   if(__enable){
@@ -278,7 +286,7 @@ ViewFogGL::paintGL()
     if(__mode == 0)glFogi(GL_FOG_MODE,GL_LINEAR);
     else if(__mode == 1)glFogi(GL_FOG_MODE,GL_EXP);
     else if(__mode == 2)glFogi(GL_FOG_MODE,GL_EXP2);
-	glGeomFogColor(__color);
+    glGeomFogColor(__color);
     if(__hintmode == 0)glHint(GL_FOG_HINT,GL_DONT_CARE);
     else if(__hintmode == 1)glHint(GL_FOG_HINT,GL_FASTEST);
     else if(__hintmode == 2)glHint(GL_FOG_HINT,GL_NICEST);
