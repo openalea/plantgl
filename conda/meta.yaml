@@ -13,7 +13,7 @@ about:
   summary: An open-source graphic toolkit for the creation, simulation and analysis of 3D virtual plants.
 
 build:
-  number: 0
+  number: 1
   preserve_egg_dir: True
 
 requirements:
@@ -35,6 +35,7 @@ requirements:
       - xorg-libxfixes                    # [linux]
           
   build:
+      - python {{PY_VER}}                 # [win]
       - binutils_impl_linux-64<2.31.0     # [linux]
       - {{ compiler('cxx') }}
       - bison                             # [unix]
