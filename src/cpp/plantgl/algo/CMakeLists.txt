@@ -79,9 +79,7 @@ else(APPLE)
   target_link_libraries(pglalgo OpenGL::GL OpenGL::GLU)
 endif(APPLE)
 
-if (NOT MSVC)
-    target_link_libraries(pglalgo Boost::system Boost::thread)
-endif()
+target_link_libraries(pglalgo Boost::system Boost::thread)
 
 # --- Dependencies
 

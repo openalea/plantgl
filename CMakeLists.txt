@@ -52,7 +52,8 @@ endmacro()
 # --- (Win32) Multithreaded Compilation
 
 if (MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP /W0")
+    string(REGEX REPLACE "/W3" "/W0" ${CMAKE_CXX_FLAGS} "${${CMAKE_CXX_FLAGS}}") 
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MD")
 endif()
 
 # --- Config Header File

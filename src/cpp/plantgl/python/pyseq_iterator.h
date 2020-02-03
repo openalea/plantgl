@@ -50,22 +50,22 @@ class PySeqIterator {
 public:
 
     PySeqIterator(boost::python::object seq, bool isiterator = false) :
-        __iter_obj( ), __valid(true)
+        __iter_obj( ), __isvaliditerator(true)
         {
             if (isiterator){
                 __iter_obj = seq;
-                __valid = (__iter_obj != boost::python::object());
+                __isvaliditerator = (__iter_obj != boost::python::object());
             }
             else {
                 PyObject * pyiter = PyObject_GetIter( seq.ptr() ) ;
-                __valid = (pyiter != NULL);
+                __isvaliditerator = (pyiter != NULL);
                 __iter_obj =  boost::python::object(boost::python::handle<>( pyiter ) );
 
             }
             _next();
         }
 
-    inline bool is_valid() const { return __valid;}
+    inline bool is_valid() const { return __isvaliditerator;}
 
     inline boost::python::object next() ;
 
@@ -74,7 +74,7 @@ protected:
 
     boost::python::object __iter_obj;
     boost::python::object __next_obj;
-    bool __valid;
+    bool __isvaliditerator;
 
 };
 
@@ -89,10 +89,10 @@ boost::python::object PySeqIterator::next()
 
 void PySeqIterator::_next() 
 {
-    if (__valid) {
+    if (__isvaliditerator) {
         PyObject * item = PyIter_Next(__iter_obj.ptr());
-        __valid = (item != NULL); 
-        if (__valid)
+        __isvaliditerator = (item != NULL); 
+        if (__isvaliditerator)
             __next_obj = boost::python::object( boost::python::handle<PyObject>(item));
         else
             __next_obj = boost::python::object();
