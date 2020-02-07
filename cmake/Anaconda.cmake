@@ -29,6 +29,10 @@ endif()
 if (DEFINED ENV{CONDA_BUILD})
     message(STATUS "Conda build detected. " $ENV{CONDA_BUILD})
 
+    if (WIN32)
+        set(Python_ROOT_DIR "${PREFIX}")
+    endof()
+
     # specify the cross compiler
     set(CMAKE_C_COMPILER $ENV{CC})
     set(CMAKE_LINKER $ENV{LD})
