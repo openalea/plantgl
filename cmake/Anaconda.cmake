@@ -31,7 +31,7 @@ if (DEFINED ENV{CONDA_BUILD})
 
     if (WIN32)
         set(Python_ROOT_DIR "${PREFIX}")
-    endof()
+    endif()
 
     # specify the cross compiler
     set(CMAKE_C_COMPILER $ENV{CC})
