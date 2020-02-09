@@ -8,7 +8,7 @@ environment:
       CONDA_VERSION: 3
 
 install:
-  - rmdir /S /Q C:\Python*
+  - for /f %%d in ('dir /b "C:\Python*"') do rd  /s /q "C:\%%d"
   - call "C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" /x64
   - call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86_amd64
   - if errorlevel 1 exit 1
