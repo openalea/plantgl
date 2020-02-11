@@ -64,12 +64,14 @@ echo "****** CHECK PYTHON LIB"
 # To check if Python lib is not in the dependencies with conda-forge distribution.
 # See https://github.com/conda-forge/boost-feedstock/issues/81
 if [ `uname` = "Darwin" ]; then
-    alias ldd='otool -L'
+    export LDD='otool -L'
+else
+    export LDD='ldd'    
 fi
 
-#ldd `python -c "import openalea.plantgl.math._pglmath as pm ; print(pm.__file__)"`
-#ldd `python -c "import openalea.plantgl.scenegraph._pglsg as pm ; print(pm.__file__)"`
-#ldd `python -c "import openalea.plantgl.algo._pglalgo as pm ; print(pm.__file__)"`
-#ldd `python -c "import openalea.plantgl.gui._pglgui as pm ; print(pm.__file__)"`
+${LDD} `${PYTHON} -c "import openalea.plantgl.math._pglmath as pm ; print(pm.__file__)"`
+${LDD} `${PYTHON} -c "import openalea.plantgl.scenegraph._pglsg as pm ; print(pm.__file__)"`
+${LDD} `${PYTHON} -c "import openalea.plantgl.algo._pglalgo as pm ; print(pm.__file__)"`
+${LDD} `${PYTHON} -c "import openalea.plantgl.gui._pglgui as pm ; print(pm.__file__)"`
 
 echo "****** END OF BUILD PROCESS"
