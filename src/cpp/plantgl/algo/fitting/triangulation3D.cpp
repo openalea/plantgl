@@ -44,7 +44,7 @@
 
 PGL_USING_NAMESPACE
 
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/Triangulation_vertex_base_with_info_3.h>
 #include <CGAL/Delaunay_triangulation_3.h>
@@ -74,7 +74,7 @@ inline Vector3 toVector3(const Point& v) { return Vector3(v.x(),v.y(),v.z()); }
 Index3ArrayPtr
 PGL(delaunay_triangulation3D)(const Point3ArrayPtr points)
 {
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
     Triangulation triangulation;
     uint32_t pointCount = 0;
     for (Point3Array::const_iterator it = points->begin(); it != points->end(); ++it)

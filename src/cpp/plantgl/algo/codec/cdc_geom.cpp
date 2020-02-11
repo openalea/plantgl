@@ -66,15 +66,15 @@
 #include <list>
 #include <fstream>
 
-#ifdef WITH_BISONFLEX
+#ifdef PGL_WITH_BISONFLEX
 #include "scne_parser.h"    /// fonction pour parser les sceneobjects.
 #endif
 
 PGL_USING_NAMESPACE
 
-#ifdef WITH_BISONFLEX
+#ifdef PGL_WITH_BISONFLEX
 /// structure de donnees pour parser les sceneobjects.
-#ifdef BISON_HPP
+#ifdef PGL_BISON_HPP
 #include "scne_parser.hpp"
 #else
 #include "scne_parser.cpp.h"
@@ -99,7 +99,7 @@ PGL_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-#ifdef WITH_BISONFLEX
+#ifdef PGL_WITH_BISONFLEX
 
 bool PGL(geom_read)(std::istream& stream, SceneObjectSymbolTable& table, ScenePtr& scene, const std::string& fname)
 {
@@ -125,7 +125,7 @@ SceneFormatList GeomCodec::formats() const
 {
     SceneFormat _format;
     _format.name = "GEOM";
-#ifdef WITH_BISONFLEX
+#ifdef PGL_WITH_BISONFLEX
     _format.suffixes.push_back("geom");
 #endif
     _format.suffixes.push_back("bgeom");
@@ -148,7 +148,7 @@ ScenePtr GeomCodec::read(const std::string& fname)
     sc->add(Shape(a,Material::DEFAULT_MATERIAL));
     return sc;
   } */
-#ifdef WITH_BISONFLEX
+#ifdef PGL_WITH_BISONFLEX
   else {
     ifstream _file(fname.c_str());
     SceneObjectSymbolTable table;

@@ -58,15 +58,15 @@
  *      - Compile without namespace. \n
  *      \#define \b NO_NAMESPACE \n\n
  *      - Force the use of the lib glut. \n
- *      \#define \b WITH_GLUT \n\n
+ *      \#define \b PGL_WITH_GLUT \n\n
  *      - Force to not use the lib glut. \n
- *      \#define \b WITHOUT_GLUT \n\n
+ *      \#define \b PGL_WITHOUT_GLUT \n\n
  *      - Force to not use the lib RogueWave. \n
  *      \#define \b RWOUT \n\n
  *      - Control if bison output some cpp.h or hpp file for some include \n
  *  If bison version is >= 1.30 then uncomment this macro. \n
  *  On windows force bison hpp by default. \n
- *      \#define \b BISON_HPP \n\n
+ *      \#define \b PGL_BISON_HPP \n\n
  *      - Use forward definition \n
  *   By default, on windows when making DLL force not using fwd declaration, Else use it. \n
  *      \#define \b GEOM_FWDEF \n\n
@@ -130,27 +130,27 @@
 
 #endif
 
-/*! \def WITH_GLUT
+/*! \def PGL_WITH_GLUT
     \brief force the use of the lib glut.
 
     Uncomment to use this functionnality
 */
-// #define WITH_GLUT
+// #define PGL_WITH_GLUT
 
-#ifndef WITH_GLUT
-#ifndef WITHOUT_GLUT
+#ifndef PGL_WITH_GLUT
+#ifndef PGL_WITHOUT_GLUT
 
-/*! \def WITHOUT_GLUT
+/*! \def PGL_WITHOUT_GLUT
     \brief force to not use the lib glut.
 
     Uncomment to use this functionnality
 */
-#define WITHOUT_GLUT 1
+#define PGL_WITHOUT_GLUT 1
 
 #endif
 #endif
 
-/*! \def BISON_HPP
+/*! \def PGL_BISON_HPP
     \brief Macro used for bison output
 
     Control if bison output some cpp.h or hpp file for some include
@@ -159,17 +159,17 @@
         Uncomment to use this functionnality
 */
 
-#if defined(WITH_BISON) && defined(WITH_FLEX)
+#if defined(PGL_WITH_BISON) && defined(PGL_WITH_FLEX)
 
-#define WITH_BISONFLEX
+#define PGL_WITH_BISONFLEX
 
-#ifndef BISON_HPP
-#define BISON_HPP
+#ifndef PGL_BISON_HPP
+#define PGL_BISON_HPP
 #endif
 
 #ifdef _WIN32
-#ifndef BISON_HPP
-#define BISON_HPP 1
+#ifndef PGL_BISON_HPP
+#define PGL_BISON_HPP 1
 #endif
 #endif
 

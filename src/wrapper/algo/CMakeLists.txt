@@ -12,6 +12,7 @@ if (QT5_FOUND)
     target_link_libraries(_pglalgo Qt5::Core Qt5::Widgets Qt5::OpenGL)
 endif()
 
+pglwrapper_link_boost(_pglalgo)
 pglwrapper_link_python(_pglalgo)
 
 # --- Dependencies

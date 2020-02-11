@@ -8,11 +8,11 @@ add_library(_pglsg SHARED ${SRC_FILES})
 
 target_link_libraries(_pglsg pglmath pglsg pglalgo pgltool)
 
+pglwrapper_link_boost(_pglsg)
+
 pglwrapper_link_python(_pglsg)
 
-if(USE_BOOST_NUMPY)
-    target_link_libraries(_pglsg Boost::numpy)
-endif()
+pglwrapper_link_numpy(_pglsg)
 
 # --- Dependencies
 

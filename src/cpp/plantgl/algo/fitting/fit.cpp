@@ -65,12 +65,12 @@
 #include "miniball.h"
 #include "eigenvector.h"
 
-// #define WITHOUT_QHULL
+// #define PGL_WITHOUT_QHULL
 
-#ifdef WITH_QHULL
+#ifdef PGL_WITH_QHULL
     extern "C"
     {
-        #ifndef WITH_QHULL_2011
+        #ifndef PGL_WITH_QHULL_2011
             #include <qhull/qhull_a.h>
         #else
             #include <libqhull/qhull_a.h>
@@ -113,7 +113,7 @@ Fit::Fit(const Point3ArrayPtr& _pointstofit ):
 GeometryPtr Fit::use(const string& classname){
     if(! __pointstofit )return GeometryPtr();
     string cl = toUpper(classname);
-#ifdef WITH_QHULL
+#ifdef PGL_WITH_QHULL
     if(cl =="CONVEXHULL")
     return convexHull();
     else
@@ -161,7 +161,7 @@ GeometryPtr Fit::use(const string& classname){
 
 vector<string> Fit::getVolumeClassNames(){
     vector<string> classname;
-#ifdef WITH_QHULL
+#ifdef PGL_WITH_QHULL
     classname.push_back(string("CONVEXHULL"));
 #endif
     classname.push_back(string("ASYMMETRICHULL"));
@@ -342,7 +342,7 @@ GeometryPtr Fit::bsphere(){
 
 /* ----------------------------------------------------------------------- */
 
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
 #include <CGAL/Exact_predicates_exact_constructions_kernel.h>
 #include <CGAL/Min_circle_2.h>
 #include <CGAL/Min_circle_2_traits_2.h>
@@ -353,7 +353,7 @@ GeometryPtr Fit::bsphere(){
  */
 bool Fit::boundingCircle(const Point2ArrayPtr& _points, Vector2& center, real_t& radius)
 {
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
 
     // typedefs
     typedef  CGAL::Exact_predicates_exact_constructions_kernel K;
@@ -388,7 +388,7 @@ bool Fit::boundingCircle(const Point2ArrayPtr& _points, Vector2& center, real_t&
 }
 
 /* ----------------------------------------------------------------------- */
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
 #include <CGAL/Cartesian.h>
 #include <CGAL/linear_least_squares_fitting_3.h>
 #endif
@@ -398,7 +398,7 @@ bool Fit::boundingCircle(const Point2ArrayPtr& _points, Vector2& center, real_t&
 bool Fit::plane(const Point3ArrayPtr& _points,
 Vector3& center, Plane3& plane, const Index& subset)
 {
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
     typedef real_t               FT;
     typedef CGAL::Cartesian<FT>  K;
     typedef K::Plane_3           Plane;
@@ -720,7 +720,7 @@ GeometryPtr Fit::aellipsoid(){
 
 
 
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
 #include <CGAL/Cartesian.h>
 #include <CGAL/Cartesian_d.h>
 #include <CGAL/MP_Float.h>
@@ -732,7 +732,7 @@ GeometryPtr Fit::aellipsoid(){
 GeometryPtr Fit::bellipsoid(){
   if(! __pointstofit )return GeometryPtr();
   if(__pointstofit->size()>2){
-#ifndef WITH_CGAL
+#ifndef PGL_WITH_CGAL
     ExplicitModelPtr result = dynamic_pointer_cast<ExplicitModel>(convexHull());
     Point3ArrayPtr pts;
     if(!result) pts = __pointstofit;
@@ -1594,7 +1594,7 @@ GeometryPtr Fit::extrudedHull(){
 
 GeometryPtr
 Fit::convexHull(){
-#ifndef WITH_QHULL
+#ifndef PGL_WITH_QHULL
     return GeometryPtr();
 #else
 
@@ -1740,7 +1740,7 @@ Fit::convexHull(){
 
 
 Point2ArrayPtr Fit::convexPolyline(const Point2ArrayPtr& _points){
-#ifndef WITH_QHULL
+#ifndef PGL_WITH_QHULL
     return Point2ArrayPtr();
 #else
 

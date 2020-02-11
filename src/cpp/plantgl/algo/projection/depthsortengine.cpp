@@ -66,7 +66,7 @@ DepthSortEngine::~DepthSortEngine()
 
 void DepthSortEngine::iprocess(TriangleSetPtr triangles, AppearancePtr appearance, uint32_t id, ProjectionCameraPtr camera, uint32_t threadid )
 {
-	#ifdef WITH_CGAL
+	#ifdef PGL_WITH_CGAL
 
     /*
     const Point3ArrayPtr points(triangles->getPointList());
@@ -105,7 +105,7 @@ void DepthSortEngine::iprocess(PointSetPtr pointset, MaterialPtr material, uint3
 
 
 
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
 #include <CGAL/Exact_predicates_exact_constructions_kernel.h>
 #include <CGAL/Boolean_set_operations_2.h>
 #include <CGAL/Constrained_Delaunay_triangulation_2.h>

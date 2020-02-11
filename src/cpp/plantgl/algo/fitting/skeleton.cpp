@@ -55,7 +55,7 @@
 
 PGL_USING_NAMESPACE
 
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
 
 // #define CGAL_TRIANGULATION_NO_PRECONDITIONS 1
 
@@ -83,7 +83,7 @@ PGL_USING_NAMESPACE
 #include <list>
 
 
-#ifdef CGAL_USE_GMP
+#ifdef PGL_CGAL_USE_GMP
 // GMP is installed. Use the GMP rational number-type.
 #include <CGAL/Gmpq.h>
 typedef CGAL::Gmpq                                    Number_type;
@@ -1006,7 +1006,7 @@ PGL(Skeleton)::Skeleton(const Polyline2DPtr discretizedShape)
     init(discretizedShape, Vector2(xmax + 0.5, ymax + 0.5));
 }
 
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
 CDTplus getCGALTriangulation(const Polyline2DPtr discretizedShape,
                             const Vector2& infinite_vertex)
 {
@@ -1227,7 +1227,7 @@ inline SkelEdgePtr toSkelEdge(const CgalEdge& edge,
 void PGL(Skeleton)::init(const Polyline2DPtr discretizedShape, const Vector2& infinite_vertex)
 {
 
-#ifndef WITH_CGAL
+#ifndef PGL_WITH_CGAL
     pglError("Skeleton::init : Cannot compute skeleton without CGAL!");
     return;
 #else
@@ -3023,7 +3023,7 @@ TriangleSetPtr PGL(Skeleton)::getTriangleSet()
     return res;
 }
 
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
 typedef std::pair<Point_intersections,int> Pts_counter;
 static bool operator<(const Pts_counter p1, const Pts_counter p2)
 {
@@ -3060,7 +3060,7 @@ bool isInside(Vector2 p, Vector2 seg_src, Vector2 seg_tgt)
 }
 
 
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
 Polyline2DPtr removeOneLoop(std::list<Vector2> polyline, std::list<Point_intersections> pts_intersection)
 {
   if (pts_intersection.size() == 0)
@@ -3192,7 +3192,7 @@ Polyline2DPtr removeOneLoop(std::list<Vector2> polyline, std::list<Point_interse
 
 Polyline2DPtr PGL(Skeleton)::removeLoopsInShape(Polyline2DPtr shape)
 {
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
   std::list<Point_intersections> pts_intersection;
   std::list<Segment_intersections> pts_shape;
   std::list<Vector2> polyline;
@@ -3313,7 +3313,7 @@ PGL(Skeleton)::getSkeletonInformation(const Polyline2DPtr discretizedShape,
 TriangleSetPtr PGL(Skeleton)::getDelaunayConstrained2DTriangulation(const Polyline2DPtr discretizedShape)
 {
 //  filterAndHomogenize(*(discretizedShape->getPointList()));
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
 //   removeLoopsInShape(discretizedShape);
 #endif
   Skeleton skel(discretizedShape);

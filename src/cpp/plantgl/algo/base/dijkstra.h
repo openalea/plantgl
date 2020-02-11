@@ -51,7 +51,7 @@
 // #define PGL_USE_PRIORITY_QUEUE
 
 #ifndef PGL_USE_PRIORITY_QUEUE
-#ifdef WITH_BOOST
+#ifdef PGL_WITH_BOOST
 #include <boost/version.hpp>
 
 #if BOOST_VERSION >= 104900

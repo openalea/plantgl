@@ -28,7 +28,7 @@ endif()
 
 if (EIGEN_FOUND)
     # Build with Eigen
-    define_macro(WITH_EIGEN 1)
+    define_cpp_macro(PGL_WITH_EIGEN 1)
     
     include_directories(${EIGEN_INCLUDE_DIRS})
     
