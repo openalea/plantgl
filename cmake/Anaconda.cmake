@@ -29,6 +29,10 @@ endif()
 if (DEFINED ENV{CONDA_BUILD})
     message(STATUS "Conda build detected. " $ENV{CONDA_BUILD})
 
+    if (WIN32)
+        set(Python_ROOT_DIR "${PREFIX}")
+    endif()
+
     # specify the cross compiler
     set(CMAKE_C_COMPILER $ENV{CC})
     set(CMAKE_LINKER $ENV{LD})
@@ -53,7 +57,7 @@ if (DEFINED ENV{CONDA_BUILD})
     set(CMAKE_FIND_ROOT_PATH $ENV{PREFIX} $ENV{BUILD_PREFIX} $ENV{BUILD_PREFIX}/$ENV{HOST}/sysroot $ENV{CONDA_BUILD_SYSROOT})
 
     # search for programs in the build host directories
-    set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+    set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM BOTH)
     # for libraries and headers in the target directories
     set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
     set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)

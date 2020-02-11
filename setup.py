@@ -18,7 +18,7 @@ namepace = 'openalea'
 # Setup script
 #version = '3.0.1'
 version = HexVersion.from_cpp_define('PGL_VERSION',pj('src','cpp','plantgl','version.h')).to_string()
-print(pkg_name + ' : version = ' + version)
+#print(pkg_name + ' : version = ' + version)
 
 # Main setup
 setup(
