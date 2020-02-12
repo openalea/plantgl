@@ -20,6 +20,26 @@ namepace = 'openalea'
 version = HexVersion.from_cpp_define('PGL_VERSION',pj('src','cpp','plantgl','version.h')).to_string()
 #print(pkg_name + ' : version = ' + version)
 
+currentdir = os.path.dirname(__file__)
+print(currentdir)
+
+# Scons build directory
+build_prefix= "build-cmake"
+
+if 'CONDA_PREFIX' in os.environ or 'PREFIX' in os.environ :
+    deploy_args = {}
+else:
+    deploy_args = dict(
+        # Specific options of openalea.deploy
+        lib_dirs = {'lib' : pj(currentdir, build_prefix, 'lib'),},
+        bin_dirs = {'bin':  pj(currentdir, build_prefix, 'bin'),},
+        inc_dirs = { 'include' : pj(currentdir, build_prefix, 'include') },
+        share_dirs = { 'share' : 'share'},
+        postinstall_scripts = ['pgl_postinstall',],
+        namespace_packages = [namepace],
+        create_namespaces = False,
+    )
+
 # Main setup
 setup(
     name = name,
@@ -30,9 +50,6 @@ setup(
     author_email = authors_email,
     url = url,
     license = license,
-
-    namespace_packages = [namepace],
-    create_namespaces = False,
 
     # pure python packages
     packages = [ 
@@ -86,5 +103,7 @@ setup(
         'oalab.interface': [
             'PlantGLOAInterfacePlugin = openalea.plantgl.oaplugins.interfaces:PlantGLOAInterfacePlugin'
         ]
-    }
+    },
+
+    **deploy_args
 )
