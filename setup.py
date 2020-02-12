@@ -21,7 +21,6 @@ version = HexVersion.from_cpp_define('PGL_VERSION',pj('src','cpp','plantgl','ver
 #print(pkg_name + ' : version = ' + version)
 
 currentdir = os.path.dirname(__file__)
-print(currentdir)
 
 # Scons build directory
 build_prefix= "build-cmake"
@@ -36,7 +35,7 @@ else:
         inc_dirs = { 'include' : pj(currentdir, build_prefix, 'include') },
         share_dirs = { 'share' : 'share'},
         postinstall_scripts = ['pgl_postinstall',],
-        namespace_packages = [namepace],
+        namespace_packages = [namespace],
         create_namespaces = False,
     )
 
