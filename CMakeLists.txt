@@ -78,7 +78,7 @@ find_package(Qt)
 set(Boost_NO_SYSTEM_PATHS ON)
 set(Boost_USE_MULTITHREAD ON)
 set(Boost_USE_STATIC_LIBS OFF)
-#set(BUILD_SHARED_LIBS ON)
+set(BUILD_SHARED_LIBS ON)
 
 set(boost_python python${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR})
 set(boost_numpy numpy${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR})
