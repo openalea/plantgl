@@ -926,8 +926,8 @@ bool BinaryParser::readImageTexture() {
     cerr << "Filename : " << FileName << endl;
     if(!FileName.empty()&&exists(FileName.c_str())) {
             FileName = absolute_filename(FileName);
+            mat->getFilename() = FileName;
     }
-    mat->getFilename() = FileName;
     float version =  __tokens->getVersion();
 
     if( version >= 2.3f){
