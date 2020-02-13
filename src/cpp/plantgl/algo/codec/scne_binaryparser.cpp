@@ -800,7 +800,12 @@ bool BinaryParser::readShape(){
         }
     }
 
-    if((a->getGeometry()) && (a->getAppearance())){
+    if(a->getGeometry()){
+        if (!a->getAppearance() || !a->getAppearance()->isValid()){
+            __outputStream << "*** PARSER: <Shape : " << (_name.empty() ? "(unamed)" : _name ) << "> Appearance not valid. Setting it to default." << endl;
+            a->getAppearance() = AppearancePtr(new Material());
+
+        }
         if(!_name.empty())a->setName(_name);
         __result = SceneObjectPtr(a);
         Shape3DPtr sh = Shape3DPtr(a);
@@ -872,12 +877,14 @@ bool BinaryParser::readTexture2D() {
 
     GEOM_INIT_OBJ(texture, 42, Texture2D);
 
+    bool invalid = false;
+
     if(readNext())
         texture->getImage() = dynamic_pointer_cast<ImageTexture>(__result);
+
     if(!texture->getImage()){
         __outputStream << "*** PARSER: <Texture2D : " << (_name.empty() ? "(unamed)" : _name ) << "> Image not valid." << endl;
-        GEOM_DEL_OBJ(texture,42) ;
-        return false;
+        invalid = true;
     }
 
     IF_GEOM_NOTDEFAULT(_default,0)
@@ -886,14 +893,19 @@ bool BinaryParser::readTexture2D() {
             texture->getTransformation() = dynamic_pointer_cast<Texture2DTransformation>(__result);
         if(!texture->getTransformation()){
             __outputStream << "*** PARSER: <Texture2D : " << (_name.empty() ? "(unamed)" : _name ) << "> Transformation not valid." << endl;
-            GEOM_DEL_OBJ(texture,42) ;
-            return false;
+            invalid = true;
         }
     }
 
     if( __tokens->getVersion() >= 2.3f){
         IF_GEOM_NOTDEFAULT(_default,1)
              GEOM_READ_FIELD(texture,BaseColor,Color4);
+    }
+
+
+    if (invalid) {
+        GEOM_DEL_OBJ(texture,42) ;
+        return false;
     }
 
     GEOM_PARSER_SETNAME(_name,_ident,texture,Texture2D);
@@ -914,8 +926,8 @@ bool BinaryParser::readImageTexture() {
     cerr << "Filename : " << FileName << endl;
     if(!FileName.empty()&&exists(FileName.c_str())) {
             FileName = absolute_filename(FileName);
-            mat->getFilename() = FileName;
     }
+    mat->getFilename() = FileName;
     float version =  __tokens->getVersion();
 
     if( version >= 2.3f){
@@ -923,7 +935,7 @@ bool BinaryParser::readImageTexture() {
             GEOM_READ_FIELD(mat,RepeatS,Bool) ;
 
         IF_GEOM_NOTDEFAULT(_default,1)
-            GEOM_READ_FIELD(mat,RepeatT,Real);
+            GEOM_READ_FIELD(mat,RepeatT,Bool);
 
         if( version < 2.4f){
             IF_GEOM_NOTDEFAULT(_default,2)
@@ -956,9 +968,15 @@ bool BinaryParser::readImageTexture() {
             GEOM_READ_FIELD(mat,Mipmaping,Bool);
     }
 
-    if (FileName.empty() || !exists(FileName.c_str())) {
+    if (FileName.empty()) {
         string label = "ImageTexture : " + string((_name.empty() ? "(unamed)" : _name));
         pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),label.c_str(),"FileName");
+        MaterialPtr defmat(new Material());
+        GEOM_PARSER_SETNAME(_name,_ident,defmat,Material);
+    }
+    else if (!exists(FileName.c_str())) {
+        string label = "ImageTexture : " + string((_name.empty() ? "(unamed)" : _name));
+        pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),label.c_str(),"FileName",FileName.c_str());
         MaterialPtr defmat(new Material());
         GEOM_PARSER_SETNAME(_name,_ident,defmat,Material);
     }
