@@ -6,7 +6,7 @@ from os.path import join, dirname, abspath, exists
 
 fname = abspath(join(dirname(__file__),'data/teapot.obj'))
 
-MT = False
+MT = True
 
 def test_teapot(view = False):
     s = Scene(fname)
