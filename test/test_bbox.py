@@ -21,7 +21,7 @@ def bbox_application(geom,nbtest = 5):
         ref = norm(refv)
         if ref  < 1e-5 : ref = 1
         dist = norm(b1.lowerLeftCorner-b2.lowerLeftCorner + b1.upperRightCorner - b2.upperRightCorner)/ref	
-        if dist > 0.2 :
+        if dist > 0.5 :
             if isinstance(geom, Shape):
                 Scene([geom]).save('bboxerror.geom')
             else:
