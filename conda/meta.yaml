@@ -71,7 +71,6 @@ requirements:
       - setuptools
       - pyopengl
       - pyqglviewer                        # [unix]
-   #  - scipy
    #  - matplotlib
    #  - vs2015_runtime [win and py37]
 
