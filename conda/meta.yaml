@@ -86,5 +86,6 @@ test:
      - test/**
      - share/**
    commands:
-     - pytest -v 
+     - cd test
+     - pytest -v --ignore=tofix --ignore=ui --ignore=oatest 
 
