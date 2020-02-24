@@ -70,7 +70,7 @@ requirements:
       - ipython
       - setuptools
       - pyopengl
-      - pyqglviewer                        # [unix]
+      - pyqglviewer
    #  - matplotlib
    #  - vs2015_runtime [win and py37]
 
@@ -78,6 +78,7 @@ test:
    requires:
      - pytest
      - matplotlib-base
+     - pandas
    imports:
      - openalea.plantgl
      - openalea.plantgl.all
