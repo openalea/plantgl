@@ -13,10 +13,10 @@ def get_shared_data(file, share_path=pj('share','plantgl', 'database')):
     import os
     from os.path import pardir, exists, abspath
     import openalea.plantgl
-    if 'PREFIX' in os.environ:
-        shared_data_path = pj(os.environ['PREFIX'], share_path)
-    elif 'CONDA_PREFIX' in os.environ:
-        shared_data_path = pj(os.environ['CONDA_PREFIX'], share_path)
+    for prefix in ['PREFIX', 'LIBRARY_PREFIX', 'CONDA_PREFIX']:
+        if prefix in os.environ:
+            shared_data_path = pj(os.environ[prefix], share_path)
+            break
     else:
         try:
             from openalea.deploy.shared_data import get_shared_data_path
