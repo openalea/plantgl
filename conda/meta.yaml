@@ -87,5 +87,6 @@ test:
      - share/**
    commands:
      - cd test
-     - pytest -v --ignore=tofix --ignore=ui --ignore=oatest 
+     - pytest -v --ignore=tofix --ignore=ui --ignore=oatest  # [unix]
+     - pytest -v --ignore=tofix --ignore=ui --ignore=oatest --ignore=test_shared_data.py  # [win]
 
