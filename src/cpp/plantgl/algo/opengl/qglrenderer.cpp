@@ -180,7 +180,7 @@ static const char *vertexShaderSourceCore =
     "void main() {\n"
     "   viewPos = vec3(inverse(view) * vec4(origin, 1.0));\n"
     "   fragPos = vec3(model * vec4(vertex, 1.0));\n"
-    "   fragNormal = normal; // mat3(transpose(inverse(model))) * normal;\n"
+    "   fragNormal = mat3(transpose(inverse(model))) * normal;\n"
     "   gl_Position = projection * view * vec4(fragPos, 1.0);\n"
     "}\n";
 
@@ -1297,7 +1297,7 @@ QMatrix4x4 toQMatrix44(const Matrix4& matrix){
     for(Matrix4::const_iterator it = matrix.begin(); it != matrix.end(); ++it, ++itd){
         *itd = *it;
     }
-    return QMatrix4x4(data).transposed();
+    return QMatrix4x4(data); // .transposed();
 }
 
 QMatrix3x3 toQMatrix33(const Matrix4& matrix){
@@ -1335,6 +1335,11 @@ bool QGLRenderer::process(TriangleSet *triangleSet)
     QOpenGLBuffer *colorBuf = nullptr;
     QOpenGLBuffer *indexBuf = nullptr;
 
+    // QMatrix4x4 model = toQMatrix44(__modelmatrix.getMatrix());
+    // for(int i = 0; i < 4; i++)
+    //    qDebug() << Q_FUNC_INFO
+    //             << "m" << model(i,0) << model(i,1) << model(i,2) << model(i,3);
+    
      __currentprogram->bind();
     GLuint modelMatrixID = __currentprogram->uniformLocation("model");
     __currentprogram->setUniformValue(modelMatrixID, toQMatrix44(__modelmatrix.getMatrix()));
@@ -1353,13 +1358,31 @@ bool QGLRenderer::process(TriangleSet *triangleSet)
     QOpenGLVertexArrayObject::Binder vaoBinder (m_vao);
 
     if (tocreate) {
-        printf("Creating buffers\n");
+        printf("Creating buffers for %u\n", (uint_t)triangleSet->getObjectId());
+
 
       triangleSet->checkNormalList();
 
       real_t * vertices = triangleSet->getPointList()->data();
       real_t * normals = triangleSet->getNormalList()->data();
       uint_t * indices = triangleSet->getIndexList()->data();
+
+      real_t * itvert =  vertices;
+      for(uint_t i = 0; i< triangleSet->getPointList()->size(); ++i){
+            for(uint_t j = 0; j<3; ++j) {
+                printf("%f ",*itvert); ++itvert;
+            }
+            printf("\n");
+        }
+      printf("\n");
+      uint_t * itindex =  indices;
+      for(uint_t i = 0; i< triangleSet->getIndexList()->size(); ++i){
+            for(uint_t j = 0; j<3; ++j) {
+                printf("%u ",*itindex); ++itindex;
+            }
+            printf("\n");
+        }
+
 
       vertexBuf = new QOpenGLBuffer( QOpenGLBuffer::VertexBuffer);
 
@@ -1401,7 +1424,7 @@ bool QGLRenderer::process(TriangleSet *triangleSet)
       printf("done\n");
     }
     else {
-      printf("Reusing buffers\n");
+      // printf("Reusing buffers\n");
       BufferInfo mcache = _it->second;
 
       m_vao = mcache.vao;
@@ -1411,24 +1434,24 @@ bool QGLRenderer::process(TriangleSet *triangleSet)
 
     }
 
-    printf("Enabling vertex attributes\n");
+    // printf("Enabling vertex attributes\n");
     vertexBuf->bind();
     normalBuf->bind();
     __ogl.glEnableVertexAttribArray(0);
     __ogl.glEnableVertexAttribArray(1);
 
-    printf("Vertex attributes types\n");
+    // printf("Vertex attributes types\n");
     // __ogl.glVertexAttribPointer(0, 3, GL_GEOM_REAL, GL_FALSE, 3 * sizeof(real_t), 0);
     __ogl.glVertexAttribPointer(0, 3, GL_GEOM_REAL, GL_FALSE, 0, 0);
-    __ogl.glVertexAttribPointer(1, 3, GL_GEOM_REAL, GL_FALSE, 0, 0);
+    __ogl.glVertexAttribPointer(1, 3, GL_GEOM_REAL, GL_TRUE, 0, 0);
 
 
-    printf("Draw elements\n");
+    // printf("Draw elements\n");
     indexBuf->bind();
     //__ogl.glDrawArrays(GL_TRIANGLES, 0, triangleSet->getIndexList()->size()*3);
     __ogl.glDrawElements(GL_TRIANGLES, triangleSet->getIndexList()->size()*3, GL_UNSIGNED_INT, (void *)0);
 
-    printf("end tr\n");
+    // printf("end tr\n");
 
     return true;
 }
