@@ -42,6 +42,7 @@
 #define __PGL_TURTLE_H__
 
 #include "turtleparam.h"
+#include "pglturtledrawer.h"
 
 #include <string>
 #include <stack>
@@ -75,7 +76,7 @@ public:
 
     void registerPushPopHandler(PushPopHandlerPtr handler);
 
-    Turtle(TurtleParam * params = NULL);
+    Turtle(TurtleDrawerPtr drawer = TurtleDrawerPtr(new PglTurtleDrawer()), TurtleParam * params = NULL);
     virtual ~Turtle();
 
     virtual std::string str() const;
@@ -370,12 +371,12 @@ public:
       { return 0; }
 
     inline void sphere()
-    { _sphere(getWidth()); }
+    { __drawer->sphere(__params,getWidth()); }
 
     void sphere(real_t radius );
 
     inline void circle()
-    { _circle(getWidth()); }
+    { __drawer->circle(__params,getWidth()); }
 
     void circle(real_t radius );
 
@@ -396,6 +397,9 @@ public:
 
     inline void arrow() { arrow(default_step); }
     virtual void arrow(real_t heigth, real_t cap_heigth_ratio = 0.2, real_t cap_radius_ratio = 2);
+
+    inline void vector() { vector(default_step); }
+    virtual void vector(real_t heigth, real_t cap_heigth_ratio = 0.2, real_t cap_radius_ratio = 2, real_t color = 1.0, real_t transparency = 0.0);
 
     inline void setTextureScale(real_t u, real_t v) { setTextureScale(Vector2(u,v)); }
     virtual void setTextureScale(const Vector2& s);
@@ -495,15 +499,22 @@ public:
     void upReflection();
     void headingReflection();
 
+
+    const ScenePtr& getScene() const;
+
+    const TurtleDrawerPtr getDrawer() const
+    { return __drawer; }
+
 protected:
     void _setCrossSection(const Curve2DPtr& curve, bool ccw = false, bool defaultSection = false);
 
-    virtual void _frustum(real_t length, real_t topradius){}
+    void _smallsweep(real_t length, real_t topradius);
+
     virtual void _cylinder(real_t length){}
 
+    virtual void _frustum(real_t length, real_t topradius){}
+    
     virtual void _sweep(real_t length, real_t topradius);
-
-    virtual void _polygon(const Point3ArrayPtr& points, bool concavetest = false){}
 
     virtual void _generalizedCylinder(const Point3ArrayPtr& points,
                                       const std::vector<Vector3>& left,
@@ -520,6 +531,8 @@ protected:
 
     virtual void _quad(real_t radius, real_t botradius, real_t topradius){}
 
+    virtual void _polygon(const Point3ArrayPtr& points, bool concavetest = false){}
+
     virtual void _surface(const std::string& name, real_t scale){}
 
     virtual void _frame(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius_ratio, real_t color, real_t transparency) { }
@@ -527,6 +540,7 @@ protected:
     virtual void _arrow(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius_ratio) { }
 
     virtual void _label(const std::string& text, int size = -1){}
+    
 
     TurtleParam& getParameters()
       { return *__params; }
@@ -555,6 +569,7 @@ protected:
     PathInfoMap __pathinfos;
 
     PushPopHandlerList __pushpophandlerlist;
+    TurtleDrawerPtr __drawer;
 
 };
 
