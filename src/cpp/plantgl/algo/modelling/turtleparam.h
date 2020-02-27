@@ -42,6 +42,7 @@
 #define __PGL_TURTLE_PARAM_H__
 
 #include "../algo_config.h"
+#include "turtlepath.h"
 #include <plantgl/math/util_vector.h>
 #include <plantgl/math/util_matrix.h>
 #include <plantgl/scenegraph/appearance/color.h>
@@ -52,80 +53,6 @@
 #include <vector>
 
 PGL_BEGIN_NAMESPACE
-
-class TurtlePath;
-typedef RCPtr<TurtlePath> TurtlePathPtr;
-
-/// Class that contains a path parameter that should be followed by the turtle
-class ALGO_API TurtlePath : public RefCountObject{
-public:
-    TurtlePath(real_t totalLength, real_t actualLength, QuantisedFunctionPtr arclengthParam = QuantisedFunctionPtr()) : __totalLength(totalLength), __actualLength(actualLength), __scale(totalLength/actualLength), __arclengthParam(arclengthParam), __actualT(0)  { }
-    virtual ~TurtlePath();
-
-    virtual bool is2D() const { return true; }
-
-    virtual TurtlePathPtr copy() const = 0;
-
-    virtual void setPosition(real_t t)  = 0;
-
-    real_t __totalLength;
-    real_t __actualLength;
-    real_t __scale;
-    QuantisedFunctionPtr __arclengthParam;
-    real_t __actualT;
-};
-
-/// Class that contains a 2D path parameter that should be followed by the turtle
-class ALGO_API Turtle2DPath : public TurtlePath {
-public:
-    Turtle2DPath(Curve2DPtr curve, real_t totalLength, real_t actualLength, bool orientation = false, bool ccw = false, QuantisedFunctionPtr arclengthParam = QuantisedFunctionPtr());
-
-    virtual TurtlePathPtr copy() const;
-    virtual void setPosition(real_t t) ;
-
-    // Path to follow
-    Curve2DPtr __path;
-    // Tell whether path is oriented with Y as first heading or X
-    bool __orientation;
-    // Tell whether the resulting structure is in CCW
-    bool __ccw;
-
-    // Position on the curve
-    Vector2 __lastPosition;
-    // Last direction on the curve
-    Vector2 __lastHeading;
-};
-
-/// Class that contains a 2D path parameter that should be followed by the turtle
-class ALGO_API Turtle3DPath : public TurtlePath {
-public:
-    Turtle3DPath(LineicModelPtr curve, real_t totalLength, real_t actualLength, QuantisedFunctionPtr arclengthParam = QuantisedFunctionPtr());
-
-    virtual TurtlePathPtr copy() const;
-    virtual void setPosition(real_t t) ;
-
-    virtual bool is2D() const { return false; }
-
-    // 3D Path to follow
-    LineicModelPtr __path;
-
-    // Position on the curve
-    Vector3 __lastPosition;
-
-    // Reference frame on the curve
-    Vector3 __lastHeading;
-    Vector3 __lastUp;
-    Vector3 __lastLeft;
-
-};
-
-struct PathInfo {
-    real_t length;
-    QuantisedFunctionPtr arclengthParam;
-};
-
-typedef pgl_hash_map<size_t,PathInfo> PathInfoMap;
-
 class TurtleDrawParameter {
 public:
 

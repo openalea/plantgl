@@ -42,6 +42,7 @@
 #define __PGL_TURTLE_GEOM_H__
 
 #include "turtle.h"
+#include "pglturtledrawer.h"
 
 #include <plantgl/scenegraph/geometry/geometry.h>
 #include <plantgl/scenegraph/geometry/polyline.h>
@@ -55,14 +56,10 @@ PGL_BEGIN_NAMESPACE
 class ALGO_API PglTurtle : public Turtle {
 public:
     // static Polyline2DPtr DEFAULT_CROSS_SECTION;
-    static AppearancePtr HEADING_FRAME_MATERIAL;
-    static AppearancePtr UP_FRAME_MATERIAL;
-    static AppearancePtr LEFT_FRAME_MATERIAL;
-    static GeometryPtr DEFAULT_SPHERE;
-
     typedef pgl_hash_map_string<GeometryPtr> SurfaceMap;
 
-    PglTurtle(TurtleParam * param = NULL);
+    PglTurtle(TurtleDrawerPtr drawer = TurtleDrawerPtr(new PglTurtleDrawer()), 
+              TurtleParam * param = NULL);
 
     virtual ~PglTurtle();
 
@@ -89,9 +86,6 @@ public:
     const SurfaceMap& getSurfaceList() const;
 
     void defaultValue();
-
-    const ScenePtr& getScene() const
-    { return __scene;  }
 
     size_t getColorListSize() const
     { return __appList.size(); }
@@ -134,28 +128,31 @@ public:
 
     GeometryPtr getSurface(const std::string& name);
 
-    void customGeometry(const GeometryPtr smb, real_t scale = 1.0);
-
     void pglShape(const GeometryPtr smb, real_t scale = 1.0);
     void pglShape(const ShapePtr shape, real_t scale = 1.0);
     void pglShape(const ScenePtr shape, real_t scale = 1.0);
 
+    /// draw the surface identified by name, scaled by a factor scale
+    virtual void surface(const std::string& name,real_t scale);
+
 protected:
+
+
+    SurfaceMap __surfList;
+    std::vector<AppearancePtr> __appList;
 
     AppearancePtr getCurrentMaterial() const;
     AppearancePtr getCurrentInitialMaterial() const;
 
     GeometryPtr getCircle(real_t radius) const;
 
-    GeometryPtr transform(const GeometryPtr& obj, bool scaled = true) const;
-
-    virtual void _addToScene(const GeometryPtr geom, bool customid = false, AppearancePtr app = NULL, bool projection = true);
-
-    /// draw a frustum of length = length, bottom diameter = current width and top diameter = topdiam
-    virtual void _frustum(real_t length,real_t topdiam);
+    // GeometryPtr transform(const GeometryPtr& obj, bool scaled = true) const;
 
     /// draw a cylinder of length = length, diameter = current width
     virtual void _cylinder(real_t length);
+
+    /// draw a frustum of length = length, bottom diameter = current width and top diameter = topdiam
+    virtual void _frustum(real_t length,real_t topdiam);
 
     /// draw the polygon with current polygon points
     virtual void _polygon(const Point3ArrayPtr& points, bool concavetest = false);
@@ -176,8 +173,6 @@ protected:
 
     virtual void _quad(real_t radius, real_t botradius, real_t topradius);
 
-    /// draw the surface identified by name, scaled by a factor scale
-    virtual void _surface(const std::string& name,real_t scale);
 
     virtual void _label(const std::string& text , int size = -1);
 
@@ -188,7 +183,8 @@ protected:
     SurfaceMap __surfList;
     std::vector<AppearancePtr> __appList;
 
-    ScenePtr __scene;
+    // ScenePtr __scene;
+    
 };
 
 /* ----------------------------------------------------------------------- */
