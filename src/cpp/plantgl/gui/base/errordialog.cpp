@@ -90,11 +90,11 @@ void handleQtMessage (QtMsgType type, const char *msg)
 
 void registerForQtMessage(ViewErrorDialog * display){
   QT_ERROR_MESSAGE_DISPLAY = display;
-    myQtInstallMessageHandler(handleQtMessage);
+  // myQtInstallMessageHandler(handleQtMessage);
 }
 
 void unregisterForQtMessage(){
-    myQtInstallMessageHandler(0);
+    // myQtInstallMessageHandler(0);
     QT_ERROR_MESSAGE_DISPLAY = NULL;
 }
 
@@ -107,7 +107,8 @@ ViewErrorDialog::ViewErrorDialog( QWidget * parent)
      false
 #endif
      ),
-     __displaylock(false)
+     __displaylock(false),
+     __registered(false)
 {
   setObjectName("ErrorLog");
   QWidget * mwidget = new QWidget(this);
@@ -117,7 +118,6 @@ ViewErrorDialog::ViewErrorDialog( QWidget * parent)
   __display->__text->setFont(QFont("courrier", 9 ));
   QObject::connect(__display->VerboseButton,SIGNAL(toggled(bool)),
                     this,SLOT(setVerbose(bool)));
-  registerForQtMessage(this);
   QObject::connect(__display->ClearButton,SIGNAL(clicked()),this,SLOT(clear()));
 
   ViewerSettings settings;
@@ -129,20 +129,22 @@ ViewErrorDialog::ViewErrorDialog( QWidget * parent)
   __display->mAutoClearButton->setChecked(settings.value("AutoClear",__display->mAutoClearButton->isChecked()).toBool());
   __display->__popupButton->setChecked(settings.value("ErrorPopup",__display->__popupButton->isChecked()).toBool());
   settings.endGroup();
+  if(__verbose)registerQtMsg(__verbose);
 
-  qDebug("Registered for Qt message");
+  // qDebug("Registered for Qt message");
 }
 
 
 ViewErrorDialog::~ViewErrorDialog()
 {
-    unregisterForQtMessage();
+    if(__registered)unregisterForQtMessage();
 }
 
 void ViewErrorDialog::registerQtMsg(bool reg)
 {
     if(reg)registerForQtMessage(this);
     else unregisterForQtMessage();
+    __registered = reg;
 }
 
 void ViewErrorDialog::setVerbose(bool b){
@@ -151,12 +153,12 @@ void ViewErrorDialog::setVerbose(bool b){
         if(__verbose){
             QObject::connect(QApplication::clipboard(),SIGNAL(dataChanged()),
             this,SLOT(clipboardInfo()));
-            // registerForQtMessage(this);
+            registerForQtMessage(this);
         }
         else {
             QObject::disconnect(QApplication::clipboard(),SIGNAL(dataChanged()),
             this,SLOT(clipboardInfo()));
-            // unregisterForQtMessage();
+            unregisterForQtMessage();
         }
     }
 }
