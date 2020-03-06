@@ -153,6 +153,14 @@ public:
       return position ;
     }
 
+    void forward(real_t l);
+
+    void left(real_t angle);
+
+    void up(real_t angle);
+
+    void rollR(real_t angle);
+
 public:
 
   Vector3 position;
@@ -164,15 +172,15 @@ public:
 
   real_t width;
 
-  Point3ArrayPtr pointList;
-  std::vector<Vector3> leftList;
-  std::vector<real_t> radiusList;
-
   uint_t customId;
   uint_t customParentId;
   uint_t lastId;
 
   uint_t sectionResolution;
+
+  Point3ArrayPtr pointList;
+  std::vector<Vector3> leftList;
+  std::vector<real_t> radiusList;
 
   TurtleDrawParameter initial;
 
