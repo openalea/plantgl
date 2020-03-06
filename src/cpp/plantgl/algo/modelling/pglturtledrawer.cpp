@@ -145,34 +145,54 @@ AppearancePtr PglTurtle::getCurrentInitialMaterial() const{
 }
 */
 
-void PglTurtleDrawer::customGeometry(const GeometryPtr smb, real_t scale)
+void PglTurtleDrawer::customGeometry(const Vector3& position, 
+                                     const Vector3& heading, 
+                                     const Vector3& left, 
+                                     const Vector3& up, 
+                                     const Vector3& scaling, 
+                                     const uint_t id,
+                                     AppearancePtr appearance,
+                                     const GeometryPtr smb)
 {
-    if( FABS(scale) > GEOM_EPSILON){
-    PlanarModelPtr _2Dtest = dynamic_pointer_cast<PlanarModel>(smb);
-    if (is_valid_ptr(_2Dtest) && __params->screenCoordinates)
-      _addToScene(transform(GeometryPtr(new Scaled(getScale()*scale,GeometryPtr(new Oriented(Vector3(0,1,0),Vector3(0,0,1),smb)))),false));
-    else _addToScene(transform(GeometryPtr(new Scaled(getScale()*scale,smb)),false));
-  }
+    if( FABS(norm(scaling)) > GEOM_EPSILON){
+        PlanarModelPtr _2Dtest = dynamic_pointer_cast<PlanarModel>(smb);
+        if (is_valid_ptr(_2Dtest) && __params->screenCoordinates)
+            _addToScene(transform(position, heading, left, up scaling, GeometryPtr(new Oriented(Vector3(0,1,0),Vector3(0,0,1),smb))));
+        else _addToScene(transform(position, heading, left, up scaling, smb));
+    }
 }
 
 GeometryPtr
-PglTurtleDrawer::transform(const GeometryPtr& o, bool scaled) const{
-  GeometryPtr obj = o;
-  if ( scaled && getScale() !=  Vector3(1,1,1) &&
-      (getScale().x() != getScale().y() ||
-       getScale().y() != getScale().z() ))
-       obj = GeometryPtr(new Scaled(getScale(),obj));
-  if ( getUp() != Vector3::OX ||
-       getLeft()   != -Vector3::OY )
-       obj = GeometryPtr(new Oriented(getUp(),-getLeft(),obj));
-  if ( getPosition() != Vector3::ORIGIN )
-       obj = GeometryPtr(new Translated(getPosition(),obj));
+PglTurtleDrawer::transform(const Vector3& position, 
+                           const Vector3& heading, 
+                           const Vector3& left, 
+                           const Vector3& up, 
+                           const GeometryPtr& obj) const {
+  if ( up != Vector3::OX ||
+       left   != -Vector3::OY )
+       obj = GeometryPtr(new Oriented(up,-left,obj));
+  if ( position != Vector3::ORIGIN )
+       obj = GeometryPtr(new Translated(position,obj));
   return obj;
+}
+
+GeometryPtr
+PglTurtleDrawer::transform_n_scale(const Vector3& position, 
+                                   const Vector3& heading, 
+                                   const Vector3& left, 
+                                   const Vector3& up, 
+                                   const Vector3& scaling,
+                                   const GeometryPtr& obj) const {
+   if ( scaling !=  Vector3(1,1,1) &&
+      (scaling.x() != scaling.y() ||
+       scaling.y() != scaling.z() ))
+       obj = GeometryPtr(new Scaled(scaling,obj));
+   return transform(position, heading, left, up, obj);
 }
 
 
 
-void PglTurtleDrawer::addToScene(const GeometryPtr geom, bool custompid, AppearancePtr app, bool projection)
+void PglTurtleDrawer::addToScene(const GeometryPtr geom, const uint_t id, AppearancePtr app, bool projection)
 {
   GeometryPtr mgeom = geom;
   if (projection && getParameters().screenCoordinates)
@@ -228,7 +248,16 @@ void PglTurtleDrawer::frustum(real_t length, real_t topradius){
   }
 }
 
-void PglTurtleDrawer::cylinder(real_t length){
+void PglTurtleDrawer::void cylinder(const Vector3& position, 
+                          const Vector3& heading, 
+                          const Vector3& left, 
+                          const Vector3& up, 
+                          const Vector3& scaling, 
+                          const uint_t id,
+                          AppearancePtr appearance,
+                          real_t length,
+                          real_t radius,
+                          uint_t sectionResolution){
   if (fabs(length) > GEOM_EPSILON) {
       real_t width = getWidth();
       if(FABS(width) < GEOM_EPSILON){
