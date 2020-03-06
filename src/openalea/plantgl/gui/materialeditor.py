@@ -189,13 +189,13 @@ class MaterialPanelView (QGLWidget):
         if w == 0 or h == 0 : return
         if self.mousepos != None and self.geometry().contains(self.mousepos):            
             cursorselection = self.selectedColor(self.mousepos.x(),self.mousepos.y())
-        scaling = QGuiApplication.instance().devicePixelRatio()
-        glViewport(0,0,int(w*scaling),int(h*scaling));
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-        glOrtho(0,w,h,0,-3000,1000);
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
+        scaling = self.window().devicePixelRatio()
+        glViewport(0,0,int(w*scaling),int(h*scaling))
+        glMatrixMode(GL_PROJECTION)
+        glLoadIdentity()
+        glOrtho(0,w,h,0,-3000,1000)
+        glMatrixMode(GL_MODELVIEW)
+        glLoadIdentity()
         try:
             glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
         except: 
