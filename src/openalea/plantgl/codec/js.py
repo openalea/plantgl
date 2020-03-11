@@ -1,4 +1,4 @@
-from openalea.plantgl.all import Material, Geometry, Shape, Tesselator, BoundingBox, norm
+from openalea.plantgl.all import Material, Geometry, Shape, Tesselator, BoundingBox, QuadSet, Color3, Color4, Index3Array, norm
 
 
     
@@ -37,8 +37,14 @@ template_code_end = """
     });
 """
 
+def iscolor(col):
+    return isinstance(col, Color3) or isinstance(col, Color4)
+
 def col32js(col):
     return 'new BABYLON.Color3(%f, %f, %f)' % (col.clampedRed(),col.clampedGreen(),col.clampedBlue())
+
+def compactcol(col):
+    return '%f,%f,%f,%f' % (col.clampedRed(),col.clampedGreen(),col.clampedBlue(),1-col.clampedAlpha() if hasattr(col,'clampedAlpha') else '1.0')
 
 def mat2js(mat):
     check_name(mat) 
@@ -63,6 +69,8 @@ def isiterable(obj):
 def _array2js(a):
     if isiterable(a):
         return ','.join(map(_array2js,a))
+    if iscolor(a):
+        return compactcol(a)
     else:
         return str(a)
 
@@ -71,19 +79,48 @@ def array2js(a):
 
 def check_name(obj):
     if obj.name == '':
-        obj.name = 'obj_'+str(obj.getId())
+        obj.name = 'obj_'+str(obj.getObjectId())
+
+def topointbasedmesh(mesh):
+    if (not mesh.colorList is None and len(mesh.colorList) != len(mesh.pointList)) or (not mesh.normalList is None and len(mesh.normalList) != len(mesh.pointList)):
+        N = 4 if isinstance(mesh,QuadSet) else 3
+        pointList = [mesh.pointList[i] for indices in mesh.indexList for i in indices]
+        indexList = [[3*iti+i for i in range(N)] for iti in range(len(mesh.indexList)) ]
+        colorList = mesh.colorList
+        if not mesh.colorList is None and len(mesh.colorList) != len(mesh.pointList):
+            colorList = [c for c in mesh.colorList for i in range(N)]
+        normalList = mesh.normalList
+        if not mesh.normalList is None and len(mesh.normalList) != len(mesh.pointList):
+            normalList = [c for c in mesh.normalList for i in range(N)]
+        result = mesh.__class__(pointList, indexList,colorList=colorList,normalList=normalList)
+        result.name = mesh.name
+        return result
+    return mesh
 
 def mesh2js(mesh):
+    mesh = topointbasedmesh(mesh)
     check_name(mesh) 
     code = """
         var customMesh = new BABYLON.Mesh(\""""+mesh.name+"""\", scene);
+        customMesh.overridematerialsideorientation = BABYLON.Mesh.DOUBLESIDE;
 
         var vertexData = new BABYLON.VertexData();
 
         vertexData.positions = """ + array2js(mesh.pointList)+ """;
-        vertexData.indices = """ + array2js(mesh.indexList)+ """;
+        vertexData.indices = """ + array2js(mesh.indexList+Index3Array([list(reversed(i)) for i in mesh.indexList]))+ """;"""
 
-        vertexData.applyToMesh(customMesh);
+    if not mesh.colorList is None and len(mesh.colorList) == len(mesh.pointList):
+        code += """
+        vertexData.colors = """ + array2js(mesh.colorList)+ """;"""
+
+    if not mesh.normalList is None and len(mesh.normalList) == len(mesh.pointList):
+        code += """
+        vertexData.normals = """ + array2js(mesh.normalList)+ """;"""
+
+    code += """
+        vertexData.applyToMesh(customMesh);"""
+    if mesh.colorList is None:
+        code += """
 
         customMesh.material = mat;
     """
@@ -91,13 +128,16 @@ def mesh2js(mesh):
 
 def sh2js(sh):
     code = ''
-    app = sh.appearance
-    if isinstance(app, Material):
-        code += mat2js(app)
-    else:
-        code += mat2js(Material.DEFAULT_MATERIAL)
+    
     t = Tesselator()
     sh.geometry.apply(t)
+    if t.result.colorList is None:
+        app = sh.appearance
+        if isinstance(app, Material):
+            code += mat2js(app)
+        else:
+            code += mat2js(Material.DEFAULT_MATERIAL)
+
     code += mesh2js(t.result)
     return code
 
@@ -126,7 +166,12 @@ import os.path
 jslibs_static = ['./babylon.custom.js']
 
 def get_jslibs():
-    return jslibs_static
+    #import os
+    #os.getcwd()
+    return  jslibs
+
+def get_jslibs_static():
+    return  jslibs_static
 
 template_html = """
 <!doctype html>
@@ -165,15 +210,18 @@ def generate_html(scene):
     scripts = '\n'.join(['\t\t<script src="%s"></script' % l for l in get_jslibs()])
     return template_html % (scripts, to_js(scene))
 
-def plot_js(scene):
+def plot_js(scene, tmpfile = None):
     import tempfile, os
-    handle, fname = tempfile.mkstemp(suffix='.html', text=True)
-    file = os.fdopen(handle, 'w')
+    if tmpfile is None:
+        handle, tmpfile = tempfile.mkstemp(suffix='.html', text=True)
+        file = os.fdopen(handle, 'w')
+        print(tmpfile)
+    else:
+        file = open(tmpfile, 'w')
     file.write(generate_html(scene))
-    print(fname)
     import webbrowser
-    webbrowser.open(fname)
-    return fname
+    webbrowser.open(tmpfile)
+    return tmpfile
 
 canvas_jquery_creation = """
     var canvas = jQuery('<canvas id="%s" style="border: 1px solid black;" width="800" height="600"></canvas>');
@@ -185,6 +233,7 @@ canvas_jquery_creation = """
 def ipy_plot(scene):
     from IPython.display import Javascript, display
     canvascode = canvas_jquery_creation % ('canvas_'+str(scene.getId()))
-    j = Javascript(canvascode+to_js(scene),lib=get_jslibs())
+    code = canvascode+to_js(scene)
+    print(code)
+    j = Javascript(code, lib=get_jslibs())
     display(j)
-
