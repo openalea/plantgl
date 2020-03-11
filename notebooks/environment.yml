@@ -1,0 +1,8 @@
+name: plantgl
+
+channels:
+  - fredboudon
+  - conda-forge
+
+dependencies:
+  - openalea.plantgl
