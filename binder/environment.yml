@@ -6,3 +6,5 @@ channels:
 
 dependencies:
   - openalea.plantgl
+  - matplotlib
+  - pandas
