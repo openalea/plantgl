@@ -238,6 +238,15 @@ ViewerApplication::grabZBufferPoints(){
   return std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)>();
 }
 
+std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)>
+ViewerApplication::grabZBufferPointsWithJitter(float jitter, int raywidth){
+
+  initViewerAppli();
+  if(VIEWER_APPLI)
+    return VIEWER_APPLI->grabZBufferPointsWithJitter(jitter,raywidth);
+  return std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)>();
+}
+
 bool ViewerApplication::wait( unsigned long time ){
   initViewerAppli();
   if(VIEWER_APPLI)

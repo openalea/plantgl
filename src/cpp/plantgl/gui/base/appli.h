@@ -133,6 +133,7 @@ public:
     virtual ViewZBuffer * grabZBuffer();
 
     virtual std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)>  grabZBufferPoints();
+    virtual std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)>  grabZBufferPointsWithJitter(float jitter, int raywidth);
 
 
 };

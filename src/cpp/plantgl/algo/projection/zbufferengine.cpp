@@ -392,6 +392,7 @@ void ZBufferEngine::rasterize(int32_t x0, int32_t x1, int32_t y0, int32_t y1,
     std::queue<Fragment> fragqueue;
 
     // Inner loop
+
     for (int32_t y = y0; y <= y1; ++y) {
         for (int32_t x = x0; x <= x1; ++x) {
 

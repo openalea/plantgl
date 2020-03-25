@@ -1122,6 +1122,26 @@ ViewGLFrame::grabZBufferPoints( )
     return res;
 }
 
+std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)>
+ViewGLFrame::grabZBufferPointsWithJitter(float jitter, int raywidth )
+{
+    bool pbufactivation = true;
+    if(!isRedrawEnabled()){
+        if (isPixelBufferUsed()){
+            pbufactivation = __pBufferActivated;
+            if(!pbufactivation){
+                activatePBuffer(true);
+                paintGL();
+            }
+            else  makeItCurrent();
+        }
+        else updateGL();
+    }
+    std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)> res = ViewZBuffer::importglZBufferPointsWithJitter(jitter,raywidth);
+    if(!pbufactivation) activatePBuffer(false);
+    return res;
+}
+
 
 double ViewGLFrame::getPixelWidth(){
     bool mode = __camera->getProjectionMode();

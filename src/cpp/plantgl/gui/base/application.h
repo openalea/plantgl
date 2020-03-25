@@ -107,6 +107,7 @@ public :
   static ViewZBuffer * grabZBuffer();
 
   static std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)> grabZBufferPoints();
+  static std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)> grabZBufferPointsWithJitter(float jitter, int raywidth);
 
   static void showMessage(const std::string& caption, int timeout = 0);
 

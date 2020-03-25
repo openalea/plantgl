@@ -332,6 +332,11 @@ boost::python::object grabZBufferPoints(){
     return boost::python::make_tuple(bufpoints.first,bufpoints.second);
 }
 
+boost::python::object grabZBufferPoints2(float jitter, int raywidth){
+    std::pair<Point3ArrayPtr,Color4ArrayPtr> bufpoints = ViewerApplication::grabZBufferPointsWithJitter(jitter,raywidth);
+    return boost::python::make_tuple(bufpoints.first,bufpoints.second);
+}
+
 boost::python::object getProjectionSize(){
     int nbpix;
     double pixwidth;
@@ -748,6 +753,7 @@ void export_framegl(){
     .def("grabZBuffer",&grabZBuffer  ,"grabZBuffer(allvalues = False)", args("allvalues") )
     .staticmethod("grabZBuffer")
     .def("grabZBufferPoints",&grabZBufferPoints )
+    .def("grabZBufferPoints",&grabZBufferPoints2, "grabZBufferPoints(jitter, raywidth)" )
     .staticmethod("grabZBufferPoints")
     .def("getProjectionSize",&getProjectionSize,"return projected_size,pixel_nb,pixel_size : compute the projected size of the displayed scene onto the current camera." )
     .staticmethod("getProjectionSize")
