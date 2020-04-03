@@ -1259,6 +1259,16 @@ void Turtle::frame(real_t scale, real_t cap_heigth_ratio, real_t cap_radius_rati
     }
 }
 
+void Turtle::arrow(real_t scale, real_t cap_heigth_ratio, real_t cap_radius_ratio )
+{
+    if (scale > GEOM_EPSILON && cap_heigth_ratio < 1 && cap_heigth_ratio > 0) _arrow(scale,cap_heigth_ratio,cap_radius_ratio);
+    else {
+        if(scale < GEOM_EPSILON) warning("Invalid scale for arrow. Should be positive");
+        if(cap_heigth_ratio > 1 || cap_heigth_ratio < 0) warning("Invalid cap_heigth_ratio for arrow. Should be in [0,1].");
+        if(cap_radius_ratio < GEOM_EPSILON) warning("Invalid cap_radius_ratio for arrow. Should be positive.");
+    }
+}
+
 void Turtle::sweep(const Curve2DPtr& path, const Curve2DPtr& section, real_t length, real_t dl, real_t radius, const QuantisedFunctionPtr radiusvariation)
 {
     setGuide(path,length); setCrossSection(section); nF(length,dl,radius,radiusvariation);
@@ -1924,6 +1934,29 @@ void PglTurtle::_frame(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius
   _addToScene(transform(GeometryPtr(new Oriented(Vector3(1,0,0),Vector3(0,0,1),arrow)),false),false,lmat);
   _addToScene(transform(GeometryPtr(new Oriented(Vector3(0,1,0),Vector3(0,0,1),arrow)),false),false,umat);
 }
+
+void PglTurtle::_arrow(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius_ratio) {
+  GeometryPtr arrow;
+  GroupPtr group;
+  real_t lengthstick = heigth*(1-cap_heigth_ratio);
+  if ( cap_heigth_ratio > 0 && cap_radius_ratio > 0) {
+     GeometryPtr cap(new Cone(getWidth()*cap_radius_ratio,heigth*cap_heigth_ratio,true,getParameters().sectionResolution));
+     if ( cap_heigth_ratio < 1) {
+         group = GroupPtr(new Group(GeometryArrayPtr(new GeometryArray(2))));
+         group->getGeometryList()->setAt(0,GeometryPtr(new Translated(Vector3(0,0,lengthstick),cap)));
+         arrow = group;
+     }
+     else arrow = cap;
+  }
+  if ( lengthstick > GEOM_EPSILON) {
+     GeometryPtr stick(new Cylinder(getWidth(),lengthstick,true,getParameters().sectionResolution));
+     if (group) group->getGeometryList()->setAt(1,stick);
+     else arrow = stick;
+  }
+  arrow->setName("Arrow_"+number(arrow->getObjectId()));
+  _addToScene(transform(arrow,false));
+}
+
 
 
 ScenePtr PglTurtle::partialView(){

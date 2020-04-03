@@ -95,7 +95,8 @@ class VIEW_API ViewModalRendererGL  : public ViewSceneRendererGL
   /// Fill the tool Bar.
   void fillToolBar(QToolBar * toolBar);
 
-
+  /// Fill the tool Bar.
+  void fillToolBarAdditionnal(QToolBar * toolBar);
 
 public slots:
 

@@ -169,3 +169,10 @@ ViewModalRendererGL::fillToolBar(QToolBar * toolBar)
   if(!__actions) __actions = new ViewRenderingModeActions(this);
   __actions->fill(toolBar);
 }
+
+void
+ViewModalRendererGL::fillToolBarAdditionnal(QToolBar * toolBar)
+{
+  if(!__actions) __actions = new ViewRenderingModeActions(this);
+  __actions->fillAdditionnal(toolBar);
+}

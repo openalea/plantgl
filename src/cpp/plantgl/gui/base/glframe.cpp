@@ -38,6 +38,7 @@
  *  ----------------------------------------------------------------------------
  */
 
+// #define GL_SILENCE_DEPRECATION
 
 #include <iomanip>
 
@@ -1817,20 +1818,18 @@ ViewGLFrame::fillToolBar(QToolBar * toolBar)
 
   QObject::connect(this,SIGNAL(selectionMode(bool)),bt2,SLOT(setChecked(bool)));
   QObject::connect(this,SIGNAL(modeChanged(ViewGLFrame::Mode)),bt2,SLOT(setButton(ViewGLFrame::Mode)));
-  toolBar->addWidget(bt2);
 
   QPixmap notwizardIcon( ViewerIcon::getPixmap(ViewerIcon::notwizard) );
   QString notwizardtext =tr("Clear Selection");
 
-  QAction * bt = toolBar->addAction( notwizardIcon, notwizardtext, this, SLOT(clearSelection()));
-  bt->setWhatsThis(tr("<b>Clear Selection</b><br><br>Clear the current selection."));
 
+  __camera->fillToolBar(toolBar);
   toolBar->addSeparator();
   __scene->fillToolBar(toolBar);
   __light->fillToolBar(toolBar);
-  __camera->fillToolBar(toolBar);
-  __grid->fillToolBar(toolBar);
-  __rotCenter->fillToolBar(toolBar);
+  QPixmap coloricon(ViewerIcon::getPixmap(ViewerIcon::color));
+  QAction * bt = toolBar->addAction(coloricon,tr("Background Color"), this,SLOT(setBackground()));
+  bt->setWhatsThis(tr("<b>Background Color</b><br><br>Change the background color of the 3D display."));
   if(__linedialog){
     QPixmap lineIcon( ViewerIcon::getPixmap(ViewerIcon::line_width) );
     QString linetext =tr("Line Width");
@@ -1840,9 +1839,19 @@ ViewGLFrame::fillToolBar(QToolBar * toolBar)
     QObject::connect(__linedialog,SIGNAL(__visibilityChanged(bool)),bt,SLOT(setChecked(bool)));
     bt->setWhatsThis(tr("<b>Line Width</b><br><br>Control of the width of the lines and the points of the scene. By default, this value is egal to one."));
   }
-  QPixmap coloricon(ViewerIcon::getPixmap(ViewerIcon::color));
-  bt = toolBar->addAction(coloricon,tr("Background Color"), this,SLOT(setBackground()));
-  bt->setWhatsThis(tr("<b>Background Color</b><br><br>Change the background color of the 3D display."));
+  toolBar->addSeparator();
+  __grid->fillToolBar(toolBar);
+
+  toolBar->addWidget(bt2);
+  bt = toolBar->addAction( notwizardIcon, notwizardtext, this, SLOT(clearSelection()));
+  bt->setWhatsThis(tr("<b>Clear Selection</b><br><br>Clear the current selection."));
+  toolBar->addSeparator();
+  __rotCenter->fillToolBar(toolBar);
+  __camera->fillToolBarAdditionnal(toolBar);
+  toolBar->addSeparator();
+  __scene->fillToolBarAdditionnal(toolBar);
+  
+
 }
 
 void

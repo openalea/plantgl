@@ -62,7 +62,7 @@ PGL_BEGIN_NAMESPACE
 
 inline real_t edgeFunction(const Vector3 &a, const Vector3 &b, const Vector3 &c, bool ccw = true)
 { 
-    if (!ccw)
+    if (ccw)
         return (c.x() - a.x()) * (b.y() - a.y()) - (c.y() - a.y()) * (b.x() - a.x()); 
     else 
         return (a.x() - b.x()) * (c.y() - a.y()) - (a.y() - b.y()) * (c.x() - a.x()); 
@@ -70,7 +70,7 @@ inline real_t edgeFunction(const Vector3 &a, const Vector3 &b, const Vector3 &c,
 
 inline real_t edgeFunction(const Vector3 &a, const Vector3 &b, const Vector2 &c, bool ccw = true)
 { 
-    if (!ccw)
+    if (ccw)
         return (c.x() - a.x()) * (b.y() - a.y()) - (c.y() - a.y()) * (b.x() - a.x()); 
     else 
         return (a.x() - b.x()) * (c.y() - a.y()) - (a.y() - b.y()) * (c.x() - a.x()); 

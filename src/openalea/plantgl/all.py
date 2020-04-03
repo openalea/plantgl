@@ -20,7 +20,7 @@ def get_shared_data(file, share_path=pj('share','plantgl', 'database')):
     else:
         try:
             from openalea.deploy.shared_data import get_shared_data_path
-            shared_data_path = pj(openalea.plantgl.__path__, share_path=share_path)
+            shared_data_path = get_shared_data_path(openalea.plantgl.__path__, share_path=share_path)
         except ModuleNotFoundError as me:
             # Standard installation
             shared_data_path = pj(openalea.plantgl.__path__[0], pardir, pardir, share_path )

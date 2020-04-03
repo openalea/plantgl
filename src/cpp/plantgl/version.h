@@ -48,7 +48,7 @@
 #define __plantgl_version_h__
 
 /// PGL Version macro
-#define PGL_VERSION 0x030007
+#define PGL_VERSION 0x030100
 
 #define PGL_SVNREVISION "$Revision$"
 

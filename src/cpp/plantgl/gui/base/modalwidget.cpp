@@ -150,9 +150,12 @@ void ViewRenderingModeActions::fill(QToolBar * bar) const
 {
     bar->addAction(idVolume);
     bar->addAction(idWire);
-    bar->addAction(idSkeleton);
     bar->addAction(idVolWire);
-    bar->addSeparator();
+}
+
+void ViewRenderingModeActions::fillAdditionnal(QToolBar * bar) const
+{
+    bar->addAction(idSkeleton);
     bar->addAction(idCtrlPoints);
     bar->addAction(idBBox);
 }

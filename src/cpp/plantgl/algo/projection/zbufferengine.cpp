@@ -316,6 +316,13 @@ void ZBufferEngine::renderShadedTriangle(const TOOLS(Vector3)& v0, const TOOLS(V
     Vector3 v1Raster = camera->cameraToRaster(v1Cam,__imageWidth, __imageHeight);
     Vector3 v2Raster = camera->cameraToRaster(v2Cam,__imageWidth, __imageHeight);
 
+    v0Raster.x() = std::round(v0Raster.x());
+    v0Raster.y() = std::round(v0Raster.y());
+    v1Raster.x() = std::round(v1Raster.x());
+    v1Raster.y() = std::round(v1Raster.y());
+    v2Raster.x() = std::round(v2Raster.x());
+    v2Raster.y() = std::round(v2Raster.y());
+
     // Prepare vertex attributes. Divde them by their vertex z-coordinate
     // (though we use a multiplication here because v.z = 1 / v.z)
     //Vec2f st0 = st[stindices[i * 3]];
@@ -372,11 +379,29 @@ void ZBufferEngine::rasterizeMT(const Index4& rect,
     rasterize(rect[0],rect[1],rect[2],rect[3],v0Raster,v1Raster,v2Raster,ccw,shader,camera);  
 }
 
+#define PROCESS_FRAGMENT(x,y,z,w0,w1,w2) \
+        if (camera->isInZRange(z)){ \
+            if (isVisible(x, y, z)) { \
+                if(tryLock(x,y)){ \
+                    if (isVisible(x, y, z)) { \
+                        __depthBuffer->setAt(x, y, z); \
+                        if(is_valid_ptr(shader))shader->process(x, y, z, w0, w1, w2); \
+                    } \
+                    unlock(x,y); \
+                } \
+                else { \
+                    fragqueue.push(Fragment(x,y,z, w0, w1, w2)); \
+                } \
+            }  \
+        }
+
 void ZBufferEngine::rasterize(int32_t x0, int32_t x1, int32_t y0, int32_t y1,
                               TOOLS(Vector3) v0Raster, TOOLS(Vector3) v1Raster, TOOLS(Vector3) v2Raster, bool ccw, 
                               const TriangleShaderPtr& shader, const ProjectionCameraPtr& camera)
 {
 
+    // printf("rasterize [%i,%i]*[%i,%i]\n",x0,x1,y0,y1);
+    // printf("rasterize [%f,%f] - [%f,%f] - [%f,%f]\n",v0Raster.x(),v0Raster.y(),v1Raster.x(),v1Raster.y(),v2Raster.x(),v2Raster.y());
 
     real_t z0 = v0Raster.z();
     real_t z1 = v1Raster.z();
@@ -392,43 +417,148 @@ void ZBufferEngine::rasterize(int32_t x0, int32_t x1, int32_t y0, int32_t y1,
     std::queue<Fragment> fragqueue;
 
     // Inner loop
+    if ((x0 == x1) && (y0 == y1)) {
+        real_t z = (z0+z1+z2)/3;
+        real_t w0 = 1/3.;
+        PROCESS_FRAGMENT(x0, y0, z, w0, w0, w0)
+    }
+    else if (x0 == x1){
+        real_t zs[3];
+        zs[0] = z0; zs[1] = z1; zs[2] = z2; 
+        uint32_t ys[3];
+        ys[0] = v0Raster.y(); ys[1] = v1Raster.y(); ys[2] = v2Raster.y(); 
 
-    for (int32_t y = y0; y <= y1; ++y) {
-        for (int32_t x = x0; x <= x1; ++x) {
+        int firstpoint = (z0 >= z1? (z0 >= z2?0:2) : (z1 >= z2?1:2) );
+        int secpoint   = (z0 >= z1? (z0 >= z2?2:0) : (z1 >= z2?2:1) );
+        int thirdpoint = (z0 < z1? (z0 >= z2?2:0)  : (z1 >= z2?2:1) );
 
-            Vector2 pixelSample(x + 0.5, y + 0.5);
+        real_t ws[3];
+        ws[0] = 0; ws[1] = 0; ws[2] = 0;
 
-            // find weight of pixel
-            real_t w0 = edgeFunction(v1Raster, v2Raster, pixelSample, ccw);
-            real_t w1 = edgeFunction(v2Raster, v0Raster, pixelSample, ccw);
-            real_t w2 = edgeFunction(v0Raster, v1Raster, pixelSample, ccw);
+        std::vector<std::pair<int,int> > toprocess;
+        toprocess.push_back(std::pair<int,int>(firstpoint, secpoint));
+        if ((ys[thirdpoint]-ys[firstpoint]) * (ys[secpoint]-ys[firstpoint]) < 0){
+            // they are in opposite direction, compare to third point. easy
+            toprocess.push_back(std::pair<int,int>(firstpoint, thirdpoint));
+        }
+        else if ((ys[thirdpoint]-ys[firstpoint]) > (ys[secpoint]-ys[firstpoint]) ){
+            // thirdpoint is more far that second
+            toprocess.push_back(std::pair<int,int>(secpoint, thirdpoint));
+        }
 
-            if ((w0 >= 0 && w1 >= 0 && w2 >= 0) || (w0 <= 0 && w1 <= 0 && w2 <= 0)) {
-                w0 /= area;
-                w1 /= area;
-                w2 /= area;
+        for (std::vector<std::pair<int,int> >::const_iterator itp = toprocess.begin(); itp != toprocess.end(); ++itp) {
+            int apoint = itp->first;
+            int bpoint = itp->second;
 
-                real_t oneOverZ = v0Raster.z() * w0 + v1Raster.z() * w1 + v2Raster.z() * w2;
-                real_t z = 1. / oneOverZ;
+            int deltay = ys[bpoint]-ys[apoint];
+            // printf("process %i to %i : %i %i\n", apoint, bpoint, ys[apoint], ys[bpoint]);
 
-                // Depth-buffer test
-                if (camera->isInZRange(z)){
+            if (deltay == 0) {
+                ws[apoint] = 1;
+                PROCESS_FRAGMENT(x0, ys[apoint], zs[apoint], ws[0], ws[1], ws[2])
+            }
+            else {
+                real_t fdeltay = fabs(deltay);
+                int32_t dy = (deltay>=0?1:-1);
+                for (int32_t y = ys[apoint]; y != ys[bpoint]+dy; y+=dy) {
+                    ws[0] = 0; ws[1] = 0; ws[2] = 0;
+                    ws[apoint] = fabs(real_t(ys[bpoint])-y)/fdeltay;
+                    ws[bpoint] = fabs(real_t(ys[apoint])-y)/fdeltay;
+                    real_t z = zs[apoint]*ws[apoint]+zs[bpoint]*ws[bpoint];
+                    PROCESS_FRAGMENT(x0, y, z, ws[0], ws[1], ws[2])
+                }
+            }
+        }
 
-                    // Vec2f st = st0 * w0 + st1 * w1 + st2 * w2;                        
-                    // st *= z;
-                    if (isVisible(x, y, z)) {
-                        if(tryLock(x,y)){
-                            if (isVisible(x, y, z)) {
-                                __depthBuffer->setAt(x, y, z);
-                                if(is_valid_ptr(shader))shader->process(x, y, z, (w0 * z / z0), (w1 * z / z1), (w2 * z / z2));
+    }
+    else if (y0 == y1){
+        real_t zs[3];
+        zs[0] = z0; zs[1] = z1; zs[2] = z2; 
+        real_t xs[3];
+        xs[0] = v0Raster.x(); xs[1] = v1Raster.x(); xs[2] = v2Raster.x(); 
+
+        int firstpoint = (z0 >= z1? (z0 >= z2?0:2) : (z1 >= z2?1:2) );
+        int secpoint   = (z0 >= z1? (z0 >= z2?2:0) : (z1 >= z2?2:1) );
+        int thirdpoint = (z0 < z1? (z0 >= z2?2:0)  : (z1 >= z2?2:1) );
+
+        real_t ws[3];
+        ws[0] = 0; ws[1] = 0; ws[2] = 0;
+
+        std::vector<std::pair<int,int> > toprocess;
+        toprocess.push_back(std::pair<int,int>(firstpoint, secpoint));
+        if ((xs[thirdpoint]-xs[firstpoint]) * (xs[secpoint]-xs[firstpoint]) < 0){
+            // they are in opposite direction, compare to third point. easy
+            toprocess.push_back(std::pair<int,int>(firstpoint, thirdpoint));
+        }
+        else if ((xs[thirdpoint]-xs[firstpoint]) > (xs[secpoint]-xs[firstpoint]) ){
+            // thirdpoint is more far that second
+            toprocess.push_back(std::pair<int,int>(secpoint, thirdpoint));
+        }
+
+        for (std::vector<std::pair<int,int> >::const_iterator itp = toprocess.begin(); itp != toprocess.end(); ++itp) {
+            int apoint = itp->first;
+            int bpoint = itp->second;
+
+            int deltax = xs[bpoint]-xs[apoint];
+
+            if (deltax == 0) {
+                ws[apoint] = 1;
+                PROCESS_FRAGMENT(xs[apoint], y0, zs[apoint], ws[0], ws[1], ws[2])
+            }
+            else {
+                real_t fdeltax = fabs(deltax);
+                int32_t dx = (deltax>=0?1:-1);
+                for (int32_t x = xs[apoint]; x != xs[bpoint]+dx; x+=dx) {
+                    ws[0] = 0; ws[1] = 0; ws[2] = 0;
+                    ws[apoint] = fabs(xs[bpoint]-x)/fdeltax;
+                    ws[bpoint] = fabs(xs[apoint]-x)/fdeltax;
+                    real_t z = zs[apoint]*ws[apoint]+zs[bpoint]*ws[bpoint];
+                    PROCESS_FRAGMENT(x, y0, z, ws[0], ws[1], ws[2])
+                }
+            }
+        }
+
+    }
+    else {
+        for (int32_t y = y0; y <= y1; ++y) {
+            for (int32_t x = x0; x <= x1; ++x) {
+
+                Vector2 pixelSample(x + 0.5, y + 0.5);
+
+                // find weight of pixel
+                real_t w0 = edgeFunction(v1Raster, v2Raster, pixelSample, ccw);
+                real_t w1 = edgeFunction(v2Raster, v0Raster, pixelSample, ccw);
+                real_t w2 = edgeFunction(v0Raster, v1Raster, pixelSample, ccw);
+
+                // printf("%i %i : %f %f %f\n", x,y,w0,w1,w2);
+
+                if ((w0 > -GEOM_EPSILON && w1 > -GEOM_EPSILON && w2 > -GEOM_EPSILON) || (w0 < GEOM_EPSILON && w1 < GEOM_EPSILON && w2 < GEOM_EPSILON)) {
+                    w0 /= area;
+                    w1 /= area;
+                    w2 /= area;
+
+                    real_t oneOverZ = v0Raster.z() * w0 + v1Raster.z() * w1 + v2Raster.z() * w2;
+                    real_t z = 1. / oneOverZ;
+
+                    // Depth-buffer test
+                    if (camera->isInZRange(z)){
+
+                        // Vec2f st = st0 * w0 + st1 * w1 + st2 * w2;                        
+                        // st *= z;
+                        if (isVisible(x, y, z)) {
+                            if(tryLock(x,y)){
+                                if (isVisible(x, y, z)) {
+                                    __depthBuffer->setAt(x, y, z);
+                                    if(is_valid_ptr(shader))shader->process(x, y, z, (w0 * z / z0), (w1 * z / z1), (w2 * z / z2));
+                                }
+                                unlock(x,y);
                             }
-                            unlock(x,y);
-                        }
-                        else {
-                            fragqueue.push(Fragment(x,y,z,(w0 * z / z0), (w1 * z / z1), (w2 * z / z2)));
+                            else {
+                                fragqueue.push(Fragment(x,y,z,(w0 * z / z0), (w1 * z / z1), (w2 * z / z2)));
 
-                        }
-                    }                   
+                            }
+                        }                   
+                    }
                 }
             }
         }
