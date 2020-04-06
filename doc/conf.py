@@ -147,7 +147,7 @@ latex_documents = [('contents', 'main.tex', namespace + ' documentation', author
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'plantgl', u'Plantgl Documentation',
+    (master_doc, 'PlantGL', u'PlantGL Documentation',
      [author], 1)
 ]
 
@@ -158,7 +158,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'Plantgl', u'Plantgl Documentation',
-     author, 'Plantgl', description,
+    (master_doc, 'PlantGL', u'PlantGL Documentation',
+     author, 'PlantGL', description,
      'Miscellaneous'),
 ]
