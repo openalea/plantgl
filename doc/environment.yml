@@ -1,5 +1,6 @@
 name: plantgl-doc
 channels:
   - fredboudon
+  - conda-forge
 dependencies:
   - openalea.plantgl
