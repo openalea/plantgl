@@ -6,7 +6,7 @@
 .. module:: PlantGL
 
 PlantGL : The Plant Geometric Library
-#############################
+######################################
 
 Module description
 ==================
@@ -90,4 +90,4 @@ License
 .. note:: `Cecill-C <http://www.cecill.info/licences/Licence_CeCILL-C_V1-en.html>`_ 
     license is a LGPL compatible license.
 
-.. |PlantGL| replace:: VPlants.Plantgl
+.. |PlantGL| replace:: OpenAlea.Plantgl

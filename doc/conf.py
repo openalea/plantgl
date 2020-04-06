@@ -28,7 +28,7 @@ from hexversion import HexVersion
 
 def getMetaInfo():
     metainfo = {}
-    execfile(os.path.join(os.pardir, 'src','openalea','plantgl','__init__.py'),{},metainfo)
+    exec(open(os.path.join(os.pardir, 'src','openalea','plantgl','__init__.py')).read(),{},metainfo)
     return metainfo['__metainfo__']
 
 globals().update(getMetaInfo())

@@ -1,5 +1,5 @@
-Tutorial on creation of geometric content 
-=========================================
+Tutorial on the creation of geometric content 
+=============================================
 First step
 **********
 To make these exercises, you must launch ipython with the following option ::
@@ -13,13 +13,9 @@ To make these exercises, you must launch ipython with the following option ::
 
 Now you must import all modules from plantgl ::
 
-   from openalea.plantgl import *
+   from openalea.plantgl.all import *
 
 
-If you have any remark, question, suggestion, critics about this tutorial, send me an email at: **chloe.xavier@gmail.com**
-
-
-Now, as the best way to learn is to practice, we will do some exercises. We indicate what is useful in the documentation.
 
 Exercises
 *********
