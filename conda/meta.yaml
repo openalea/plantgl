@@ -19,19 +19,19 @@ build:
 requirements:
   host:
       - python {{PY_VER}}
+      - setuptools
+      - pip
       - numpy
       - eigen
       - cgal-cpp
       - qhull
       - ann
-      - qt >=5
-      - pyqt >=5
+      - qt 
+      - pyqt
       - boost # boost module of conda-forge install boost.python and dependency boost-cpp for the cpp libs.
       - libpng
       - zlib
       - libglu                            # [linux]
-      - setuptools
-      - pip
       - xorg-libxfixes                    # [linux]
           
   build:
@@ -55,24 +55,22 @@ requirements:
       - libglu                             # [linux]
   run:
       - python {{PY_VER}}
-      - {{ pin_compatible('numpy') }}
-      - {{ pin_compatible('qhull', min_pin='x.x', max_pin='x.x',) }} 
-      - {{ pin_compatible('eigen', min_pin='x.x', max_pin='x.x',) }} 
-      - {{ pin_compatible('cgal-cpp', min_pin='x.x', max_pin='x.x',) }} 
-      - {{ pin_compatible('ann', min_pin='x.x', max_pin='x.x',) }} 
-      - {{ pin_compatible('qt', min_pin='x.x', max_pin='x.x',) }} 
-      - pyqt
-      - {{ pin_compatible('boost', min_pin='x.x', max_pin='x.x',) }} 
-      - libpng
-      - zlib
-      - xorg-libxfixes                     # [linux]
-      - libglu                             # [linux]
-      - ipython
       - setuptools
+      - ipython
+      - numpy
+      - {{ pin_compatible('boost',    max_pin='x.x.x') }} 
+      - {{ pin_compatible('qhull',    max_pin='x.x') }} 
+      - {{ pin_compatible('eigen',    max_pin='x.x') }} 
+      - {{ pin_compatible('cgal-cpp', max_pin='x.x') }} 
+      - {{ pin_compatible('ann',      max_pin='x.x') }} 
+      - {{ pin_compatible('qt',       max_pin='x.x') }} 
+      - {{ pin_compatible('libpng',   max_pin='x.x') }} 
+      - {{ pin_compatible('zlib',     max_pin='x.x') }} 
+      - pyqt
       - pyopengl
       - pyqglviewer
-   #  - matplotlib
-   #  - vs2015_runtime [win and py37]
+      - xorg-libxfixes                     # [linux]
+      - libglu                             # [linux]
 
 test:
    requires:

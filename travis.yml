@@ -16,6 +16,7 @@ env:
  - CONDA_RECIPE=conda
    CONDA_VERSION=3
    CONDA_PY=38
+   CONDA_NPY=116
 
 install:
   - git clone https://github.com/openalea/travis-ci.git
