@@ -13,7 +13,7 @@ about:
   summary: An open-source graphic toolkit for the creation, simulation and analysis of 3D virtual plants.
 
 build:
-  number: 0
+  number: 1
   preserve_egg_dir: True
 
 requirements:
@@ -57,7 +57,7 @@ requirements:
       - python {{PY_VER}}
       - setuptools
       - ipython
-      - numpy
+      - {{ pin_compatible('numpy' } 
       - {{ pin_compatible('boost',    max_pin='x.x.x') }} 
       - {{ pin_compatible('qhull',    max_pin='x.x') }} 
       - {{ pin_compatible('eigen',    max_pin='x.x') }} 
