@@ -246,6 +246,8 @@ signals:
   ViewHelpMenu * __helpmenu;
   QString __pictureDir;
 
+  QPoint __propposition;
+
 };
 
 

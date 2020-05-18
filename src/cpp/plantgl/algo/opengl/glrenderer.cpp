@@ -1914,8 +1914,9 @@ bool GLRenderer::process(Text * text) {
   if (__Mode == Selection) {
     return true;
   } else {
-    glPushAttrib(GL_LIGHTING_BIT);
+    glPushAttrib(GL_LIGHTING_BIT | GL_DEPTH_BUFFER_BIT);
     glDisable(GL_LIGHTING);
+    glDisable(GL_DEPTH_TEST);
     if (!text->getString().empty()) {
       QFont f;
       if (text->getFontStyle()) {
@@ -1933,7 +1934,7 @@ bool GLRenderer::process(Text * text) {
           glMatrixMode(GL_PROJECTION);
           glPushMatrix();
           glLoadIdentity();
-          glOrtho(0, 100, 0, 100, 0, -100);
+          glOrtho(0, 100, 0, 100, 1, -100);
           glMatrixMode(GL_MODELVIEW);
           glPushMatrix();
           glLoadIdentity();
