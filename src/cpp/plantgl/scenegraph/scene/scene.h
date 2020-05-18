@@ -104,6 +104,8 @@ public:
   /// Constructs a Scene with objects describe in \e table.
   Scene(const SceneObjectSymbolTable& table);
 
+  Scene(const Scene::const_iterator begin, const Scene::const_iterator end);
+
   /// Destructs a Scene.
   virtual ~Scene( );
 

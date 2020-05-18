@@ -100,7 +100,43 @@ Shape3DPtr sc_getitem( Scene* s, int pos )
   else throw PythonExc_IndexError();
 }
 
+ScenePtr sc_getslice( Scene * array, int beg, int end, int step )
+{
+  size_t len = array->size();
+  if( beg >= -(int)len && beg < 0  )  beg += len;
+  else if( beg >= len ) throw PythonExc_IndexError();
+  if( end >= -(int)len && end < 0  )  end += len;
+  else if( end > len ) throw PythonExc_IndexError();
+  if (step <= 1) {
+    return ScenePtr(new Scene(array->begin()+beg,array->begin()+end));
+  }
+  else {
+    ScenePtr res(new Scene());
+    Scene::iterator it = array->begin()+beg;
+    for(int i = beg; i < end; i+= step){
+        res->add(*it);
+        it += step;
+    }
+    return res;
+  }
+}
 
+ScenePtr sc_getitemslice( Scene * sc, boost::python::slice sl )
+{
+  int beg = 0;
+  if (sl.start() != boost::python::object()){
+    beg = boost::python::extract<int>(sl.start())();
+  }
+  int end = sc->size();
+  if (sl.stop() != boost::python::object()){
+    end = boost::python::extract<int>(sl.stop())();
+  }
+  int step = 1;
+  if (sl.step() != boost::python::object()){
+    step = boost::python::extract<int>(sl.step())();
+  }
+  return sc_getslice(sc, beg, end, step);
+}
 
 ShapePtr sc_find( Scene* s, size_t id )
 {
@@ -244,8 +280,11 @@ void export_Scene()
     sc.def("merge", &Scene::merge);
     sc.def("__len__", &Scene::size);
     sc.def("__getitem__", &sc_getitem);
+    sc.def("__getitem__", &sc_getitemslice );
     sc.def("__setitem__", &sc_setitem);
+    //sc.def("__setitem__", &sc_setitemslice);
     sc.def("__delitem__", &sc_delitem);
+    //sc.def("__delitem__", &sc_delitemslice);
     sc.def("clear", &Scene::clear);
     sc.def("merge", &Scene::merge);
     sc.def("find", &sc_find);

@@ -100,6 +100,20 @@ Scene::Scene(const Scene& scene) :
   GEOM_ASSERT(isValid());
 }
 
+Scene::Scene(const Scene::const_iterator begin, const Scene::const_iterator end) :
+  RefCountObject()
+{
+#ifdef PGL_THREAD_SUPPORT
+   __mutex = new PglMutex();
+#endif
+#ifdef WITH_POOL
+      POOL.registerScene(this);
+#endif
+  __shapeList = std::vector<Shape3DPtr>(begin, end);
+  GEOM_ASSERT(isValid());
+}
+
+
 Scene& Scene::operator=( const Scene& scene){
   lock();
   scene.lock();
