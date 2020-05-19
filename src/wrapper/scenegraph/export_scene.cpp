@@ -56,6 +56,7 @@
 #include <plantgl/python/pyinterpreter.h>
 #include <boost/python/make_constructor.hpp>
 #include "export_sceneobject.h"
+#include "arrays_macro.h"
 
 PGL_USING_NAMESPACE
 using namespace boost::python;
@@ -100,43 +101,6 @@ Shape3DPtr sc_getitem( Scene* s, int pos )
   else throw PythonExc_IndexError();
 }
 
-ScenePtr sc_getslice( Scene * array, int beg, int end, int step )
-{
-  size_t len = array->size();
-  if( beg >= -(int)len && beg < 0  )  beg += len;
-  else if( beg >= len ) throw PythonExc_IndexError();
-  if( end >= -(int)len && end < 0  )  end += len;
-  else if( end > len ) throw PythonExc_IndexError();
-  if (step <= 1) {
-    return ScenePtr(new Scene(array->begin()+beg,array->begin()+end));
-  }
-  else {
-    ScenePtr res(new Scene());
-    Scene::iterator it = array->begin()+beg;
-    for(int i = beg; i < end; i+= step){
-        res->add(*it);
-        it += step;
-    }
-    return res;
-  }
-}
-
-ScenePtr sc_getitemslice( Scene * sc, boost::python::slice sl )
-{
-  int beg = 0;
-  if (sl.start() != boost::python::object()){
-    beg = boost::python::extract<int>(sl.start())();
-  }
-  int end = sc->size();
-  if (sl.stop() != boost::python::object()){
-    end = boost::python::extract<int>(sl.stop())();
-  }
-  int step = 1;
-  if (sl.step() != boost::python::object()){
-    step = boost::python::extract<int>(sl.step())();
-  }
-  return sc_getslice(sc, beg, end, step);
-}
 
 ShapePtr sc_find( Scene* s, size_t id )
 {
@@ -152,20 +116,6 @@ Shape3DPtr sc_findSceneObject( Scene* s, size_t id )
   else throw PythonExc_IndexError();
 }
 
-void sc_setitem( Scene* s, int pos, Shape3DPtr v )
-{
-  if( pos < 0 && pos > -(int)s->size() ) return s->setAt( s->size() + pos, v );
-  if (pos < s->size()) s->setAt( pos ,v );
-  else throw PythonExc_IndexError();
-}
-
-void sc_delitem( Scene* s, int pos )
-{
-  Scene::iterator it;
-  if( pos < 0 && pos > -(int)s->size() ) { it = s->end()+pos;  return s->remove( it ); }
-  if (pos < s->size()) { it = s->begin() + pos; s->remove(it ); }
-  else throw PythonExc_IndexError();
-}
 
 ScenePtr sc_iadd1(ScenePtr s ,Shape3DPtr sh){
   if(sh)s->add(sh);
@@ -229,7 +179,7 @@ void sc_remove( Scene* sc, Shape3DPtr sh)
   Scene::iterator it = std::find(sc->begin(),sc->end(),sh);
   if (it ==  sc->end())
     {sc->unlock(); throw PythonExc_ValueError(); }
-  sc->remove(it);
+  sc->erase(it);
   sc->unlock();
 }
 
@@ -279,12 +229,25 @@ void export_Scene()
     sc.def("add", &Scene::merge);
     sc.def("merge", &Scene::merge);
     sc.def("__len__", &Scene::size);
+
     sc.def("__getitem__", &sc_getitem);
+    sc.def( "__getitem__", &array_getitem_slice<Scene>, boost::python::return_value_policy<boost::python::manage_new_object>() );
+    sc.def( "__getitem__",  &array_getitem_list<Scene>, boost::python::return_value_policy<boost::python::manage_new_object>() );
+    sc.def( "__setitem__",  &array_setitem<Scene>   );
+    sc.def( "__setitem__",  &array_setsliceitem<Scene>   ) ;
+    sc.def( "__setitem__",  &array_setlistitem<Scene>   ) ;
+    sc.def( "__setitem__",  &array_setsliceitem_list<Scene>   ) ;
+    sc.def( "__setitem__",  &array_setlistitem_list<Scene>   ) ;
+    sc.def( "__delitem__",  &array_delitem<Scene>   ) ;
+    sc.def( "__delitem__",  &array_delitem_slice<Scene>  ) ;
+
+    /*sc.def("__getitem__", &sc_getitem);
     sc.def("__getitem__", &sc_getitemslice );
     sc.def("__setitem__", &sc_setitem);
     //sc.def("__setitem__", &sc_setitemslice);
     sc.def("__delitem__", &sc_delitem);
-    //sc.def("__delitem__", &sc_delitemslice);
+    //sc.def("__delitem__", &sc_delitemslice);*/
+
     sc.def("clear", &Scene::clear);
     sc.def("merge", &Scene::merge);
     sc.def("find", &sc_find);

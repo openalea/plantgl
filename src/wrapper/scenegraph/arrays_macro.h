@@ -320,15 +320,23 @@ void array_delitem( T * array, int pos )
 }
 
 template<class T>
-void array_delslice( T * array, int beg, int end )
+void array_delitem_slice( T * array, boost::python::slice pos )
 {
-    size_t len = array->size();
-  if( beg >= -(int)len && beg < 0  )  beg += len;
-  else if( beg >= len ) throw PythonExc_IndexError();
-  if( end >= -(int)len && end < 0  )  end += len;
-  else if( end > len ) throw PythonExc_IndexError();
-  array->erase( array->begin()+beg,array->begin()+end);
+  size_t llen = array->size();
+  int beg, end, step;
+  extract_slice(pos, beg, end, step, llen);
+
+  if (step == 1) {
+    array->erase( array->begin()+beg,array->begin()+end);
+  }
+  else {
+    for(int i = end; i >= beg; i-= step){
+        if (i < llen) array->erase(array->begin() + i);
+    }
+  }
+
 }
+
 
 template<class T>
 bool array_contains( T * array, typename T::element_type v )
@@ -589,7 +597,7 @@ class array_func : public boost::python::def_visitor<array_func<ARRAY> >
         .def( "__setitem__",  &array_setsliceitem_list<ARRAY>   ) \
         .def( "__setitem__",  &array_setlistitem_list<ARRAY>   ) \
         .def( "__delitem__",  &array_delitem<ARRAY>   ) \
-        .def( "__delslice__", &array_delslice<ARRAY>  ) \
+        .def( "__delitem__",  &array_delitem_slice<ARRAY>  ) \
         .def( "__contains__", &array_contains<ARRAY>  ) \
         .def( "__add__",      &array_addarray<ARRAY>   , boost::python::return_value_policy<boost::python::manage_new_object>() ) \
         .def( "__iadd__",     &array_iaddarray<ARRAY> , boost::python::return_internal_reference<1>() ) \

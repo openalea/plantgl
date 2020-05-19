@@ -132,6 +132,15 @@ Group::Group( const GeometryArrayPtr& geometryList,
   GEOM_ASSERT(isValid());
 }
 
+Group::Group( const iterator begin, const iterator end,
+         const PolylinePtr& skeleton ):
+  Geometry(),
+  __geometryList(new GeometryArray(begin, end)),
+  __skeleton(skeleton) {
+  GEOM_ASSERT(isValid());
+}
+
+
 Group::~Group( ) {
 }
 

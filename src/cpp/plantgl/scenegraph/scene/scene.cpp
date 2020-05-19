@@ -261,14 +261,19 @@ void Scene::remove( const Shape3DPtr& shape )
     Scene::iterator it = begin();
     lock();
     while(it != end() && *it != shape)++it;
-    if(it != end())remove(it);
+    if(it != end())__shapeList.erase(it);
     unlock();
 }
 
-void Scene::remove( Scene::iterator& it )
+void Scene::erase( Scene::iterator it )
 {
-  __shapeList.erase(it);
+   __shapeList.erase(it);
 }
+
+ void Scene::erase( Scene::iterator itbeg, Scene::iterator itend )
+ {
+    __shapeList.erase(itbeg, itend);
+ }
 
 /* ----------------------------------------------------------------------- */
 
