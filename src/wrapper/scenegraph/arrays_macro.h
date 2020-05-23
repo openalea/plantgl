@@ -43,6 +43,7 @@
 // Array Macro
 #include <plantgl/python/extract_pgl.h>
 #include <plantgl/python/extract_list.h>
+#include <plantgl/python/pyseq_iterator.h>
 #include <plantgl/tool/util_array.h>
 #include <boost/python/def_visitor.hpp>
 #include <plantgl/scenegraph/container/indexarray.h>
@@ -151,30 +152,51 @@ typename T::element_type array_ptr_getitem( T * a, int pos )
   else throw PythonExc_IndexError();
 }
 
-template<class T>
-T * array_getslice( T * array, int beg, int end )
-{
-  size_t len = array->size();
-  if( beg >= -(int)len && beg < 0  )  beg += len;
-  else if( beg >= len ) throw PythonExc_IndexError();
-  if( end >= -(int)len && end < 0  )  end += len;
-  else if( end > len ) throw PythonExc_IndexError();
-  return new T(array->begin()+beg,array->begin()+end);
+inline void extract_slice(boost::python::slice sl, int& beg, int& end, int& step, size_t msize) {
+  
+  beg = 0;
+  if (sl.start() != boost::python::object()){
+    beg = boost::python::extract<int>(sl.start())();
+  }
+  if( beg >= -(int)msize && beg < 0  )  beg += msize;
+  else if( beg >= msize ) throw PythonExc_IndexError();
+
+  end = msize;
+  if (sl.stop() != boost::python::object()){
+    end = boost::python::extract<int>(sl.stop())();
+  }
+  if( end >= -(int)msize && end < 0  )  end += msize;
+  else if( end > msize ) throw PythonExc_IndexError();
+
+  step = 1;
+  if (sl.step() != boost::python::object()){
+    step = boost::python::extract<int>(sl.step())();
+  }
 }
 
 template<class T>
 T * array_getitem_slice( T * array, boost::python::slice sl )
 {
-  int beg = 0;
-  if (sl.start() != boost::python::object()){
-    beg = boost::python::extract<int>(sl.start())();
+  size_t llen = array->size();
+  int beg, end, step;
+  extract_slice(sl, beg, end, step, llen);
+
+  if (step == 1) {
+    return new T(array->begin()+beg,array->begin()+end);
   }
-  int end = array->size();
-  if (sl.stop() != boost::python::object()){
-    end = boost::python::extract<int>(sl.stop())();
+  else {
+    typename T::iterator it = array->begin()+beg;
+    T * res = new T(it, it+1);
+    it += step;
+    for(int i = beg+step; i < end; i+= step){
+        res->push_back(*it);
+        it += step;
+    }
+    return res;    
   }
-  return array_getslice(array, beg, end);
 }
+
+
 
 template<class T>
 typename T::element_type array_popitem( T * a, int pos )
@@ -203,6 +225,83 @@ void array_setitem( T * array, int pos, typename T::element_type v )
 }
 
 template<class T>
+void array_setsliceitem( T * array, boost::python::slice pos, typename T::element_type v )
+{
+
+  size_t llen = array->size();
+  int beg, end, step;
+  extract_slice(pos, beg, end, step, llen);
+
+  for(int i = beg; i < end; i+= step){
+        array->setAt(i, v) ;
+    }
+
+}
+
+template<class T>
+void array_setlistitem( T * array, boost::python::list pos, typename T::element_type v )
+{
+  size_t llen = array->size();
+  {
+      PySeqIterator positer(pos);
+      while (positer.is_valid()) {
+        int lpos = boost::python::extract<int>(positer.next())();
+        if( lpos < -(int)llen && lpos >= llen  )  throw PythonExc_IndexError();
+      }
+  }
+
+  PySeqIterator positer(pos);
+  while (positer.is_valid()) {
+    int lpos = boost::python::extract<int>(positer.next())();
+    if( lpos < 0  )  lpos += llen;
+    array->setAt(lpos, v) ;
+  }
+}
+
+template<class T>
+void array_setsliceitem_list( T * array, boost::python::slice pos, boost::python::list v )
+{
+
+  size_t llen = array->size();
+  int beg, end, step;
+  extract_slice(pos, beg, end, step, llen);
+
+  int nbelem = (end - beg) / step;
+
+  if( nbelem != len(v)  )  throw PythonExc_IndexError();
+
+  PySeqIterator valueiter(v);
+  for(int i = beg; i < end; i+= step){
+        array->setAt(i, boost::python::extract<typename T::element_type>(valueiter.next())()) ;
+    }
+
+}
+
+template<class T>
+void array_setlistitem_list( T * array, boost::python::list pos, boost::python::list v )
+{
+  if( len(pos) != len(v)  )  throw PythonExc_IndexError();
+
+  size_t llen = array->size();
+  {
+      PySeqIterator positer(pos);
+      while (positer.is_valid()) {
+        int lpos = boost::python::extract<int>(positer.next())();
+        if( lpos < -(int)llen && lpos >= llen  )  throw PythonExc_IndexError();
+      }
+  }
+
+
+  PySeqIterator valueiter(v);
+  PySeqIterator positer(pos);
+  while (positer.is_valid()) {
+    int lpos = boost::python::extract<int>(positer.next())();
+    if( lpos < 0  )  lpos += llen;
+    array->setAt(lpos, boost::python::extract<typename T::element_type>(valueiter.next())()) ;
+  }
+}
+
+template<class T>
 void array_insertitem( T * array, int pos, typename T::element_type v )
 {
   size_t len = array->size();
@@ -221,15 +320,23 @@ void array_delitem( T * array, int pos )
 }
 
 template<class T>
-void array_delslice( T * array, int beg, int end )
+void array_delitem_slice( T * array, boost::python::slice pos )
 {
-    size_t len = array->size();
-  if( beg >= -(int)len && beg < 0  )  beg += len;
-  else if( beg >= len ) throw PythonExc_IndexError();
-  if( end >= -(int)len && end < 0  )  end += len;
-  else if( end > len ) throw PythonExc_IndexError();
-  array->erase( array->begin()+beg,array->begin()+end);
+  size_t llen = array->size();
+  int beg, end, step;
+  extract_slice(pos, beg, end, step, llen);
+
+  if (step == 1) {
+    array->erase( array->begin()+beg,array->begin()+end);
+  }
+  else {
+    for(int i = end; i >= beg; i-= step){
+        if (i < llen) array->erase(array->begin() + i);
+    }
+  }
+
 }
+
 
 template<class T>
 bool array_contains( T * array, typename T::element_type v )
@@ -417,6 +524,11 @@ boost::python::object py_split_subset(T * pts, boost::python::object subsetindic
     return boost::python::make_tuple(subobj,subobjopp);
 }
 
+template <class T>
+T * array_getitem_list(T * pts, boost::python::list subsetindices){
+    return py_subset(pts,subsetindices);
+}
+ 
 
 #include <plantgl/tool/dirnames.h>
 #include <plantgl/tool/bfstream.h>
@@ -478,10 +590,14 @@ class array_func : public boost::python::def_visitor<array_func<ARRAY> >
     void visit(classT& c) const
     {
         c.def( "__getitem__", &array_getitem_slice<ARRAY>, boost::python::return_value_policy<boost::python::manage_new_object>() ) \
-        .def( "__getslice__", &array_getslice<ARRAY>, boost::python::return_value_policy<boost::python::manage_new_object>() ) \
+        .def( "__getitem__",  &array_getitem_list<ARRAY>, boost::python::return_value_policy<boost::python::manage_new_object>() ) \
         .def( "__setitem__",  &array_setitem<ARRAY>   ) \
+        .def( "__setitem__",  &array_setsliceitem<ARRAY>   ) \
+        .def( "__setitem__",  &array_setlistitem<ARRAY>   ) \
+        .def( "__setitem__",  &array_setsliceitem_list<ARRAY>   ) \
+        .def( "__setitem__",  &array_setlistitem_list<ARRAY>   ) \
         .def( "__delitem__",  &array_delitem<ARRAY>   ) \
-        .def( "__delslice__", &array_delslice<ARRAY>  ) \
+        .def( "__delitem__",  &array_delitem_slice<ARRAY>  ) \
         .def( "__contains__", &array_contains<ARRAY>  ) \
         .def( "__add__",      &array_addarray<ARRAY>   , boost::python::return_value_policy<boost::python::manage_new_object>() ) \
         .def( "__iadd__",     &array_iaddarray<ARRAY> , boost::python::return_internal_reference<1>() ) \
