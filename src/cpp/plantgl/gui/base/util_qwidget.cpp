@@ -224,15 +224,11 @@ void PGL(drawArrow)(QPixmap * pm,int s){
 void PGL(fillButton)(QPushButton* button, const QColor& color,const QSize& defaultsize)
 {
   if(color.isValid()){
-    QPalette palette = button->palette();
-    QBrush brush(color);
-    brush.setStyle(Qt::SolidPattern);
-    palette.setBrush(QPalette::Active, QPalette::Button, brush);
-    button->setPalette(palette);
+    button->setStyleSheet("background-color: rgb("+QString::number(color.red())+", "+QString::number(color.green())+", "+QString::number(color.blue())+")");
+    
 
-    QPixmap pixmap(defaultsize);
-    pixmap.fill(color);
-    button->setIcon(pixmap);
+    button->update();
+
   }
 }
 

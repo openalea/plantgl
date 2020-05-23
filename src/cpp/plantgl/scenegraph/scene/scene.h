@@ -90,6 +90,9 @@ public:
   /// A const iterator used to iterate through a Scene.
   typedef std::vector<Shape3DPtr>::const_iterator const_iterator;
 
+  /// Element types
+  typedef Shape3DPtr element_type;
+
   /// Constructs an empty Scene.
   Scene(unsigned int size=0);
 
@@ -103,6 +106,8 @@ public:
 
   /// Constructs a Scene with objects describe in \e table.
   Scene(const SceneObjectSymbolTable& table);
+
+  Scene(const Scene::const_iterator begin, const Scene::const_iterator end);
 
   /// Destructs a Scene.
   virtual ~Scene( );
@@ -130,12 +135,17 @@ public:
       - shape must be non null and valid. */
   void add( const Shape3DPtr& shape );
   void add( const ShapePtr& shape );
+  // compatibility with stl
+  inline void push_back( const Shape3DPtr& shape ) { add(shape); }
 
   /** Remove a shape to the \e self
       \pre
       - shape must be non null and valid. */
   void remove( const Shape3DPtr& shape );
-  void remove( Scene::iterator& it );
+  
+  // compatibility with stl
+  void erase( Scene::iterator it );
+  void erase( Scene::iterator itbeg, Scene::iterator itend );
 
   /// Deep copy of \e this.
   inline ScenePtr deepcopy() const { DeepCopier copier; return deepcopy(copier); }

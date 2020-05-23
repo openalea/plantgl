@@ -117,7 +117,8 @@ ViewFileManager::ViewFileManager(QMainWindow * parent,
       __hasOpenFile(false),
       __GLFrame(frame),
       __controlPanel(controlpanel),
-      __helpmenu(helpmenu)
+      __helpmenu(helpmenu),
+      __propposition(-1,-1)
 {
     if(name)setObjectName(name);
     QObject::connect(__GLFrame,SIGNAL(rendererChanged()), this,SLOT(initialize()));
@@ -727,15 +728,23 @@ ViewFileManager::properties()
 {
   ViewProperties mb(__GLFrame ,this,__controlPanel,false,qPrintable(tr("Properties")),true);
   mb.setWindowIcon(QIcon(QPixmap(ViewerIcon::getPixmap(ViewerIcon::document))));
+  if (__propposition != QPoint(-1,-1)) {
+    mb.move(__propposition);
+  }
   mb.exec();
+  __propposition = mb.pos();
 }
 
 void
 ViewFileManager::configuration()
 {
-    ViewProperties mb(__GLFrame ,this,__controlPanel,true,qPrintable(tr("Properties")),true);
+  ViewProperties mb(__GLFrame ,this,__controlPanel,true,qPrintable(tr("Properties")),true);
   mb.setWindowIcon(QIcon(QPixmap(ViewerIcon::getPixmap(ViewerIcon::document))));
+  if (__propposition != QPoint(-1,-1)) {
+    mb.move(__propposition);
+  }
   mb.exec();
+  __propposition = mb.pos();
 }
 
 void

@@ -48,6 +48,7 @@
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
 #include "export_sceneobject.h"
+#include "arrays_macro.h"
 #include <plantgl/python/exception.h>
 #include <plantgl/python/extract_list.h>
 #include <boost/python/make_constructor.hpp>
@@ -137,8 +138,18 @@ void export_Group()
     .def( "__init__", make_constructor( gg_fromobject5 ) )
     .DEF_PGLBASE(Group)
     .def( "__getitem__", gg_getitem /*, return_internal_reference<1>()*/ )
-    .def( "__setitem__", gg_setitem )
-    .def( "__getslice__", gg_getslice )
+    .def( "__getitem__", &array_getitem_slice<Group>, boost::python::return_value_policy<boost::python::manage_new_object>() )
+    .def( "__getitem__",  &array_getitem_list<Group>, boost::python::return_value_policy<boost::python::manage_new_object>() )
+    .def( "__setitem__",  &array_setitem<Group>   )
+    .def( "__setitem__",  &array_setsliceitem<Group>   ) 
+    .def( "__setitem__",  &array_setlistitem<Group>   ) 
+    .def( "__setitem__",  &array_setsliceitem_list<Group>   ) 
+    .def( "__setitem__",  &array_setlistitem_list<Group>   ) 
+    .def( "__delitem__",  &array_delitem<Group>   )
+    .def( "__delitem__",  &array_delitem_slice<Group>  ) 
+
+    // .def( "__setitem__", gg_setitem )
+    // .def( "__getslice__", gg_getslice )
     .def( "__len__", gg_len )
     .DEC_PTR_PROPERTY_WDV(skeleton,Group,Skeleton,PolylinePtr,DEFAULT_SKELETON)
     .DEC_PTR_PROPERTY(geometryList,Group,GeometryList,GeometryArrayPtr)

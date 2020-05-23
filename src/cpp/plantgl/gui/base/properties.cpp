@@ -108,7 +108,7 @@ ViewProperties::ViewProperties(  ViewGLFrame *g,
              const char* name,
              bool modal,
              Qt::WindowFlags fl )
-  : QDialog( parent, fl )
+  : QDialog( g, fl )
 {
 
     if ( !name ) setObjectName( "Geom Properties" );

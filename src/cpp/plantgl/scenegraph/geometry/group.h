@@ -50,10 +50,8 @@
 /* ----------------------------------------------------------------------- */
 
 #include <plantgl/scenegraph/geometry/geometry.h>
-#ifndef GEOM_FWDEF
 #include <plantgl/scenegraph/geometry/polyline.h>
 #include <plantgl/scenegraph/container/geometryarray2.h>
-#endif
 
 /* ----------------------------------------------------------------------- */
 
@@ -61,12 +59,6 @@ PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-#ifdef GEOM_FWDEF
-class Polyline;
-typedef RCPtr<Polyline> PolylinePtr;
-class GeometryArray;
-typedef RCPtr<GeometryArray> GeometryArrayPtr;
-#endif
 
 /* ----------------------------------------------------------------------- */
 
@@ -107,6 +99,16 @@ public:
 
   };
 
+  /// An iterator used to iterate through a Scene.
+  typedef GeometryArray::iterator iterator;
+
+  /// A const iterator used to iterate through a Scene.
+  typedef GeometryArray::const_iterator const_iterator;
+
+  /// Element types
+  typedef GeometryArray::element_type element_type;
+
+
   /// Default Constructor. Build object is invalid.
   Group();
 
@@ -115,6 +117,9 @@ public:
       - \e geometries must contain at leat one non null and valid element;
       - \e skeleton must be valid if non null. */
   Group( const GeometryArrayPtr& geometries,
+         const PolylinePtr& skeleton = DEFAULT_SKELETON );
+
+  Group( const iterator begin, const iterator end,
          const PolylinePtr& skeleton = DEFAULT_SKELETON );
 
   /// Destructor
@@ -161,6 +166,30 @@ public:
   virtual bool isValid( ) const;
 
   virtual bool hasDynamicRendering() const;
+
+    /// Returns a const iterator at the beginning of \e self.
+  inline const_iterator begin( ) const { return __geometryList->begin(); }
+
+  /// Returns an iterator at the beginning of \e self.
+  inline iterator begin( ) { return __geometryList->begin(); }
+
+  /// Returns a const iterator at the end of \e self.
+  inline const_iterator end( ) const { return __geometryList->end(); }
+
+  /// Returns an iterator at the end of \e self.
+  inline iterator end( ) { return __geometryList->end(); }
+
+  inline GeometryPtr getAt(size_t pos) { return __geometryList->getAt(pos); }
+
+  inline size_t size() const { return __geometryList->size(); }
+
+  inline void setAt(size_t pos, GeometryPtr value) { __geometryList->setAt(pos, value); }
+
+  inline void erase(iterator it) { __geometryList->erase(it); }
+
+  inline void erase(iterator itbeg, iterator itend) { __geometryList->erase(itbeg, itend); }
+
+  inline void push_back(GeometryPtr value) { __geometryList->push_back(value); }
 
 protected:
 
