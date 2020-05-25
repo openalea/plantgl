@@ -107,7 +107,7 @@ class VIEW_API GeomListViewBuilder : public Action
   void clear( );
 
   /// Add A Node To the Q3ListView.
-  void addNode(const QString& name, const QString& type = QString::null, const QString& id = QString::null);
+  void addNode(const QString& name, const QString& type = QString(), const QString& id = QString());
 
   /// Returns the resulting Q3ListView when applying \e self for the last time.
   inline QTreeWidget * getListView() { return __qListView; }

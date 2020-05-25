@@ -141,7 +141,7 @@ void ViewGeomStreamReader::run()
                                         maxerror));
     _errlog << ends;
     string _msg = _errlog.str();
-    GeomSceneChangeEvent * e = new GeomSceneChangeEvent(scene,_msg.c_str(),QString::null);
+    GeomSceneChangeEvent * e = new GeomSceneChangeEvent(scene,_msg.c_str(),QString());
     QThread::postEvent(_g,e);
   }
 }

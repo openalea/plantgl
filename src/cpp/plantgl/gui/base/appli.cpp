@@ -144,9 +144,9 @@ ViewerAppliInternal::question(const std::string& caption,
     ViewQuestionEvent * event = new ViewQuestionEvent(&res,
       QString(caption.c_str()),
       QString(text.c_str()),
-      (but0txt.empty()?QString::null:QString( but0txt.c_str() )),
-      (but1txt.empty()?QString::null:QString( but1txt.c_str() )),
-      (but2txt.empty()?QString::null:QString( but2txt.c_str() )));
+      (but0txt.empty()?QString():QString( but0txt.c_str() )),
+      (but1txt.empty()?QString():QString( but1txt.c_str() )),
+      (but2txt.empty()?QString():QString( but2txt.c_str() )));
     sendAnEvent(event);
     return res;
 }
@@ -193,8 +193,8 @@ ViewerAppliInternal::getFile(const std::string& caption,
     QString res;
     ViewFileSelEvent * event = new ViewFileSelEvent(&res,
       (caption.empty()?"Choose File":caption.c_str()),
-      (startPath.empty()?QString::null:QString( startPath.c_str() )),
-      (filter.empty()?QString::null:QString( filter.c_str() )),
+      (startPath.empty()?QString():QString( startPath.c_str() )),
+      (filter.empty()?QString():QString( filter.c_str() )),
       existing,
       dir);
     sendAnEvent(event);

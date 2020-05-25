@@ -245,7 +245,7 @@ ViewErrorDialog::__isLocked()
 }
 
 void ViewErrorDialog::clear(){
-    __display->__text->setText(QString::null);
+    __display->__text->setText(QString());
 }
 
 void ViewErrorDialog::setText(char * &_text ){

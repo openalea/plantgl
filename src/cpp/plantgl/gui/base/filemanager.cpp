@@ -326,7 +326,7 @@ ViewFileManager::getLastOpenFiles(int i) const{
 const QString
 ViewFileManager::getLastOpenFile() const {
   if( !__lastOpenFiles.empty()) return (__lastOpenFiles[__lastOpenFiles.size()-1]);
-  else  return QString::null;
+  else  return QString();
 }
 
 const bool
@@ -398,7 +398,7 @@ ViewFileManager::getSaveFileName( const QString& initial,
 
   filename = QFileDialog::getSaveFileName ( parent, caption, QFileInfo(filename).path(), filter+";;All Files (*.*)" );
 
-  if(filename.isEmpty())return QString::null;
+  if(filename.isEmpty())return QString();
   else {
     if(!ext.isEmpty()){
         QString extension=QFileInfo(filename).suffix();

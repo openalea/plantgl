@@ -68,13 +68,7 @@ using namespace std;
 
 #endif
 
-static bool MODE =
-#ifndef GEOM_DEBUG
-true
-#else
-false
-#endif
-;
+static bool MODE = false;
 
 
 static ViewerAppliInternal * VIEWER_APPLI = NULL;
