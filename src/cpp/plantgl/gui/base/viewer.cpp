@@ -128,7 +128,8 @@ Viewer::Viewer( QWidget * parent, const char * name, ViewRendererGL * r , Qt::Wi
       __service(0),
       __toolbarsvisibility(0),
       __trayIcon(0),
-      __aborter(0)
+      __aborter(0),
+      __standalone(false)
 {
     setObjectName(name);
   if(TOOLS(getLanguage()) == "French")
@@ -150,7 +151,8 @@ Viewer::Viewer( int argc, char ** argv, ViewRendererGL * r)
       __service(0),
       __toolbarsvisibility(0),
       __trayIcon(0),
-      __aborter(0)
+      __aborter(0),
+      __standalone(true)
 {
   // if(QMessageBox::information(this,"Language","Select Language","English","French")==1)
   if(TOOLS(getLanguage()) == "French")
@@ -437,7 +439,7 @@ void Viewer::initialize()
 
   ViewerSettings settings;
   settings.beginGroup("Viewer");
-  qDebug("Try to retrieve %s Application Data.", qPrintable(ViewerSettings::getAppliName()));
+  // qDebug("Try to retrieve %s Application Data.", qPrintable(ViewerSettings::getAppliName()));
   int version = settings.value("StateVersion",-1).toInt();
   if(version != -1)
   {
@@ -445,16 +447,19 @@ void Viewer::initialize()
     QRect maxrect = QApplication::desktop()->geometry();
     if( maxrect.contains(rect) && rect.width() > 100 && rect.height() > 100){
         setGeometry(rect);
-        qDebug("MainWindow.setGeometry(%i,%i,%i,%i)", rect.x(),rect.y(),rect.width(),rect.height());
+        //qDebug("MainWindow.setGeometry(%i,%i,%i,%i)", rect.x(),rect.y(),rect.width(),rect.height());
     }
 
     QByteArray b = settings.value("State").toByteArray();
     restoreState(b,version);
-    qDebug("Restore State");
+    // qDebug("Restore State");
   }
   else qDebug("Cannot restore State");
   __focusAtRefresh = settings.value("FocusAtRefresh",__focusAtRefresh).toBool();
   settings.endGroup();
+
+   setAttribute(Qt::WA_DeleteOnClose, false);
+
 }
 
 void
@@ -694,7 +699,7 @@ void  Viewer::customEvent(QEvent *e){
     }
   }
   else if(etype == ViewEvent::eEnd){
-    bye();
+    hide();
   }
   else if(etype == ViewEvent::eShow){
     show();
@@ -943,8 +948,10 @@ void Viewer::closeEvent ( QCloseEvent * e)
   }
   saveConfig();
   __ErrorDialog->registerQtMsg(false);
-  e->accept();
   emit closing();
+
+  if (__standalone) e->accept();
+  else { e->ignore(); hide(); }
 }
 
 void Viewer::showEvent ( QShowEvent * e)

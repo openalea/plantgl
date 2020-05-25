@@ -38,7 +38,7 @@
  *  ----------------------------------------------------------------------------
  */
 
-// #define GL_SILENCE_DEPRECATION
+#define GL_SILENCE_DEPRECATION
 
 #include <iomanip>
 
@@ -240,6 +240,9 @@ ViewGLFrame::ViewGLFrame( QWidget* parent, const char* name, ViewRendererGL * r,
   __fpscounter(0)
 {
     if(name)setObjectName(name);
+
+  setAttribute(Qt::WA_DeleteOnClose, false);
+
   /// Creation
   __camera = new ViewCameraGL(this,"Camera");
   __light = new ViewLightGL(__camera,this,"Light");
