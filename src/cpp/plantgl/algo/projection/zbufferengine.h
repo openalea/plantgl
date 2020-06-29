@@ -121,7 +121,7 @@ protected:
 
 class ZBufferEngine;
 
-class ALGO_API ZBufferEngine : public ProjectionEngine {
+class ALGO_API ZBufferEngine : public ImageProjectionEngine {
 
 public :
     friend class Shader;
@@ -160,6 +160,7 @@ public :
   
   void setLight(const Vector3& lightPosition, const Color3& lightColor = Color3(255,255,255));
   void setLight(const Vector3& lightPosition, const Color3& lightAmbient = Color3(255,255,255), const Color3& lightDiffuse = Color3(255,255,255), const Color3& lightSpecular = Color3(255,255,255));
+  void enableLight(bool enabled);
   
   void iprocess(TriangleSetPtr triangles, AppearancePtr appearance, uint32_t id, ProjectionCameraPtr camera = ProjectionCameraPtr(), uint32_t threadid = 0);
   void iprocess(PolylinePtr polyline, MaterialPtr material, uint32_t id, ProjectionCameraPtr camera = ProjectionCameraPtr(), uint32_t threadid = 0);
@@ -226,7 +227,6 @@ public :
 
   virtual void process(ScenePtr scene);
 
-
 protected :
 
   void _bufferPeriodizationStep(int32_t xDiff, int32_t yDiff, real_t zDiff, bool useDefaultColor = true, const Color3& defaultcolor = Color3(0,0,0));
@@ -245,9 +245,7 @@ protected :
   void unlock(uint_t x, uint_t y);
   bool tryLock(uint_t x, uint_t y);
 
-  uint16_t __imageWidth;
-  uint16_t __imageHeight;
-
+  bool __lightEnabled;
   Vector3 __lightPosition;
   Color3 __lightAmbient;
   Color3 __lightDiffuse;

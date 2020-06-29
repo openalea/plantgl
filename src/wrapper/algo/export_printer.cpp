@@ -43,6 +43,7 @@
 #include "export_printer.h"
 #include <plantgl/algo/codec/printer.h>
 #include <plantgl/algo/codec/binaryprinter.h>
+#include <plantgl/algo/codec/scne_binaryparser.h>
 #include <plantgl/scenegraph/scene/scene.h>
 #include <plantgl/tool/bfstream.h>
 #include <boost/python.hpp>
@@ -128,17 +129,56 @@ class PyFileBinaryPrinter : public BinaryPrinter {
         leofstream _mystream;
 };
 
-bool abp_print(BinaryPrinter* printer, ScenePtr scene)
+template<class Printer>
+bool abp_print(Printer* printer, ScenePtr scene)
 {
   return printer->print(scene);
+}
+
+
+class PyStrBinaryPrinter : public BinaryPrinter {
+public:
+    PyStrBinaryPrinter() :  
+        _myfstream(_mystream),
+        BinaryPrinter(_myfstream) { }
+
+        /// resulting string
+        boost::python::object result() { 
+            std::string res = _mystream.str().c_str();
+            return object( handle<>( PyBytes_FromStringAndSize(res.c_str(), res.size()))); 
+        }
+        /// clear the buffer
+        void clear() {  this->BinaryPrinter::clear(); _mystream.str(""); }
+
+protected:
+    fostream _myfstream;
+    std::ostringstream _mystream;
+};
+
+boost::python::object py_tobinarystring(ScenePtr scene, const char * comment = NULL) { 
+    std::string res = BinaryPrinter::tobinarystring(scene, comment);
+    return object( handle<>( PyBytes_FromStringAndSize(res.c_str(), res.size()))); 
+}
+
+ScenePtr py_frombinarystring(boost::python::object bytes) { 
+    return BinaryParser::frombinarystring(extract<std::string>(bytes)());
 }
 
 void export_PglBinaryPrinter()
 {
   class_< PyFileBinaryPrinter, bases< Printer >, boost::noncopyable>
       ("PglBinaryPrinter",init<const std::string&>("Binary Pgl Printer",args("filename")))
-    .def("print",abp_print)
+    .def("print",abp_print<PyFileBinaryPrinter>)
     .def("getCanonicalFilename",BinaryPrinter::getCanonicalFilename,args("filename"))
     .staticmethod("getCanonicalFilename");
     ;
+
+  class_< PyStrBinaryPrinter , bases< Printer > , boost::noncopyable>
+      ("PglStrBinaryPrinter",init<>("String Printer in PGL binary format" ))
+      .def("print",abp_print<PyStrBinaryPrinter>)
+      .def( "clear", &PyStrBinaryPrinter::clear)
+      .add_property("result", &PyStrBinaryPrinter::result)
+      ;
+    def("tobinarystring", &py_tobinarystring,(bp::arg("scene"),bp::arg("comment")=""));
+    def("frombinarystring", &py_frombinarystring);
 }

@@ -66,7 +66,7 @@ class PyStrPrinter {
         ~PyStrPrinter();
 
         /// The output stream
-        std::stringstream _mystream;
+        std::ostringstream _mystream;
         /// resulting string
         std::string str() { return _mystream.str(); }
         /// clear the buffer

@@ -543,7 +543,7 @@ RayIntersection::process( Sphere * sphere )
   GEOM_ASSERT( sphere );
   Vector3 i,j;
   int res = 0;
-  if((res == __ray.intersect(Vector3::ORIGIN,sphere->getRadius(),i,j)) == 0) return false;
+  if((res = __ray.intersect(Vector3::ORIGIN,sphere->getRadius(),i,j)) == 0) return false;
   __result = Point3ArrayPtr(new Point3Array(res));
   __result->setAt(0,i);
   if( res == 2 ) __result->setAt(1,j);

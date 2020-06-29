@@ -191,7 +191,7 @@ vector<uint_t> TokenCode::getCounts(){
 }
 /* ----------------------------------------------------------------------- */
 
-leofstream& TokenCode::printCurrentToken(leofstream& stream,string token){
+fostream& TokenCode::printCurrentToken(fostream& stream,string token){
   pgl_hash_map<uchar_t,pair<string,uint_t> >::iterator _it = __code.begin();
   for(;_it != __code.end() && _it->second.first!=token;_it++);
   if(_it!=__code.end()){
@@ -212,7 +212,7 @@ leofstream& TokenCode::printCurrentToken(leofstream& stream,string token){
 
 /* ----------------------------------------------------------------------- */
 
-leofstream& TokenCode::printAll(leofstream& stream){
+fostream& TokenCode::printAll(fostream& stream){
   stream << '!';
   pgl_hash_map<uchar_t,pair<string,uint_t> >::iterator _it = __code.begin();
   uint_t size(0);
@@ -245,7 +245,7 @@ leofstream& TokenCode::printAll(leofstream& stream){
 
 /* ----------------------------------------------------------------------- */
 
-string TokenCode::readCurrentToken(leifstream& stream){
+string TokenCode::readCurrentToken(fistream& stream){
     if(stream.eof())return string("EOF");
     uchar_t c;
     stream >> c;
@@ -261,7 +261,7 @@ string TokenCode::readCurrentToken(leifstream& stream){
 
 /* ----------------------------------------------------------------------- */
 
-bool TokenCode::initTokens(leifstream& stream,ostream & output){
+bool TokenCode::initTokens(fistream& stream,ostream & output){
   uint_t size;
   char c;
   stream >> c;
@@ -310,7 +310,7 @@ bool TokenCode::initTokens(leifstream& stream,ostream & output){
 
 /* ----------------------------------------------------------------------- */
 
-leofstream& operator<<( leofstream& stream, TokenCode& c ){
+fostream& operator<<( fostream& stream, TokenCode& c ){
   return c.printAll(stream);
 }
 
@@ -497,10 +497,11 @@ const float BinaryPrinter::BINARY_FORMAT_VERSION(2.5f);
 /* ----------------------------------------------------------------------- */
 
 
-BinaryPrinter::BinaryPrinter( leofstream& outputStream  ) :
+BinaryPrinter::BinaryPrinter( fostream& outputStream  ) :
   Printer(outputStream.getStream(),outputStream.getStream(),outputStream.getStream()),
   __outputStream(outputStream),
   __tokens(BINARY_FORMAT_VERSION){
+    outputStream.setByteOrder(PglLittleEndian);
 }
 
 BinaryPrinter::~BinaryPrinter( ) {
@@ -563,7 +564,8 @@ void BinaryPrinter::writeFile(const std::string& var)
 
 /* ----------------------------------------------------------------------- */
 bool BinaryPrinter::print(ScenePtr scene,string filename,const char * comment){
-    leofstream stream(filename.c_str());
+    bofstream stream(filename.c_str());
+    stream.setByteOrder(PglLittleEndian);
     if(!stream)return false;
     else {
         string cwd = get_cwd();
@@ -573,6 +575,18 @@ bool BinaryPrinter::print(ScenePtr scene,string filename,const char * comment){
         chg_dir(cwd);
         return true;
     }
+}
+
+#include <sstream>
+
+std::string BinaryPrinter::tobinarystring(ScenePtr scene, const char * comment)
+{
+    std::ostringstream _mystream;
+    fostream _myfstream(_mystream);
+    _myfstream.setByteOrder(PglLittleEndian);
+    BinaryPrinter _bp(_myfstream);
+    _bp.print(scene,comment);
+    return _mystream.str();
 }
 
 

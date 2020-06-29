@@ -57,9 +57,7 @@ PGL_USING_NAMESPACE
 #define DEFAULT_MULTITHREAD true
 
 ZBufferEngine::ZBufferEngine(uint16_t imageWidth, uint16_t imageHeight, const Color3& backGroundColor, eRenderingStyle style):
-    ProjectionEngine(),
-    __imageWidth(imageWidth), 
-    __imageHeight(imageHeight), 
+    ImageProjectionEngine(imageWidth,imageHeight),
     __lightPosition(0,0,1),  
     __lightAmbient(255,255,255),
     __lightDiffuse(255,255,255),
@@ -80,9 +78,7 @@ ZBufferEngine::ZBufferEngine(uint16_t imageWidth, uint16_t imageHeight, const Co
 
 
 ZBufferEngine::ZBufferEngine(uint16_t imageWidth, uint16_t imageHeight, const Color4& backGroundColor, eRenderingStyle style):
-    ProjectionEngine(),
-    __imageWidth(imageWidth), 
-    __imageHeight(imageHeight), 
+    ImageProjectionEngine(imageWidth,imageHeight),
     __lightPosition(0,0,1),  
     __lightAmbient(255,255,255),
     __lightDiffuse(255,255,255),
@@ -102,9 +98,7 @@ ZBufferEngine::ZBufferEngine(uint16_t imageWidth, uint16_t imageHeight, const Co
 }    
     
 ZBufferEngine::ZBufferEngine(uint16_t imageWidth, uint16_t imageHeight,uint32_t defaultid, Color4::eColor4Format conversionformat):
-    ProjectionEngine(),
-    __imageWidth(imageWidth), 
-    __imageHeight(imageHeight), 
+    ImageProjectionEngine(imageWidth,imageHeight),
     __lightPosition(0,0,1),  
     __lightAmbient(255,255,255),
     __lightDiffuse(255,255,255),
@@ -120,9 +114,7 @@ ZBufferEngine::ZBufferEngine(uint16_t imageWidth, uint16_t imageHeight,uint32_t 
 }    
 
 ZBufferEngine::ZBufferEngine(uint16_t imageWidth, uint16_t imageHeight) :
-	ProjectionEngine(),
-	__imageWidth(imageWidth),
-	__imageHeight(imageHeight),
+    ImageProjectionEngine(imageWidth,imageHeight),
 	__lightPosition(0, 0, 1),
 	__lightAmbient(255, 255, 255),
 	__lightDiffuse(255, 255, 255),
@@ -395,6 +387,13 @@ void ZBufferEngine::rasterizeMT(const Index4& rect,
             }  \
         }
 
+void findorder(real_t * zs, int& firstpoint, int& secpoint, int& thirdpoint){
+    firstpoint = 0; secpoint = 1; thirdpoint = 2;
+    if (zs[firstpoint] < zs[secpoint]) std::swap(firstpoint, secpoint);
+    if (zs[secpoint] < zs[thirdpoint]) std::swap(thirdpoint, secpoint);
+    if (zs[firstpoint] < zs[secpoint]) std::swap(firstpoint, secpoint);
+}
+
 void ZBufferEngine::rasterize(int32_t x0, int32_t x1, int32_t y0, int32_t y1,
                               TOOLS(Vector3) v0Raster, TOOLS(Vector3) v1Raster, TOOLS(Vector3) v2Raster, bool ccw, 
                               const TriangleShaderPtr& shader, const ProjectionCameraPtr& camera)
@@ -422,15 +421,13 @@ void ZBufferEngine::rasterize(int32_t x0, int32_t x1, int32_t y0, int32_t y1,
         real_t w0 = 1/3.;
         PROCESS_FRAGMENT(x0, y0, z, w0, w0, w0)
     }
-    else if (x0 == x1){
+   /* else if (x0 == x1){
         real_t zs[3];
         zs[0] = z0; zs[1] = z1; zs[2] = z2; 
         uint32_t ys[3];
         ys[0] = v0Raster.y(); ys[1] = v1Raster.y(); ys[2] = v2Raster.y(); 
-
-        int firstpoint = (z0 >= z1? (z0 >= z2?0:2) : (z1 >= z2?1:2) );
-        int secpoint   = (z0 >= z1? (z0 >= z2?2:0) : (z1 >= z2?2:1) );
-        int thirdpoint = (z0 < z1? (z0 >= z2?2:0)  : (z1 >= z2?2:1) );
+        int firstpoint, secpoint, thirdpoint;
+        findorder(zs, firstpoint, secpoint, thirdpoint);
 
         real_t ws[3];
         ws[0] = 0; ws[1] = 0; ws[2] = 0;
@@ -477,9 +474,8 @@ void ZBufferEngine::rasterize(int32_t x0, int32_t x1, int32_t y0, int32_t y1,
         real_t xs[3];
         xs[0] = v0Raster.x(); xs[1] = v1Raster.x(); xs[2] = v2Raster.x(); 
 
-        int firstpoint = (z0 >= z1? (z0 >= z2?0:2) : (z1 >= z2?1:2) );
-        int secpoint   = (z0 >= z1? (z0 >= z2?2:0) : (z1 >= z2?2:1) );
-        int thirdpoint = (z0 < z1? (z0 >= z2?2:0)  : (z1 >= z2?2:1) );
+        int firstpoint, secpoint, thirdpoint;
+        findorder(zs, firstpoint, secpoint, thirdpoint);
 
         real_t ws[3];
         ws[0] = 0; ws[1] = 0; ws[2] = 0;
@@ -518,7 +514,7 @@ void ZBufferEngine::rasterize(int32_t x0, int32_t x1, int32_t y0, int32_t y1,
             }
         }
 
-    }
+    }*/
     else {
         for (int32_t y = y0; y <= y1; ++y) {
             for (int32_t x = x0; x <= x1; ++x) {

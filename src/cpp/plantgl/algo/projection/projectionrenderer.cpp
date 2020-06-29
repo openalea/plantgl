@@ -484,7 +484,18 @@ bool ProjectionRenderer::process(Scaled *scaled) {
 
 bool ProjectionRenderer::process(ScreenProjected *scp) {
   GEOM_ASSERT_OBJ(scp);
-  return true;
+  real_t heigthscale = 1;
+  ImageProjectionEngine * mengine = dynamic_cast<ImageProjectionEngine *>(&__engine);
+  if(mengine != NULL) { 
+    heigthscale = float(mengine->getImageHeight()) / float(mengine->getImageWidth());
+  }
+  ProjectionCameraPtr camera = __camera;
+  __camera = ProjectionCamera::orthographicCamera(-1, 1, -heigthscale, heigthscale, 1, 3);
+  __camera->lookAt(Vector3(0,-2,0), Vector3(0,0,0), Vector3(0,0,1));
+  printf("Apply it with new camera\n" );
+  bool b = scp->getGeometry()->apply(*this);
+  __camera = camera;
+  return b;
 }
 
 

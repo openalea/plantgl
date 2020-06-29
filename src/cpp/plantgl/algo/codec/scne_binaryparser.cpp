@@ -271,12 +271,12 @@ static uint_t count_name(0);
 const SceneObjectPtr BinaryParser::NULLPTR;
 
 /* ----------------------------------------------------------------------- */
-BinaryParser::BinaryParser(ostream& output,int max_errors) :
+BinaryParser::BinaryParser(ostream& output,int max_errors, fistream * _stream) :
     __scene(new Scene()),
     __roots(0),
     __referencetable(),
     __outputStream(output),
-    stream(0),
+    stream(_stream),
     __tokens(NULL),
     __max_errors(max_errors),
     __errors_count(0),
@@ -486,7 +486,8 @@ SceneObject * BinaryParser::getNext(uint_t _class){
 /* ----------------------------------------------------------------------- */
 
 bool BinaryParser::isAGeomBinaryFile(const string& filename){
-    leifstream stream(filename.c_str());
+    bifstream stream(filename.c_str());
+    stream.setByteOrder(PglLittleEndian);
     if(!stream)return false;
     char tokBegin[7];
     stream.read(tokBegin,6);
@@ -624,7 +625,9 @@ bool BinaryParser::readSceneHeader(){
 /* ----------------------------------------------------------------------- */
 bool BinaryParser::open(const std::string& filename)
 {
-    stream = new leifstream(filename.c_str());
+    stream = new bifstream(filename.c_str());
+    stream->setByteOrder(PglLittleEndian);
+
     if(!*stream){
         pglErrorEx(PGLERRORMSG(C_FILE_OPEN_ERR_s),filename.c_str());
         delete stream;
@@ -656,11 +659,17 @@ bool BinaryParser::eof()
 /// The parsing function.
 bool BinaryParser::parse(const string& filename){
     if(!open(filename)) return false;
+    string p = get_cwd();
+    chg_dir(get_dirname(filename));
+    bool res = parse();
+    chg_dir(p);
+    return res;
+}
+
+bool BinaryParser::parse(){
     if(!readHeader())return false;
     if(!readSceneHeader())return false;
     PglErrorStream::Binder psb(__outputStream);
-    string p = get_cwd();
-    chg_dir(get_dirname(filename));
     Timer t;
     __errors_count=0;
     shape_nb=0;
@@ -677,8 +686,21 @@ bool BinaryParser::parse(const string& filename){
     }
 #endif
     close();
-    chg_dir(p);
     return true;
+}
+
+#include <sstream>
+
+ScenePtr BinaryParser::frombinarystring(const std::string& content)
+{
+    std::ostringstream ostream;
+    std::istringstream sstream(content);
+    fistream * stream = new fistream(sstream);
+    stream->setByteOrder(PglLittleEndian);
+    BinaryParser parser(ostream, 5, stream);
+    parser.parse();
+    return parser.getScene();
+
 }
 
 /* ----------------------------------------------------------------------- */
