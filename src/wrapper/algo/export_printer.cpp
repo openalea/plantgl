@@ -123,10 +123,10 @@ void export_PglPrinter()
 class PyFileBinaryPrinter : public BinaryPrinter {
     public:
         PyFileBinaryPrinter(const std::string& fname) :
-          BinaryPrinter(_mystream), _mystream(fname.c_str())  { }
+          BinaryPrinter(_mystream), _mystream(fname.c_str(), std::ios::out | std::ios::binary)  { }
 
         ~PyFileBinaryPrinter(){}
-        leofstream _mystream;
+        std::ofstream _mystream;
 };
 
 template<class Printer>
@@ -139,8 +139,7 @@ bool abp_print(Printer* printer, ScenePtr scene)
 class PyStrBinaryPrinter : public BinaryPrinter {
 public:
     PyStrBinaryPrinter() :  
-        _myfstream(_mystream),
-        BinaryPrinter(_myfstream) { }
+        BinaryPrinter(_mystream) { }
 
         /// resulting string
         boost::python::object result() { 
@@ -151,12 +150,11 @@ public:
         void clear() {  this->BinaryPrinter::clear(); _mystream.str(""); }
 
 protected:
-    fostream _myfstream;
     std::ostringstream _mystream;
 };
 
-boost::python::object py_tobinarystring(ScenePtr scene, const char * comment = NULL) { 
-    std::string res = BinaryPrinter::tobinarystring(scene, comment);
+boost::python::object py_tobinarystring(ScenePtr scene, bool double_precision = true,  const char * comment = NULL) { 
+    std::string res = BinaryPrinter::tobinarystring(scene, double_precision, comment);
     return object( handle<>( PyBytes_FromStringAndSize(res.c_str(), res.size()))); 
 }
 
@@ -179,6 +177,6 @@ void export_PglBinaryPrinter()
       .def( "clear", &PyStrBinaryPrinter::clear)
       .add_property("result", &PyStrBinaryPrinter::result)
       ;
-    def("tobinarystring", &py_tobinarystring,(bp::arg("scene"),bp::arg("comment")=""));
+    def("tobinarystring", &py_tobinarystring,(bp::arg("scene"),bp::arg("double_precision")=true,bp::arg("comment")=""));
     def("frombinarystring", &py_frombinarystring);
 }

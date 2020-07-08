@@ -325,7 +325,7 @@ void array2_reshape( T * array, size_t nbrow, size_t nbcol)
 template<class T>
 bool save(T * a, std::string fname)
 {
-    leofstream stream(fname.c_str());
+    std::ofstream stream(fname.c_str(), std::ios::out | std::ios::binary);
     if(!stream)return false;
     else {
         std::string cwd = get_cwd();
