@@ -497,11 +497,11 @@ const float BinaryPrinter::BINARY_FORMAT_VERSION(2.5f);
 /* ----------------------------------------------------------------------- */
 
 
-BinaryPrinter::BinaryPrinter( fostream& outputStream  ) :
-  Printer(outputStream.getStream(),outputStream.getStream(),outputStream.getStream()),
-  __outputStream(outputStream),
-  __tokens(BINARY_FORMAT_VERSION){
-    outputStream.setByteOrder(PglLittleEndian);
+BinaryPrinter::BinaryPrinter( std::ostream& outputStream, bool double_precision  ) :
+  Printer(outputStream,outputStream,outputStream),
+  __outputStream(outputStream, PglLittleEndian),
+  __tokens(BINARY_FORMAT_VERSION),
+  __double_precision(double_precision){
 }
 
 BinaryPrinter::~BinaryPrinter( ) {
@@ -551,7 +551,14 @@ void BinaryPrinter::writeUchar(uchar_t var)
 
 /// write a real_t value from stream
 void BinaryPrinter::writeReal(real_t var)
-{ __outputStream << var; }
+{
+    if (__double_precision) { 
+        __outputStream << (double)var; 
+    }
+    else {
+        __outputStream << (float)var; 
+    }
+}
 
 /// write a string value from stream
 void BinaryPrinter::writeString(const std::string& var)
@@ -564,8 +571,7 @@ void BinaryPrinter::writeFile(const std::string& var)
 
 /* ----------------------------------------------------------------------- */
 bool BinaryPrinter::print(ScenePtr scene,string filename,const char * comment){
-    bofstream stream(filename.c_str());
-    stream.setByteOrder(PglLittleEndian);
+    std::ofstream stream(filename.c_str(), std::ios::out | std::ios::binary);
     if(!stream)return false;
     else {
         string cwd = get_cwd();
@@ -579,12 +585,10 @@ bool BinaryPrinter::print(ScenePtr scene,string filename,const char * comment){
 
 #include <sstream>
 
-std::string BinaryPrinter::tobinarystring(ScenePtr scene, const char * comment)
+std::string BinaryPrinter::tobinarystring(ScenePtr scene, bool double_precision, const char * comment)
 {
     std::ostringstream _mystream;
-    fostream _myfstream(_mystream);
-    _myfstream.setByteOrder(PglLittleEndian);
-    BinaryPrinter _bp(_myfstream);
+    BinaryPrinter _bp(_mystream, double_precision);
     _bp.print(scene,comment);
     return _mystream.str();
 }
@@ -613,11 +617,14 @@ bool BinaryPrinter::header(const char * comment){
     __outputStream << float(BINARY_FORMAT_VERSION) << char(13) << char(10);
   if(__tokens.getVersion() >= 1.6f){
 #ifdef PGL_USE_DOUBLE
-    uchar_t precision = 64 ;
+  uchar_t precision = 64 ;
+  if (!__double_precision) {
+    precision = 32 ;
+  }
 #else
-#ifdef __GNUC__
-#warning Use simple floating precision
-#endif
+    #ifdef __GNUC__
+       #warning Use simple floating precision
+    #endif
     uchar_t precision = 32 ;
 #endif
     // std::cerr << "Assume "<< (precision==32?"simple":"double")<< " precision." << std::endl;

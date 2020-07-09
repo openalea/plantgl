@@ -159,7 +159,7 @@ void pgl_save_one_data(const boost::python::object& a, BinaryPrinter& bprinter)
 
 bool pgl_save_data(const boost::python::object& a, const std::string& fname)
 {
-    leofstream stream(fname.c_str());
+    std::ofstream stream(fname.c_str(), std::ios::out | std::ios::binary);
     if(!stream)return false;
     else {
         std::string cwd = get_cwd();

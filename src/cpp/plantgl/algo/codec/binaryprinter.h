@@ -147,7 +147,7 @@ public:
   static const float BINARY_FORMAT_VERSION;
 
   /** Constructs a Printer with the output streams \e outputStream. */
-  BinaryPrinter( fostream& outputStream );
+  BinaryPrinter( std::ostream& outputStream, bool double_precision = true);
 
   /// Destructor
   virtual ~BinaryPrinter( );
@@ -285,7 +285,7 @@ public:
   /// Print the scene \e scene in the file \e filename in binary format.
   static bool print(ScenePtr scene,std::string filename,const char * comment = NULL);
 
-  static std::string tobinarystring(ScenePtr scene, const char * comment = NULL);
+  static std::string tobinarystring(ScenePtr scene, bool double_precision = true, const char * comment = NULL);
 
 //private :
 
@@ -372,11 +372,12 @@ protected:
   void printType(const std::string& _string);
 
   /// Binary output stream.
-  fostream& __outputStream;
+  fostream __outputStream;
 
   /// The tokens codes.
   TokenCode __tokens;
 
+  bool __double_precision;
 };
 
 
