@@ -49,12 +49,31 @@
 
 PGL_BEGIN_NAMESPACE
 
+
+class ALGO_API PushPopHandler : public RefCountObject {
+public:
+    PushPopHandler() { }
+
+    virtual ~PushPopHandler();
+
+    virtual void pushEvent() { }
+
+    virtual void popEvent() { }
+
+};
+
+typedef RCPtr<PushPopHandler> PushPopHandlerPtr;
+typedef std::vector<PushPopHandlerPtr> PushPopHandlerList;
+
+
 /// Turtle class allow rotation, displacement and drawing operation
 class ALGO_API Turtle {
 public:
     typedef void (* error_msg_handler_func) ( const std::string& );
     static void register_error_handler(error_msg_handler_func f = NULL);
     static void register_warning_handler(error_msg_handler_func f = NULL);
+
+    void registerPushPopHandler(PushPopHandlerPtr handler);
 
     Turtle(TurtleParam * params = NULL);
     virtual ~Turtle();
@@ -535,6 +554,7 @@ protected:
 
     PathInfoMap __pathinfos;
 
+    PushPopHandlerList __pushpophandlerlist;
 
 };
 
