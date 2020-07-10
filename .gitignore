@@ -22,6 +22,7 @@ build-scons_qt5
 .Python
 env/
 build/
+build-cmake/
 develop-eggs/
 dist/
 downloads/
@@ -81,3 +82,5 @@ src/cpp/plantgl/doxygenFile
 .qglviewer.xml
 _pgl*.dylib
 .ipynb_checkpoints
+
+.vscode
