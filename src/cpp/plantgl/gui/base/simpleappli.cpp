@@ -87,11 +87,11 @@ ViewerSimpleAppli::Wait ( unsigned long time  )
 
 void
 ViewerSimpleAppli::launch(){
-    if(qApp != NULL){
+    if(QApplication::instance() != NULL){
         __ownappli = false;
         Viewer * v = build();
-        if (qApp->thread() != QThread::currentThread()){
-            v->moveToThread(qApp->thread());
+        if (QApplication::instance()->thread() != QThread::currentThread()){
+            v->moveToThread(QApplication::instance()->thread());
             if (v->thread() == QThread::currentThread()){
 
 #ifdef GEOM_DLDEBUG
@@ -109,7 +109,7 @@ ViewerSimpleAppli::launch(){
         __ownappli = true;
         Viewer * v = build();
         v->show();
-        qApp->exec();
+        QApplication::instance()->exec();
     }
 }
 
