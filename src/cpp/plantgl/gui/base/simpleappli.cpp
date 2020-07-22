@@ -85,8 +85,17 @@ bool
 ViewerSimpleAppli::Wait ( unsigned long time  )
 { return false; }
 
+static qapp_initiator_func QAPP_INITIATOR = NULL;
+void register_qapp_initiator(qapp_initiator_func initiator)
+{
+    QAPP_INITIATOR = initiator;
+}
+
 void
 ViewerSimpleAppli::launch(){
+    if(QApplication::instance() == NULL){
+        if (QAPP_INITIATOR) QAPP_INITIATOR();
+    }
     if(QApplication::instance() != NULL){
         __ownappli = false;
         Viewer * v = build();
