@@ -65,7 +65,7 @@ boost::python::object getTurtleSurfaceList(PglTurtle * turtle) {
 
 void export_PglTurtle()
 {
-  class_< PglTurtle , bases < Turtle > >("PglTurtle", init< optional<TurtleParam *> >("PglTurtle([TurtleParam]) -> Create a Pgl Turtle"))
+  class_< PglTurtle , boost::noncopyable, bases < Turtle > >("PglTurtle", init< optional<TurtleParam *> >("PglTurtle([TurtleParam]) -> Create a Pgl Turtle"))
     .def("getScene",  &PglTurtle::getScene, return_value_policy<return_by_value>() )
     .def("partialView",  &PglTurtle::partialView, "Return the current turtle construction.")
     .def("clearColorList",    &PglTurtle::clearColorList )

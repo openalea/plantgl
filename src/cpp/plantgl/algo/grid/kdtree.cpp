@@ -48,7 +48,7 @@
 
 PGL_USING_NAMESPACE
 /* ----------------------------------------------------------------------- */
-#ifdef WITH_ANN
+#ifdef PGL_WITH_ANN
 
 // for instanciation
 #define ANNKDTREEDECLARATIONCORE(basename,pointarraytype) \

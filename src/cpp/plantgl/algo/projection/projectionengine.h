@@ -77,7 +77,7 @@ public :
 
       ProjectionEngine();
 
-      ~ProjectionEngine();
+      virtual ~ProjectionEngine();
 
       inline void setPerspectiveCamera(real_t angleOfView, real_t aspectRatio, real_t near, real_t far)
       { __camera = ProjectionCamera::perspectiveCamera(angleOfView, aspectRatio, near, far); }
@@ -128,9 +128,29 @@ public :
       virtual void beginProcess() {}
       virtual void endProcess() {}
 
-
 protected:
     ProjectionCameraPtr __camera;
+
+
+};
+
+class ALGO_API ImageProjectionEngine  : public ProjectionEngine {
+
+public :
+
+      ImageProjectionEngine(uint16_t imageWidth, 
+                       uint16_t imageHeight);
+
+      virtual ~ImageProjectionEngine();
+
+      virtual uint16_t getImageWidth() const { return __imageWidth; }
+      virtual uint32_t getImageHeight() const { return __imageHeight; }
+
+
+protected:
+   uint16_t __imageWidth;
+    uint16_t __imageHeight;
+
 };
 
 /* ----------------------------------------------------------------------- */

@@ -56,6 +56,7 @@
 #include <plantgl/python/pyinterpreter.h>
 #include <boost/python/make_constructor.hpp>
 #include "export_sceneobject.h"
+#include "arrays_macro.h"
 
 PGL_USING_NAMESPACE
 using namespace boost::python;
@@ -101,7 +102,6 @@ Shape3DPtr sc_getitem( Scene* s, int pos )
 }
 
 
-
 ShapePtr sc_find( Scene* s, size_t id )
 {
   ShapePtr res = s->findShapeId( id );
@@ -116,20 +116,6 @@ Shape3DPtr sc_findSceneObject( Scene* s, size_t id )
   else throw PythonExc_IndexError();
 }
 
-void sc_setitem( Scene* s, int pos, Shape3DPtr v )
-{
-  if( pos < 0 && pos > -(int)s->size() ) return s->setAt( s->size() + pos, v );
-  if (pos < s->size()) s->setAt( pos ,v );
-  else throw PythonExc_IndexError();
-}
-
-void sc_delitem( Scene* s, int pos )
-{
-  Scene::iterator it;
-  if( pos < 0 && pos > -(int)s->size() ) { it = s->end()+pos;  return s->remove( it ); }
-  if (pos < s->size()) { it = s->begin() + pos; s->remove(it ); }
-  else throw PythonExc_IndexError();
-}
 
 ScenePtr sc_iadd1(ScenePtr s ,Shape3DPtr sh){
   if(sh)s->add(sh);
@@ -193,7 +179,7 @@ void sc_remove( Scene* sc, Shape3DPtr sh)
   Scene::iterator it = std::find(sc->begin(),sc->end(),sh);
   if (it ==  sc->end())
     {sc->unlock(); throw PythonExc_ValueError(); }
-  sc->remove(it);
+  sc->erase(it);
   sc->unlock();
 }
 
@@ -243,9 +229,25 @@ void export_Scene()
     sc.def("add", &Scene::merge);
     sc.def("merge", &Scene::merge);
     sc.def("__len__", &Scene::size);
+
     sc.def("__getitem__", &sc_getitem);
+    sc.def( "__getitem__", &array_getitem_slice<Scene>, boost::python::return_value_policy<boost::python::manage_new_object>() );
+    sc.def( "__getitem__",  &array_getitem_list<Scene>, boost::python::return_value_policy<boost::python::manage_new_object>() );
+    sc.def( "__setitem__",  &array_setitem<Scene>   );
+    sc.def( "__setitem__",  &array_setsliceitem<Scene>   ) ;
+    sc.def( "__setitem__",  &array_setlistitem<Scene>   ) ;
+    sc.def( "__setitem__",  &array_setsliceitem_list<Scene>   ) ;
+    sc.def( "__setitem__",  &array_setlistitem_list<Scene>   ) ;
+    sc.def( "__delitem__",  &array_delitem<Scene>   ) ;
+    sc.def( "__delitem__",  &array_delitem_slice<Scene>  ) ;
+
+    /*sc.def("__getitem__", &sc_getitem);
+    sc.def("__getitem__", &sc_getitemslice );
     sc.def("__setitem__", &sc_setitem);
+    //sc.def("__setitem__", &sc_setitemslice);
     sc.def("__delitem__", &sc_delitem);
+    //sc.def("__delitem__", &sc_delitemslice);*/
+
     sc.def("clear", &Scene::clear);
     sc.def("merge", &Scene::merge);
     sc.def("find", &sc_find);

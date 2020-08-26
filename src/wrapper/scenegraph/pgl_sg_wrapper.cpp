@@ -48,7 +48,7 @@
 #include <plantgl/python/pyinterpreter.h>
 #include <plantgl/python/export_list.h>
 #include <iostream>
-#if WITH_BOOST_NUMPY
+#if PGL_WITH_BOOST_NUMPY
 #include <boost/python/numpy.hpp>
 #endif
 
@@ -100,7 +100,7 @@ boost::python::object py_get_pgl_supported_extensions() {
 
 void module_sg()
 {
-#if WITH_BOOST_NUMPY
+#if PGL_WITH_BOOST_NUMPY
     boost::python::numpy::initialize();
 #endif
     

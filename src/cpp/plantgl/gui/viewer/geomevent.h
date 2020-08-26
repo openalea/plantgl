@@ -76,8 +76,8 @@ class VIEW_API GeomSceneChangeEvent : public ViewSceneChangeEvent {
 
   /// Constructor.
   GeomSceneChangeEvent(PGL(ScenePtr) scene,
-               const QString& = QString::null,
-               const QString& _file = QString::null,
+               const QString& = QString(),
+               const QString& _file = QString(),
                bool add = false);
 
   /// Destructor.
@@ -110,9 +110,9 @@ class VIEW_API GeomMultiSceneChangeEvent : public GeomSceneChangeEvent {
   /// Constructor.
   GeomMultiSceneChangeEvent(PGL(ScenePtr) scene1,
                 PGL(ScenePtr) scene2,
-                const QString& errlog = QString::null,
-                const QString& file1 = QString::null,
-                const QString& file2 = QString::null);
+                const QString& errlog = QString(),
+                const QString& file1 = QString(),
+                const QString& file2 = QString());
 
   /// Destructor.
   ~GeomMultiSceneChangeEvent();

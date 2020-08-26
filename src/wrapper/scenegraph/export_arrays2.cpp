@@ -49,7 +49,7 @@
 #include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>
 
-#if WITH_BOOST_NUMPY
+#if PGL_WITH_BOOST_NUMPY
 #include <boost/python/numpy.hpp>
 #define np boost::python::numpy
 #endif
@@ -67,7 +67,7 @@ EXPORT_FUNCTION( p3m, Point3Matrix )
 EXPORT_FUNCTION( p4m, Point4Matrix )
 EXPORT_FUNCTION( ra,  RealArray2 )
 
-#if WITH_BOOST_NUMPY
+#if PGL_WITH_BOOST_NUMPY
 np::ndarray array_to_nparray(RealArray2 * data)
 {
     np::dtype dt = np::dtype::get_builtin<real_t>();
@@ -106,7 +106,7 @@ void export_arrays2()
 
   EXPORT_ARRAY_BT( ra, RealArray2 )
    .def(numarray2_func<RealArray2>())
-#if WITH_BOOST_NUMPY
+#if PGL_WITH_BOOST_NUMPY
    .def("to_array",&array_to_nparray)
 #endif
    .def("threshold_max_values",&threshold_max_values)

@@ -271,12 +271,12 @@ static uint_t count_name(0);
 const SceneObjectPtr BinaryParser::NULLPTR;
 
 /* ----------------------------------------------------------------------- */
-BinaryParser::BinaryParser(ostream& output,int max_errors) :
+BinaryParser::BinaryParser(ostream& output,int max_errors, fistream * _stream) :
     __scene(new Scene()),
     __roots(0),
     __referencetable(),
     __outputStream(output),
-    stream(0),
+    stream(_stream),
     __tokens(NULL),
     __max_errors(max_errors),
     __errors_count(0),
@@ -486,7 +486,8 @@ SceneObject * BinaryParser::getNext(uint_t _class){
 /* ----------------------------------------------------------------------- */
 
 bool BinaryParser::isAGeomBinaryFile(const string& filename){
-    leifstream stream(filename.c_str());
+    bifstream stream(filename.c_str());
+    stream.setByteOrder(PglLittleEndian);
     if(!stream)return false;
     char tokBegin[7];
     stream.read(tokBegin,6);
@@ -624,7 +625,9 @@ bool BinaryParser::readSceneHeader(){
 /* ----------------------------------------------------------------------- */
 bool BinaryParser::open(const std::string& filename)
 {
-    stream = new leifstream(filename.c_str());
+    stream = new bifstream(filename.c_str());
+    stream->setByteOrder(PglLittleEndian);
+
     if(!*stream){
         pglErrorEx(PGLERRORMSG(C_FILE_OPEN_ERR_s),filename.c_str());
         delete stream;
@@ -656,11 +659,17 @@ bool BinaryParser::eof()
 /// The parsing function.
 bool BinaryParser::parse(const string& filename){
     if(!open(filename)) return false;
+    string p = get_cwd();
+    chg_dir(get_dirname(filename));
+    bool res = parse();
+    chg_dir(p);
+    return res;
+}
+
+bool BinaryParser::parse(){
     if(!readHeader())return false;
     if(!readSceneHeader())return false;
     PglErrorStream::Binder psb(__outputStream);
-    string p = get_cwd();
-    chg_dir(get_dirname(filename));
     Timer t;
     __errors_count=0;
     shape_nb=0;
@@ -677,8 +686,21 @@ bool BinaryParser::parse(const string& filename){
     }
 #endif
     close();
-    chg_dir(p);
     return true;
+}
+
+#include <sstream>
+
+ScenePtr BinaryParser::frombinarystring(const std::string& content)
+{
+    std::ostringstream ostream;
+    std::istringstream sstream(content);
+    fistream * stream = new fistream(sstream);
+    stream->setByteOrder(PglLittleEndian);
+    BinaryParser parser(ostream, 5, stream);
+    parser.parse();
+    return parser.getScene();
+
 }
 
 /* ----------------------------------------------------------------------- */
@@ -800,7 +822,12 @@ bool BinaryParser::readShape(){
         }
     }
 
-    if((a->getGeometry()) && (a->getAppearance())){
+    if(a->getGeometry()){
+        if (!a->getAppearance() || !a->getAppearance()->isValid()){
+            __outputStream << "*** PARSER: <Shape : " << (_name.empty() ? "(unamed)" : _name ) << "> Appearance not valid. Setting it to default." << endl;
+            a->getAppearance() = AppearancePtr(new Material());
+
+        }
         if(!_name.empty())a->setName(_name);
         __result = SceneObjectPtr(a);
         Shape3DPtr sh = Shape3DPtr(a);
@@ -872,12 +899,14 @@ bool BinaryParser::readTexture2D() {
 
     GEOM_INIT_OBJ(texture, 42, Texture2D);
 
+    bool invalid = false;
+
     if(readNext())
         texture->getImage() = dynamic_pointer_cast<ImageTexture>(__result);
+
     if(!texture->getImage()){
         __outputStream << "*** PARSER: <Texture2D : " << (_name.empty() ? "(unamed)" : _name ) << "> Image not valid." << endl;
-        GEOM_DEL_OBJ(texture,42) ;
-        return false;
+        invalid = true;
     }
 
     IF_GEOM_NOTDEFAULT(_default,0)
@@ -886,14 +915,19 @@ bool BinaryParser::readTexture2D() {
             texture->getTransformation() = dynamic_pointer_cast<Texture2DTransformation>(__result);
         if(!texture->getTransformation()){
             __outputStream << "*** PARSER: <Texture2D : " << (_name.empty() ? "(unamed)" : _name ) << "> Transformation not valid." << endl;
-            GEOM_DEL_OBJ(texture,42) ;
-            return false;
+            invalid = true;
         }
     }
 
     if( __tokens->getVersion() >= 2.3f){
         IF_GEOM_NOTDEFAULT(_default,1)
              GEOM_READ_FIELD(texture,BaseColor,Color4);
+    }
+
+
+    if (invalid) {
+        GEOM_DEL_OBJ(texture,42) ;
+        return false;
     }
 
     GEOM_PARSER_SETNAME(_name,_ident,texture,Texture2D);
@@ -923,7 +957,7 @@ bool BinaryParser::readImageTexture() {
             GEOM_READ_FIELD(mat,RepeatS,Bool) ;
 
         IF_GEOM_NOTDEFAULT(_default,1)
-            GEOM_READ_FIELD(mat,RepeatT,Real);
+            GEOM_READ_FIELD(mat,RepeatT,Bool);
 
         if( version < 2.4f){
             IF_GEOM_NOTDEFAULT(_default,2)
@@ -956,9 +990,15 @@ bool BinaryParser::readImageTexture() {
             GEOM_READ_FIELD(mat,Mipmaping,Bool);
     }
 
-    if (FileName.empty() || !exists(FileName.c_str())) {
+    if (FileName.empty()) {
         string label = "ImageTexture : " + string((_name.empty() ? "(unamed)" : _name));
         pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),label.c_str(),"FileName");
+        MaterialPtr defmat(new Material());
+        GEOM_PARSER_SETNAME(_name,_ident,defmat,Material);
+    }
+    else if (!exists(FileName.c_str())) {
+        string label = "ImageTexture : " + string((_name.empty() ? "(unamed)" : _name));
+        pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),label.c_str(),"FileName",FileName.c_str());
         MaterialPtr defmat(new Material());
         GEOM_PARSER_SETNAME(_name,_ident,defmat,Material);
     }

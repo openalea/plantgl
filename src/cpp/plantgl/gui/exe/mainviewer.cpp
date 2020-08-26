@@ -52,6 +52,7 @@
 
 #include "../viewer/pglviewer.h"
 #include "../base/daemon.h"
+#include "../base/icons.h"
 
 int main( int argc, char **argv )
 {
@@ -62,6 +63,7 @@ int main( int argc, char **argv )
     return -1;
   }
 
+  a.setWindowIcon(QIcon(QPixmap(ViewerIcon::getPixmap(ViewerIcon::flower))));
   // if(!ViewClientObj().request(argc, argv)){
     PGLViewer m_viewer(argc, argv) ;
     // m_viewer.startDaemon();

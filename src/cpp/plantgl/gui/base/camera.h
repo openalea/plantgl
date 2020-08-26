@@ -198,6 +198,8 @@ public:
 
   void fillToolBar(QToolBar * toolBar);
 
+  void fillToolBarAdditionnal(QToolBar * toolBar);
+
   void addProperties(QTabWidget * tab);
 
   /// Get The Camera position

@@ -48,7 +48,7 @@
 
 PGL_USING_NAMESPACE
 
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
 
 #include <CGAL/Exact_predicates_exact_constructions_kernel.h>
 #include <CGAL/Boolean_set_operations_2.h>
@@ -98,7 +98,7 @@ std::pair<Point2ArrayPtr, IndexArrayPtr> internal_polygon2ds_intersection(Polygo
 
 std::pair<Point2ArrayPtr, IndexArrayPtr> PGL(polygon2ds_intersection)(Point2ArrayPtr polygon1, Point2ArrayPtr polygon2)
 {
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
   // Construct the two input polygons.
   Polygon_2 P;
   for(Point2Array::const_iterator it = polygon1->begin(); it != polygon1->end(); ++it)
@@ -116,7 +116,7 @@ std::pair<Point2ArrayPtr, IndexArrayPtr> PGL(polygon2ds_intersection)(Point2Arra
 
 std::pair<Point2ArrayPtr, IndexArrayPtr> PGL(polygon2ds_intersection)(Point2ArrayPtr points, Index polygon1, Index polygon2)
 {
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
   // Construct the two input polygons.
   Polygon_2 P;
   for(Index::const_iterator it = polygon1.begin(); it != polygon1.end(); ++it)
@@ -133,7 +133,7 @@ std::pair<Point2ArrayPtr, IndexArrayPtr> PGL(polygon2ds_intersection)(Point2Arra
 }
 
 /*
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
 #include <CGAL/Gmpz.h>
 #include <CGAL/Extended_homogeneous.h>
 #include <CGAL/Polyhedron_3.h>
@@ -192,7 +192,7 @@ Nef_polyhedron make_nef_cube_3(const Vector3& bbmin, const Vector3& bbmax) {
 std::pair<Point3ArrayPtr, IndexArrayPtr>
 PGL(box_triangle_intersection)(const Vector3& bbxmin, const Vector3& bbxmax, const Vector3& p1, const Vector3& p2, const Vector3& p3)
 {
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
 
     Nef_polyhedron N1 = make_nef_cube_3(bbxmin,bbxmax);
     printf("cube created\n");
@@ -293,7 +293,7 @@ IntersectionType  PGL(triangle_triangle_intersection)(const Vector3& t11, const 
 std::pair<std::vector<std::pair<uint32_t,uint32_t> >,GeometryArrayPtr>
 PGL(auto_intersection)(Point3ArrayPtr points, Index3ArrayPtr triangles)
 {
-#ifdef WITH_ANN
+#ifdef PGL_WITH_ANN
     std::vector<std::pair<uint32_t,uint32_t> > intersectionpair;
     GeometryArrayPtr intersectionresult(new GeometryArray());
     Point3ArrayPtr centroids = centroids_of_groups(points, triangles);

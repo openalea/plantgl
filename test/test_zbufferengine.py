@@ -13,8 +13,8 @@ def test_teapot(view = False):
     t = Tesselator()
     s.apply(t)
     tr = t.result
-    cam = (1000,0,0)
-    z = ZBufferEngine(800,800)
+    cam = (200,0,0)
+    z = ZBufferEngine(800,800, renderingStyle=eIdBased)
     z.setPerspectiveCamera(60,1,0.1,1000)
     z.lookAt(cam,(0,0,0),(0,0,1))
     z.multithreaded = MT
@@ -112,5 +112,26 @@ def test_tri(view = False):
         plt.show()
 
 
+def test_projected_sphere(view = False):
+    s = Scene([Shape(ScreenProjected(Sphere(0.5,32,32)),Material((100,50,200)),2)])
+    #s = Scene([Shape(Sphere(0.5,32,32),Material((100,50,200)),2)])
+    cam = (5,0,0)
+    z = ZBufferEngine(800,600)
+    z.setPerspectiveCamera(60,4/3.,0.1,1000)
+    #z.setOrthographicCamera(-1, 1, -1, 1, 0, 10)
+    z.lookAt(cam,(0,0,0),(0,0,1))
+    z.multithreaded = MT
+    print(z.getBoundingBoxView())
+    print('render')
+    z.process(s)
+    print('getImage')
+    i = z.getImage()
+
+    if view:
+        plt.imshow(i.to_array())
+        plt.show()
+
+
 if __name__ == '__main__':
-    test_teapot()
+    test_projected_sphere(True)
+    #test_projected_sphere(True)

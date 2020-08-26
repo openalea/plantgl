@@ -52,10 +52,10 @@ using namespace boost::python;
 #define bp boost::python
 
 
-#ifdef WITH_LAPACK
+#ifdef PGL_WITH_LAPACK
 #   define CGAL_AND_SVD_SOLVER_ENABLED
 #else
-#ifdef WITH_EIGEN
+#ifdef PGL_WITH_EIGEN
 #   define CGAL_AND_SVD_SOLVER_ENABLED
 #endif
 #endif
@@ -236,7 +236,7 @@ boost::python::object py_select_pole_from_point(const Point3ArrayPtr& points, co
 	return make_pair_tuple(select_pole_from_point(points, startPoint, iterations, maxAngle));
 }
 
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
 boost::python::object py_pointset_plane(const Point3ArrayPtr points, const Index &group) {
   return make_pair_tuple(pointset_plane(points, group));
 }
@@ -260,12 +260,12 @@ void export_PointManip() {
   def("select_pole_points_mt", &py_select_pole_points_mt, (bp::arg("point"), bp::arg("radius"), bp::arg("iterations"), bp::arg("tolerance") = -1.0));
   def("select_pole_from_point", &py_select_pole_from_point, (bp::arg("points"), bp::arg("startPoint"), bp::arg("iterations"), bp::arg("maxAngle")));
 
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
   def("delaunay_point_connection", &delaunay_point_connection, args("points"));
   def("delaunay_triangulation", &delaunay_triangulation, args("points"));
   def("k_closest_points_from_delaunay", &k_closest_points_from_delaunay, args("points", "k"));
 #endif
-#ifdef WITH_ANN
+#ifdef PGL_WITH_ANN
   def("k_closest_points_from_ann", &k_closest_points_from_ann, (bp::arg("points"), bp::arg("k"), bp::arg("symmetric") = false));
 #endif
 
@@ -301,7 +301,7 @@ void export_PointManip() {
   def("density_from_k_neighborhood", &density_from_k_neighborhood, (bp::arg("pid"), bp::arg("points"), bp::arg("adjacencies"), bp::arg("k") = 0), "Compute density of a point according to its k neighboordhood. If k is 0, its value is deduced from adjacencies.");
   def("densities_from_k_neighborhood", &densities_from_k_neighborhood, (bp::arg("points"), bp::arg("adjacencies"), bp::arg("k") = 0), "Compute local densities of a set of points according to their k neighboordhood. If k is 0, its value is deduced from adjacencies.");
 
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
   def("pointset_plane", &py_pointset_plane, args("points", "group"));
   def("pointset_orientation", &pointset_orientation, args("points", "group"));
   def("pointsets_orientations", &pointsets_orientations, args("points", "groups"));

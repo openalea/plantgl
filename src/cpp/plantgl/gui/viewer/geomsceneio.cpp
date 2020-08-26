@@ -355,7 +355,7 @@ ViewGeomSceneGL::openGeomViewFile()
 void
 ViewGeomSceneGL::openLinetree()
 {
-  openLinetree(QString::null);
+  openLinetree(QString());
 }
 
 
@@ -814,7 +814,7 @@ ViewGeomSceneGL::saveNotSelection()
 bool
 ViewGeomSceneGL::saveAsGeom(const QString& filename)
 {
-  return saveScene(filename,QString::null,QString::null,__scene);
+  return saveScene(filename,QString(),QString(),__scene);
 }
 
 bool
@@ -852,7 +852,7 @@ ViewGeomSceneGL::saveAs(const QString& filename){
 class GeomDialog : public QFileDialog {
 public :
   GeomDialog( const QString & initial,
-              const QString & filter = QString::null,
+              const QString & filter = QString(),
               QWidget * parent=0,
               const char * name = 0,
               bool modal = true ) :
@@ -877,7 +877,7 @@ protected:
 bool
 ViewGeomSceneGL::getGeomFilenames(QString& shape,QString& geom, QString& mat)
 {
-  shape = QString::null;
+  shape = QString();
   QString initial = getFilename();
   QString extension=getFilename().right(getFilename().length()-getFilename().lastIndexOf('.')-1);
   extension= extension.toUpper();

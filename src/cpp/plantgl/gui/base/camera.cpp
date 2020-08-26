@@ -1234,28 +1234,10 @@ ViewCameraGL::fillToolBar(QToolBar * toolBar)
 {
   QPixmap home(ViewerIcon::getPixmap(ViewerIcon::home));
   QPixmap persp(ViewerIcon::getPixmap(ViewerIcon::perspective));
-  QPixmap eye(ViewerIcon::getPixmap(ViewerIcon::eye));
-  QPixmap eyef(ViewerIcon::getPixmap(ViewerIcon::eyef));
-  drawArrow(&eye,2);
-  QBitmap mask=eye.mask();
-  drawArrow(&mask,2);
   QAction * bt = toolBar->addAction(home,tr("Home Position"),this, SLOT(home()));
   bt->setWhatsThis(tr("<b>Home Position</b><br><br>"
     "Set the view to the Initial Position.<br>"
     "You can also use Menu <br><b>Tools > Camera > Home</b><br>"));
-
-  bt = toolBar->addAction(eye,tr("Camera Position"));
-  QMenu * selctmenu = new QMenu(toolBar);
-  selctmenu->addAction(tr("Front View (YZ)"),this,SLOT(YZView()));
-  selctmenu->addAction(tr("Right View (XZ)"),this,SLOT(XZView()));
-  selctmenu->addAction(tr("Top View (XY)"),this,SLOT(XYView()));
-  bt->setMenu(selctmenu);
-  // bt2->setPopupDelay(0);
-
-  bt = toolBar->addAction(eyef,tr("Fit to Window"),this, SLOT(reDim()));
-  bt->setWhatsThis(tr("<b>Fit to Window</b><br><br>"
-    "Set the view to fit the scene.<br>"
-    "You can also use Menu <br><b>Tools > Camera > Fit to Window</b><br>"));
 
   bt = toolBar->addAction(persp,tr("Perspective Camera"),
                          this, SLOT(changeCameraMode()));
@@ -1268,7 +1250,30 @@ ViewCameraGL::fillToolBar(QToolBar * toolBar)
    bt->setCheckable(true) ;
    bt->setChecked(__projectionmode);
    QObject::connect(this,SIGNAL(projectionChanged(bool)),bt,SLOT(setChecked(bool)));
-   toolBar->addSeparator();
+}
+
+void
+ViewCameraGL::fillToolBarAdditionnal(QToolBar * toolBar)
+{
+  QPixmap eye(ViewerIcon::getPixmap(ViewerIcon::eye));
+  QPixmap eyef(ViewerIcon::getPixmap(ViewerIcon::eyef));
+  drawArrow(&eye,2);
+  QBitmap mask=eye.mask();
+  drawArrow(&mask,2);
+
+  QAction * bt = toolBar->addAction(eye,tr("Camera Position"));
+  QMenu * selctmenu = new QMenu(toolBar);
+  selctmenu->addAction(tr("Front View (YZ)"),this,SLOT(YZView()));
+  selctmenu->addAction(tr("Right View (XZ)"),this,SLOT(XZView()));
+  selctmenu->addAction(tr("Top View (XY)"),this,SLOT(XYView()));
+  bt->setMenu(selctmenu);
+  // bt2->setPopupDelay(0);
+
+  bt = toolBar->addAction(eyef,tr("Fit to Window"),this, SLOT(reDim()));
+  bt->setWhatsThis(tr("<b>Fit to Window</b><br><br>"
+    "Set the view to fit the scene.<br>"
+    "You can also use Menu <br><b>Tools > Camera > Fit to Window</b><br>"));
+
 }
 
 void ViewCameraGL::save() const

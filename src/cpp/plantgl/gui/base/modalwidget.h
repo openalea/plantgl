@@ -75,6 +75,7 @@ public :
 
    void fill(QMenu * menu) const;
    void fill(QToolBar * menu) const;
+   void fillAdditionnal(QToolBar * menu) const;
 
 public slots:
 

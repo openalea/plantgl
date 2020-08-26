@@ -235,7 +235,6 @@ public:
   Vector3 scale;
   Vector3 reflection;
 
-  uint_t lastId;
   real_t width;
 
   Point3ArrayPtr pointList;
@@ -244,6 +243,7 @@ public:
 
   uint_t customId;
   uint_t customParentId;
+  uint_t lastId;
 
   uint_t sectionResolution;
 

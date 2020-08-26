@@ -38,8 +38,8 @@ endif()
 
 if (QHULL_FOUND)
     # Build with Qhull
-    define_macro(WITH_QHULL 1)
-    define_macro(WITH_QHULL_2011 1)
+    define_cpp_macro(PGL_WITH_QHULL 1)
+    define_cpp_macro(PGL_WITH_QHULL_2011 1)
     define_py_macro(PGL_WITH_QHULL "True")
     
     include_directories(${QHULL_INCLUDE_DIRS})

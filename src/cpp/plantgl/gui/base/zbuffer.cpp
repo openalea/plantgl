@@ -207,6 +207,89 @@ ViewZBuffer::importglZBufferPoints(bool invertalpha) {
             itercolvalues+=4;
         }
     }
+    delete [] zvalues;
+    delete [] colvalues;
+    return std::pair<Point3ArrayPtr,Color4ArrayPtr> (points, colors);
+}
+
+std::pair<Point3ArrayPtr,Color4ArrayPtr>
+ViewZBuffer::importglZBufferPointsWithJitter(real_t jitter, int raywidth, bool invertalpha) {
+    GLint viewport[4];
+    glGetIntegerv(GL_VIEWPORT,viewport);
+    int width = viewport[2];
+    int height = viewport[3];
+
+    float  * zvalues = new float[width*height];
+    uchar  * colvalues = new uchar[4*width*height];
+
+    glReadPixels(0,0,width,height,GL_DEPTH_COMPONENT, GL_FLOAT, zvalues);
+    glReadPixels(0,0,width,height,GL_RGBA, GL_UNSIGNED_BYTE, colvalues);
+
+    GLdouble modelMatrix[16], projMatrix[16];
+    glGetDoublev(GL_MODELVIEW_MATRIX,modelMatrix);
+    glGetDoublev(GL_PROJECTION_MATRIX,projMatrix);
+    GLdouble objx, objy, objz;
+
+    Point3ArrayPtr points(new Point3Array());
+    Color4ArrayPtr colors(new Color4Array());
+
+
+    std::vector<Vector3 *> pointmatrix(width*height,NULL);
+    std::vector<Color4 *> colormatrix(width*height,NULL);
+
+    GLdouble originx, originy, originz;
+    geomUnProject(0,0,0, modelMatrix, projMatrix, viewport, &originx,&originy, &originz);
+    Vector3 origin;
+    printf("%f %f %f\n", originx, originy, originz);
+    float  * iterzvalues = zvalues;
+    uchar  * itercolvalues = colvalues;
+    for(int i = 0; i < height; ++i){
+        for (int j = 0; j < width; ++j){
+            if ( 0 < *iterzvalues && *iterzvalues < 1) {
+                if( geomUnProject(j,i, (GLdouble)*iterzvalues, modelMatrix, projMatrix, viewport, &objx,&objy, &objz) ){
+                    Vector3 pos(objx,objy,objz);
+                    pointmatrix[i*width+j] = new Vector3(pos);
+                    colormatrix[i*width+j] = new Color4(*itercolvalues,itercolvalues[1],
+                                               itercolvalues[2],invertalpha?255-itercolvalues[3]:itercolvalues[3]);
+                }
+            }
+            ++iterzvalues;
+            itercolvalues+=4;
+        }
+    }
+    for(int i = 0; i < height; ++i){
+        for (int j = 0; j < width; ++j){
+            if (pointmatrix[i*width+j] != NULL) {
+                uint_t count = 0;
+                Vector3 sumvec;
+                int red = 0;
+                int green = 0;
+                int blue = 0;
+                int alpha = 0;
+                for (int ii = pglMax(0,i-raywidth); ii <= pglMin(height-1,i+raywidth); ++ii){
+                    for (int jj = pglMax(0,j-raywidth); jj <= pglMin(width-1,j+raywidth); ++jj){
+                        if (pointmatrix[ii*width+jj] != NULL) {
+                            sumvec += *pointmatrix[ii*width+jj];
+                            Color4& ccol = *colormatrix[ii*width+jj];
+                            red += ccol.getRed(); green += ccol.getGreen(); blue += ccol.getBlue(); alpha += ccol.getAlpha();
+                            ++count;
+                        }
+                    }
+                }
+                sumvec /= count;
+                if (jitter > 0) {
+                    Vector3 nml = sumvec-origin;
+                    real_t n = norm(nml);
+                    if(n > GEOM_EPSILON){
+                        nml /= n;
+                        sumvec += nml*jitter*(-1+2.*(rand()/double(RAND_MAX)));
+                    }
+                }
+                points->push_back(sumvec);
+                colors->push_back(Color4(red/count,green/count,blue/count,alpha/count));
+            }
+        }
+    }
     // std::cerr << "done." << std::endl;
     delete [] zvalues;
     delete [] colvalues;

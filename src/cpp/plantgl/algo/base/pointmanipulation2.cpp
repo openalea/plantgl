@@ -46,7 +46,7 @@
 PGL_USING_NAMESPACE
 
 
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
 
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/Triangulation_vertex_base_with_info_3.h>
@@ -55,10 +55,10 @@ PGL_USING_NAMESPACE
 
 #include "cgalwrap.h"
 
-# ifdef WITH_EIGEN
+# ifdef PGL_WITH_EIGEN
 #   define CGAL_AND_SVD_SOLVER_ENABLED
 # else
-#  ifdef WITH_LAPACK
+#  ifdef PGL_WITH_LAPACK
 #   define CGAL_AND_SVD_SOLVER_ENABLED
 #  endif
 
@@ -81,7 +81,7 @@ PGL_USING_NAMESPACE
 
 IndexArrayPtr
 PGL::delaunay_point_connection(const Point3ArrayPtr points) {
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
 
   typedef CGAL::Exact_predicates_inexact_constructions_kernel TK;
   typedef CGAL::Triangulation_vertex_base_with_info_3<uint32_t, TK> TVb;
@@ -125,7 +125,7 @@ PGL::delaunay_point_connection(const Point3ArrayPtr points) {
 
 Index3ArrayPtr
 PGL::delaunay_triangulation(const Point3ArrayPtr points) {
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
 
   typedef CGAL::Exact_predicates_inexact_constructions_kernel TK;
   typedef CGAL::Triangulation_vertex_base_with_info_3<uint32_t, TK> TVb;
@@ -173,14 +173,14 @@ PGL::delaunay_triangulation(const Point3ArrayPtr points) {
 }
 
 
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
 
 #include <CGAL/linear_least_squares_fitting_3.h>
 
 #endif
 
 std::pair<Vector3, Vector3> PGL::pointset_plane(const Point3ArrayPtr points, const Index &group) {
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
   typedef CGAL::Cartesian<real_t> CK;
   typedef CK::Point_3 CPoint;
   typedef CK::Plane_3 CPlane;
@@ -211,7 +211,7 @@ std::pair<Vector3, Vector3> PGL::pointset_plane(const Point3ArrayPtr points, con
 }
 
 Vector3 PGL::pointset_orientation(const Point3ArrayPtr points, const Index &group) {
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
   typedef CGAL::Cartesian<real_t> CK;
   typedef CK::Point_3 CPoint;
   typedef CK::Line_3 CLine;
@@ -239,7 +239,7 @@ Vector3 PGL::pointset_orientation(const Point3ArrayPtr points, const Index &grou
 
 ALGO_API Vector3
 PGL::triangleset_orientation(const Point3ArrayPtr points, const Index3ArrayPtr triangles) {
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
   typedef CGAL::Cartesian<real_t> CK;
   typedef CK::Point_3 CPoint;
   typedef CK::Line_3 CLine;
@@ -331,7 +331,7 @@ PGL::principal_curvatures(const Point3ArrayPtr points, const IndexArrayPtr adjac
 }
 
 Vector3 PGL::pointset_normal(const Point3ArrayPtr points, const Index &group) {
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
   typedef CGAL::Cartesian<real_t> CK;
   typedef CK::Point_3 CPoint;
   typedef CK::Plane_3 CPlane;
@@ -383,7 +383,7 @@ real_t mean_over(const Point3ArrayPtr points, const Index &section, int i, int j
 }
 
 
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
 #if CGAL_VERSION_NR > 1040800000
 
 #ifdef CGAL_EIGEN3_ENABLED
@@ -401,7 +401,7 @@ real_t mean_over(const Point3ArrayPtr points, const Index &section, int i, int j
 #endif
 
 Vector3 PGL::section_normal(const Point3ArrayPtr pointnormals, const Index &section) {
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
 
 
   real_t mx = mean_over(pointnormals, section, 0);

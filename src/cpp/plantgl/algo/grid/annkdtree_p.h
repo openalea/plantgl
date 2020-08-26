@@ -50,7 +50,7 @@
 #include <plantgl/scenegraph/container/pointarray.h>
 #include <plantgl/scenegraph/container/indexarray.h>
 
-#ifdef WITH_ANN
+#ifdef PGL_WITH_ANN
 #include <ANN/ANN.h>
 #endif
 
@@ -60,7 +60,7 @@ PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-#ifdef WITH_ANN
+#ifdef PGL_WITH_ANN
 
 template<class VectorType>
 inline void toANNPoint(const VectorType& v, ANNpoint& point)

@@ -95,6 +95,9 @@ public:
   /// Fill a toolBar that reflect the functionality of this.
   virtual void fillToolBar(QToolBar * toolBar);
 
+  /// Fill a toolBar that reflect the functionality of this.
+  virtual void fillToolBarAdditionnal(QToolBar * toolBar);
+
   /// Connect this to a statusbar.
   virtual void connectTo(ViewStatusBar *);
 

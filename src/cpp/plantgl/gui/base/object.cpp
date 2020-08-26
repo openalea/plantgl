@@ -134,6 +134,10 @@ void ViewObjectGL::fillToolBar(QToolBar * toolBar)
 {
 }
 
+void ViewObjectGL::fillToolBarAdditionnal(QToolBar * toolBar)
+{
+}
+
 void
 ViewObjectGL::connectTo(ViewStatusBar * s)
 {

@@ -1,6 +1,6 @@
-name: openalea-doc
+name: plantgl-doc
 channels:
-  - openalea
+  - fredboudon
+  - conda-forge
 dependencies:
-  - openalea.misc
-  - vplants.plantgl
+  - openalea.plantgl

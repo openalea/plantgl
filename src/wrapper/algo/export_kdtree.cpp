@@ -66,7 +66,7 @@ class kdtree_func : public boost::python::def_visitor<kdtree_func<KDTreeN> >
     }
 };
 
-#ifdef WITH_ANN
+#ifdef PGL_WITH_ANN
 
 KDTree2Ptr init_kdtree2(const Point2ArrayPtr points) { return KDTree2Ptr(new ANNKDTree2(points)); }
 KDTree3Ptr init_kdtree3(const Point3ArrayPtr points) { return KDTree3Ptr(new ANNKDTree3(points)); }
@@ -85,7 +85,7 @@ void export_KDtree()
   class_< AbstractKDTree4, KDTree4Ptr, boost::noncopyable > ("AbstractKDTree4", no_init )
      .def(kdtree_func<AbstractKDTree4>());
 
-#ifdef WITH_ANN
+#ifdef PGL_WITH_ANN
 
   class_< ANNKDTree2, ANNKDTree2Ptr, bases<AbstractKDTree2>, boost::noncopyable >
       ("ANNKDTree2", init<Point2ArrayPtr>("Construct a KD-Tree from a set of 2D points.") );

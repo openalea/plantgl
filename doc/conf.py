@@ -28,7 +28,7 @@ from hexversion import HexVersion
 
 def getMetaInfo():
     metainfo = {}
-    execfile(os.path.join(os.pardir, 'src','openalea','plantgl','__init__.py'),{},metainfo)
+    exec(open(os.path.join(os.pardir, 'src','openalea','plantgl','__init__.py')).read(),{},metainfo)
     return metainfo['__metainfo__']
 
 globals().update(getMetaInfo())
@@ -97,7 +97,7 @@ html_theme_path = ["_themes"]
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+# html_static_path = ['_static']
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
@@ -147,7 +147,7 @@ latex_documents = [('contents', 'main.tex', namespace + ' documentation', author
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'plantgl', u'Plantgl Documentation',
+    (master_doc, 'PlantGL', u'PlantGL Documentation',
      [author], 1)
 ]
 
@@ -158,7 +158,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'Plantgl', u'Plantgl Documentation',
-     author, 'Plantgl', description,
+    (master_doc, 'PlantGL', u'PlantGL Documentation',
+     author, 'PlantGL', description,
      'Miscellaneous'),
 ]

@@ -51,6 +51,7 @@
 #include <plantgl/gui/viewer/editgeomscenegl.h>
 #include <plantgl/gui/base/zbuffer.h>
 #include <plantgl/gui/base/appbuilder.h>
+#include <plantgl/gui/base/simpleappli.h>
 
 PGL_USING_NAMESPACE
 using namespace boost::python;
@@ -332,6 +333,11 @@ boost::python::object grabZBufferPoints(){
     return boost::python::make_tuple(bufpoints.first,bufpoints.second);
 }
 
+boost::python::object grabZBufferPoints2(float jitter, int raywidth){
+    std::pair<Point3ArrayPtr,Color4ArrayPtr> bufpoints = ViewerApplication::grabZBufferPointsWithJitter(jitter,raywidth);
+    return boost::python::make_tuple(bufpoints.first,bufpoints.second);
+}
+
 boost::python::object getProjectionSize(){
     int nbpix;
     double pixwidth;
@@ -470,6 +476,8 @@ bool pyDialogAbortFunc() {
     }
 }
 
+
+
 void pySetDialogAbortFunc(boost::python::object func) {
     if(__PYABORTFUNC) delete __PYABORTFUNC;
     if (func == boost::python::object()) {
@@ -479,6 +487,29 @@ void pySetDialogAbortFunc(boost::python::object func) {
     else {
         __PYABORTFUNC = new boost::python::object(func);
         ViewerApplication::setAborter(&pyDialogAbortFunc);
+    }
+}
+
+static boost::python::object * __PYQAPPINITIATOR = NULL;
+
+void pyQAppInitiator() {
+    if(!__PYQAPPINITIATOR)return ;
+    else {
+        try{
+            (*__PYQAPPINITIATOR)();
+        }
+        catch(bp::error_already_set) { PyErr_Print(); PyErr_Clear(); }
+    }
+}
+void py_register_qapp_initiator(boost::python::object func) {
+    if(__PYQAPPINITIATOR) delete __PYQAPPINITIATOR;
+    if (func == boost::python::object()) {
+        __PYQAPPINITIATOR = NULL;
+        register_qapp_initiator(NULL);
+    }
+    else {
+        __PYQAPPINITIATOR = new boost::python::object(func);
+        register_qapp_initiator(&pyQAppInitiator);
     }
 }
 
@@ -557,6 +588,7 @@ void export_viewer()
 
   def("getMaterialFromDialog", pyGetMaterialFromDialog, pyGetMaterialFromDialog_overloads());
   def("editMaterialInDialog", pyEditMaterialInDialog, pyEditMaterialInDialog_overloads());
+  def("pgl_register_qapp_initiator",&py_register_qapp_initiator);
 
   scope viewer = class_< PGLViewerApplication >("Viewer", no_init )
     .add_static_property("selection",&selection,&setMSelection)
@@ -617,6 +649,7 @@ void export_viewer()
   export_framegl();
   export_widgetgeometry();
   export_light();
+
 
 }
 
@@ -748,6 +781,7 @@ void export_framegl(){
     .def("grabZBuffer",&grabZBuffer  ,"grabZBuffer(allvalues = False)", args("allvalues") )
     .staticmethod("grabZBuffer")
     .def("grabZBufferPoints",&grabZBufferPoints )
+    .def("grabZBufferPoints",&grabZBufferPoints2, "grabZBufferPoints(jitter, raywidth)" )
     .staticmethod("grabZBufferPoints")
     .def("getProjectionSize",&getProjectionSize,"return projected_size,pixel_nb,pixel_size : compute the projected size of the displayed scene onto the current camera." )
     .staticmethod("getProjectionSize")

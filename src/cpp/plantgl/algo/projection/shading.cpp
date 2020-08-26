@@ -160,9 +160,24 @@ ColorBasedShader::~ColorBasedShader() {}
 
 void ColorBasedShader::init(AppearancePtr appearance, TriangleSetPtr triangles, uint32_t trid, uint32_t shapeid, const ProjectionCameraPtr& camera)
 { 
-    c0 =  triangles->getFaceColorAt(trid,0);
-    c1 =  triangles->getFaceColorAt(trid,1);
-    c2 =  triangles->getFaceColorAt(trid,2);
+    if (triangles->hasColorList()) {
+        c0 =  triangles->getFaceColorAt(trid,0);
+        c1 =  triangles->getFaceColorAt(trid,1);
+        c2 =  triangles->getFaceColorAt(trid,2);
+    }
+    else {
+        MaterialPtr material = dynamic_pointer_cast<Material>(appearance);
+        if(is_valid_ptr(material)) {
+            c0 = material->getAmbient();
+            c1 = material->getAmbient();
+            c2 = material->getAmbient();
+        }
+        else {
+            c0 = Color3::BLACK;
+            c1 = Color3::BLACK;
+            c2 = Color3::BLACK;
+        }
+    }
 }
 
 TriangleShader *  ColorBasedShader::copy(bool deep) const

@@ -102,9 +102,9 @@ public:
    */
   ~ViewSysInfo();
 
-  QTreeWidgetItem* addItem(const QString& name = QString::null, const QString& val = QString::null);
+  QTreeWidgetItem* addItem(const QString& name = QString(), const QString& val = QString());
 
-  QTreeWidgetItem* addItem(const QPixmap& pix, const QString& name = QString::null, const QString& val = QString::null);
+  QTreeWidgetItem* addItem(const QPixmap& pix, const QString& name = QString(), const QString& val = QString());
 
   static const char * tools_logo[34];
 

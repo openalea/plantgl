@@ -22,7 +22,7 @@ endif()
 
 if (ANN_FOUND)
     # Build with ANN
-    define_macro(WITH_ANN 1)
+    define_cpp_macro(PGL_WITH_ANN 1)
     define_py_macro(PGL_WITH_ANN "True")
     
     include_directories(${ANN_INCLUDE_DIRS})

@@ -104,7 +104,7 @@ typedef RCPtr<AbstractKDTree2>       KDTree2Ptr;
 typedef RCPtr<AbstractKDTree3>       KDTree3Ptr;
 typedef RCPtr<AbstractKDTree4>       KDTree4Ptr;
 
-#ifdef WITH_ANN
+#ifdef PGL_WITH_ANN
 
 class ANNKDTree2Internal;
 class ANNKDTree3Internal;

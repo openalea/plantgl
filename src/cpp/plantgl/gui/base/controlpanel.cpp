@@ -101,7 +101,7 @@ ViewControlPanel::ViewControlPanel( ViewGLFrame * _glframe,
     // qDebug((QString::number(size().width())+" x "+QString::number(height())).toAscii().data());
 
     QPixmap logo(ViewerIcon::getPixmap(ViewerIcon::logobar));
-    __panel->mLogoButton->setIcon(QIcon(logo));
+    __panel->mLogoButton->setIcon(QIcon(logo)); 
     __panel->mLogoButton->setIconSize(logo.size());
     QObject::connect(__panel->mLogoButton,SIGNAL(clicked(bool)),mw,SLOT(displayAbout()));
 

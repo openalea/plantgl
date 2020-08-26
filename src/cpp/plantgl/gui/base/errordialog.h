@@ -148,6 +148,7 @@ private:
 
   QStringList __listmessage;
   bool __displaylock;
+  bool __registered;
 #ifdef QT_THREAD_SUPPORT
   QMutex __mutexlock;
 #endif

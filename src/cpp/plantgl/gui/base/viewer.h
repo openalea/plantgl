@@ -137,9 +137,9 @@ public:
   void send(QEvent * e) ;
 
   void question(const QString& caption, const QString& text,
-                const QString& but0txt = QString::null,
-                const QString& but1txt = QString::null,
-                const QString& but2txt = QString::null,
+                const QString& but0txt = QString(),
+                const QString& but1txt = QString(),
+                const QString& but2txt = QString(),
                 int * result = NULL);
 
   void itemSelection(const QString& caption, const QString& text,
@@ -166,6 +166,9 @@ public:
 
   typedef bool (* DialogAborter)();
   inline void setAborter(DialogAborter aborter) { __aborter = aborter; }
+      
+  inline void setStandAlone(bool v) { __standalone = v;  }
+  inline bool isStandAlone() const { return __standalone; }
 
 signals:
   void closing();
@@ -307,6 +310,8 @@ private:
   ViewerDaemon * __service;
 
   bool __focusAtRefresh;
+
+  bool __standalone;
 
   DialogAborter __aborter;
 

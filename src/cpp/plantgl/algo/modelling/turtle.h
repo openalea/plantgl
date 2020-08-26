@@ -49,12 +49,31 @@
 
 PGL_BEGIN_NAMESPACE
 
+
+class ALGO_API PushPopHandler : public RefCountObject {
+public:
+    PushPopHandler() { }
+
+    virtual ~PushPopHandler();
+
+    virtual void pushEvent() { }
+
+    virtual void popEvent() { }
+
+};
+
+typedef RCPtr<PushPopHandler> PushPopHandlerPtr;
+typedef std::vector<PushPopHandlerPtr> PushPopHandlerList;
+
+
 /// Turtle class allow rotation, displacement and drawing operation
 class ALGO_API Turtle {
 public:
     typedef void (* error_msg_handler_func) ( const std::string& );
     static void register_error_handler(error_msg_handler_func f = NULL);
     static void register_warning_handler(error_msg_handler_func f = NULL);
+
+    void registerPushPopHandler(PushPopHandlerPtr handler);
 
     Turtle(TurtleParam * params = NULL);
     virtual ~Turtle();
@@ -373,7 +392,10 @@ public:
     virtual void surface(const std::string& name, real_t scale=1);
 
     inline void frame() { frame(default_step); }
-    virtual void frame(real_t heigth, real_t cap_heigth_ratio = 0.2, real_t cap_radius_ratio = 2, real_t color = 1.0, real_t transparency = 0.0);
+    virtual void frame(real_t heigth, real_t cap_heigth_ratio = 0.2, real_t cap_radius_ratio = 2, real_t colorV = 1.0, real_t transparency = 0.0);
+
+    inline void arrow() { arrow(default_step); }
+    virtual void arrow(real_t heigth, real_t cap_heigth_ratio = 0.2, real_t cap_radius_ratio = 2);
 
     inline void setTextureScale(real_t u, real_t v) { setTextureScale(Vector2(u,v)); }
     virtual void setTextureScale(const Vector2& s);
@@ -502,6 +524,8 @@ protected:
 
     virtual void _frame(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius_ratio, real_t color, real_t transparency) { }
 
+    virtual void _arrow(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius_ratio) { }
+
     virtual void _label(const std::string& text, int size = -1){}
 
     TurtleParam& getParameters()
@@ -530,6 +554,7 @@ protected:
 
     PathInfoMap __pathinfos;
 
+    PushPopHandlerList __pushpophandlerlist;
 
 };
 

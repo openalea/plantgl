@@ -143,6 +143,9 @@ public:
     /// import depth and color points
     static std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)> importglZBufferPoints(bool invertalpha = true);
 
+    /// import depth and color points
+    static std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)> importglZBufferPointsWithJitter(real_t jitter = 0, int raywidth = 0, bool invertalpha = true);
+
 };
 
 

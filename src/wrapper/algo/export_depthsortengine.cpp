@@ -52,7 +52,7 @@ using namespace std;
 
 void export_DepthSortEngine()
 {
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
 
   class_< DepthSortEngine, bases<ProjectionEngine>, boost::noncopyable >
       ("DepthSortEngine", init<>("Construct a DepthSortEngine.") )

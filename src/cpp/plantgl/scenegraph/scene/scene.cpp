@@ -100,6 +100,20 @@ Scene::Scene(const Scene& scene) :
   GEOM_ASSERT(isValid());
 }
 
+Scene::Scene(const Scene::const_iterator begin, const Scene::const_iterator end) :
+  RefCountObject()
+{
+#ifdef PGL_THREAD_SUPPORT
+   __mutex = new PglMutex();
+#endif
+#ifdef WITH_POOL
+      POOL.registerScene(this);
+#endif
+  __shapeList = std::vector<Shape3DPtr>(begin, end);
+  GEOM_ASSERT(isValid());
+}
+
+
 Scene& Scene::operator=( const Scene& scene){
   lock();
   scene.lock();
@@ -247,14 +261,19 @@ void Scene::remove( const Shape3DPtr& shape )
     Scene::iterator it = begin();
     lock();
     while(it != end() && *it != shape)++it;
-    if(it != end())remove(it);
+    if(it != end())__shapeList.erase(it);
     unlock();
 }
 
-void Scene::remove( Scene::iterator& it )
+void Scene::erase( Scene::iterator it )
 {
-  __shapeList.erase(it);
+   __shapeList.erase(it);
 }
+
+ void Scene::erase( Scene::iterator itbeg, Scene::iterator itend )
+ {
+    __shapeList.erase(itbeg, itend);
+ }
 
 /* ----------------------------------------------------------------------- */
 

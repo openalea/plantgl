@@ -8,6 +8,8 @@ add_library(_pglmath SHARED ${SRC_FILES})
 
 target_link_libraries(_pglmath pglmath)
 
+pglwrapper_link_boost(_pglmath)
+
 pglwrapper_link_python(_pglmath)
 
 # --- Dependencies

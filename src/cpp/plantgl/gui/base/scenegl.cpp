@@ -331,8 +331,8 @@ ViewRendererGL::checkFileModification()
 void
 ViewRendererGL::clear()
 {
-  if(__filename != QString::null){
-    __filename = QString::null;
+  if(__filename != QString()){
+    __filename = QString();
     emit filenameChanged(__filename);
   }
 }

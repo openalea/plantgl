@@ -350,7 +350,7 @@ ViewHelpMenu::generalInfo()
 #endif
   item = new QTreeWidgetItem( itemF, item );
   item->setText( 0, tr( "Using Glut" ) );
-#ifdef WITH_GLUT
+#ifdef PGL_WITH_GLUT
   text = "True";
 #else
   text = "False";
@@ -373,7 +373,7 @@ ViewHelpMenu::generalInfo()
   itemF = a.addItem(tr("Flex"));
   item = new QTreeWidgetItem( itemF );
   item->setText( 0, tr( "Version" ) );
-#ifdef WITH_BISONFLEX
+#ifdef PGL_WITH_BISONFLEX
   item->setText( 1, QString(lexerVersion().c_str())  );
 #else
   item->setText( 1, "Disabled"  );

@@ -732,7 +732,7 @@ bool Tesselator::process( Polyline2D * polyline ){
 }
 
 /* ------------------------------------------------------------------------*/
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
 
 #include <CGAL/basic.h>
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
@@ -758,7 +758,7 @@ typedef CGAL::Random_points_in_square_2<Point_2, Creator>   Point_generator;
 
 
 bool PGL(is_simple_polygon)(Point2ArrayPtr contour){
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
    Polygon_2    polygon;
    for(Point2Array::const_iterator it = contour->begin(); it != contour->end(); ++it)
         polygon.push_back(Point_2(it->x(), it->y()));
@@ -776,7 +776,7 @@ bool PGL(is_simple_polygon)(Point2ArrayPtr contour){
 
 IndexArrayPtr PGL(polygonization)(Point2ArrayPtr contour, TriangulationMethod method)
 {
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
     if (method == eStarTriangulation) {
 #endif
         size_t s = contour->size();
@@ -785,7 +785,7 @@ IndexArrayPtr PGL(polygonization)(Point2ArrayPtr contour, TriangulationMethod me
         for (int i=0; i < s; i++)  ind.setAt(i,i);
         iarray->setAt(0,ind);
         return iarray;
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
     }
     else {
    Polygon_2    polygon;

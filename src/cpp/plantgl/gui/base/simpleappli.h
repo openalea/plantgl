@@ -47,6 +47,10 @@
 
 class QApplication;
 
+typedef void (* qapp_initiator_func) ( ); 
+
+VIEW_API void register_qapp_initiator(qapp_initiator_func initiator);
+
 class ViewerSimpleAppli : public ViewerAppliInternal {
 public:
     ViewerSimpleAppli();

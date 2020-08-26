@@ -48,14 +48,14 @@
 
 PGL_USING_NAMESPACE
 
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
 #include <CGAL/basic.h>
 #include <CGAL/Cartesian.h>
 #include <CGAL/Arr_segment_traits_2.h>
 #include <CGAL/Arrangement_2.h>
 #include <CGAL/Arr_overlay_2.h>
 #include <CGAL/Arr_default_overlay_traits.h>
-#ifdef CGAL_USE_GMP
+#ifdef PGL_CGAL_USE_GMP
   // GMP is installed. Use the GMP rational number-type.
   #include <CGAL/Gmpq.h>
   typedef CGAL::Gmpq                                    Number_type;
@@ -89,7 +89,7 @@ GeometryPtr
 Overlay::process(const Polyline2DPtr& p1, const Polyline2DPtr& p2)
 {
     if (!p1 || !p2 || p1->getPointListSize() < 2 || p2->getPointListSize() < 2) return GeometryPtr();
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
 
   // Construct the first arrangement, containing a polyline 1.
   Arrangement_2          arr1;
@@ -179,14 +179,14 @@ Overlay::process(const Polyline2DPtr& p1, const Polyline2DPtr& p2)
 
 }
 
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
 #include <CGAL/Sweep_line_2_algorithms.h>
 #endif
 
 Point2ArrayPtr
 CurveIntersection::compute(const std::vector<Polyline2DPtr>& lines)
 {
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
    // Construct the first arrangement, containing a polyline 1.
     std::list<Segment_2>   arrs;
    // std::vector<Segment_2> segments;
@@ -219,7 +219,7 @@ CurveIntersection::compute(const std::vector<Polyline2DPtr>& lines)
 bool
 CurveIntersection::check(const std::vector<Polyline2DPtr>& lines)
 {
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
    // Construct the first arrangement, containing a polyline 1.
     std::list<Segment_2>   arrs;
    // std::vector<Segment_2> segments;
@@ -246,7 +246,7 @@ CurveIntersection::check(const std::vector<Polyline2DPtr>& lines)
 
 }
 
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
 
 typedef Kernel::Ray_3 CGALRay3;
 typedef Kernel::Point_3 CGALPoint_3 ;
@@ -260,7 +260,7 @@ inline CGALSegment_3 toSegment3(const Vector3& u, const Vector3& v) { return CGA
 
 real_t raySegmentDistance(const Ray& ray, const Vector3& segA,const Vector3& segB)
 {
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
     Kernel::Compute_squared_distance_3 distcomputer;
     return to_double(distcomputer(CGALRay3(toPoint3(ray.getOrigin()),toDirection3(ray.getDirection())),toSegment3(segA,segB)));
 
@@ -278,7 +278,7 @@ real_t raySegmentDistance(const Ray& ray, const Vector3& segA,const Vector3& seg
 
 
 /*
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/Constrained_Delaunay_triangulation_2.h>
 #endif
@@ -286,7 +286,7 @@ real_t raySegmentDistance(const Ray& ray, const Vector3& segA,const Vector3& seg
 IndexArrayPtr
 determine_faces(const Point2ArrayPtr& points, std::vector<std::pair<uint32_t, uint32_t> > edges)
 {
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
     typedef CGAL::Exact_predicates_inexact_constructions_kernel K;
     typedef CGAL::Triangulation_vertex_base_2<K> Vb;
     typedef CGAL::Constrained_triangulation_face_base_2<K> Fb;

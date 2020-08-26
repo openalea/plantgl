@@ -398,6 +398,7 @@ public:
 
 #endif
 
+//template<class Policy>
 class TOOLS_API RefCountObject
 {
 

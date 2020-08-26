@@ -63,7 +63,7 @@ PGL_USING_NAMESPACE
 
 #include "scne_parser.h"
 
-#ifdef BISON_HPP
+#ifdef PGL_BISON_HPP
 #include "scne_parser.hpp"
 #else
 #include "scne_parser.cpp.h"

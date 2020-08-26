@@ -11,8 +11,8 @@ Plantgl Reference Guide
 :Date: |today|
 
 This reference manual details functions, modules, and objects included in 
-VPlants.Plantgl, describing what they are and what they do. For learning
-how to use VPlants.Plantgl see :ref:`PlantGL_user`.
+OpenAlea.Plantgl, describing what they are and what they do. For learning
+how to use OpenAlea.Plantgl see :ref:`PlantGL_user`.
 
 .. toctree::
     :maxdepth: 1

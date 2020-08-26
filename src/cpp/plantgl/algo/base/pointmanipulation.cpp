@@ -1059,7 +1059,7 @@ PGL(k_closest_points_from_delaunay)(const Point3ArrayPtr points, size_t k) {
 
 IndexArrayPtr
 PGL(k_closest_points_from_ann)(const Point3ArrayPtr points, size_t k, bool symmetric) {
-#ifdef WITH_ANN
+#ifdef PGL_WITH_ANN
   ANNKDTree3 kdtree(points);
   IndexArrayPtr result = kdtree.k_nearest_neighbors(k);
   if (symmetric) result = symmetrize_connections(result);
@@ -1127,7 +1127,7 @@ PGL(get_all_connex_components)(const Point3ArrayPtr points, const IndexArrayPtr 
 
 IndexArrayPtr
 PGL(connect_all_connex_components)(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, bool verbose) {
-#ifdef WITH_ANN
+#ifdef PGL_WITH_ANN
   // ids of points not accessible from the root connex component
   pgl_hash_set_uint32 nonconnected;
 
@@ -2376,7 +2376,7 @@ PGL(skeleton_from_distance_to_root_clusters)(const Point3ArrayPtr points, uint32
                                              Uint32Array1Ptr &group_parents, IndexArrayPtr &group_components,
                                              bool connect_all_points, bool verbose) {
   if (verbose)std::cout << "Compute Remanian graph." << std::endl;
-#ifdef WITH_ANN
+#ifdef PGL_WITH_ANN
   IndexArrayPtr remaniangraph = k_closest_points_from_ann(points, k, connect_all_points);
 #else
   IndexArrayPtr remaniangraph =  k_closest_points_from_delaunay(points, k);
@@ -2549,7 +2549,7 @@ PGL(average_radius)(const Point3ArrayPtr points,
                     const Point3ArrayPtr nodes,
                     const Uint32Array1Ptr parents,
                     uint32_t maxclosestnode) {
-#ifdef WITH_ANN
+#ifdef PGL_WITH_ANN
   uint32_t root;
   IndexArrayPtr children = determine_children(parents, root);
 
@@ -2596,7 +2596,7 @@ real_t PGL(average_distance_to_shape)(const Point3ArrayPtr points,
                                       const Uint32Array1Ptr parents,
                                       const RealArrayPtr radii,
                                       uint32_t maxclosestnodes) {
-#ifdef WITH_ANN
+#ifdef PGL_WITH_ANN
   uint32_t root;
   IndexArrayPtr children = determine_children(parents, root);
 
@@ -2651,7 +2651,7 @@ RealArrayPtr PGL(distance_to_shape)(const Point3ArrayPtr points,
                                            const Uint32Array1Ptr parents,
                                            const RealArrayPtr radii,
                                            uint32_t maxclosestnodes) {
-#ifdef WITH_ANN
+#ifdef PGL_WITH_ANN
   uint32_t root;
   IndexArrayPtr children = determine_children(parents, root);
 
@@ -2704,7 +2704,7 @@ RealArrayPtr PGL(estimate_radii_from_points)(const Point3ArrayPtr points,
                                                     const Uint32Array1Ptr parents,
                                                     bool maxmethod,
                                                     uint32_t maxclosestnodes) {
-#ifdef WITH_ANN
+#ifdef PGL_WITH_ANN
   uint32_t root;
   IndexArrayPtr children = determine_children(parents, root);
 
@@ -2785,7 +2785,7 @@ Index PGL(points_at_distance_from_skeleton)(const Point3ArrayPtr points,
                                             const Uint32Array1Ptr parents,
                                             real_t distance,
                                             uint32_t maxclosestnodes) {
-#ifdef WITH_ANN
+#ifdef PGL_WITH_ANN
   Index result;
   uint32_t root;
   IndexArrayPtr children = determine_children(parents, root);
@@ -2847,7 +2847,7 @@ Index PGL(points_at_distance_from_skeleton)(const Point3ArrayPtr points,
 IndexArrayPtr PGL(cluster_points)(const Point3ArrayPtr points, const Point3ArrayPtr clustercentroid) {
   IndexArrayPtr result(new IndexArray(clustercentroid->size()));
 
-#ifdef WITH_ANN
+#ifdef PGL_WITH_ANN
   ANNKDTree3 centroids(clustercentroid);
 #else
   Point3GridPtr centroids(new Point3Grid(clustercentroid,20));
@@ -2856,7 +2856,7 @@ IndexArrayPtr PGL(cluster_points)(const Point3ArrayPtr points, const Point3Array
   size_t pid = 0;
   for (Point3Array::const_iterator itp = points->begin(); itp != points->end(); ++itp, ++pid) {
     real_t minpdist = REAL_MAX;
-#ifdef WITH_ANN
+#ifdef PGL_WITH_ANN
     Index nids = centroids.k_closest_points(*itp, 1);
     result->getAt(nids[0]).push_back(pid);
 #else
@@ -2873,7 +2873,7 @@ IndexArrayPtr PGL(cluster_points)(const Point3ArrayPtr points, const Point3Array
 Uint32Array1Ptr PGL(points_clusters)(const Point3ArrayPtr points, const Point3ArrayPtr clustercentroid) {
   Uint32Array1Ptr result(new Uint32Array1(points->size()));
 
-#ifdef WITH_ANN
+#ifdef PGL_WITH_ANN
   ANNKDTree3 centroids(clustercentroid);
 #else
   Point3GridPtr centroids(new Point3Grid(clustercentroid,20));
@@ -2882,7 +2882,7 @@ Uint32Array1Ptr PGL(points_clusters)(const Point3ArrayPtr points, const Point3Ar
   size_t pid = 0;
   for (Point3Array::const_iterator itp = points->begin(); itp != points->end(); ++itp, ++pid) {
     real_t minpdist = REAL_MAX;
-#ifdef WITH_ANN
+#ifdef PGL_WITH_ANN
     Index nids = centroids.k_closest_points(*itp, 1);
     result->setAt(pid, nids[0]);
 #else
