@@ -856,7 +856,7 @@ bool PyPrinter::process( NurbsCurve * nurbsCurve ) {
       print_arg_field (__geomStream, "degree", nurbsCurve->getDegree(),false);
 
   if (! nurbsCurve->isStrideToDefault())
-      print_arg_field (__geomStream, "strides", nurbsCurve->getStride(),false);
+      print_arg_field (__geomStream, "stride", nurbsCurve->getStride(),false);
 
   print_constructor_end(__geomStream, nurbsCurve, name);
   
@@ -1191,7 +1191,7 @@ bool PyPrinter::process( NurbsCurve2D * nurbsCurve ) {
   if (! nurbsCurve->isDegreeToDefault())
     print_arg_field (__geomStream, "degree", nurbsCurve->getDegree());
   if (! nurbsCurve->isStrideToDefault())
-    print_arg_field (__geomStream, "strides", nurbsCurve->getStride());
+    print_arg_field (__geomStream, "stride", nurbsCurve->getStride());
   print_constructor_end(__geomStream, nurbsCurve, name);
   print_object_end(__geomStream);
   return true;
