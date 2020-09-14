@@ -1238,9 +1238,9 @@ PGL(r_neighborhood)(uint32_t pid, const Point3ArrayPtr &points, const IndexArray
 
   struct PointDistance pdevaluator(points);
 
-  NodeList lneighborhood = dijkstra_shortest_paths_in_a_range(adjacencies, pid, pdevaluator, radius);
+  DijkstraNodeList lneighborhood = dijkstra_shortest_paths_in_a_range(adjacencies, pid, pdevaluator, radius);
   Index result;
-  for (NodeList::const_iterator itn = lneighborhood.begin(); itn != lneighborhood.end(); ++itn)
+  for (DijkstraNodeList::const_iterator itn = lneighborhood.begin(); itn != lneighborhood.end(); ++itn)
     result.push_back(itn->id);
   return result;
 }
@@ -1259,11 +1259,11 @@ PGL(r_neighborhoods)(const Point3ArrayPtr points, const IndexArrayPtr adjacencie
 
   ProgressStatus st(nbPoints, "R-neighborhood computed for %.2f%% of points.");
   for (RealArray::const_iterator itradii = radii->begin(); itradii != radii->end(); ++itradii, ++st) {
-    NodeList lneighborhood = dijkstra_shortest_paths_in_a_range(adjacencies, current, pdevaluator, *itradii, UINT32_MAX,
+    DijkstraNodeList lneighborhood = dijkstra_shortest_paths_in_a_range(adjacencies, current, pdevaluator, *itradii, UINT32_MAX,
                                                                 allocator);
     // preinfo[current].clear();
     Index lres;
-    for (NodeList::const_iterator itn = lneighborhood.begin(); itn != lneighborhood.end(); ++itn) {
+    for (DijkstraNodeList::const_iterator itn = lneighborhood.begin(); itn != lneighborhood.end(); ++itn) {
       lres.push_back(itn->id);
       //if (itn->id > current) preinfo[itn->id].push_back(std::pair<uint32_t, real_t>(current, itn->distance));
     }
@@ -1307,12 +1307,12 @@ public:
 
 	void execute(uint32_t current)
 	{
-		NodeList const lneighborhood = dijkstra_shortest_paths_in_a_range(adjacencies, current, pdevaluator, radius, UINT32_MAX, DijkstraReusingAllocator());
+		DijkstraNodeList const lneighborhood = dijkstra_shortest_paths_in_a_range(adjacencies, current, pdevaluator, radius, UINT32_MAX, DijkstraReusingAllocator());
 		// preinfo[current].clear();
 		Index lres;
 		lres.reserve(lneighborhood.size());
 	  
-		for (NodeList::const_iterator itn = lneighborhood.begin(); itn != lneighborhood.end(); ++itn) {
+		for (DijkstraNodeList::const_iterator itn = lneighborhood.begin(); itn != lneighborhood.end(); ++itn) {
 			lres.push_back(itn->id);
 			//if (itn->id > current) preinfo[itn->id].push_back(std::pair<uint32_t, real_t>(current, itn->distance));
 		}
@@ -1391,9 +1391,9 @@ PGL(r_anisotropic_neighborhood)(uint32_t pid, const Point3ArrayPtr points, const
 
   struct PointAnisotropicDistance pdevaluator(points, direction, alpha, beta);
 
-  NodeList lneighborhood = dijkstra_shortest_paths_in_a_range(adjacencies, pid, pdevaluator, radius);
+  DijkstraNodeList lneighborhood = dijkstra_shortest_paths_in_a_range(adjacencies, pid, pdevaluator, radius);
   Index result;
-  for (NodeList::const_iterator itn = lneighborhood.begin(); itn != lneighborhood.end(); ++itn)
+  for (DijkstraNodeList::const_iterator itn = lneighborhood.begin(); itn != lneighborhood.end(); ++itn)
     result.push_back(itn->id);
   return result;
 }
@@ -1412,9 +1412,9 @@ PGL(r_anisotropic_neighborhoods)(const Point3ArrayPtr points, const IndexArrayPt
 
   for (RealArray::const_iterator itradii = radii->begin(); itradii != radii->end(); ++itradii) {
     struct PointAnisotropicDistance pdevaluator(points, directions->getAt(current), alpha, beta);
-    NodeList lneighborhood = dijkstra_shortest_paths_in_a_range(adjacencies, current, pdevaluator, *itradii);
+    DijkstraNodeList lneighborhood = dijkstra_shortest_paths_in_a_range(adjacencies, current, pdevaluator, *itradii);
     Index lres;
-    for (NodeList::const_iterator itn = lneighborhood.begin(); itn != lneighborhood.end(); ++itn)
+    for (DijkstraNodeList::const_iterator itn = lneighborhood.begin(); itn != lneighborhood.end(); ++itn)
       lres.push_back(itn->id);
     result->setAt(current, lres);
     ++current;
@@ -1436,9 +1436,9 @@ PGL(r_anisotropic_neighborhoods)(const Point3ArrayPtr points, const IndexArrayPt
   IndexArrayPtr result(new IndexArray(nbPoints));
   for (uint32_t current = 0; current < nbPoints; ++current) {
     struct PointAnisotropicDistance pdevaluator(points, directions->getAt(current), alpha, beta);
-    NodeList lneighborhood = dijkstra_shortest_paths_in_a_range(adjacencies, current, pdevaluator, radius);
+    DijkstraNodeList lneighborhood = dijkstra_shortest_paths_in_a_range(adjacencies, current, pdevaluator, radius);
     Index lres;
-    for (NodeList::const_iterator itn = lneighborhood.begin(); itn != lneighborhood.end(); ++itn)
+    for (DijkstraNodeList::const_iterator itn = lneighborhood.begin(); itn != lneighborhood.end(); ++itn)
       lres.push_back(itn->id);
     result->setAt(current, lres);
   }
@@ -1512,8 +1512,8 @@ PGL(k_neighborhood)(uint32_t pid, const Point3ArrayPtr points, const IndexArrayP
   } else {
     struct PointDistance pdevaluator(points);
 
-    NodeList lneighborhood = dijkstra_shortest_paths_in_a_range(adjacencies, pid, pdevaluator, REAL_MAX, k);
-    for (NodeList::const_iterator itn = lneighborhood.begin(); itn != lneighborhood.end(); ++itn)
+    DijkstraNodeList lneighborhood = dijkstra_shortest_paths_in_a_range(adjacencies, pid, pdevaluator, REAL_MAX, k);
+    for (DijkstraNodeList::const_iterator itn = lneighborhood.begin(); itn != lneighborhood.end(); ++itn)
       result.push_back(itn->id);
   }
   return result;
@@ -1534,8 +1534,8 @@ PGL(k_neighborhoods)(const Point3ArrayPtr points, const IndexArrayPtr adjacencie
             lres = get_k_closest_from_n(candidates,k,current,points);
         }
         else {*/
-    NodeList lneighborhood = dijkstra_shortest_paths_in_a_range(adjacencies, current, pdevaluator, REAL_MAX, k);
-    for (NodeList::const_iterator itn = lneighborhood.begin(); itn != lneighborhood.end(); ++itn)
+    DijkstraNodeList lneighborhood = dijkstra_shortest_paths_in_a_range(adjacencies, current, pdevaluator, REAL_MAX, k);
+    for (DijkstraNodeList::const_iterator itn = lneighborhood.begin(); itn != lneighborhood.end(); ++itn)
       lres.push_back(itn->id);
     // }
     result->setAt(current, lres);

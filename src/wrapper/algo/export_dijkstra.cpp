@@ -75,9 +75,9 @@ object py_dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections,
                                              uint32_t maxnbelements = UINT32_MAX)
 {
     PyDistance mydist( distevaluator );
-    NodeList result = dijkstra_shortest_paths_in_a_range(connections,root,mydist,maxdist,maxnbelements);
+    DijkstraNodeList result = dijkstra_shortest_paths_in_a_range(connections,root,mydist,maxdist,maxnbelements);
     boost::python::list pyresult;
-    for(NodeList::const_iterator itres = result.begin(); itres != result.end(); ++itres)
+    for(DijkstraNodeList::const_iterator itres = result.begin(); itres != result.end(); ++itres)
         pyresult.append(boost::python::make_tuple(itres->id,itres->parent,itres->distance));
     return pyresult;
 }
