@@ -57,7 +57,7 @@ const Color3 Material::DEFAULT_AMBIENT(80,80,80);
 const real_t  Material::DEFAULT_DIFFUSE(2);
 const Color3 Material::DEFAULT_SPECULAR(40,40,40);
 const Color3 Material::DEFAULT_EMISSION(0,0,0);
-const real_t Material::DEFAULT_SHININESS(1);
+const real_t Material::DEFAULT_SHININESS(0.2);
 const real_t Material::DEFAULT_TRANSPARENCY(0);
 const AppearancePtr Material::DEFAULT_MATERIAL(new Material(string("DEFAULT_MATERIAL")));
 

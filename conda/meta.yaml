@@ -28,7 +28,7 @@ requirements:
       - ann
       - qt 
       - pyqt
-      - boost # boost module of conda-forge install boost.python and dependency boost-cpp for the cpp libs.
+      - boost<=1.71 # boost module of conda-forge install boost.python and dependency boost-cpp for the cpp libs.
       - libpng
       - zlib
       - libglu                            # [linux]

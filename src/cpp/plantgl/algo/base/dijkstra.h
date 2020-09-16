@@ -72,16 +72,6 @@
 
 PGL_BEGIN_NAMESPACE
 
-struct Node {
-    uint32_t id;
-    uint32_t parent;
-    real_t distance;
-    Node(uint32_t _id, uint32_t _parent, real_t _distance)
-        : id(_id), parent(_parent), distance(_distance) {}
-} ;
-
-typedef std::vector<Node> NodeList;
-
 
 struct nodecompare {
        const RealArrayPtr& __distances;
@@ -100,10 +90,22 @@ struct nodecompare {
 
 
 
+struct DijkstraNode {
+    uint32_t id;
+    uint32_t parent;
+    real_t distance;
+    DijkstraNode(uint32_t _id, uint32_t _parent, real_t _distance)
+        : id(_id), parent(_parent), distance(_distance) {}
+} ;
+
+typedef std::vector<DijkstraNode> DijkstraNodeList;
+typedef std::vector<std::pair<uint32_t, real_t> > NodeDistancePairList;
+
+
+
 enum color { black, grey, white };
 
 
-typedef std::vector<std::pair<uint32_t, real_t> > NodeDistancePairList;
 
 struct DijkstraAllocator {
     void allocate(size_t nbnodes, RealArrayPtr& distances,  uint32_t *& parents, color *& colored) const {
@@ -203,7 +205,7 @@ protected:
 };
 
 template<class EdgeWeigthEvaluation, class Allocator>
-NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections,
+DijkstraNodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections,
                                              uint32_t root,
                                              EdgeWeigthEvaluation& distevaluator,
                                              real_t maxdist,
@@ -211,7 +213,7 @@ NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections,
                                              const Allocator& allocator )
  {
 
-     NodeList result;
+     DijkstraNodeList result;
 
      size_t nbnodes = connections->size();
      size_t nbprocessednodes = 0;
@@ -259,7 +261,7 @@ NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections,
 #ifdef PGL_USE_PRIORITY_QUEUE
          if(colored[current] == white) continue;
 #endif
-         result.push_back(Node(current, parents[current], distances->getAt(current)));
+         result.push_back(DijkstraNode(current, parents[current], distances->getAt(current)));
          colored[current] = white;
 
          nbprocessednodes += 1;
@@ -305,7 +307,7 @@ NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections,
 
 
 template<class EdgeWeigthEvaluation>
-NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections,
+DijkstraNodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections,
                                              uint32_t root,
                                              EdgeWeigthEvaluation& distevaluator,
                                              real_t maxdist = REAL_MAX,
