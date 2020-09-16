@@ -12,6 +12,7 @@ if [ `uname` = "Darwin" ]; then
    )
     export LDFLAGS="-undefined dynamic_lookup ${LDFLAGS}"
 
+    echo "****** SDK search"
     xcrun --show-sdk-path
     ls /opt
 else
