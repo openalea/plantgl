@@ -21,9 +21,7 @@ env:
    CONDA_NPY=116
 
 install:
-  - if [ `uname` = "Darwin" ]; then
-  -    xcrun --show-sdk-path
-  - fi
+  - if [ `uname` = "Darwin" ]; then xcrun --show-sdk-path; fi
   - git clone https://github.com/openalea/travis-ci.git
   - cd travis-ci
   - source install.sh
