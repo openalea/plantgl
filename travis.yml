@@ -21,8 +21,7 @@ env:
    CONDA_NPY=116
 
 install:
-  - if [ `uname` = "Darwin" ]; then cd /opt ; fetch https://github.com/phracker/MacOSX-SDKs/releases/download/10.15/MacOSX10.10.sdk.tar.xz ; tar xvzf MacOSX10.10.sdk.tar.xz; cd -
- ; fi
+  - source conda/downloadsdk.sh
   - git clone https://github.com/openalea/travis-ci.git
   - cd travis-ci
   - source install.sh
