@@ -14,7 +14,6 @@ if [ `uname` = "Darwin" ]; then
 
     echo "****** SDK search"
     xcrun --show-sdk-path
-    ls /opt
 else
     SYSTEM_DEPENDENT_ARGS=(
         "-DOPENGL_opengl_LIBRARY=${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64/libGL.so"
