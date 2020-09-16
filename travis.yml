@@ -21,7 +21,7 @@ env:
    CONDA_NPY=116
 
 install:
-  - sudo source conda/downloadsdk.sh
+  - source conda/downloadsdk.sh
   - git clone https://github.com/openalea/travis-ci.git
   - cd travis-ci
   - source install.sh
