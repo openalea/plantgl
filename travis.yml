@@ -21,7 +21,7 @@ env:
    CONDA_NPY=116
 
 install:
-  - if [ `uname` = "Darwin" ]; then echo "CONDA_BUILD_SYSROOT:\n - `xcrun --show-sdk-path`        # [osx]" > conda/conda_build_config.yaml; fi
+  - if [ `uname` = "Darwin" ]; then echo "CONDA_BUILD_SYSROOT:\n - `xcrun --show-sdk-path`\n" > conda/conda_build_config.yaml; fi
   - git clone https://github.com/openalea/travis-ci.git
   - cd travis-ci
   - source install.sh
