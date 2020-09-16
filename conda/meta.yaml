@@ -43,7 +43,7 @@ requirements:
       - m2-bison                          # [win]
       - m2-flex                           # [win]
       - menuinst                          # [win]
-      - cmake=3.17
+      - cmake
       - pkg-config                        # [linux]
       - make                              # [unix]
       - {{ cdt('mesa-libgl-devel') }}      # [linux]
