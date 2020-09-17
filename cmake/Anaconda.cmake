@@ -60,7 +60,7 @@ if (DEFINED ENV{CONDA_BUILD})
 
     message(STATUS "CMAKE_FIND_ROOT_PATH :")
     foreach(dir in ${CMAKE_FIND_ROOT_PATH})
-        message(STATUS ${dir})
+        message(STATUS " - " ${dir})
     endforeach()
 
     # search for programs in the build host directories
