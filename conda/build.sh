@@ -15,10 +15,11 @@ if [ `uname` = "Darwin" ]; then
     echo "****** SDK search"
     xcrun --show-sdk-path
 else
-    SYSTEM_DEPENDENT_ARGS=(
-        "-DOPENGL_opengl_LIBRARY=${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64/libGL.so"
-        "-DOPENGL_glx_LIBRARY=${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64/libGL.so"
-    )
+    #SYSTEM_DEPENDENT_ARGS=(
+    #    "-DOPENGL_opengl_LIBRARY=${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64/libGL.so"
+    #    "-DOPENGL_glx_LIBRARY=${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64/libGL.so"
+    #)
+    echo
 fi
 
 export SYSTEM_DEPENDENT_ARGS
