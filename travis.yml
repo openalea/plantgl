@@ -2,9 +2,9 @@ language: cpp
 
 os:
   - linux
-  - osx
+  #- osx
 
-dist: xenial
+#dist: xenial
 
 sudo: required
 
