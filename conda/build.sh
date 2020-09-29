@@ -20,7 +20,7 @@ else
     USRLIBPREFIX1=${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64
     USRLIBPREFIX2=${BUILD_PREFIX}/x86_64-conda-linux-gnu/sysroot/usrlib64
     echo "****** CDT and OpenGL search"
-    for p in ${LIBPREFIX1} ${LIBPREFIX2} ${USRLIBPREFIX1} ${USRLIBPREFIX2}  ; 
+    for p in ${LIBPREFIX1} ${LIBPREFIX2} ${USRLIBPREFIX1} ${USRLIBPREFIX2} "${BUILD_PREFIX}/lib" "${BUILD_PREFIX}/lib64" "${BUILD_PREFIX}/x86_64-conda-linux-gnu/sysroot/lib"  "${BUILD_PREFIX}/x86_64-conda-linux-gnu/sysroot/usr/lib" ; 
     do
       if [[ -d $p ]]; then
         echo "*** Check" $p
