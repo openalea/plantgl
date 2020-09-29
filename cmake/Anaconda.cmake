@@ -51,10 +51,14 @@ if (DEFINED ENV{CONDA_BUILD})
     set(CMAKE_CXX_COMPILER_AR $ENV{AR})
 
     # where is the target environment
-    set(CMAKE_FIND_ROOT_PATH $ENV{PREFIX} $ENV{BUILD_PREFIX} $ENV{CONDA_BUILD_SYSROOT})
+    set(CMAKE_FIND_ROOT_PATH $ENV{PREFIX} $ENV{BUILD_PREFIX})
+    if (APPLE)
+        list(APPEND CMAKE_FIND_ROOT_PATH $ENV{CONDA_BUILD_SYSROOT} )
+    endif()
     if (UNIX)
         # I add both old stype and new style cdts : https://github.com/conda-forge/cdt-builds#old-stylelegacy-vs-new-style-cdts
         list(APPEND CMAKE_FIND_ROOT_PATH $ENV{BUILD_PREFIX}/x86_64-conda-linux-gnu/sysroot $ENV{BUILD_PREFIX}/$ENV{HOST}/sysroot )
+
         link_directories($ENV{BUILD_PREFIX}/x86_64-conda-linux-gnu/sysroot/lib64 $ENV{BUILD_PREFIX}/$ENV{HOST}/sysroot/lib64)
         link_directories($ENV{BUILD_PREFIX}/x86_64-conda-linux-gnu/sysroot/lib $ENV{BUILD_PREFIX}/$ENV{HOST}/sysroot/lib)
         link_directories($ENV{BUILD_PREFIX}/x86_64-conda-linux-gnu/sysroot/usr/lib64 $ENV{BUILD_PREFIX}/$ENV{HOST}/sysroot/usr/lib64)
