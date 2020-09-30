@@ -21,13 +21,21 @@ requirements:
       - python {{PY_VER}}
       - setuptools
       - numpy
-      #- qt
+      - qt
+      - pyqt
       - libpng
       - zlib
+      - eigen
+      - cgal-cpp
+      - qhull
+      - ann
+      - boost<=1.71 # boost module of conda-forge install boost.python and dependency boost-cpp for the cpp libs.
       - expat                              # [linux]
       - libxcb                             # [linux]
       - pthread-stubs                      # [linux]
       - {{ cdt('mesa-libgl-devel') }}      # [linux]
+      - libglu                            # [linux]
+      - xorg-libxfixes                    # [linux]
           
   build:
       - python {{PY_VER}}                 
@@ -41,15 +49,6 @@ requirements:
       - cmake
       - pkg-config                        # [linux]
       - make                              # [unix]
-      - eigen
-      - cgal-cpp
-      - qhull
-      - ann
-      - qt 
-      - pyqt
-      - boost<=1.71 # boost module of conda-forge install boost.python and dependency boost-cpp for the cpp libs.
-      - libglu                            # [linux]
-      - xorg-libxfixes                    # [linux]
       - {{ cdt('mesa-libgl-devel') }}      # [linux]
       - {{ cdt('mesa-dri-drivers') }}      # [linux]
       - {{ cdt('libxext') }}               # [linux]
