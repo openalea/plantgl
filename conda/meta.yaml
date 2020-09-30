@@ -21,7 +21,7 @@ requirements:
       - python {{PY_VER}}
       - setuptools
       - numpy
-      - qt
+      #- qt
       - libpng
       - zlib
       - expat                              # [linux]
@@ -46,7 +46,7 @@ requirements:
       - qhull
       - ann
       - qt 
-      #- pyqt
+      - pyqt
       - boost<=1.71 # boost module of conda-forge install boost.python and dependency boost-cpp for the cpp libs.
       - libglu                            # [linux]
       - xorg-libxfixes                    # [linux]
