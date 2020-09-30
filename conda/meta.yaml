@@ -20,8 +20,14 @@ requirements:
   host:
       - python {{PY_VER}}
       - setuptools
-      - pip
       - numpy
+      - qt
+      - libpng
+      - zlib
+      - expat                              # [linux]
+      - libxcb                             # [linux]
+      - pthread-stubs                      # [linux]
+      - {{ cdt('mesa-libgl-devel') }}      # [linux]
           
   build:
       - python {{PY_VER}}                 
@@ -42,16 +48,17 @@ requirements:
       - qt 
       #- pyqt
       - boost<=1.71 # boost module of conda-forge install boost.python and dependency boost-cpp for the cpp libs.
-      - libpng
-      - zlib
       - libglu                            # [linux]
       - xorg-libxfixes                    # [linux]
       - {{ cdt('mesa-libgl-devel') }}      # [linux]
       - {{ cdt('mesa-dri-drivers') }}      # [linux]
+      - {{ cdt('libxext') }}               # [linux]
       - {{ cdt('libselinux') }}            # [linux]
       - {{ cdt('libxdamage') }}            # [linux]
+      - {{ cdt('libxfixes') }}             # [linux]
       - {{ cdt('libxxf86vm') }}            # [linux]
-      - {{ cdt('libxext') }}               # [linux]
+      - {{ cdt('libxcb') }}                # [linux]
+      - {{ cdt('expat-devel') }}        # [linux]
 
   run:
       - python {{PY_VER}}
