@@ -58,6 +58,7 @@ if (DEFINED ENV{CONDA_BUILD})
     if (UNIX)
         # I add both old stype and new style cdts : https://github.com/conda-forge/cdt-builds#old-stylelegacy-vs-new-style-cdts
         list(APPEND CMAKE_FIND_ROOT_PATH $ENV{BUILD_PREFIX}/x86_64-conda-linux-gnu/sysroot $ENV{BUILD_PREFIX}/$ENV{HOST}/sysroot )
+        list(APPEND CMAKE_FIND_ROOT_PATH $ENV{PREFIX}/x86_64-conda-linux-gnu/sysroot $ENV{PREFIX}/$ENV{HOST}/sysroot )
 
         link_directories($ENV{BUILD_PREFIX}/x86_64-conda-linux-gnu/sysroot/lib64 $ENV{BUILD_PREFIX}/$ENV{HOST}/sysroot/lib64)
         link_directories($ENV{BUILD_PREFIX}/x86_64-conda-linux-gnu/sysroot/lib $ENV{BUILD_PREFIX}/$ENV{HOST}/sysroot/lib)
