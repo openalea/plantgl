@@ -51,9 +51,25 @@ if (DEFINED ENV{CONDA_BUILD})
     set(CMAKE_CXX_COMPILER_AR $ENV{AR})
 
     # where is the target environment
-    set(CMAKE_FIND_ROOT_PATH $ENV{PREFIX} $ENV{BUILD_PREFIX} $ENV{BUILD_PREFIX}/$ENV{HOST}/sysroot $ENV{CONDA_BUILD_SYSROOT})
+    set(CMAKE_FIND_ROOT_PATH $ENV{PREFIX} $ENV{BUILD_PREFIX})
+    if (APPLE)
+        list(APPEND CMAKE_FIND_ROOT_PATH $ENV{CONDA_BUILD_SYSROOT} )
+    endif()
+    if (UNIX)
+        # I add both old stype and new style cdts : https://github.com/conda-forge/cdt-builds#old-stylelegacy-vs-new-style-cdts
+        list(APPEND CMAKE_FIND_ROOT_PATH $ENV{BUILD_PREFIX}/x86_64-conda-linux-gnu/sysroot $ENV{BUILD_PREFIX}/$ENV{HOST}/sysroot )
+        list(APPEND CMAKE_FIND_ROOT_PATH $ENV{PREFIX}/x86_64-conda-linux-gnu/sysroot $ENV{PREFIX}/$ENV{HOST}/sysroot )
 
-    message("CMAKE_FIND_ROOT_PATH :" ${CMAKE_FIND_ROOT_PATH})
+        link_directories($ENV{BUILD_PREFIX}/x86_64-conda-linux-gnu/sysroot/lib64 $ENV{BUILD_PREFIX}/$ENV{HOST}/sysroot/lib64)
+        link_directories($ENV{BUILD_PREFIX}/x86_64-conda-linux-gnu/sysroot/lib $ENV{BUILD_PREFIX}/$ENV{HOST}/sysroot/lib)
+        link_directories($ENV{BUILD_PREFIX}/x86_64-conda-linux-gnu/sysroot/usr/lib64 $ENV{BUILD_PREFIX}/$ENV{HOST}/sysroot/usr/lib64)
+        link_directories($ENV{BUILD_PREFIX}/x86_64-conda-linux-gnu/sysroot/usr/lib $ENV{BUILD_PREFIX}/$ENV{HOST}/sysroot/usr/lib)
+    endif()
+
+    message(STATUS "CMAKE_FIND_ROOT_PATH :")
+    foreach(dir ${CMAKE_FIND_ROOT_PATH})
+        message(STATUS " - " ${dir})
+    endforeach()
 
     # search for programs in the build host directories
     set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM BOTH)

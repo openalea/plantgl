@@ -72,8 +72,9 @@ object py_dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections,
                                              uint32_t root,
                                              boost::python::object distevaluator,
                                              real_t maxdist = REAL_MAX,
-                                             uint32_t maxnbelements = UINT32_MAX)
+                                             uint32_t maxnbelements = 0)
 {
+    if (maxnbelements == 0) { maxnbelements = UINT32_MAX; }
     PyDistance mydist( distevaluator );
     DijkstraNodeList result = dijkstra_shortest_paths_in_a_range(connections,root,mydist,maxdist,maxnbelements);
     boost::python::list pyresult;
@@ -89,10 +90,11 @@ void export_Dijkstra()
         "Return the parent and distance to the root for each node."
         "connections is an array that should contains at the ith place all nodes connected to the ith node."
         "edgeweigthevaluator should be a function that takes as argument the ids of two nodes and return the weigth of the edge between these 2 nodes.");
-    def("dijkstra_shortest_paths_in_a_range", &py_dijkstra_shortest_paths_in_a_range,(bpy::arg("connections"),bpy::arg("root"),bpy::arg("edgeweigthevaluator"),bpy::arg("maxdist")=REAL_MAX,bpy::arg("maxnbelements")=UINT32_MAX),
+    def("dijkstra_shortest_paths_in_a_range", &py_dijkstra_shortest_paths_in_a_range,(bpy::arg("connections"),bpy::arg("root"),bpy::arg("edgeweigthevaluator"),bpy::arg("maxdist")=REAL_MAX,bpy::arg("maxnbelements")=0),
         "Return list of id, parent and distance to the root for node with distance < maxdist. "
         "connections is an array that should contains at the ith place all nodes connected to the ith node."
-        "edgeweigthevaluator should be a function that takes as argument the ids of two nodes and return the weigth of the edge between these 2 nodes.");
+        "edgeweigthevaluator should be a function that takes as argument the ids of two nodes and return the weigth of the edge between these 2 nodes."
+        "if maxnbelements is set to 0, no constraints is taken.");
 }
 
 
