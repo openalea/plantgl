@@ -2,9 +2,9 @@ language: cpp
 
 os:
   - linux
-  #- osx
+  - osx
 
-dist: bionic
+#dist: bionic
 
 sudo: required
 
