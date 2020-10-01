@@ -55,7 +55,8 @@ using namespace std;
 
 const Color3 Material::DEFAULT_AMBIENT(80,80,80);
 const real_t  Material::DEFAULT_DIFFUSE(2);
-const Color3 Material::DEFAULT_SPECULAR(40,40,40);
+//const Color3 Material::DEFAULT_SPECULAR(40,40,40);
+const Color3 Material::DEFAULT_SPECULAR(0,0,0);
 const Color3 Material::DEFAULT_EMISSION(0,0,0);
 const real_t Material::DEFAULT_SHININESS(0.2);
 const real_t Material::DEFAULT_TRANSPARENCY(0);

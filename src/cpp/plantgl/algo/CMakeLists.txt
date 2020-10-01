@@ -77,6 +77,14 @@ if(APPLE)
   target_link_libraries(pglalgo "-framework OpenGL")
 else(APPLE)
   target_link_libraries(pglalgo OpenGL::GL OpenGL::GLU)
+
+    #if (USE_CONDA_BUILD)
+    #if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+    #    target_link_libraries(pglalgo ${LIBSELINUX_LIBRARY})
+    #endif()
+    #endif()
+
+
 endif(APPLE)
 
 target_link_libraries(pglalgo Boost::system Boost::thread)

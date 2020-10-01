@@ -14,12 +14,57 @@ if [ `uname` = "Darwin" ]; then
 
     echo "****** SDK search"
     xcrun --show-sdk-path
-    ls /opt
 else
-    SYSTEM_DEPENDENT_ARGS=(
-        "-DOPENGL_opengl_LIBRARY=${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64/libGL.so"
-        "-DOPENGL_glx_LIBRARY=${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64/libGL.so"
-    )
+    LIBPREFIX1=${BUILD_PREFIX}/${HOST}/sysroot/lib64
+    LIBPREFIX2=${BUILD_PREFIX}/x86_64-conda-linux-gnu/sysroot/lib64
+    USRLIBPREFIX1=${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64
+    USRLIBPREFIX2=${BUILD_PREFIX}/x86_64-conda-linux-gnu/sysroot/usrlib64
+    echo "****** CDT and OpenGL search"
+    #for p in ${LIBPREFIX1} ${LIBPREFIX2} ${USRLIBPREFIX1} ${USRLIBPREFIX2} "${BUILD_PREFIX}/lib" "${BUILD_PREFIX}/lib64" "${BUILD_PREFIX}/x86_64-conda-linux-gnu/sysroot/lib"  "${BUILD_PREFIX}/x86_64-conda-linux-gnu/sysroot/usr/lib" ; 
+    #do
+    #  if [[ -d $p ]]; then
+    #    echo "*** Check" $p
+    #    ls $p
+    #  fi
+    #done
+    #echo "*** done checking"
+
+    #LIBCANDIDATE1=${LIBPREFIX1}/libselinux.so.1
+    #LIBCANDIDATE2=${LIBPREFIX2}/libselinux.so.1
+    #if [[ -f "$LIBCANDIDATE1" ]]; then
+    #  echo "OLD CDT SELinux"
+    #  SYSTEM_DEPENDENT_ARGS=(
+    #      "-DLIBSELINUX_LIBRARY=${LIBCANDIDATE1}"          
+    #  )    
+    #elif [[ -f "$LIBCANDIDATE2" ]]; then
+    #    echo "NEW CDT SE Linux"
+    #    SYSTEM_DEPENDENT_ARGS=(
+    #      "-DLIBSELINUX_LIBRARY=${LIBCANDIDATE2}"
+    #    )
+    #else
+    #    echo "Cannot find libselinux."      
+    #fi
+
+    LIBCANDIDATE1=${USRLIBPREFIX1}/libGL.so
+    LIBCANDIDATE2=${USRLIBPREFIX2}/libGL.so
+    if [[ -f "$LIBCANDIDATE1" ]]; then
+      echo "OLD CDT OpenGL"
+      SYSTEM_DEPENDENT_ARGS=(
+          ${SYSTEM_DEPENDENT_ARGS}
+          "-DOPENGL_opengl_LIBRARY=${LIBCANDIDATE1}"
+          "-DOPENGL_glx_LIBRARY=${LIBCANDIDATE1}"
+      )    
+    elif [[ -f "$LIBCANDIDATE2" ]]; then
+        echo "NEW CDT OpenGL"
+        SYSTEM_DEPENDENT_ARGS=(
+          ${SYSTEM_DEPENDENT_ARGS}
+          "-DOPENGL_opengl_LIBRARY=${LIBCANDIDATE2}"
+          "-DOPENGL_glx_LIBRARY=${LIBCANDIDATE2}"
+        )
+    else
+        echo "Cannot find OpenGL."      
+    fi
+    echo
 fi
 
 export SYSTEM_DEPENDENT_ARGS
