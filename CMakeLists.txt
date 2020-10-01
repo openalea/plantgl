@@ -100,12 +100,12 @@ find_package(Eigen)
 find_package(FLEX)
 find_package(Qhull)
 
-if (USE_CONDA_BUILD)
-if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
-      find_library(LIBSELINUX_LIBRARY "selinux" PATHS $ENV{BUILD_PREFIX}/x86_64-conda-linux-gnu/sysroot/lib64 $ENV{BUILD_PREFIX}/x86_64-conda_cos6-linux-gnu/sysroot/lib64  REQUIRED)
-      message(STATUS "Found libselinux: ${LIBSELINUX_LIBRARY}")
-endif()
-endif()
+#if (USE_CONDA_BUILD)
+#if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+#      find_library(LIBSELINUX_LIBRARY "selinux" PATHS $ENV{BUILD_PREFIX}/x86_64-conda-linux-gnu/sysroot/lib64 $ENV{BUILD_PREFIX}/x86_64-conda_cos6-linux-gnu/sysroot/lib64  REQUIRED)
+#      message(STATUS "Found libselinux: ${LIBSELINUX_LIBRARY}")
+#endif()
+#endif()
 
 
 
