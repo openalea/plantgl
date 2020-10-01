@@ -1,5 +1,5 @@
-.. image:: https://img.shields.io/badge/License-GPL-blue.svg 
-   :target: https://opensource.org/licenses/GPL-3.0
+.. image:: https://img.shields.io/badge/license-CeCILL--C-blue 
+   :target: LICENSE
 
 Distribution based on Python 2:
 
@@ -28,7 +28,7 @@ Distribution based on Python 3:
     :target: https://travis-ci.org/fredboudon/plantgl
 
 .. image:: https://ci.appveyor.com/api/projects/status/5a4xss61gm8v88yo/branch/master?svg=true
-    :target: https://ci.appveyor.com/project/fredboudon/plantgl
+    :target: https://ci.appveyor.com/project/fredboudon/plantgl-7p8p4
 
 .. image:: https://anaconda.org/fredboudon/openalea.plantgl/badges/version.svg
     :target: https://anaconda.org/fredboudon/openalea.plantgl
