@@ -132,8 +132,8 @@ class Faces(object):
         """
         self.offset = offset
         self.vindex = mesh.indexList if mesh.ccw else [list(reversed(idx)) for idx in mesh.indexList]
-        self.nindex = mesh.normalIndexList if mesh.normalPerVertex and mesh.normalIndexList else []
-        self.tindex = mesh.texCoordIndexList if mesh.texCoordIndexList else []
+        self.nindex = mesh.normalIndexList if mesh.normalPerVertex and mesh.normalIndexList else (mesh.indexList if mesh.normalList else [])
+        self.tindex = mesh.texCoordIndexList if mesh.texCoordIndexList else (mesh.indexList if mesh.texCoordList else [])
         self.name = name
         self.appearancename = appearancename
 
@@ -380,12 +380,20 @@ class ObjCodec (sg.SceneCodec):
         faces = [] # list  of tuple (offset,index List)
 
         counter = 0
-        for i in scene:
-            if i.apply(d):
+        for sh in scene:
+            hasTexture = (sh.appearance and sh.appearance.isTexture())
+            d.texCoord = hasTexture
+            if sh.apply(d):                
                 p = d.discretization
                 pts = p.pointList
+                if p.normalList is None:
+                    p.computeNormalList()
                 ns = p.normalList
                 ts = p.texCoordList
+                if hasTexture:
+                    if sh.appearance.transformation:
+                        ts = sh.appearance.transformation.transform(ts)
+                        p.texCoordList = ts
                 indices = p.indexList
                 n = len(p.pointList)
                 if n > 0:
@@ -394,7 +402,7 @@ class ObjCodec (sg.SceneCodec):
                         normals.append(ns)
                     if ts:
                         texcoords.append(ts)
-                    faces.append(Faces(i.name, counter+1, p, i.appearance.name))
+                    faces.append(Faces(sh.name, counter+1, p, sh.appearance.name))
                 counter += n
 
         for pts in vertices:
@@ -437,7 +445,7 @@ class ObjCodec (sg.SceneCodec):
         for sh in scene:
             app = sh.appearance
             if not app.isNamed():
-                app.name = 'APP_{}'.format(app.getId())
+                app.name = 'APP_{}'.format(app.getObjectId())
             if isinstance(app, sg.Material):
                 fmat.write("newmtl "+app.name+"\n") 
                 fmat.write("\tKa {} {} {}\n".format(*normalizedcolor(app.ambient))) 
@@ -452,7 +460,7 @@ class ObjCodec (sg.SceneCodec):
                 fmat.write("\tKs {} {} {}\n".format(*normalizedcolor(app.baseColor))) 
                 fmat.write("\tTr {} \n".format(app.baseColor.alpha/255.))
                 imgstoconvert.add(app.image.filename) 
-                fmat.write("\tmap_Ka {} \n".format(tgafname(app.image.filename)))
+                fmat.write("\tmap_Kd {} \n".format(tgafname(app.image.filename)))
                 fmat.write("\tillum 2\n")
         fmat.close()
         print("Write "+mtl_file)

@@ -11,6 +11,10 @@ environment:
       CONDA_VERSION: 3
       CONDA_PY: 38
       CONDA_NPY: 116
+    - CONDA_RECIPE: conda
+      CONDA_VERSION: 3
+      CONDA_PY: 39
+      CONDA_NPY: 119
 
 install:
   - git clone https://github.com/OpenAlea/appveyor-ci.git appveyor-ci

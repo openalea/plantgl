@@ -60,6 +60,7 @@ int getPGLRevision(){
   return float(PGL_VERSION & 0x0000ff);
 }
 
+/*
 int getPGLSvnRevision(){
   std::string svnrev = PGL_SVNREVISION;
   if (svnrev.size() > 13){
@@ -68,18 +69,20 @@ int getPGLSvnRevision(){
   }
   return 0;
 }
+*/
 
 std::string getPGLVersionString(){
   std::string version = number((PGL_VERSION & 0xff0000) >> 16)+'.'+number((PGL_VERSION & 0x00ff00) >> 8)+'.'+number(PGL_VERSION & 0x0000ff);
-  std::string svnrev = PGL_SVNREVISION;
+  /* std::string svnrev = PGL_SVNREVISION;
   if (svnrev.size() > 13)
       version += "-r"+svnrev.substr(11,svnrev.size()-13);
+  */
   return version;
 }
 
 
 int getPGLVersionNumber() { return PGL_VERSION; }
-std::string getPGLRevisionString() { return PGL_SVNREVISION; }
+// std::string getPGLRevisionString() { return PGL_SVNREVISION; }
 
 #define ADD_EXTENSION(EXT) res.push_back(std::string(#EXT));
 

@@ -4,7 +4,7 @@ os:
   - linux
   - osx
 
-dist: xenial
+#dist: bionic
 
 sudo: required
 
@@ -19,9 +19,13 @@ env:
    CONDA_VERSION=3
    CONDA_PY=38
    CONDA_NPY=116
+ - CONDA_RECIPE=conda
+   CONDA_VERSION=3
+   CONDA_PY=39
+   CONDA_NPY=119
 
 install:
-  - if [ `uname` = "Darwin" ]; then xcrun --show-sdk-path; fi
+  - source conda/downloadsdk.sh
   - git clone https://github.com/openalea/travis-ci.git
   - cd travis-ci
   - source install.sh
