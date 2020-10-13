@@ -151,8 +151,8 @@ class Faces(object):
         output.write('usemtl %s \n' % self.appearancename)
         for index, texture, normal in gen:
             s = ' '.join('/'.join((str(index[i]+offset),
-                                   str(texture[i]+offset) if texture else index[i], 
-                                   str(normal[i]+offset) if normal else index[i])).strip('/') for i in range(len(index)))
+                                   str(texture[i]+offset) if texture else '', 
+                                   str(normal[i]+offset) if normal else '')).strip('/') for i in range(len(index)))
             line = 'f ' + s + '\n'
             output.write(line)
 
