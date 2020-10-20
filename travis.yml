@@ -18,7 +18,7 @@ env:
       - CONDA_PY=39 CONDA_NPY=119
 jobs :
     allow_failures:
-    - env : CONDA_RECIPE=conda CONDA_VERSION=3 CONDA_PY=39 CONDA_NPY=119
+    - env : CONDA_PY=39 CONDA_NPY=119
 
 install:
   - source conda/downloadsdk.sh
