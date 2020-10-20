@@ -218,6 +218,7 @@ class ObjMat:
 def read_mtl(fname):
     current = None
     result = {}
+    cwd = os.path.dirname(fname)
 
     def finalizemat():
         nonlocal current, result
@@ -252,7 +253,7 @@ def read_mtl(fname):
     parser['Kd'] = lambda v : read_tuple_numvalue('Kd', v)
     parser['Ks'] = lambda v : read_tuple_numvalue('Ks', v)
     parser['Tr'] = lambda v : read_numvalue('Tr', v)
-    parser['map_Kd'] = lambda v : set_value('map_Kd', v[0])
+    parser['map_Kd'] = lambda v : set_value('map_Kd', os.path.join(cwd,v[0]))
     parser['illum'] = lambda v : read_numvalue('illum', v)
 
     with open(fname,"r") as f:
@@ -340,6 +341,9 @@ class ObjCodec (sg.SceneCodec):
         self.line = 0
         self.materiallist = {}
 
+        self.cwd = os.path.dirname(fname)
+        if self.cwd == '':
+            self.cwd = os.path.getcwd()
 
         # read the obj file
         with open(fname,"r") as f:
@@ -374,7 +378,7 @@ class ObjCodec (sg.SceneCodec):
         """ Read mtl format, and convert it into PlantGL materials.
 
         """
-        self.materiallist =read_mtl(fname)
+        self.materiallist =read_mtl(os.path.join(self.cwd,fname))
 
     # Parser functions
     def _comment(self, args):
