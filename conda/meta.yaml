@@ -29,7 +29,7 @@ requirements:
       - cgal-cpp
       - qhull
       - ann
-      - boost<=1.71 # boost module of conda-forge install boost.python and dependency boost-cpp for the cpp libs.
+      - boost # boost module of conda-forge install boost.python and dependency boost-cpp for the cpp libs.
       - expat                              # [linux]
       - libxcb                             # [linux]
       - pthread-stubs                      # [linux]
