@@ -12,17 +12,15 @@ services:
   - docker
 
 env:
- - CONDA_RECIPE=conda
-   CONDA_VERSION=3
-   CONDA_PY=37   
- - CONDA_RECIPE=conda
-   CONDA_VERSION=3
-   CONDA_PY=38
-   CONDA_NPY=116
- - CONDA_RECIPE=conda
-   CONDA_VERSION=3
-   CONDA_PY=39
-   CONDA_NPY=119
+  global:
+      - CONDA_RECIPE=conda CONDA_VERSION=3 
+  jobs:
+      - CONDA_PY=37   
+      - CONDA_PY=38 CONDA_NPY=116
+      - CONDA_PY=39 CONDA_NPY=119
+matrix :
+    allow_failures:
+    - env : CONDA_RECIPE=conda CONDA_VERSION=3 CONDA_PY=39 CONDA_NPY=119
 
 install:
   - source conda/downloadsdk.sh
