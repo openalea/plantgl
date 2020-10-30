@@ -13,7 +13,7 @@ about:
   summary: An open-source graphic toolkit for the creation, simulation and analysis of 3D virtual plants.
 
 build:
-  number: 1
+  number: 0
   preserve_egg_dir: True
 
 requirements:
