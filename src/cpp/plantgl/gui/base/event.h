@@ -483,7 +483,7 @@ typedef TViewEvent<ViewEvent::eRayBuff,ViewRayBuffer *,Vector3,Vector3,Vector3,V
 class ViewZBuffer;
 typedef TViewEvent<ViewEvent::eZBuff,ViewZBuffer *> ViewZBuffEvent;
 typedef TViewEvent<ViewEvent::eZBuffPoints,std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)> > ViewZBuffPointsEvent;
-typedef TViewEvent<ViewEvent::eZBuffPoints2,std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)>, float,int > ViewZBuffPoints2Event;
+typedef TViewEvent<ViewEvent::eZBuffPoints2,std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)>, float,int,bool > ViewZBuffPoints2Event;
 typedef TViewEvent<ViewEvent::eProjSize,double,int *,double *> ViewProjSizeEvent;
 typedef TPViewEvent<ViewEvent::eCameraProj,bool> ViewCameraProjEvent;
 typedef TPViewEvent<ViewEvent::eSetRedrawPolicy,bool> ViewSetRedrawEvent;

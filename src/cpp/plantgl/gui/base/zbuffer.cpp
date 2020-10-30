@@ -213,7 +213,7 @@ ViewZBuffer::importglZBufferPoints(bool invertalpha) {
 }
 
 std::pair<Point3ArrayPtr,Color4ArrayPtr>
-ViewZBuffer::importglZBufferPointsWithJitter(real_t jitter, int raywidth, bool invertalpha) {
+ViewZBuffer::importglZBufferPointsWithJitter(real_t jitter, int raywidth, bool invertalpha, bool mixcolor) {
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT,viewport);
     int width = viewport[2];
@@ -240,7 +240,7 @@ ViewZBuffer::importglZBufferPointsWithJitter(real_t jitter, int raywidth, bool i
     GLdouble originx, originy, originz;
     geomUnProject(0,0,0, modelMatrix, projMatrix, viewport, &originx,&originy, &originz);
     Vector3 origin;
-    printf("%f %f %f\n", originx, originy, originz);
+    //printf("%f %f %f\n", originx, originy, originz);
     float  * iterzvalues = zvalues;
     uchar  * itercolvalues = colvalues;
     for(int i = 0; i < height; ++i){
@@ -266,12 +266,21 @@ ViewZBuffer::importglZBufferPointsWithJitter(real_t jitter, int raywidth, bool i
                 int green = 0;
                 int blue = 0;
                 int alpha = 0;
+                if (!mixcolor) {
+                    Color4& ccol = *colormatrix[i*width+j];
+                    red = ccol.getRed(); 
+                    green = ccol.getGreen(); 
+                    blue = ccol.getBlue(); 
+                    alpha = ccol.getAlpha();
+                }
                 for (int ii = pglMax(0,i-raywidth); ii <= pglMin(height-1,i+raywidth); ++ii){
                     for (int jj = pglMax(0,j-raywidth); jj <= pglMin(width-1,j+raywidth); ++jj){
                         if (pointmatrix[ii*width+jj] != NULL) {
                             sumvec += *pointmatrix[ii*width+jj];
                             Color4& ccol = *colormatrix[ii*width+jj];
-                            red += ccol.getRed(); green += ccol.getGreen(); blue += ccol.getBlue(); alpha += ccol.getAlpha();
+                            if (mixcolor) {
+                                red += ccol.getRed(); green += ccol.getGreen(); blue += ccol.getBlue(); alpha += ccol.getAlpha();
+                            }
                             ++count;
                         }
                     }
@@ -286,7 +295,12 @@ ViewZBuffer::importglZBufferPointsWithJitter(real_t jitter, int raywidth, bool i
                     }
                 }
                 points->push_back(sumvec);
-                colors->push_back(Color4(red/count,green/count,blue/count,alpha/count));
+                if (mixcolor) {
+                    colors->push_back(Color4(red/count,green/count,blue/count,alpha/count));
+                }
+                else {
+                    colors->push_back(Color4(red,green,blue,alpha));                    
+                }
             }
         }
     }
