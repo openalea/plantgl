@@ -230,9 +230,9 @@ ViewerAppliInternal::grabZBufferPoints(){
 }
 
 std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)>  
-ViewerAppliInternal::grabZBufferPointsWithJitter(float jitter, int raywidth){
+ViewerAppliInternal::grabZBufferPointsWithJitter(float jitter, int raywidth, bool mixcolor){
     std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)> res ;
-    ViewZBuffPoints2Event * event = new ViewZBuffPoints2Event(&res, jitter, raywidth);
+    ViewZBuffPoints2Event * event = new ViewZBuffPoints2Event(&res, jitter, raywidth, mixcolor);
     sendAnEvent(event);
     return res;
 }

@@ -333,8 +333,8 @@ boost::python::object grabZBufferPoints(){
     return boost::python::make_tuple(bufpoints.first,bufpoints.second);
 }
 
-boost::python::object grabZBufferPoints2(float jitter, int raywidth){
-    std::pair<Point3ArrayPtr,Color4ArrayPtr> bufpoints = ViewerApplication::grabZBufferPointsWithJitter(jitter,raywidth);
+boost::python::object grabZBufferPoints2(float jitter, int raywidth, bool mixcolor = true){
+    std::pair<Point3ArrayPtr,Color4ArrayPtr> bufpoints = ViewerApplication::grabZBufferPointsWithJitter(jitter, raywidth, mixcolor);
     return boost::python::make_tuple(bufpoints.first,bufpoints.second);
 }
 
@@ -780,8 +780,8 @@ void export_framegl(){
     .def("grabZBuffer",&grabZBuffer0 )
     .def("grabZBuffer",&grabZBuffer  ,"grabZBuffer(allvalues = False)", args("allvalues") )
     .staticmethod("grabZBuffer")
-    .def("grabZBufferPoints",&grabZBufferPoints )
-    .def("grabZBufferPoints",&grabZBufferPoints2, "grabZBufferPoints(jitter, raywidth)" )
+    .def("grabZBufferPoints",&grabZBufferPoints)
+    .def("grabZBufferPoints",&grabZBufferPoints2, (bp::arg("jitter")=0,bp::arg("raywidth")=0,bp::arg("color")=true), "grabZBufferPoints(jitter, raywidth, mixcolor)\nReturn the ZBuffer as 3D points.\n\nParameters\n---------\n\tjitter : float\n\t\tAdd some uniform noise in the view direction on the position of points\n\traywidth : int\n\t\tSuppose a width for each ray and compute the position of each pixel as the mean of the neighboring pixels. Neighborhood is defined as all pixels at a distance of central pixel lower or equal to raywidth.\n\tmixcolor : bool\n\t\tSpecify whether the colors of the pixels should be a blend of the neighborhood colors in case of raywidth > 0\n\nReturns\n-------\n\tPoint3Array\n\t\tThe position of the points.\n\tColor4Array\n\t\tThe colors of the points." )
     .staticmethod("grabZBufferPoints")
     .def("getProjectionSize",&getProjectionSize,"return projected_size,pixel_nb,pixel_size : compute the projected size of the displayed scene onto the current camera." )
     .staticmethod("getProjectionSize")

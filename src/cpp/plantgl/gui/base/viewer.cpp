@@ -839,7 +839,7 @@ void  Viewer::customEvent(QEvent *e){
   }
   else if(etype == ViewEvent::eZBuffPoints2){
     ViewZBuffPoints2Event * k = ( ViewZBuffPoints2Event * )e;
-    *(k->result) = __GLFrame->grabZBufferPointsWithJitter(k->arg1, k->arg2);
+    *(k->result) = __GLFrame->grabZBufferPointsWithJitter(k->arg1, k->arg2, k->arg3);
   }
   else if(etype == ViewEvent::eProjSize){
     ViewProjSizeEvent * k = ( ViewProjSizeEvent * )e;

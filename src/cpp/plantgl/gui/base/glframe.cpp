@@ -1127,7 +1127,7 @@ ViewGLFrame::grabZBufferPoints( )
 }
 
 std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)>
-ViewGLFrame::grabZBufferPointsWithJitter(float jitter, int raywidth )
+ViewGLFrame::grabZBufferPointsWithJitter(float jitter, int raywidth, bool mixcolor )
 {
     bool pbufactivation = true;
     if(!isRedrawEnabled()){
@@ -1141,7 +1141,7 @@ ViewGLFrame::grabZBufferPointsWithJitter(float jitter, int raywidth )
         }
         else updateGL();
     }
-    std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)> res = ViewZBuffer::importglZBufferPointsWithJitter(jitter,raywidth);
+    std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)> res = ViewZBuffer::importglZBufferPointsWithJitter(jitter,raywidth, true, mixcolor);
     if(!pbufactivation) activatePBuffer(false);
     return res;
 }

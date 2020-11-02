@@ -186,7 +186,7 @@ class VIEW_API ViewGLFrame : public QGLWidget
 
 
   /// Grab depth and color points
-  std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)> grabZBufferPointsWithJitter(float jitter, int raywidth ) ;
+  std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)> grabZBufferPointsWithJitter(float jitter, int raywidth, bool mixcolor = true ) ;
 
 
   ViewRayBuffer * castRays( const Vector3& position,

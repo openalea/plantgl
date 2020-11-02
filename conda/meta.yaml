@@ -13,7 +13,7 @@ about:
   summary: An open-source graphic toolkit for the creation, simulation and analysis of 3D virtual plants.
 
 build:
-  number: 0
+  number: 1
   preserve_egg_dir: True
 
 requirements:
@@ -29,7 +29,7 @@ requirements:
       - cgal-cpp
       - qhull
       - ann
-      - boost<=1.71 # boost module of conda-forge install boost.python and dependency boost-cpp for the cpp libs.
+      - boost # boost module of conda-forge install boost.python and dependency boost-cpp for the cpp libs.
       - expat                              # [linux]
       - libxcb                             # [linux]
       - pthread-stubs                      # [linux]
