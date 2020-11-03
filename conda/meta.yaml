@@ -16,8 +16,6 @@ build:
   number: 1
   preserve_egg_dir: True
 
-# boost heap 1.74 do not work with visual. see https://github.com/boostorg/heap/commit/ed015c3b21c10166321f7565e038b690ad8e04df
-
 requirements:
   host:
       - python {{PY_VER}}
@@ -31,18 +29,17 @@ requirements:
       - cgal-cpp
       - qhull
       - ann
-      - boost <=1.73  # [win]  
-      - boost         # [linux]
-      - expat                              # [linux]
-      - libxcb                             # [linux]
-      - pthread-stubs                      # [linux]
-      - {{ cdt('mesa-libgl-devel') }}      # [linux]
+      - boost <=1.73                      
+      - expat                             # [linux]
+      - libxcb                            # [linux]
+      - pthread-stubs                     # [linux]
+      - {{ cdt('mesa-libgl-devel') }}     # [linux]
       - libglu                            # [linux]
       - xorg-libxfixes                    # [linux]
           
   build:
       - python {{PY_VER}}                 
-      - binutils_impl_linux-64     # [linux]
+      - binutils_impl_linux-64            # [linux]
       - {{ compiler('cxx') }}
       - bison                             # [unix]
       - flex                              # [unix]
@@ -52,15 +49,15 @@ requirements:
       - cmake
       - pkg-config                        # [linux]
       - make                              # [unix]
-      - {{ cdt('mesa-libgl-devel') }}      # [linux]
-      - {{ cdt('mesa-dri-drivers') }}      # [linux]
-      - {{ cdt('libxext') }}               # [linux]
-      - {{ cdt('libselinux') }}            # [linux]
-      - {{ cdt('libxdamage') }}            # [linux]
-      - {{ cdt('libxfixes') }}             # [linux]
-      - {{ cdt('libxxf86vm') }}            # [linux]
-      - {{ cdt('libxcb') }}                # [linux]
-      - {{ cdt('expat-devel') }}        # [linux]
+      - {{ cdt('mesa-libgl-devel') }}     # [linux]
+      - {{ cdt('mesa-dri-drivers') }}     # [linux]
+      - {{ cdt('libxext') }}              # [linux]
+      - {{ cdt('libselinux') }}           # [linux]
+      - {{ cdt('libxdamage') }}           # [linux]
+      - {{ cdt('libxfixes') }}            # [linux]
+      - {{ cdt('libxxf86vm') }}           # [linux]
+      - {{ cdt('libxcb') }}               # [linux]
+      - {{ cdt('expat-devel') }}          # [linux]
 
   run:
       - python {{PY_VER}}
