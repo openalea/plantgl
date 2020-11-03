@@ -137,7 +137,7 @@ Now, you can build, then install PlantGL :
     cmake .. -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX}
 
     # Windows -> Visual Studio 2015 is required
-    cmake .. -G "Visual Studio 14 2015 Win64" -T host=x64 -DCMAKE_INSTALL_PREFIX=%CONDA_PREFIX%
+    cmake .. -G "NMake Makefiles" -DCMAKE_INSTALL_PREFIX=%LIBRARY_PREFIX%  ..
 
     cmake --build . --target install --config Release
 
