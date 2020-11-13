@@ -54,6 +54,10 @@ using namespace boost::python;
 
 DEF_POINTEE(Tapered)
 
+
+PrimitivePtr tr_primitive(Tapered * obj) { return obj->getPrimitive(); }
+void tr_setprimitive(Tapered * obj, PrimitivePtr value) { obj->getPrimitive() = value; }
+
 void export_Tapered()
 {
   class_< Tapered, TaperedPtr, bases< Transformed > , boost::noncopyable >
@@ -70,7 +74,8 @@ void export_Tapered()
     .DEF_PGLBASE(Tapered)
     .DEC_BT_PROPERTY_WDV(topRadius,Tapered,TopRadius,real_t,DEFAULT_TOP_RADIUS)
     .DEC_BT_PROPERTY_WDV(baseRadius,Tapered,BaseRadius,real_t,DEFAULT_BASE_RADIUS)
-    .DEC_PTR_PROPERTY(primitive,Deformed,Primitive,PrimitivePtr)
+    // .DEC_PTR_PROPERTY(primitive,Deformed,Primitive,PrimitivePtr)
+    .add_property("primitive", &tr_primitive, &tr_setprimitive)
     ;
 
   implicitly_convertible< TaperedPtr, TransformedPtr >();

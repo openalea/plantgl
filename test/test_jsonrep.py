@@ -1,0 +1,48 @@
+import openalea.plantgl.all as pgl
+import openalea.plantgl.scenegraph.jsonrep as jr
+from test_object_creation import shapebenchmark_generator,randtransform,randint
+import pytest
+
+
+def jsonconversion(sceneobj,verbose = True):
+  assert sceneobj.isValid()
+  print(sceneobj)
+  jc = jr.JsonRepConverter()
+  res = jc.convert(sceneobj)
+  assert type(res) == dict
+  sceneobj2 = jr.from_json(res)
+  assert type(sceneobj2) == type(sceneobj)
+
+#@pytest.mark.parametrize('sceneobj', list(shapebenchmark_generator()))
+#def test_jsonconversion_on_benchmark_objects(sceneobj):
+#    jsonconversion(sceneobj)
+
+def test_tapered():
+    ds = pgl.Sphere()
+    t = pgl.Tapered(1.,1.,ds)    
+    jsonconversion(t)
+
+def test_scene():
+    ds = pgl.Sphere()
+    t = pgl.Tapered(1.,1.,ds)    
+    sc = pgl.Scene([pgl.Shape(t, pgl.Material((255,0,0)))])
+    jsonconversion(sc)
+
+if __name__ == '__main__':
+    import traceback as tb
+    test_func = [ (n,v) for n,v in list(globals().items()) if 'test_' in n]
+    test_func.sort(key=lambda x : x[1].__code__.co_firstlineno)
+    for tfn,tf in test_func:
+        print(tfn)
+        if hasattr(tf, 'pytestmark'):
+            args = tf.pytestmark[0].args[1]
+            for arg in args:
+                try:
+                    tf(arg)
+                except:
+                    tb.print_exc()
+        else:
+            try:
+                tf()       
+            except:
+                tb.print_exc()        
