@@ -112,8 +112,8 @@ class FromJsonRepConverter(PyAlgo):
         return self.cache[jsonrep.get('id') ]
 
     @for_identifiers('QuantisedFunction')
-    def instance(self, jsonrep):
-        return return sg.QuantisedFunction(self.convert(jsonrep['data']), clamped = jsonrep['clamped'], sampling = jsonrep['sampling'])
+    def qfunction(self, jsonrep):
+        return sg.QuantisedFunction(self.convert(jsonrep['data']), clamped = jsonrep['clamped'], sampling = jsonrep['sampling'])
 
     def array(self, values):
         return list(map(self.convert, values))
@@ -164,11 +164,11 @@ class FromJsonRepConverter(PyAlgo):
         return res
 
 
-def to_json(object):
+def to_json_rep(object):
     fj = ToJsonRepConverter()
     return fj.convert(object)
 
-def from_json(jsonrep):
+def from_json_rep(jsonrep):
     fj = FromJsonRepConverter()
     return fj.convert(jsonrep)
 
