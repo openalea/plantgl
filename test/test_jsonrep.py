@@ -8,11 +8,11 @@ def jsonconversion(sceneobj, verbose = False):
   assert sceneobj.isValid()
   if verbose:
     print(sceneobj)
-  res = jr.to_json(sceneobj)
+  res = jr.to_json_rep(sceneobj)
   if verbose:
       print(res)
   assert type(res) == dict
-  sceneobj2 = jr.from_json(res)
+  sceneobj2 = jr.from_json_rep(res)
   assert type(sceneobj2) == type(sceneobj)
 
 @pytest.mark.parametrize('sceneobj', list(shapebenchmark_generator()))
