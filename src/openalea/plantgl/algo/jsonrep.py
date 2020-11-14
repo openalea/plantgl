@@ -80,6 +80,10 @@ class ToJsonRepConverter (PyAlgo):
     def scene(self, value):
         return { 'type' : 'Scene', 'data' : list(map(self.convert,value)) }
 
+    @for_types(sg.QuantisedFunction)
+    def qfunction(self, qfunc):
+        return { 'type' : 'QuantisedFunction', 'clamped' : qfunc.clamped, 'sampling' : qfunc.sampling,  'data' : self.convert(qfunc.input) }        
+
 
 class FromJsonRepConverter(PyAlgo):
     def __init__(self):
@@ -106,6 +110,10 @@ class FromJsonRepConverter(PyAlgo):
     @for_identifiers('Instance')
     def instance(self, jsonrep):
         return self.cache[jsonrep.get('id') ]
+
+    @for_identifiers('QuantisedFunction')
+    def instance(self, jsonrep):
+        return return sg.QuantisedFunction(self.convert(jsonrep['data']), clamped = jsonrep['clamped'], sampling = jsonrep['sampling'])
 
     def array(self, values):
         return list(map(self.convert, values))
