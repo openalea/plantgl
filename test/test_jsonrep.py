@@ -41,6 +41,13 @@ def test_scene():
     sc = pgl.Scene([pgl.Shape(t, pgl.Material((255,0,0))),pgl.Shape(t2, pgl.Material((0,255,0)))])
     jsonconversion(sc)
 
+def test_texture():
+    fname = '../share/plantgl/pixmap/geomviewer.png'
+    t = pgl.ImageTexture(fname)
+    t.baseColor = (255,0,0,0)
+    sh = pgl.Shape(pgl.Cylinder(),t, 2)
+    jsonconversion(sh)
+
 
 def te_st_jsonrep():
     jc = jr.JsonRepConverter()
