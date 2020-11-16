@@ -8,18 +8,32 @@ def is_deprecated_attribute(obj, attname):
     return False
 
 def get_pgl_attributes(obj):
-    attributes = [n for n in dir(obj) if not '__' in n and n != 'name' and isdatadescriptor(getattr(obj.__class__,n)) and not is_deprecated_attribute(obj,n)]
+    attributes = [n for n in dir(obj) if not '__' in n and isdatadescriptor(getattr(obj.__class__,n)) and not is_deprecated_attribute(obj,n)]
     toremove = []
     def att_rank(v):
         try:
             return obj.__init__.__doc__.index(v)
         except ValueError as ve:
-            toremove.append(v)
+            if v != 'name':
+                toremove.append(v)
             return len(obj.__init__.__doc__)
     attributes.sort(key = att_rank )
     for v in toremove:
         del attributes[attributes.index(v)]
     return attributes
+
+def is_pgl_attribute_to_default(obj, attname):
+    if attname == 'name' : 
+        return not obj.isNamed()
+    specific = { 'ccw' : 'isCCWToDefault'}
+    prefix = 2 if attname[0] in 'uv' else 1
+    todefault = 'is'+attname[:prefix].upper()+attname[prefix:]+'ToDefault'
+    defaulttest = specific.get(attname, todefault)
+    if hasattr(obj,defaulttest) :
+        return getattr(obj,defaulttest)()
+    else:
+        return False
+
 
 def is_pgl_abstract(cls):
     import inspect

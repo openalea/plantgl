@@ -14,16 +14,13 @@ class ToJsonRepConverter (PyAlgo):
 
     def pglobject(self, obj, *args):
         res = dict( type = obj.__class__.__name__, id = obj.getObjectId())
-        if obj.isNamed():
-            res['name'] = obj.name
         return self.pglattributes(res, obj, *args)
 
     def pglattributes(self, res, obj):
         attributes = inspect.get_pgl_attributes(obj)
 
         for att in attributes:
-            defaulttest = 'is'+att[0].upper()+att[1:]+'ToDefault'
-            if hasattr(obj,defaulttest) and getattr(obj,defaulttest)():
+            if inspect.is_pgl_attribute_to_default(obj, att):
                 continue
             res[att] = self.convert(getattr(obj,att))
         return res
@@ -113,7 +110,10 @@ class FromJsonRepConverter(PyAlgo):
 
     @for_identifiers('QuantisedFunction')
     def qfunction(self, jsonrep):
-        return sg.QuantisedFunction(self.convert(jsonrep['data']), clamped = jsonrep['clamped'], sampling = jsonrep['sampling'])
+        input = self.convert(jsonrep['data'])
+        res = sg.QuantisedFunction(input, clamped = jsonrep['clamped'], sampling = jsonrep['sampling'])
+        res.input = input
+        return res
 
     def array(self, values):
         return list(map(self.convert, values))
