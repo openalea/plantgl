@@ -18,6 +18,7 @@ def deprecated(func):
         warnings.warn("Call to deprecated function %s." % func.__name__,
                       category=DeprecationWarning)
         return func(*args, **kwargs)
+    newFunc.__deprecated__ = True
     newFunc.__name__ = func.__name__
     newFunc.__doc__ = func.__doc__
     newFunc.__dict__.update(func.__dict__)
@@ -31,7 +32,7 @@ def __extrusion_get_scale(extrusion):
 def __extrusion_set_scale(extrusion,value):
     extrusion.scaleList = value
 
-Extrusion.scale = property(__extrusion_get_scale,__extrusion_set_scale)
+Extrusion.scale = property(__extrusion_get_scale,__extrusion_set_scale, doc='DEPRECATED')
 
 @deprecated
 def __extrusion_get_orientation(extrusion):
@@ -41,7 +42,7 @@ def __extrusion_get_orientation(extrusion):
 def __extrusion_set_orientation(extrusion,value):
     extrusion.orientationList = value
 
-Extrusion.orientation = property(__extrusion_get_orientation,__extrusion_set_orientation)
+Extrusion.orientation = property(__extrusion_get_orientation,__extrusion_set_orientation, doc='DEPRECATED')
 
 
 """ Copy functions for Curve2D types """

@@ -29,7 +29,8 @@ requirements:
       - cgal-cpp
       - qhull
       - ann
-      - boost # boost module of conda-forge install boost.python and dependency boost-cpp for the cpp libs.
+      - boost                              # [unix]
+      - boost <1.74                        # [win] # v1.74 has a bug on windows.
       - expat                              # [linux]
       - libxcb                             # [linux]
       - pthread-stubs                      # [linux]
@@ -39,7 +40,7 @@ requirements:
           
   build:
       - python {{PY_VER}}                 
-      - binutils_impl_linux-64     # [linux]
+      - binutils_impl_linux-64            # [linux]
       - {{ compiler('cxx') }}
       - bison                             # [unix]
       - flex                              # [unix]
@@ -49,15 +50,15 @@ requirements:
       - cmake
       - pkg-config                        # [linux]
       - make                              # [unix]
-      - {{ cdt('mesa-libgl-devel') }}      # [linux]
-      - {{ cdt('mesa-dri-drivers') }}      # [linux]
-      - {{ cdt('libxext') }}               # [linux]
-      - {{ cdt('libselinux') }}            # [linux]
-      - {{ cdt('libxdamage') }}            # [linux]
-      - {{ cdt('libxfixes') }}             # [linux]
-      - {{ cdt('libxxf86vm') }}            # [linux]
-      - {{ cdt('libxcb') }}                # [linux]
-      - {{ cdt('expat-devel') }}        # [linux]
+      - {{ cdt('mesa-libgl-devel') }}     # [linux]
+      - {{ cdt('mesa-dri-drivers') }}     # [linux]
+      - {{ cdt('libxext') }}              # [linux]
+      - {{ cdt('libselinux') }}           # [linux]
+      - {{ cdt('libxdamage') }}           # [linux]
+      - {{ cdt('libxfixes') }}            # [linux]
+      - {{ cdt('libxxf86vm') }}           # [linux]
+      - {{ cdt('libxcb') }}               # [linux]
+      - {{ cdt('expat-devel') }}          # [linux]
 
   run:
       - python {{PY_VER}}

@@ -59,7 +59,8 @@ void export_AmapSymbol()
     ( "AmapSymbol",
       "The AmapSymbol describes an object of class of Mesh stored in the SMB file format of the Amap software."
       "This is provided for ascendant compatibility.",
-      init< optional<std::string,bool> >("AmapSymbol(filename)"))
+      init< optional<std::string, bool> >("AmapSymbol(filename,solid)",
+    (bp::arg("filename"),bp::arg("solid")=FaceSet::DEFAULT_SOLID)) )
     .def("readFile",&AmapSymbol::readFile)
     .DEC_BT_PROPERTY(filename,AmapSymbol,FileName,std::string)
     .DEF_PGLBASE(AmapSymbol)
