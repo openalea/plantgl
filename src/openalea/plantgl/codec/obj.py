@@ -481,11 +481,13 @@ class ObjCodec (sg.SceneCodec):
         """ Write an OBJ file from a plantGL scene graph.
 
         This method will convert a PlantGL scene graph into an OBJ file.
-        It does not manage  materials correctly yet.
 
         :Examples:
             import openalea.plantgl.scenegraph as sg
-            scene = sg.Scene()"""
+            scene = sg.Scene()
+            scene.write('scene.obj')
+
+        """
         print("Write "+fname)
         d = alg.Discretizer()
         f = open(fname,'w')

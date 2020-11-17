@@ -91,11 +91,11 @@ void export_NurbsPatch()
     "and using the parametric equation S(u,v) = Sum(i=0,n)Sum(j=0,m)(Ri,n(u)Rj,m(v)Pi,j) with u and v in [0,1]\n"
     "where Ri,n(u) and Ri,m(v) are classical n and m-th degree rational basis function.",
      init<const Point4MatrixPtr&, boost::python::optional< RealArrayPtr, RealArrayPtr, uint_t,uint_t,uint_t,uint_t,bool> >
-     ("NurbsPatch(Point4Matrix ctrlPointList, RealArray uKnotList,RealArray vKnotList [,uDeg, vDeg,ustride,vstride,ccw])"))
+     ("NurbsPatch(Point4Matrix ctrlPointMatrix, RealArray uKnotList,RealArray vKnotList [,uDeg, vDeg,ustride,vstride,ccw])"))
      .def(init<const Point4MatrixPtr&, uint_t, boost::python::optional< uint_t,RealArrayPtr, RealArrayPtr, uint_t,uint_t,bool> >
-         ("NurbsPatch(Point4Matrix ctrlPointList, udegree, vdegree,"
+         ("NurbsPatch(Point4Matrix ctrlPointMatrix, udegree, vdegree,"
           "uknotList, vknotList [,ustride,vstride,ccw])",
-          (bp::arg("ctrlPointList"),
+          (bp::arg("ctrlPointMatrix"),
            bp::arg("udegree") = NurbsPatch::DEFAULT_NURBS_DEGREE,
            bp::arg("vdegree") = NurbsPatch::DEFAULT_NURBS_DEGREE,
            bp::arg("uknotList") = TOOLS(RealArrayPtr()),

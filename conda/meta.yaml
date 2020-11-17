@@ -29,11 +29,12 @@ requirements:
       - cgal-cpp
       - qhull
       - ann
-      - boost <=1.73                      
-      - expat                             # [linux]
-      - libxcb                            # [linux]
-      - pthread-stubs                     # [linux]
-      - {{ cdt('mesa-libgl-devel') }}     # [linux]
+      - boost                              # [unix]
+      - boost <1.74                        # [win] # v1.74 has a bug on windows.
+      - expat                              # [linux]
+      - libxcb                             # [linux]
+      - pthread-stubs                      # [linux]
+      - {{ cdt('mesa-libgl-devel') }}      # [linux]
       - libglu                            # [linux]
       - xorg-libxfixes                    # [linux]
           
