@@ -1,4 +1,5 @@
 import openalea.plantgl.scenegraph as sg
+import openalea.plantgl.scenegraph.nurbspatch_nd as sgnp
 import openalea.plantgl.math as mt
 import openalea.plantgl.scenegraph.pglinspect as inspect 
 from openalea.plantgl.algo.pyalgo import * 
@@ -81,6 +82,13 @@ class ToJsonRepConverter (PyAlgo):
     def qfunction(self, qfunc):
         return { 'type' : 'QuantisedFunction', 'clamped' : qfunc.clamped, 'sampling' : qfunc.sampling,  'data' : self.convert(qfunc.input) }        
 
+    @for_types((sgnp.NurbsPatch3D))
+    def patch3d(self, value):
+        import numpy as np
+        return { 'type' : value.__class__.__name__ , 'name' : value.name , 'points' : [[[list(v) for v in iv] for iv in jv] for jv in value.points], 
+                  'udegree' : value.udegree, 'vdegree' : value.vdegree, 'wdegree' : value.wdegree,
+                  'uknotList' : self.convert(value.uknotList), 'vknotList' : self.convert(value.vknotList), 'wknotList' : self.convert(value.wknotList),
+                  'ustride' : value.ustride, 'vstride' : value.vstride, 'wstride' : value.wstride }
 
 class FromJsonRepConverter(PyAlgo):
     def __init__(self):
@@ -131,10 +139,10 @@ class FromJsonRepConverter(PyAlgo):
         else:
             rawdata = None
         ptype = jsonrep['type']
-        try:
-            constructor = sg.__dict__[ptype]
-        except KeyError as ke:
-            constructor = mt.__dict__[ptype]
+        for m in [sg,sgnp,mt]:
+            if ptype in m.__dict__:
+                constructor = sg.__dict__[ptype]
+                break    
         toremove = []
         for param, pvalue in values.items():
             if pvalue is None:

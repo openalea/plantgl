@@ -5,7 +5,7 @@ from math import pow,log
 
 from openalea.plantgl.gui.qt import QtCore, QtGui, QtOpenGL
 from openalea.plantgl.gui.qt.QtCore import QEvent, QObject, QPoint, Qt, pyqtSignal, qWarning
-from openalea.plantgl.gui.qt.QtGui import QColor, QImage
+from openalea.plantgl.gui.qt.QtGui import QColor, QImage,QFont
 from openalea.plantgl.gui.qt.QtOpenGL import QGLWidget
 from openalea.plantgl.gui.qt.QtWidgets import QFileDialog, QApplication
 
@@ -184,6 +184,9 @@ class Curve2DEditor (QGLViewer):
         self.renderer.renderingMode = GLRenderer.Dynamic
         self.ctrlrenderer = GLCtrlPointRenderer(self.discretizer)
         self.bgimage = False
+        self.font = QFont()
+        if not hasattr(self,'updateGL'):
+            self.updateGL = self.update
         
     def setTheme(self,theme = BLACK_THEME):
         self.curveMaterial = Material(theme['Curve'],1)
@@ -211,10 +214,10 @@ class Curve2DEditor (QGLViewer):
         #self.setHandlerKeyboardModifiers(QGLViewer.CAMERA, Qt.AltModifier)
         #self.setHandlerKeyboardModifiers(QGLViewer.FRAME,  Qt.NoModifier)
         #self.setHandlerKeyboardModifiers(QGLViewer.CAMERA, Qt.ControlModifier)
-        self.setMouseBinding(Qt.ControlModifier+Qt.LeftButton,QGLViewer.FRAME,QGLViewer.TRANSLATE)
-        self.setMouseBinding(Qt.ControlModifier+Qt.RightButton,QGLViewer.FRAME,QGLViewer.NO_MOUSE_ACTION)
-        self.setMouseBinding(Qt.LeftButton,QGLViewer.CAMERA,QGLViewer.TRANSLATE)
-        self.setMouseBinding(Qt.RightButton,QGLViewer.CAMERA,QGLViewer.NO_MOUSE_ACTION)
+        self.setMouseBinding(Qt.ControlModifier,Qt.LeftButton,QGLViewer.FRAME,QGLViewer.TRANSLATE)
+        self.setMouseBinding(Qt.ControlModifier,Qt.RightButton,QGLViewer.FRAME,QGLViewer.NO_MOUSE_ACTION)
+        self.setMouseBinding(Qt.NoModifier,Qt.LeftButton,QGLViewer.CAMERA,QGLViewer.TRANSLATE)
+        self.setMouseBinding(Qt.NoModifier,Qt.RightButton,QGLViewer.CAMERA,QGLViewer.NO_MOUSE_ACTION)
         self.camera().setUpVector(Vec(0,1,0))
         self.camera().setType(Camera.ORTHOGRAPHIC)
         self.camConstraint = WorldConstraint()
@@ -379,6 +382,8 @@ class Curve2DEditor (QGLViewer):
 
     def mRenderText(self, x, y, text):
         #error = glGetError()
+        if self.font is None:
+            self.font = QFont()
         self.renderText(x,y, 0, text)
         #self.drawText(x,y, text)
         #error = glGetError()
@@ -472,15 +477,15 @@ class Curve2DEditor (QGLViewer):
 
     def setInteractionMode(self,frame=True):
         if frame:
-                self.setMouseBinding(Qt.LeftButton,QGLViewer.FRAME,QGLViewer.TRANSLATE)
-                self.setMouseBinding(Qt.RightButton,QGLViewer.FRAME,QGLViewer.NO_MOUSE_ACTION)
-                self.setMouseBinding(Qt.ControlModifier+Qt.LeftButton,QGLViewer.CAMERA,QGLViewer.TRANSLATE)
-                self.setMouseBinding(Qt.ControlModifier+Qt.RightButton,QGLViewer.CAMERA,QGLViewer.NO_MOUSE_ACTION)
+                self.setMouseBinding(Qt.NoModifier,Qt.LeftButton,QGLViewer.FRAME,QGLViewer.TRANSLATE)
+                self.setMouseBinding(Qt.NoModifier,Qt.RightButton,QGLViewer.FRAME,QGLViewer.NO_MOUSE_ACTION)
+                self.setMouseBinding(Qt.ControlModifier,Qt.LeftButton,QGLViewer.CAMERA,QGLViewer.TRANSLATE)
+                self.setMouseBinding(Qt.ControlModifier,Qt.RightButton,QGLViewer.CAMERA,QGLViewer.NO_MOUSE_ACTION)
         else:
-                self.setMouseBinding(Qt.ControlModifier+Qt.LeftButton,QGLViewer.FRAME,QGLViewer.TRANSLATE)
-                self.setMouseBinding(Qt.ControlModifier+Qt.RightButton,QGLViewer.FRAME,QGLViewer.NO_MOUSE_ACTION)
-                self.setMouseBinding(Qt.LeftButton,QGLViewer.CAMERA,QGLViewer.TRANSLATE)
-                self.setMouseBinding(Qt.RightButton,QGLViewer.CAMERA,QGLViewer.NO_MOUSE_ACTION)
+                self.setMouseBinding(Qt.ControlModifier,Qt.LeftButton,QGLViewer.FRAME,QGLViewer.TRANSLATE)
+                self.setMouseBinding(Qt.ControlModifier,Qt.RightButton,QGLViewer.FRAME,QGLViewer.NO_MOUSE_ACTION)
+                self.setMouseBinding(Qt.NoModifier,Qt.LeftButton,QGLViewer.CAMERA,QGLViewer.TRANSLATE)
+                self.setMouseBinding(Qt.NoModifier,Qt.RightButton,QGLViewer.CAMERA,QGLViewer.NO_MOUSE_ACTION)
 
     def mousePressEvent(self,event):
         if event.modifiers()  != Qt.ControlModifier:

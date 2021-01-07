@@ -605,7 +605,7 @@ Point4MatrixPtr NurbsPatch::getConnectCoeffs(real_t  u, real_t  v, int d, int us
 
 
 Vector3 NurbsPatch::getUTangentAt(real_t u, real_t v) const {
-    GEOM_ASSERT( u >= 0.0 && u <= 1.0 && v>= 0.0 && v<=1.0);
+    GEOM_ASSERT( u >= getFirstUKnot( ) && u <= getLastUKnot( ) && v>= getFirstVKnot( ) && v<=getLastVKnot( ));
     Vector4 _derivate = getDerivativeAt( u, v, 1, 0);
     if(!_derivate.w())
         return Vector3(_derivate.x(),_derivate.y(),_derivate.z());
@@ -613,7 +613,7 @@ Vector3 NurbsPatch::getUTangentAt(real_t u, real_t v) const {
 }
 
 Vector3 NurbsPatch::getVTangentAt(real_t u, real_t v) const {
-    GEOM_ASSERT( u >= 0.0 && u <= 1.0 && v>= 0.0 && v<=1.0);
+    GEOM_ASSERT( u >= getFirstUKnot( ) && u <= getLastUKnot( ) && v>= getFirstVKnot( ) && v<=getLastVKnot( ));
     Vector4 _derivate = getDerivativeAt( u, v, 0, 1);
     if(!_derivate.w())
         return Vector3(_derivate.x(),_derivate.y(),_derivate.z());
@@ -621,7 +621,7 @@ Vector3 NurbsPatch::getVTangentAt(real_t u, real_t v) const {
 }
 
 Vector3 NurbsPatch::getNormalAt(real_t u, real_t v) const{
-    GEOM_ASSERT( u >= 0.0 && u <= 1.0 && v>= 0.0 && v<=1.0);
+    GEOM_ASSERT( u >= getFirstUKnot( ) && u <= getLastUKnot( ) && v>= getFirstVKnot( ) && v<=getLastVKnot( ));
     Vector3 _utangent = getUTangentAt(u,v);
     _utangent.normalize();
     Vector3 _vtangent = getVTangentAt(u,v);
@@ -636,7 +636,7 @@ Vector3 NurbsPatch::getNormalAt(real_t u, real_t v) const{
 
 LineicModelPtr NurbsPatch::getIsoUSectionAt(real_t u) const
 {
-  GEOM_ASSERT( u >= 0.0 && u <= 1.0 );
+  GEOM_ASSERT( u >= getFirstUKnot( ) && u <= getLastUKnot( ) );
 
   uint_t uspan = findSpan(u,__udegree,__uKnotList);
   RealArrayPtr Nu = basisFunctions(uspan, u, __udegree, __uKnotList);
@@ -653,7 +653,7 @@ LineicModelPtr NurbsPatch::getIsoUSectionAt(real_t u) const
 
 LineicModelPtr NurbsPatch::getIsoVSectionAt(real_t v) const
 {
-  GEOM_ASSERT(  v>= 0.0 && v<=1.0 );
+  GEOM_ASSERT(  v>= getFirstVKnot( ) && v<=getLastVKnot( ) );
 
   uint_t vspan = findSpan(v,__vdegree,__vKnotList);
   RealArrayPtr Nv = basisFunctions(vspan, v, __vdegree, __vKnotList);

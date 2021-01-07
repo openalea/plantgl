@@ -3,6 +3,7 @@ from ._pglsg import *
 
 from . import cspline
 from . import bezier_nurbs
+from .nurbspatch_nd import NurbsPatch3D
 import warnings
 from .colormap import *
 
