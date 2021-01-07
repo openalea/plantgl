@@ -1266,10 +1266,8 @@ ViewGLFrame::getProjectionPixelPerColor(double* pixelwidth)
         uchar_t green = *cvaluesiter; ++cvaluesiter;
         uchar_t blue =  *cvaluesiter; ++cvaluesiter;
         uchar_t alpha = 255-(*cvaluesiter); ++cvaluesiter;
-        uint_t id = (uint_t(alpha) << 24)+
-                    (uint_t(red) << 16)+
-                    (uint_t(green) << 8)+
-                     uint_t(blue);
+
+        uint_t id = Color4(red,green,blue,alpha).toUint();
         if(id != UINT32_MAX){
             pcount[id] += 1;
         }
