@@ -208,7 +208,7 @@ ViewGeomSceneGL::getSelectionIds() const
   std::vector<uint_t> res;
   for(SelectionCache::const_iterator _it = __selectedShapes.begin();
   _it !=__selectedShapes.end(); _it++)
-      res.push_back(get_item_value(_it)->getObjectId());
+      res.push_back(dynamic_pointer_cast<Shape>(get_item_value(_it))->getId());
   return res;
 }
 
@@ -868,7 +868,7 @@ ViewGeomSceneGL::getProjectionSizes(const ScenePtr& sc){
         nsc->add(*it);
         setScene(nsc);
         if(frame->isPixelBufferUsed())frame->paintPixelBuffer();
-        res.push_back(pair<uint_t,double>((*it)->getObjectId(),frame->getProjectionSize()));
+        res.push_back(pair<uint_t,double>(dynamic_pointer_cast<Shape>(*it)->getId(),frame->getProjectionSize()));
         cur++;
         if(cur % per == 0){
             printf("\x0d Projections %.0f%% done.",cur*100./tot);
@@ -915,7 +915,7 @@ ViewGeomSceneGL::castRays(const ScenePtr& sc, bool back_test){
     for(Scene::const_iterator it = sc->begin(); it != sc->end(); it++){
         nsc->clear();
         nsc->add(*it);
-        uint_t id = (*it)->getObjectId();
+        uint_t id = dynamic_pointer_cast<Shape>(*it)->getId();
         setScene(nsc);
         if(frame->isPixelBufferUsed())frame->paintPixelBuffer();
         else if (!autoredraw) frame->updateGL();
@@ -975,12 +975,14 @@ ViewGeomSceneGL::getPixelPerShape(double* pixelwidth)
         ScenePtr nsc(new Scene());
         QHash<uint_t,uint_t> coloridmap;
         for(Scene::const_iterator it = __scene->begin(); it != __scene->end(); it++){
-            uint_t id = (*it)->getObjectId();
-            Color4 c = Color4::fromUint(id);
-            MaterialPtr mat = new Material(Color3(c),1);
-            mat->getTransparency() = c.getAlphaClamped();
             ShapePtr sh = dynamic_pointer_cast<Shape>(*it);
-            nsc->add(ShapePtr(new Shape(sh->getGeometry(),AppearancePtr(mat),id)));
+            if (is_valid_ptr(sh)) {
+                uint_t id = sh->getId();
+                Color4 c = Color4::fromUint(id);
+                MaterialPtr mat = new Material(Color3(c),1);
+                mat->getTransparency() = c.getAlphaClamped();
+                nsc->add(ShapePtr(new Shape(sh->getGeometry(),AppearancePtr(mat),id)));
+            }
         }
 
 
