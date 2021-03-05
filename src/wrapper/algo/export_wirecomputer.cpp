@@ -41,109 +41,49 @@
 
 
 #include <boost/python.hpp>
-#include "export_action.h"
-#include <plantgl/python/exception_core.h>
+
+#include <plantgl/algo/base/wirecomputer.h>
+#include <plantgl/algo/base/discretizer.h>
+#include <plantgl/algo/base/merge.h>
+#include <plantgl/scenegraph/scene/scene.h>
 
 /* ----------------------------------------------------------------------- */
 
-void module_algo()
-{
-  define_stl_exceptions();
-
-    // util class export
-    export_Sequencer();
-
-    // abstract action class export
-    export_action();
-
-    // basic action export
-    export_Discretizer();
-    export_Tesselator();
-    export_BBoxComputer();
-    export_VolComputer();
-    export_SurfComputer();
-    export_AmapTranslator();
-    export_MatrixComputer();
-    export_WireComputer();
-
-    // custom algo
-    export_Merge();
-    export_Fit();
-
-    // abstract printer export
-    export_StrPrinter();
-    export_FilePrinter();
-
-    // printer export
-    export_PglPrinter();
-    export_PglBinaryPrinter();
-    export_PovPrinter();
-    export_VrmlPrinter();
-    export_VgstarPrinter();
-    export_PyPrinter();
-
-    // reader export
-    export_PglReader();
-
-    // gl export
-    export_GLRenderer();
-    export_GLSkelRenderer();
-    export_GLBBoxRenderer();
-    export_GLCtrlPointRenderer();
-
-    export_ProjectionCamera();
-    export_ProjectionEngine();
-    export_ZBufferEngine();
-    export_DepthSortEngine();
-    export_ProjectionRenderer();
-
-    // Turtle export
-    export_TurtleParam();
-    export_Turtle();
-    export_PglTurtle();
-
-    // Modeling
-    export_SpaceColonization();
-
-    // RayCasting export
-    export_SegIntersection();
-    export_Ray();
-    export_RayIntersection();
-    export_Intersection();
-
-    // Grid export
-    export_Mvs();
-    export_Octree();
-    export_PointGrid();
-    export_KDtree();
-    export_PyGrid();
-    export_PlaneClip();
-
-    // CurveManipulation export
-    export_CurveManipulation();
-
-    // Skeleton export
-    export_Skeleton();
-
-    // Point manip
-    export_PointManip();
-    export_Triangulation3D();
-
-    // Dijkstra shortest path
-    export_Dijkstra();
-
-    // random points algo
-    export_randompoints();
-};
+PGL_USING_NAMESPACE
+using namespace boost::python;
+using namespace std;
 
 /* ----------------------------------------------------------------------- */
 
-#ifdef PGL_DEBUG
-BOOST_PYTHON_MODULE(_pglalgo_d)
-#else
-BOOST_PYTHON_MODULE(_pglalgo)
-#endif
-{
-  module_algo();
-};
+GeometryPtr wire_geom(Geometry * obj){
+    Discretizer d;
+    WireComputer sf(d);
+    obj->apply(sf);
+    return sf.getWire();
+}
 
+GeometryPtr wire_sh(Shape * obj){
+    Discretizer d;
+    WireComputer sf(d);
+    obj->apply(sf);
+    return sf.getWire();
+}
+
+GeometryPtr py_getWire( WireComputer* w )
+{ return w->getWire(); }
+
+
+
+/* ----------------------------------------------------------------------- */
+
+void export_WireComputer()
+{
+  class_< WireComputer, bases<Action>, boost::noncopyable >
+    ("WireComputer", init<Discretizer&>("WireComputer() -> compute a wire representation."))
+    .add_property("wire", &py_getWire, "Return the wire representation of the shape")
+    .add_property("result",  &py_getWire)
+    ;
+  def("wire",&wire_geom,"Compute the wire representation of a geometry");
+  def("wire",&wire_sh,"Compute the wire representation of a shape");
+
+}

@@ -58,6 +58,7 @@ void export_VolComputer();
 void export_SurfComputer();
 void export_AmapTranslator();
 void export_MatrixComputer();
+void export_WireComputer();
 
 // custom algo
 void export_Merge();
