@@ -265,9 +265,7 @@ Vector3 BezierCurve::getPointAt2(real_t u) const{
     vector<real_t> _allBernstein=all_bernstein(getDegree(),u);
     Vector4 C(0.0,0.0,0.0,0.0);
     for(uint_t i=0;i<=getDegree();i++){
-        C = C + (__ctrlPointList->getAt(i) * _allBernstein[i]);
-        cerr << " C = C + <" << __ctrlPointList->getAt(i).x() << "," << __ctrlPointList->getAt(i).y()
-             << "," << __ctrlPointList->getAt(i).z() <<  "," << __ctrlPointList->getAt(i).w()  << "> * " << _allBernstein[i] << endl;
+        C += (__ctrlPointList->getAt(i).wtoxyz() * _allBernstein[i]);
     }
     if (fabs(C.w()) < GEOM_TOLERANCE)
         return Vector3(C.x(),C.y(),C.z());

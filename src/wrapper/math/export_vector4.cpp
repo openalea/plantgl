@@ -75,6 +75,7 @@ void export_Vector4()
     .def(init< const Vector3&,  boost::python::optional<real_t> >("Vector4(Vector3 v, real_t w)",args("v","w")))
     .def( "__str__", v4_repr )
     .def( "__repr__", v4_repr )
+    .def( "wtoxyz", &Vector4::wtoxyz )
     .def(vector_dim4_func<Vector4>())
     .def_pickle(v4_pickle_suite())
     ;

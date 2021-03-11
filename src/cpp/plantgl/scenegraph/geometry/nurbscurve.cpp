@@ -445,11 +445,7 @@ Vector3 NurbsCurve::getPointAt(real_t u) const{
     RealArrayPtr _basisFunctions = computeBasisFunctions(span,u);
     Vector4 Cw(0.0,0.0,0.0,0.0);
     for (uint_t j = 0; j <= __degree; j++) {
-        Vector4 Pj = __ctrlPointList->getAt( span - __degree + j );
-        Pj.x() *= Pj.w();
-        Pj.y() *= Pj.w();
-        Pj.z() *= Pj.w();
-
+        Vector4 Pj = __ctrlPointList->getAt( span - __degree + j ).wtoxyz();
         Cw += Pj * _basisFunctions->getAt(j);
     }
 

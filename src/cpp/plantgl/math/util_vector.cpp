@@ -1035,6 +1035,11 @@ Vector3 Vector4::project( ) const {
   return Vector3(__X / __W, __Y / __W, __Z / __W);
 }
 
+Vector4 Vector4::wtoxyz( ) const {
+  return Vector4(__X * __W, __Y * __W, __Z * __W,  __W);
+
+}
+
 /*  --------------------------------------------------------------------- */
 
 Vector4 operator*( const Vector4& v, const real_t& s ) {

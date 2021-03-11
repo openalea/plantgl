@@ -530,7 +530,9 @@ Vector3 NurbsPatch::getPointAt(real_t u, real_t v) const{
              Indices are similar between ctrlPointMatrix.getAt and
              NurbsPatch.getPointAt which is  coherent.
            */
-          temp += (__ctrlPointMatrix->getAt(uind+k,vind) *  (Nu->getAt(k))) ;
+          Vector4 ipt = __ctrlPointMatrix->getAt(uind+k,vind).wtoxyz();
+          temp += (ipt *  (Nu->getAt(k))) ;
+
       }
       Sw += temp * Nv->getAt(l);
   }
@@ -542,66 +544,6 @@ Vector3 NurbsPatch::getPointAt(real_t u, real_t v) const{
 
   return Sw.project();
 }
-/*
-Point4MatrixPtr NurbsPatch::getMetric(real_t u, real_t v) const{
-    GEOM_ASSERT( u >= 0.0 && u <= 1.0 && v>= 0.0 && v<=1.0);
-    Point4MatrixPtr _metric(new Point4Matrix(2,2));
-    Vector3 _utangent = getUTangentAt(u,v);
-    Vector3 _vtangent = getVTangentAt(u,v);
-    for (uint_t l = 0 ; l <= 1 ; l++ ){
-      for (uint_t k = 0 ; k <= 1 ; k++ ){
-        // CPL: This line do not compile
-        //_metric->setAt(l,k,_utangent(l) * _vtangent(v))
-#ifdef __GNUC__
-#warning implement the function with a valid code.
-#endif
-      }
-    }
-    return _metric;
-}
-
-real_t NurbsPatch::getDetMetric(real_t u, real_t v) const{
-    GEOM_ASSERT( u >= 0.0 && u <= 1.0 && v>= 0.0 && v<=1.0);
-    Vector3 _utangent = getUTangentAt(u,v);
-    Vector3 _vtangent = getVTangentAt(u,v);
-    real_t _det = _utangent[0] * _vtangent[1] - _utangent[1] * _vtangent[0];
-    return _det;
-}
-
-Point4MatrixPtr NurbsPatch::getInvMetric(real_t u, real_t v) const{
-    GEOM_ASSERT( u >= 0.0 && u <= 1.0 && v>= 0.0 && v<=1.0);
-    Point4MatrixPtr _invmetric(new Point4Matrix(2,2));
-    Vector3 _utangent = getUTangentAt(u,v);
-    Vector3 _vtangent = getVTangentAt(u,v);
-    for (uint_t l = 0 ; l <= 1 ; l++ ){
-      for (uint_t k = 0 ; k <= 1 ; k++ ){
-        //_invmetric->setAt(l,k,_utangent(l)*_vtangent(v)/(_utangent[0]*_vtangent[1] - _utangent[1]*_vtangent[0]))
-#ifdef __GNUC__
-    #warning implement the function with a valid code.
-#endif
-      }
-    }
-    return _invmetric;
-}
-*/
-
-// This function is not finished yet...
-/*
-Point4MatrixPtr NurbsPatch::getConnectCoeffs(real_t  u, real_t  v, int d, int uspan, int vspan ) const{
-    //cout<<"NurbsPatch.deriveAt"<<endl;
-    Point4MatrixPtr _drvecoord = nurbsPatch::getDerivativesAt(u,v) ;
-    Point4MatrixPtr _christoffel(new Point4Matrix(d+1,d+1));
-    Vector3 _chvec = Vector3::ORIGIN;
-    _coord_contra = coord_contra();
-    for (uint_t l = 0 ; l <= 1 ; l++ ){
-      for (uint_t k = 0 ; k <= 1 ; k++ ){
-        _chvec = _drve_coord->getAt(l,k);
-        for (uint_t j = 0 ; j <= 1 ; j++ ){
-          //_connect_coeffs[(l,k,j)] = _coord_contra[j] *
-                pass
-    return _connect_coeffs
-*/
-
 
 
 Vector3 NurbsPatch::getUTangentAt(real_t u, real_t v) const {
@@ -642,10 +584,17 @@ LineicModelPtr NurbsPatch::getIsoUSectionAt(real_t u) const
   RealArrayPtr Nu = basisFunctions(uspan, u, __udegree, __uKnotList);
   uint_t vdim = __ctrlPointMatrix->getColumnNb();
   Point4ArrayPtr temp(new Point4Array(vdim));
+  uint_t uind = uspan - __udegree;
+
   for (uint_t l = 0 ; l < vdim ; l++ ){
       Vector4 vec;
-      for (uint_t k = 0 ; k <= __udegree ; k++ )
-          vec += (__ctrlPointMatrix->getAt(uspan - __udegree +k,l) *  (Nu->getAt(k))) ;
+      for (uint_t k = 0 ; k <= __udegree ; k++ ){
+         Vector4 pk = __ctrlPointMatrix->getAt(uind +k,l).wtoxyz();
+         vec += pk *  (Nu->getAt(k)) ;
+      }
+      vec.x() /= vec.w();
+      vec.y() /= vec.w();
+      vec.z() /= vec.w();
       temp->setAt(l,vec);
   }
   return LineicModelPtr(new NurbsCurve(temp,__vKnotList,__vdegree,__vstride));
@@ -662,7 +611,10 @@ LineicModelPtr NurbsPatch::getIsoVSectionAt(real_t v) const
   for (uint_t l = 0 ; l < udim ; l++ ){
       Vector4 vec;
       for (uint_t k = 0 ; k <= __vdegree ; k++ )
-          vec += (__ctrlPointMatrix->getAt(l,vspan - __vdegree +k) *  (Nv->getAt(k))) ;
+          vec += (__ctrlPointMatrix->getAt(l,vspan - __vdegree +k).wtoxyz() *  (Nv->getAt(k))) ;
+      vec.x() /= vec.w();
+      vec.y() /= vec.w();
+      vec.z() /= vec.w();
       temp->setAt(l,vec);
   }
   return LineicModelPtr(new NurbsCurve(temp,__uKnotList,__udegree,__ustride));

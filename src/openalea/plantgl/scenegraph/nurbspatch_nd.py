@@ -9,6 +9,9 @@ class NurbsPatch3D:
                  uknotList = None, vknotList = None, wknotList = None,
                  ustride = 30, vstride = 30, wstride = 30):
         dim = (len(points),len(points[0]),len(points[0][0]))
+        assert udegree < dim[0]
+        assert vdegree < dim[1]
+        assert wdegree < dim[2]
         self.points = np.empty( dim, dtype=object )
         for index in itertools.product(*[list(range(d)) for d in dim]):
             self.points[index] = points[index[0]][index[1]][index[2]]
@@ -65,7 +68,7 @@ class NurbsPatch3D:
             for j in range(0,vdeg+1):
                 tmpVec = Vector4(0,0,0,0)
                 for k in range(0,udeg+1):
-                    tmpVec += self.points[uspan-udeg+k][vspan-vdeg+j][wspan-wdeg+i] * Nu[k]
+                    tmpVec += self.points[uspan-udeg+k][vspan-vdeg+j][wspan-wdeg+i].wtoxyz() * Nu[k]
                 tmp[i][j] = tmpVec
                 
         tmp2 = [None for i in range(wdeg+1)]
@@ -119,19 +122,6 @@ class NurbsPatch3D:
             res[j] += tmp2[i] * Nw[j,i]
         return res[1]
 
-    def getWPatch(self,w):
-        wdeg = self.wdegree
-        wspan = sg.NurbsCurve.findSpan(w,wdeg,self.wknotList)
-        Nw = sg.NurbsCurve.basisFunctions(wspan, w, wdeg, self.wknotList)
-       
-        tmp = [[None for j in range(self.__vdim)] for i in range(self.__udim)]
-        for i in range(0,self.__udim):
-            for j in range(0,self.__vdim):
-                tmpVec = Vector4(0,0,0,0)
-                for k in range(0,wdeg+1):
-                    tmpVec += self.points[i][j][wspan-wdeg+k] * Nw[k]
-                tmp[i][j] = tmpVec
-        return sg.NurbsPatch(tmp,self.uknotList,self.vknotList,self.udegree,self.vdegree,self.ustride,self.vstride)
 
     def getUPatch(self,u):
         udeg = self.udegree
@@ -143,7 +133,11 @@ class NurbsPatch3D:
             for j in range(0,self.__wdim):
                 tmpVec = Vector4(0,0,0,0)
                 for k in range(0,udeg+1):
-                    tmpVec += self.points[uspan-udeg+k][i][j] * Nu[k]
+                    npi = Vector4(self.points[uspan-udeg+k][i][j]).wtoxyz()
+                    tmpVec += npi * Nu[k]
+                tmpVec.x/=tmpVec.w
+                tmpVec.y/=tmpVec.w
+                tmpVec.z/=tmpVec.w
                 tmp[i][j] = tmpVec
         return sg.NurbsPatch(tmp,self.vknotList,self.wknotList,self.vdegree,self.wdegree,self.vstride,self.wstride)
 
@@ -157,16 +151,37 @@ class NurbsPatch3D:
             for j in range(0,self.__wdim):
                 tmpVec = Vector4(0,0,0,0)
                 for k in range(0,vdeg+1):
-                    tmpVec += self.points[i][vspan-vdeg+k][j] * Nv[k]
+                    tmpVec += self.points[i][vspan-vdeg+k][j].wtoxyz() * Nv[k]
+                tmpVec.x/=tmpVec.w
+                tmpVec.y/=tmpVec.w
+                tmpVec.z/=tmpVec.w
                 tmp[i][j] = tmpVec
         return sg.NurbsPatch(tmp,self.uknotList,self.wknotList,self.udegree,self.wdegree,self.ustride,self.wstride)
+
+    def getWPatch(self,w):
+        wdeg = self.wdegree
+        wspan = sg.NurbsCurve.findSpan(w,wdeg,self.wknotList)
+        Nw = sg.NurbsCurve.basisFunctions(wspan, w, wdeg, self.wknotList)
+       
+        tmp = [[None for j in range(self.__vdim)] for i in range(self.__udim)]
+        for i in range(0,self.__udim):
+            for j in range(0,self.__vdim):
+                tmpVec = Vector4(0,0,0,0)
+                for k in range(0,wdeg+1):
+                    tmpVec += self.points[i][j][wspan-wdeg+k].wtoxyz() * Nw[k]
+                tmpVec.x/=tmpVec.w
+                tmpVec.y/=tmpVec.w
+                tmpVec.z/=tmpVec.w
+                tmp[i][j] = tmpVec
+        return sg.NurbsPatch(tmp,self.uknotList,self.vknotList,self.udegree,self.vdegree,self.ustride,self.vstride)
         
     def getBoundingBox(self):
+        def toV3(p): return Vector3(p.x,p.y,p.z)
         p1 = self.points[0,0,0]
         p2 = self.points[0,0,1]
-        bbx = sg.BoundingBox(p1.project(),p2.project())
+        bbx = sg.BoundingBox(toV3(p1),toV3(p2))
         for index in itertools.product(*[list(range(d)) for d in self.points.shape]):
-            bbx.extend(self.points[index].project())
+            bbx.extend(toV3(self.points[index]))
         return bbx
 
     def getUVIsoSectionAt(self,u,v):

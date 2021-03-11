@@ -13,11 +13,12 @@ class Pos3Setter:
         self.ctrlpointset[self.index] = pos
 
 class Pos4Setter:
-    def __init__(self,ctrlpointset,index):
+    def __init__(self,ctrlpointset, index, weight = 1):
         self.ctrlpointset = ctrlpointset
         self.index = index
+        self.weight = weight
     def __call__(self,pos):
-        self.ctrlpointset[self.index] = Vector4(pos,1)
+        self.ctrlpointset[self.index] = Vector4(pos,self.weight)
         
 
 class CtrlPoint(ManipulatedFrame):
@@ -239,7 +240,7 @@ class SelectionManipulator (ManipulatedFrame):
         for ctrlpoint in self.selection:
             ctrlpoint.selected = False
             ctrlpoint.translated.disconnect(self.propagatePointTranslation)
-        self.selection = None
+        self.selection = []
             
     def add(self,ctrlpoint):
         """ add a ctrl point to the selection """
