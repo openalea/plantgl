@@ -120,8 +120,8 @@ bool NurbsCurve::Builder::isValid( ) const {
   }
 
   uint_t _size = (*CtrlPointList)->size();
-  if ( _size < 3 ) {
-    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Curve","CtrlPointList","Must be greater than 2.");
+  if ( _size < 2 ) {
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Curve","CtrlPointList","Must be greater or equal to 2.");
     return false;
   }
 

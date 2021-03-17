@@ -107,8 +107,8 @@ bool BezierCurve::Builder::isValid( ) const {
         return false;
     }
     uint_t _size = (*CtrlPointList)->size();
-    if (_size < 3 ) {
-        pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Bezier Curve","CtrlPointList","Must have more than 2 control points.");
+    if (_size < 2 ) {
+        pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Bezier Curve","CtrlPointList","Must have at least 2 control points.");
         return false;
     }
 

@@ -14,8 +14,8 @@ import itertools
 from openalea.plantgl.gui.qt.QtCore import QObject, QRect, Qt, pyqtSignal
 from openalea.plantgl.gui.qt.QtWidgets import QApplication
 
-helpstr = """<h2>N u r b s P a t c h E d i t o r</h2>
-This application allows the user to edit a nurbsPatch dynamically.
+helpstr = """<h2>N u r b s  E d i t o r</h2>
+This application allows the user to edit a nurbs object dynamically.
 The user can add a column or a row respectively pressing shift+RightMouseButton or shift+LeftRightButton.
 The user can move the control points selecting one or many of them double clicking on it, then grabbing it or one of the axis
 to move them in the way he wants. double clicking anywhere but on a control point de-select every control points """
@@ -43,7 +43,7 @@ def addColumnToPatch(patch,col,decal):
 
 #############################################################
 
-class AbstractNurbsPatchEditorView(QGLViewer):
+class AbstractNurbsObjectEditorView(QGLViewer):
     """ The class NurbsPatchEditor is the viewer of the scene, it contains all the informations about the NurbsPatch, that's why a getter and a setter have been created, the NubrsPatch is defined by a 2 dimensional Array of 3d Vectors"""
    
     Edit,Rotate = list(range(2))
@@ -56,12 +56,12 @@ class AbstractNurbsPatchEditorView(QGLViewer):
             :param parent: the parent widget
         """
         QGLViewer.__init__(self,parent)
-        self.setStateFileName('.nurbspatcheditor.xml') 
+        self.setStateFileName('.nurbsobjecteditor.xml') 
      
-        self.mode = AbstractNurbsPatchEditorView.Edit
+        self.mode = AbstractNurbsObjectEditorView.Edit
         
         # the nurbs patch
-        self.nurbsPatch = None
+        self.nurbsObject = None
         
         # matrix of ctrl point manipulator
         self.ctrlPointManipulators = {}
@@ -89,11 +89,11 @@ class AbstractNurbsPatchEditorView(QGLViewer):
         self.__rectangle = QRect()
         self.__rectangleInit = None
 
-        self._drawPatch = True
+        self._drawNurbsObject = True
         self._drawGrid = True
     
         #creation of a default NurbsPatch
-        self.setNurbsPatch(self.newDefaultNurbsPatch())
+        self.setNurbsObject(self.newDefaultNurbsObject())
 
     def getSelection(self):
         if self.selectionManipulator:
@@ -105,9 +105,10 @@ class AbstractNurbsPatchEditorView(QGLViewer):
         """ clear current edition """
         self.ctrlPointManipulators = {}
         self.clearSelectionManipulator()
+        self.resetDisplay()
 
     def getCtrlPoints(self):
-        return self.nurbsPatch.ctrlPointMatrix
+        return self.nurbsObject.ctrlPointMatrix
 
     def getCtrlPointsDim(self):
         return self.getCtrlPoints().sizes()
@@ -118,7 +119,7 @@ class AbstractNurbsPatchEditorView(QGLViewer):
     def getBounds(self):
         """ Get the Bounding Box of the scene:
             return the minpos and maxpos that can be used by setSceneBoundingBox function"""
-        self.nurbsPatch.apply(self.bboxcomputer)
+        self.nurbsObject.apply(self.bboxcomputer)
         res = self.bboxcomputer.result
         return Vec(*res.lowerLeftCorner),Vec(*res.upperRightCorner)
 
@@ -137,7 +138,7 @@ class AbstractNurbsPatchEditorView(QGLViewer):
         self.restoreStateFromFile()
 
         # init mouse interaction 
-        self.mode = AbstractNurbsPatchEditorView.Edit
+        self.mode = AbstractNurbsObjectEditorView.Edit
         self.setInteractionMode(False)
 
         self.setMouseBindingDescription(Qt.ShiftModifier,Qt.LeftButton,"Rectangular selection")
@@ -208,8 +209,8 @@ class AbstractNurbsPatchEditorView(QGLViewer):
 
     def setInteractionMode(self,frame=True):
         if frame:
-            if self.mode != AbstractNurbsPatchEditorView.Edit:
-                self.mode = AbstractNurbsPatchEditorView.Edit
+            if self.mode != AbstractNurbsObjectEditorView.Edit:
+                self.mode = AbstractNurbsObjectEditorView.Edit
                 self.setMouseBinding(Qt.NoModifier,Qt.LeftButton,QGLViewer.FRAME,QGLViewer.TRANSLATE)
                 self.setMouseBinding(Qt.NoModifier,Qt.RightButton,QGLViewer.FRAME,QGLViewer.NO_MOUSE_ACTION)
 
@@ -217,8 +218,8 @@ class AbstractNurbsPatchEditorView(QGLViewer):
                 self.setMouseBinding(Qt.ControlModifier,Qt.RightButton, QGLViewer.CAMERA,QGLViewer.TRANSLATE)
                 self.setMouseBinding(Qt.ControlModifier,Qt.MiddleButton,QGLViewer.CAMERA,QGLViewer.ZOOM)     
         else:
-            if self.mode != AbstractNurbsPatchEditorView.Rotate:
-                self.mode = AbstractNurbsPatchEditorView.Rotate
+            if self.mode != AbstractNurbsObjectEditorView.Rotate:
+                self.mode = AbstractNurbsObjectEditorView.Rotate
                 self.setMouseBinding(Qt.ControlModifier,Qt.LeftButton,QGLViewer.FRAME,QGLViewer.TRANSLATE)
                 self.setMouseBinding(Qt.ControlModifier,Qt.RightButton,QGLViewer.FRAME,QGLViewer.NO_MOUSE_ACTION)
                 self.setMouseBinding(Qt.NoModifier,Qt.LeftButton,QGLViewer.CAMERA,QGLViewer.ROTATE)
@@ -316,7 +317,7 @@ class AbstractNurbsPatchEditorView(QGLViewer):
             self._drawGrid = not self._drawGrid
             self.updateGL()
         elif (e.key()==Qt.Key_G) and (modifiers==Qt.NoModifier):
-            self._drawPatch = not self._drawPatch
+            self._drawNurbsObject = not self._drawNurbsObject
             self.updateGL()
         else:
             QGLViewer.keyPressEvent(self,e)
@@ -327,12 +328,12 @@ class AbstractNurbsPatchEditorView(QGLViewer):
         diff = norm(maxp-minp)/20
         if selection >= nbcolumn:
             row = selection-nbcolumn
-            newpatch = addRowToPatch(self.nurbsPatch,row,Vector4(diff,0))
+            newpatch = addRowToPatch(self.nurbsObject,row,Vector4(diff,0))
             selectedPoints = [(row,i) for i in range(nbcolumn)]
         else:
-            newpatch = addColumnToPatch(self.nurbsPatch,selection,Vector4(diff,0))
+            newpatch = addColumnToPatch(self.nurbsObject,selection,Vector4(diff,0))
             selectedPoints = [(i,selection) for i in range(self.getCtrlPoints().getRowNb())]
-        self.setNurbsPatch(newpatch)
+        self.setNurbsObject(newpatch)
         return selectedPoints
 
     def draw(self):
@@ -348,8 +349,8 @@ class AbstractNurbsPatchEditorView(QGLViewer):
         # draw the wire of the patch
         ogl.glLineWidth(1)
         
-        if self._drawPatch:
-            self.drawPatchWire()
+        if self._drawNurbsObject:
+            self.drawNurbsObjectWire()
         if self._drawGrid:
             self.drawCtrlWire()
 
@@ -360,8 +361,8 @@ class AbstractNurbsPatchEditorView(QGLViewer):
         ogl.glEnable(ogl.GL_BLEND)
         ogl.glBlendFunc(ogl.GL_SRC_ALPHA,ogl.GL_ONE_MINUS_SRC_ALPHA)
 
-        if self._drawPatch:
-            self.drawPatch()
+        if self._drawNurbsObject:
+            self.drawNurbsObject()
         self.drawCtrlPoints()
 
         ogl.glDisable(ogl.GL_BLEND)
@@ -404,23 +405,16 @@ class AbstractNurbsPatchEditorView(QGLViewer):
 
         # ctrl line rendering
         Material((255,255,255),1).apply(self.glrenderer)        
-        self.nurbsPatch.apply(self.ctrlrenderer)
+        self.nurbsObject.apply(self.ctrlrenderer)
 
-    def drawPatch(self):
+    def drawNurbsObject(self):
         sc=Scene([self.nurbsShape])
 
         # patch rendering
         sc.apply(self.glrenderer)
 
-    def drawPatchWire(self):
-        shwire = Shape(Group([self.nurbsPatch.getIsoUSectionAt(u) for u in np.arange(0,1.01,0.1)]+[self.nurbsPatch.getIsoVSectionAt(v) for v in np.arange(0,1.01,0.1)]),Material((120,255,0),0.8))
-        print(len(shwire.geometry.geometryList))
-        print(shwire.geometry.geometryList[0].ctrlPointList)
-        print(shwire.geometry.geometryList[10].ctrlPointList)
-        print(shwire.geometry.geometryList[11].ctrlPointList)
-        print(shwire.geometry.geometryList[21].ctrlPointList)
-        shwire.apply(self.glrenderer)
-        shwire = Shape(self.nurbsPatch,Material((120,255,0),0.8))
+    def drawNurbsObjectWire(self):
+        shwire = Shape(self.nurbsObject,Material((120,255,0),0.8))
         shwire.apply(self.glrenderer)
 
 
@@ -439,20 +433,16 @@ class AbstractNurbsPatchEditorView(QGLViewer):
           sh.apply(self.glrenderer)
           ogl.glPopName()
     
-    @staticmethod
-    def newDefaultNurbsPatch():
-        """ return a default nurbs patch """
-        return NurbsPatch([[Vector4(j-1.5,i-1.5,0,1) for j in range(4)] for i in range(4)], ustride=10, vstride=10)
 
-    def getNurbsPatch(self):
+    def getNurbsObject(self):
         """ return the edited nurbs patch """
-        return self.nurbsPatch
+        return self.nurbsObject
 
-    def setNurbsPatch(self,nurbsPatch):
+    def setNurbsObject(self,nurbsObject):
         """ set the nurbs patch to edit """
         self.clear()
-        self.nurbsPatch=nurbsPatch
-        self.setNurbsPatchView()
+        self.nurbsObject=nurbsObject
+        self.setNurbsObjectView()
         self.setControlPointManipulators()
 
     def setControlPointManipulators(self):
@@ -484,8 +474,8 @@ class AbstractNurbsPatchEditorView(QGLViewer):
 
         self.setSceneBoundingBox(*self.getBounds())
 
-    def setNurbsPatchView(self):
-        self.nurbsShape.geometry=self.nurbsPatch
+    def setNurbsObjectView(self):
+        self.nurbsShape.geometry=self.nurbsObject
     
 
     def helpString(self):
@@ -500,40 +490,243 @@ class AbstractNurbsPatchEditorView(QGLViewer):
         QGLViewer.closeEvent(self,event)
 
     def setUStride(self, value):
-        self.nurbsPatch.ustride = value
+        self.nurbsObject.ustride = value
         self.valueChanged.emit() 
         self.updateGL()
 
-    def setWeigthToSelection(self, values):
+    def setWeigthToSelection(self, value):
         if self.selectionManipulator:
             try:
-                if len(values) > 0:
-                    for v,p in zip(values,self.selectionManipulator.selection):
+                if len(value) > 0:
+                    for v,p in zip(value,self.selectionManipulator.selection):
                         p.position_setter.weight = v
                         p.__propagate_position_change__()
             except:
+                if abs(value) < 1e-3:
+                    return
                 for p in self.selectionManipulator.selection:
-                    p.position_setter.weight = values
+                    p.position_setter.weight = value
                     p.__propagate_position_change__()
         self.updateGL()
 
 
-class NurbsPatch2DEditorView(AbstractNurbsPatchEditorView):
+class NurbsPatch2DEditorView(AbstractNurbsObjectEditorView):
     def __init__(self,parent):
         """ Constructor 
             :param parent: the parent widget
         """
-        AbstractNurbsPatchEditorView.__init__(self,parent)
+        AbstractNurbsObjectEditorView.__init__(self,parent)
 
     def setVStride(self, value):
-        self.nurbsPatch.vstride = value
+        self.nurbsObject.vstride = value
         self.valueChanged.emit() 
         self.updateGL()
  
+    def applyScaling(self, scale):
+        nurbscurve = self.getNurbsObject()
+        nurbscurve.ctrlPointMatrix.scale(Vector4(scale,1))
+        self.setNurbsObject(nurbscurve)
+
+    @staticmethod
+    def newDefaultNurbsObject(u = 4, v = 4):
+        """ return a default nurbs patch """
+        du = 1/(u-1)
+        dv = 1/(v-1)
+        udegree = min(u-1,3)
+        vdegree = min(v-1,3)
+        return NurbsPatch([[Vector4(0,i*du-0.5,j*dv-0.5,1) for j in range(v)] for i in range(u)], 
+                            udegree=udegree,vdegree=vdegree,
+                            ustride=10,vstride=10)
+
 
 DimensionViewClass = {  2 :  NurbsPatch2DEditorView }
 
-class NurbsPatchEditor(QtWidgets.QWidget):
+
+class NurbsPatch3DEditorView(NurbsPatch2DEditorView):
+    def __init__(self,parent):
+        """ Constructor 
+            :param parent: the parent widget
+        """
+        NurbsPatch2DEditorView.__init__(self,parent)
+        self.setStateFileName('.nurbspatch3deditor.xml') 
+        self.patchWire = None
+        self.ctrlWire = None
+
+
+
+    def getBounds(self):
+        """ Get the Bounding Box of the scene:
+            return the minpos and maxpos that can be used by setSceneBoundingBox function"""
+        bbx = self.nurbsObject.getBoundingBox()
+        return Vec(*bbx.lowerLeftCorner),Vec(*bbx.upperRightCorner)
+
+    @staticmethod
+    def newDefaultNurbsObject(u = 4, v = 4, w = 4):
+        """ return a default nurbs patch """
+        from openalea.plantgl.scenegraph.nurbspatch_nd import NurbsPatch3D
+        res = NurbsPatch3D.default(u,v,w)
+        return res
+
+    def setNurbsObjectView(self):
+        pass
+
+    def getCtrlPoints(self):
+        return self.nurbsObject.ctrlPointMatrix
+
+    def getCtrlPointsDim(self):
+        return self.getCtrlPoints().shape
+
+    def applyScaling(self, scale):
+        nurbspatch = self.getNurbsObject()
+        nurbspatch.ctrlPointMatrix = [[[Vector4(v.x*scale.x,v.y*scale.y,v.z*scale.z,v.w) for v in ci] for ci in cj ]for cj in nurbspatch.ctrlPointMatrix]
+        self.setNurbsObject(nurbspatch)
+
+    def resetDisplay(self, pid = None):
+        NurbsPatch2DEditorView.resetDisplay(self, pid)
+        self.patchWire = None
+        self.ctrlWire = None
+
+    def drawNurbsObject(self):
+        pass
+
+    def drawNurbsObjectWire(self):
+        stride = 5
+        if True : #self.patchWire is None:
+            self.patchWire = Scene()
+
+            du = (self.nurbsObject.uknotList[-1]-self.nurbsObject.uknotList[0])/self.nurbsObject.ustride
+            for u in list(np.arange(self.nurbsObject.uknotList[0],
+                               self.nurbsObject.uknotList[-1], 
+                               du))+[self.nurbsObject.uknotList[-1]]:
+                p = self.nurbsObject.getUPatch(u)
+
+                pdu = (p.lastUKnot-p.firstUKnot)/p.vstride
+                for pu in list(np.arange(p.firstUKnot,p.lastUKnot, pdu))+[p.lastUKnot]:
+                    c = p.getIsoUSectionAt(pu)
+                    self.patchWire.add(c)
+
+                pdv = (p.lastVKnot-p.firstVKnot)/p.ustride
+                for pv in list(np.arange(p.firstVKnot,p.lastVKnot, pdv))+[p.lastVKnot]:
+                    c = p.getIsoVSectionAt(pv)
+                    self.patchWire.add(c)
+
+            dv = (self.nurbsObject.vknotList[-1]-self.nurbsObject.vknotList[0])/self.nurbsObject.vstride
+            for v in list(np.arange(self.nurbsObject.vknotList[0],
+                               self.nurbsObject.vknotList[-1], 
+                               dv))+[self.nurbsObject.vknotList[-1]]:
+                p = self.nurbsObject.getVPatch(v)
+
+                pdv = (p.lastVKnot-p.firstVKnot)/p.vstride
+                for pv in list(np.arange(p.firstVKnot,p.lastVKnot, pdv))+[p.lastVKnot]:
+                    c = p.getIsoVSectionAt(pv)
+                    self.patchWire.add(c)
+
+        self.patchWire.apply(self.glrenderer)
+
+    def drawCtrlWire(self):
+        if True : #self.ctrlWire is None:
+            m = Material((0,0,255),1)
+            self.ctrlWire = Scene()
+            opoints = self.nurbsObject.ctrlPointMatrix
+            for i0,i1 in [(0,1),(1,2),(0,2)]:
+                for index in itertools.product(*[list(range(d)) for d in [opoints.shape[i0],opoints.shape[i1]]]):
+                    i = [slice(None,None),slice(None,None),slice(None,None)]
+                    i[i0] = index[0]
+                    i[i1] = index[1]
+                    points = opoints[tuple(i)]
+                    pid = ((i[2]*10000 if not isinstance(i[2],slice) else 0)+
+                           (i[1]*100 if not isinstance(i[1],slice) else 0)+
+                           (i[0] if not isinstance(i[0],slice) else 0))
+                    self.ctrlWire.add(Shape(Polyline([(p.x,p.y,p.z) for p in points], width=2), m, id = pid))
+
+        self.ctrlWire.apply(self.glrenderer)
+
+    def drawWithNames(self):
+        """ draw control lines with names """
+        if self.ctrlWire:
+            for sh in self.ctrlWire:
+              ogl.glPushName(sh.id)
+              sh.apply(self.glrenderer)
+              ogl.glPopName()
+
+    def addElement(self, id):
+        print("For now, adding control points is not implemented")
+        pass
+
+    def setWStride(self, value):
+        self.nurbsObject.wstride = value
+        self.valueChanged.emit() 
+        self.updateGL()
+
+DimensionViewClass[3] = NurbsPatch3DEditorView 
+
+
+class NurbsCurveEditorView(AbstractNurbsObjectEditorView):
+    def __init__(self,parent):
+        """ Constructor 
+            :param parent: the parent widget
+        """
+        AbstractNurbsObjectEditorView.__init__(self,parent)
+        self.setStateFileName('.nurbscurve3deditor.xml') 
+        
+
+
+    def getBounds(self):
+        """ Get the Bounding Box of the scene:
+            return the minpos and maxpos that can be used by setSceneBoundingBox function"""
+        bbx = BoundingBox(self.nurbsObject)
+        return Vec(*bbx.lowerLeftCorner),Vec(*bbx.upperRightCorner)
+
+    @staticmethod
+    def newDefaultNurbsObject(u = 4):
+        """ return a default nurbs patch """
+        from openalea.plantgl.scenegraph import NurbsCurve
+        dx = 1/(u-1)
+        curve = NurbsCurve([Vector4(i*dx-0.5,0,0,1) for i in range(u)], stride=5)
+
+    def setNurbsObjectView(self):
+        pass
+
+    def getCtrlPoints(self):
+        return self.nurbsObject.ctrlPointList
+
+    def getCtrlPointsDim(self):
+        return [len(self.nurbsObject.ctrlPointList)]
+
+    def applyScaling(self, scale):
+        nurbscurve = self.getNurbsObject()
+        nurbscurve.ctrlPointList.scale(Vector4(scale,1))
+        self.setNurbsObject(nurbscurve)
+
+    def resetDisplay(self, pid = None):
+        AbstractNurbsObjectEditorView.resetDisplay(self, pid)
+
+    def drawNurbsObject(self):
+        pass
+
+    def drawNurbsObjectWire(self):
+        self.nurbsObject.apply(self.glrenderer)
+
+    def drawCtrlWire(self):
+        Material((255,255,255),1).apply(self.glrenderer)        
+        self.nurbsObject.apply(self.ctrlrenderer)
+
+    def drawWithNames(self):
+        """ draw control lines with names """
+
+
+    def addElement(self, id):
+        print("For now, adding control points is not implemented")
+        pass
+
+    def setUStride(self, value):
+        self.nurbsObject.stride = value
+        self.valueChanged.emit() 
+        self.updateGL()
+
+DimensionViewClass[1] = NurbsCurveEditorView
+
+class NurbsObjectEditor(QtWidgets.QWidget):
     valueChanged = pyqtSignal()
     manipulated = pyqtSignal()
 
@@ -580,7 +773,7 @@ class NurbsPatchEditor(QtWidgets.QWidget):
             strideSlider.setMinimum(2)
             strideSlider.setMaximum(50)
             strideSlider.setOrientation(QtCore.Qt.Horizontal)
-            strideSlider.setValue(getattr(self.view.nurbsPatch,stridename+'stride'))
+            strideSlider.setValue(getattr(self.view.nurbsObject,stridename+'stride'))
             strideSlider.valueChanged.connect(getattr(self.view,'set'+stridename.upper()+'Stride'))
             self.sliders.append(strideSlider)
             self.gridLayout.addWidget(strideSlider, 2, 1+2*i, 1, 1)
@@ -613,13 +806,13 @@ class NurbsPatchEditor(QtWidgets.QWidget):
     def setWeigthToSelection(self, value):
         self.view.setWeigthToSelection(value)
 
-    def setNurbsPatch(self,nurbsPatch):
-        self.view.setNurbsPatch(nurbsPatch)
+    def setNurbsObject(self, nurbsObject):
+        self.view.setNurbsObject(nurbsObject)
         for slider, stridename in zip(self.sliders,self.stridenames):
-            slider.setValue(getattr(self.view.nurbsPatch,stridename+'stride'))
+            slider.setValue(getattr(self.view.nurbsObject,stridename+'stride'))
 
-    def getNurbsPatch(self):
-        return self.view.getNurbsPatch()
+    def getNurbsObject(self):
+        return self.view.getNurbsObject()
  
     def propagate_valuechanged(self):
         self.valueChanged.emit()
@@ -627,180 +820,65 @@ class NurbsPatchEditor(QtWidgets.QWidget):
     def propagate_manipulated(self):
         self.manipulated.emit()
 
-
-class NurbsPatch3DEditorView(NurbsPatch2DEditorView):
-    def __init__(self,parent):
-        """ Constructor 
-            :param parent: the parent widget
-        """
-        NurbsPatch2DEditorView.__init__(self,parent)
-        self.setStateFileName('.nurbspatch3deditor.xml') 
-        self.patchWire = None
-        self.ctrlWire = None
-
-
-
-    def getBounds(self):
-        """ Get the Bounding Box of the scene:
-            return the minpos and maxpos that can be used by setSceneBoundingBox function"""
-        bbx = self.nurbsPatch.getBoundingBox()
-        return Vec(*bbx.lowerLeftCorner),Vec(*bbx.upperRightCorner)
-
-    @staticmethod
-    def newDefaultNurbsPatch():
+    def rescaleObject(self):
         """ return a default nurbs patch """
-        from openalea.plantgl.scenegraph.nurbspatch_nd import NurbsPatch3D
-        return NurbsPatch3D([[[Vector4(j-1.5,i-1.5,k-1.5,1) for j in range(4)] for i in range(4)] for k in range(4)], ustride=5,vstride=5,wstride=5)
+        Dialog = QtWidgets.QDialog(self)
+        gridLayout = QtWidgets.QGridLayout(Dialog)
+        Dialog.values = []
+        for i,axis in enumerate(['X','Y','Z']):
+            sectionLabel = QtWidgets.QLabel(Dialog)
+            sectionLabel.setText(axis)
+            gridLayout.addWidget(sectionLabel, i, 0)
+            spacer = QtWidgets.QSpacerItem(1, 10)
+            gridLayout.addItem(spacer, i, 1)
+            valuebox = QtWidgets.QDoubleSpinBox(Dialog)
+            valuebox.setDecimals(3)
+            valuebox.setMinimum(0.001)
+            valuebox.setMaximum(9999999999)
+            valuebox.setValue(1)
+            Dialog.values.append(valuebox)
+            gridLayout.addWidget(valuebox, i, 2)
+        buttonBox = QtWidgets.QDialogButtonBox(Dialog)
+        buttonBox.setOrientation(Qt.Horizontal)
+        buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel | QtWidgets.QDialogButtonBox.Ok)
+        buttonBox.accepted.connect(Dialog.accept)
+        buttonBox.rejected.connect(Dialog.reject)
+        gridLayout.addWidget(buttonBox, 3, 0, 1, 2)
+        if Dialog.exec_():
+            scale = Vector3([v.value() for v in Dialog.values])
+            self.view.applyScaling(scale)
 
-    def setNurbsPatchView(self):
-        pass
-
-    def getCtrlPoints(self):
-        return self.nurbsPatch.points
-
-    def getCtrlPointsDim(self):
-        return self.getCtrlPoints().shape
-
-    def resetDisplay(self, pid = None):
-        NurbsPatch2DEditorView.resetDisplay(self, pid)
-        self.patchWire = None
-        self.ctrlWire = None
-
-    def drawPatch(self):
-        pass
-
-    def drawPatchWire(self):
-        stride = 5
-        if True : #self.patchWire is None:
-            self.patchWire = Scene()
-
-            du = (self.nurbsPatch.uknotList[-1]-self.nurbsPatch.uknotList[0])/self.nurbsPatch.ustride
-            for u in list(np.arange(self.nurbsPatch.uknotList[0],
-                               self.nurbsPatch.uknotList[-1], 
-                               du))+[self.nurbsPatch.uknotList[-1]]:
-                p = self.nurbsPatch.getUPatch(u)
-
-                pdu = (p.lastUKnot-p.firstUKnot)/p.vstride
-                for pu in list(np.arange(p.firstUKnot,p.lastUKnot, pdu))+[p.lastUKnot]:
-                    c = p.getIsoUSectionAt(pu)
-                    self.patchWire.add(c)
-
-                pdv = (p.lastVKnot-p.firstVKnot)/p.ustride
-                for pv in list(np.arange(p.firstVKnot,p.lastVKnot, pdv))+[p.lastVKnot]:
-                    c = p.getIsoVSectionAt(pv)
-                    self.patchWire.add(c)
-
-            dv = (self.nurbsPatch.vknotList[-1]-self.nurbsPatch.vknotList[0])/self.nurbsPatch.vstride
-            for v in list(np.arange(self.nurbsPatch.vknotList[0],
-                               self.nurbsPatch.vknotList[-1], 
-                               dv))+[self.nurbsPatch.vknotList[-1]]:
-                p = self.nurbsPatch.getVPatch(v)
-
-                pdv = (p.lastVKnot-p.firstVKnot)/p.vstride
-                for pv in list(np.arange(p.firstVKnot,p.lastVKnot, pdv))+[p.lastVKnot]:
-                    c = p.getIsoVSectionAt(pv)
-                    self.patchWire.add(c)
-
-        self.patchWire.apply(self.glrenderer)
-
-    def drawCtrlWire(self):
-        if True : #self.ctrlWire is None:
-            m = Material((0,0,255),1)
-            self.ctrlWire = Scene()
-            opoints = self.nurbsPatch.points
-            for i0,i1 in [(0,1),(1,2),(0,2)]:
-                for index in itertools.product(*[list(range(d)) for d in [opoints.shape[i0],opoints.shape[i1]]]):
-                    i = [slice(None,None),slice(None,None),slice(None,None)]
-                    i[i0] = index[0]
-                    i[i1] = index[1]
-                    points = opoints[tuple(i)]
-                    pid = ((i[2]*10000 if not isinstance(i[2],slice) else 0)+
-                           (i[1]*100 if not isinstance(i[1],slice) else 0)+
-                           (i[0] if not isinstance(i[0],slice) else 0))
-                    self.ctrlWire.add(Shape(Polyline([(p.x,p.y,p.z) for p in points], width=2), m, id = pid))
-
-        self.ctrlWire.apply(self.glrenderer)
-
-    def drawWithNames(self):
-        """ draw control lines with names """
-        if self.ctrlWire:
-            for sh in self.ctrlWire:
-              ogl.glPushName(sh.id)
-              sh.apply(self.glrenderer)
-              ogl.glPopName()
-
-    def addElement(self, id):
-        print("For now, adding control points is not implemented")
-        pass
-
-    def setWStride(self, value):
-        self.nurbsPatch.wstride = value
-        self.valueChanged.emit() 
-        self.updateGL()
-
-DimensionViewClass[3] = NurbsPatch3DEditorView 
-
-
-class NurbsCurveEditorView(AbstractNurbsPatchEditorView):
-    def __init__(self,parent):
-        """ Constructor 
-            :param parent: the parent widget
-        """
-        AbstractNurbsPatchEditorView.__init__(self,parent)
-        self.setStateFileName('.nurbscurve3deditor.xml') 
-        
-
-
-    def getBounds(self):
-        """ Get the Bounding Box of the scene:
-            return the minpos and maxpos that can be used by setSceneBoundingBox function"""
-        bbx = BoundingBox(self.nurbsPatch)
-        return Vec(*bbx.lowerLeftCorner),Vec(*bbx.upperRightCorner)
-
-    @staticmethod
-    def newDefaultNurbsPatch():
+    def createCurstomDefaultObject(self):
         """ return a default nurbs patch """
-        from openalea.plantgl.scenegraph import NurbsCurve
-        curve = NurbsCurve([Vector4(i-1.5,0,0,1) for i in range(4)], stride=5)
-        curve.ustride = curve.stride
-        return curve
+        import inspect
+        Dialog = QtWidgets.QDialog(self)
+        gridLayout = QtWidgets.QGridLayout(Dialog)
+        Dialog.values = []
+        pname = inspect.getfullargspec(self.view.newDefaultNurbsObject).args
+        for i,axis in enumerate(pname):
+            sectionLabel = QtWidgets.QLabel(Dialog)
+            sectionLabel.setText(axis)
+            gridLayout.addWidget(sectionLabel, i, 0)
+            spacer = QtWidgets.QSpacerItem(1, 10)
+            gridLayout.addItem(spacer, i, 1)
+            valuebox = QtWidgets.QSpinBox(Dialog)
+            valuebox.setMinimum(2)
+            valuebox.setMaximum(1000)
+            valuebox.setValue(4)
+            Dialog.values.append(valuebox)
+            gridLayout.addWidget(valuebox, i, 2)
+        buttonBox = QtWidgets.QDialogButtonBox(Dialog)
+        buttonBox.setOrientation(Qt.Horizontal)
+        buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel | QtWidgets.QDialogButtonBox.Ok)
+        buttonBox.accepted.connect(Dialog.accept)
+        buttonBox.rejected.connect(Dialog.reject)
+        gridLayout.addWidget(buttonBox, 3, 0, 1, 2)
+        if Dialog.exec_():
+            nbpoints = [v.value() for v in Dialog.values]
+            self.setNurbsObject(self.view.newDefaultNurbsObject(*nbpoints))
 
-    def setNurbsPatchView(self):
-        pass
-
-    def getCtrlPoints(self):
-        return self.nurbsPatch.ctrlPointList
-
-    def getCtrlPointsDim(self):
-        return [len(self.nurbsPatch.ctrlPointList)]
-
-    def resetDisplay(self, pid = None):
-        AbstractNurbsPatchEditorView.resetDisplay(self, pid)
-
-    def drawPatch(self):
-        pass
-
-    def drawPatchWire(self):
-        self.nurbsPatch.apply(self.glrenderer)
-
-    def drawCtrlWire(self):
-        Material((255,255,255),1).apply(self.glrenderer)        
-        self.nurbsPatch.apply(self.ctrlrenderer)
-
-    def drawWithNames(self):
-        """ draw control lines with names """
-
-
-    def addElement(self, id):
-        print("For now, adding control points is not implemented")
-        pass
-
-    def setUStride(self, value):
-        self.nurbsPatch.stride = value
-        self.valueChanged.emit() 
-        self.updateGL()
-
-DimensionViewClass[1] = NurbsCurveEditorView
+    def createDefaultObject(self, *dims):
+        self.setNurbsObject(self.view.newDefaultNurbsObject(*dims))
 
 
 #########################################################
@@ -809,8 +887,8 @@ def main(dim = 2):
     """the main program, here we create a NurbsPatchEditor and make it draw itself"""
     import sys
     qapp = QApplication([])
-    viewer = NurbsPatchEditor(None, dim)
-    viewer.setWindowTitle("NurbsPatchEditor")
+    viewer = NurbsObjectEditor(None, dim)
+    viewer.setWindowTitle("NurbsEditor")
     viewer.show()
     qapp.exec_()
 

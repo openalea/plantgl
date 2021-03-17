@@ -271,8 +271,8 @@ NurbsPatch::NurbsPatch( const Point4MatrixPtr& ctrlPoints,
     __vKnotList(vKnotList),
     __udegree(uDegree),
     __vdegree(vDegree){
-    if (__udegree >= ctrlPoints->getRowSize()) __udegree = ctrlPoints->getColumnSize() -1;
-    if (__vdegree >= ctrlPoints->getColumnSize()) __vdegree = ctrlPoints->getRowSize() -1;
+    if (__udegree >= ctrlPoints->getColumnSize()) __udegree = ctrlPoints->getColumnSize() -1;
+    if (__vdegree >= ctrlPoints->getRowSize()) __vdegree = ctrlPoints->getRowSize() -1;
     if (!uKnotList) setUKnotListToDefault();
     if (!vKnotList) setVKnotListToDefault();
     GEOM_ASSERT(isValid());
@@ -288,8 +288,8 @@ NurbsPatch::NurbsPatch( const Point4MatrixPtr& ctrlPoints,
     __vKnotList(vKnotList),
     __udegree(uDegree),
     __vdegree(vDegree){
-    if (__udegree >= ctrlPoints->getRowSize()) __udegree = ctrlPoints->getColumnSize() -1;
-    if (__vdegree >= ctrlPoints->getColumnSize()) __vdegree = ctrlPoints->getRowSize() -1;
+    if (__udegree >= ctrlPoints->getColumnSize()) __udegree = ctrlPoints->getColumnSize() -1;
+    if (__vdegree >= ctrlPoints->getRowSize()) __vdegree = ctrlPoints->getRowSize() -1;
     if (!uKnotList) setUKnotListToDefault();
     if (!vKnotList) setVKnotListToDefault();
     GEOM_ASSERT(isValid());
@@ -305,8 +305,8 @@ NurbsPatch::NurbsPatch( const Point3MatrixPtr& ctrlPoints,
     __vKnotList(vKnotList),
     __udegree(uDegree),
     __vdegree(vDegree){
-    if (__udegree >= ctrlPoints->getRowSize()) __udegree = ctrlPoints->getColumnSize() -1;
-    if (__vdegree >= ctrlPoints->getColumnSize()) __vdegree = ctrlPoints->getRowSize() -1;
+    if (__udegree >= ctrlPoints->getColumnSize()) __udegree = ctrlPoints->getColumnSize() -1;
+    if (__vdegree >= ctrlPoints->getRowSize()) __vdegree = ctrlPoints->getRowSize() -1;
     if (!uKnotList) setUKnotListToDefault();
     if (!vKnotList) setVKnotListToDefault();
     GEOM_ASSERT(isValid());
