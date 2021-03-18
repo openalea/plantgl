@@ -85,7 +85,7 @@ class ToJsonRepConverter (PyAlgo):
     @for_types((sgnp.NurbsPatch3D))
     def patch3d(self, value):
         import numpy as np
-        return { 'type' : value.__class__.__name__ , 'name' : value.name , 'points' : [[[list(v) for v in iv] for iv in jv] for jv in value.points], 
+        return { 'type' : value.__class__.__name__ , 'name' : value.name , 'ctrlPointMatrix' : [[[list(v) for v in iv] for iv in jv] for jv in value.ctrlPointMatrix], 
                   'udegree' : value.udegree, 'vdegree' : value.vdegree, 'wdegree' : value.wdegree,
                   'uknotList' : self.convert(value.uknotList), 'vknotList' : self.convert(value.vknotList), 'wknotList' : self.convert(value.wknotList),
                   'ustride' : value.ustride, 'vstride' : value.vstride, 'wstride' : value.wstride }

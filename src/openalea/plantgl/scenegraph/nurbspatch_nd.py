@@ -4,7 +4,7 @@ import numpy as np
 import itertools
 
 class NurbsPatch3D:
-    def __init__(self, points, 
+    def __init__(self, ctrlPointMatrix, 
                  udegree = 3, vdegree = 3, wdegree = 3, 
                  uknotList = None, vknotList = None, wknotList = None,
                  ustride = 30, vstride = 30, wstride = 30):
@@ -12,7 +12,7 @@ class NurbsPatch3D:
         self.vdegree = vdegree
         self.wdegree = wdegree
 
-        self.setCtrlPointMatrix(points)
+        self.setCtrlPointMatrix(ctrlPointMatrix)
 
         self.uknotList = uknotList if not uknotList is None else sg.NurbsCurve.defaultKnotList(self.__udim,self.udegree)
         self.vknotList = vknotList if not vknotList is None else sg.NurbsCurve.defaultKnotList(self.__vdim,self.vdegree)

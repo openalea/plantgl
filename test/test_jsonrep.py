@@ -41,6 +41,10 @@ def test_scene():
     sc = pgl.Scene([pgl.Shape(t, pgl.Material((255,0,0))),pgl.Shape(t2, pgl.Material((0,255,0)))])
     jsonconversion(sc)
 
+def test_nurbspatch3d():
+    ds = pgl.NurbsPatch3D.default(5,2,6)
+    jsonconversion(ds)
+
 def test_texture():
     fname = '../share/plantgl/pixmap/geomviewer.png'
     t = pgl.ImageTexture(fname)
