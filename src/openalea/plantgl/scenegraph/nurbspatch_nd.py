@@ -94,22 +94,22 @@ class NurbsPatch3D:
         return list(self.wknotList) == list(sg.NurbsCurve.defaultKnotList(self.__wdim,self.wdegree))
 
     def isUDegreeToDefault(self):
-        return self.udegree == NurbsCurve.DEFAULT_NURBS_DEGREE
+        return self.udegree == sg.NurbsCurve.DEFAULT_NURBS_DEGREE
 
     def isVDegreeToDefault(self):
-        return self.vdegree == NurbsCurve.DEFAULT_NURBS_DEGREE
+        return self.vdegree == sg.NurbsCurve.DEFAULT_NURBS_DEGREE
 
     def isWDegreeToDefault(self):
-        return self.wdegree == NurbsCurve.DEFAULT_NURBS_DEGREE
+        return self.wdegree == sg.NurbsCurve.DEFAULT_NURBS_DEGREE
 
     def isUStrideToDefault(self):
-        return self.ustride == NurbsCurve.DEFAULT_STRIDE
+        return self.ustride == sg.NurbsCurve.DEFAULT_STRIDE
 
     def isVStrideToDefault(self):
-        return self.vstride == NurbsCurve.DEFAULT_STRIDE
+        return self.vstride == sg.NurbsCurve.DEFAULT_STRIDE
 
     def isWStrideToDefault(self):
-        return self.wstride == NurbsCurve.DEFAULT_STRIDE
+        return self.wstride == sg.NurbsCurve.DEFAULT_STRIDE
 
     def getPointAt(self,u,v,w):
         """ Compute point at (u,v,w) """
