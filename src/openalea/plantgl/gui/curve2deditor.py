@@ -251,7 +251,7 @@ class Curve2DEditor (QGLViewer):
         if self.isVisible() : self.showEntireScene()
         
     def openImage(self):
-        name = QFileDialog.getOpenFileName(self, "Select an image", ".", "Images (*.png *.xpm *.jpg)");
+        name, selection = QFileDialog.getOpenFileName(self, "Select an image", ".", "Images (*.png *.xpm *.jpg)");
 
         # In case of Cancel
         if not name :  return
@@ -297,7 +297,7 @@ class Curve2DEditor (QGLViewer):
 
         # Bind the img texture...
         glTexImage2D(GL_TEXTURE_2D, 0, 4, glImg.width(), glImg.height(), 0,
-           GL_RGBA, GL_UNSIGNED_BYTE, glImg.bits().asstring(glImg.numBytes()))
+           GL_RGBA, GL_UNSIGNED_BYTE, glImg.bits().asstring(glImg.sizeInBytes()))
         # Another way to bind img texture:
         # if self.textureId:
             # self.deleteTexture(self.textureId)
