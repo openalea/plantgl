@@ -468,7 +468,7 @@ class AbstractNurbsObjectEditorView(QGLViewer):
             idxiter = itertools.product(*[list(range(d)) for d in dims])
 
         for pid, index in enumerate(idxiter):
-            ctrlPoint = CtrlPoint(ctrlpoints[index].project(), Pos4Setter(self.getCtrlPoints(),index),color=color(index),id=pid)
+            ctrlPoint = CtrlPoint(ctrlpoints[index], Pos4Setter(self.getCtrlPoints(),index, ctrlpoints[index].w),color=color(index),id=pid)
             ctrlPoint.setCallBack(self.__propagate_valuechanged__)
             self.ctrlPointManipulators[index] = ctrlPoint
 
