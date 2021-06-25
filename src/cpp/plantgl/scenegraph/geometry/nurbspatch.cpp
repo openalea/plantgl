@@ -446,28 +446,33 @@ Point4MatrixPtr  NurbsPatch::deriveAtH(real_t u, real_t v, int d, int uspan, int
     return patchders;
 }
 
-
-Point4MatrixPtr NurbsPatch::deriveAt(real_t  u, real_t  v, int d, int uspan, int vspan ) const{
-    Point4MatrixPtr patchders(new Point4Matrix(d+1,d+1));
-    Point4MatrixPtr dersW = deriveAtH(u,v,d,uspan,vspan) ;
-
-    Vector4 vec;
-
-    RealArray2 Bin(d+1,d+1);
+RealArray2 binomialCoef(int d) {
+    RealArray2 Bin((uint_t)d+1,(uint_t)d+1, 0.0);
 
     // Setup the first line
     Bin.setAt( 0, 0, 1.0) ;
-    for( int l = d ; l > 0 ; --l ) Bin.setAt( 0 , l , 0.0 ) ;
+    // for( int l = d ; l > 0 ; --l ) Bin.setAt( 0 , l , 0.0 ) ;
 
     // Setup the other lines
     for( int n = 0 ; n < d ; n++ ){
         Bin.setAt( n+1 , 0 , 1.0 );
         for( int l = 1 ; l < d+1 ; l++ )
-            if( n+1 < l )
-                Bin.setAt( n , l , 0.0 ) ;
-            else
+            if( n+1 >= l )
                 Bin.setAt( n+1 , l , Bin.getAt( n , l ) + Bin.getAt( n , l-1 ) ) ;
+            //else
+            //    Bin.setAt( n , l , 0.0 ) ;
     }
+    return Bin;    
+}
+
+Point3MatrixPtr NurbsPatch::deriveAt(real_t  u, real_t  v, int d, int uspan, int vspan ) const{
+    Point3MatrixPtr patchders(new Point3Matrix(d+1,d+1, Vector3::ORIGIN));
+    Point4MatrixPtr dersW = deriveAtH(u,v,d,uspan,vspan) ;
+
+    Vector3 vec(0,0,0);
+
+    RealArray2 Bin = binomialCoef(d);
+
     for( int k = 0 ; k <= d ; k++ ){
         for( int l = 0 ; l <= d-k ; l++){
             vec.x() = dersW->getAt(k,l).x() ;
@@ -478,29 +483,29 @@ Point4MatrixPtr NurbsPatch::deriveAt(real_t  u, real_t  v, int d, int uspan, int
 
             for (int j = 1 ; j <= k ; j++){
                 vec -= patchders->getAt(k-j,l)*Bin.getAt(k,j)*dersW->getAt(j,0).w() ;
-                Vector4 v2 = Vector4(0,0,0,0) ;
+                Vector3 v2(0,0,0) ;
                 for (int  i = 1 ; i <= l ; i++ )
                     v2 += patchders->getAt(k-j,l-i)*Bin.getAt(l,i)*dersW->getAt(j,i).w() ;
                 vec -= Bin.getAt(k,j)*v2 ;
             }
-            patchders->getAt(k,l) = vec/dersW->getAt(0.0,0.0).w();
+            patchders->getAt(k,l) = vec/dersW->getAt(0,0).w();
         }
     }
     return patchders;
 }
 
 
-Vector4 NurbsPatch::getDerivativeAt(real_t u, real_t v, int du, int dv) const {
+Vector3 NurbsPatch::getDerivativeAt(real_t u, real_t v, int du, int dv) const {
     int d = max(du,dv) ;
-    if (d > min(__udegree,__vdegree)) return Vector4(0,0,0,0);
+    if (d > min(__udegree,__vdegree)) return Vector3(0,0,0);
     int uspan = findSpan(u,__udegree,__uKnotList) ;
     int vspan = findSpan(v,__vdegree,__vKnotList) ;
-    Point4MatrixPtr ders = deriveAt(u,v,d,uspan,vspan) ;
+    Point3MatrixPtr ders = deriveAt(u,v,d,uspan,vspan) ;
     return ders->getAt(du,dv) ;
 }
 
 
-Point4MatrixPtr NurbsPatch::getDerivativesAt(real_t u,real_t v) const {
+Point3MatrixPtr NurbsPatch::getDerivativesAt(real_t u,real_t v) const {
     int uspan = findSpan(u,__udegree,__uKnotList) ;
     int vspan = findSpan(v,__vdegree,__vKnotList) ;
     int degree = min(__udegree,__vdegree) ;
@@ -548,18 +553,12 @@ Vector3 NurbsPatch::getPointAt(real_t u, real_t v) const{
 
 Vector3 NurbsPatch::getUTangentAt(real_t u, real_t v) const {
     GEOM_ASSERT( u >= getFirstUKnot( ) && u <= getLastUKnot( ) && v>= getFirstVKnot( ) && v<=getLastVKnot( ));
-    Vector4 _derivate = getDerivativeAt( u, v, 1, 0);
-    if(!_derivate.w())
-        return Vector3(_derivate.x(),_derivate.y(),_derivate.z());
-    else return _derivate.project();
+    return getDerivativeAt( u, v, 1, 0);
 }
 
 Vector3 NurbsPatch::getVTangentAt(real_t u, real_t v) const {
     GEOM_ASSERT( u >= getFirstUKnot( ) && u <= getLastUKnot( ) && v>= getFirstVKnot( ) && v<=getLastVKnot( ));
-    Vector4 _derivate = getDerivativeAt( u, v, 0, 1);
-    if(!_derivate.w())
-        return Vector3(_derivate.x(),_derivate.y(),_derivate.z());
-    else return _derivate.project();
+    return getDerivativeAt( u, v, 0, 1);
 }
 
 Vector3 NurbsPatch::getNormalAt(real_t u, real_t v) const{
