@@ -189,7 +189,7 @@ public :
   
    void setFrameBufferAt(uint32_t x, uint32_t y, const Color3& rasterColor);
    void setFrameBufferAt(uint32_t x, uint32_t y, const Color4& rasterColor);
-   Color3 getFrameBufferAt(uint32_t x, uint32_t y);
+   Color3 getFrameBufferAt(uint32_t x, uint32_t y) const;
 
    ImagePtr getImage() const;
    RealArray2Ptr getDepthBuffer() const { return __depthBuffer; }
@@ -227,6 +227,8 @@ public :
 
   virtual void process(ScenePtr scene);
 
+  std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)> grabZBufferPoints(real_t jitter = 0, int raywidth = 0) const;
+  
 protected :
 
   void _bufferPeriodizationStep(int32_t xDiff, int32_t yDiff, real_t zDiff, bool useDefaultColor = true, const Color3& defaultcolor = Color3(0,0,0));

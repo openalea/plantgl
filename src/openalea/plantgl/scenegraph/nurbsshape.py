@@ -1,4 +1,4 @@
-from openalea.plantgl.all import *
+from ._pglsg import NurbsPatch, NurbsCurve2D
 from math import sqrt
 
 def nurbsEllipsoid(xradius = 1, yradius = 1, zradius = 1):

@@ -53,14 +53,20 @@ void export_ProjectionCamera()
       ("ProjectionCamera", init<real_t , real_t , real_t , real_t , real_t , real_t , ProjectionCamera::eProjectionType> 
         ("Construct a ProjectionCamera", (bp::arg("left"),bp::arg("right"),bp::arg("bottom"),bp::arg("top"),bp::arg("near"),bp::arg("far"),bp::arg("projection")=ProjectionCamera::eOrthographic)))
 
+      .def("worldToRaster", &ProjectionCamera::worldToRaster)
       .def("worldToCamera", &ProjectionCamera::worldToCamera)
       .def("cameraToNDC", &ProjectionCamera::cameraToNDC)
-      .def("ndcToRaster", &ProjectionCamera::ndcToRaster)
+      .def("NDCToRaster", &ProjectionCamera::NDCToRaster)
       .def("cameraToRaster", &ProjectionCamera::cameraToRaster)
-      .def("worldToRaster", &ProjectionCamera::worldToRaster)
+
+      .def("rasterToWorld", &ProjectionCamera::rasterToWorld)
+      .def("rasterToNDC", &ProjectionCamera::rasterToNDC)
+      .def("NDCToCamera", &ProjectionCamera::NDCToCamera)
+      .def("cameraToWorld", &ProjectionCamera::cameraToWorld)
+      
       .def("getBoundingBoxView", &ProjectionCamera::getBoundingBoxView)
       .def("getWorldToCameraMatrix", &ProjectionCamera::getWorldToCameraMatrix)
-      .def("getCameraToWorldMatrix", &ProjectionCamera::getCameraToWorldMatrix)
+      // .def("getCameraToWorldMatrix", &ProjectionCamera::getCameraToWorldMatrix)
       .def("getModelTransformationMatrix", &ProjectionCamera::getModelTransformationMatrix)
 
 

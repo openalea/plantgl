@@ -79,8 +79,8 @@ void ProjectionCamera::lookAt(const Vector3& eyePosition3D, const Vector3& cente
         up = cross(forward, side);
         up.normalize();
         __position = eyePosition3D;
-        __cameraToWorld = Matrix4(side, up, forward, eyePosition3D);
-        __worldToCamera = inverse(__cameraToWorld);
+        Matrix4 cameraToWorld(side, up, forward, eyePosition3D);
+        __worldToCamera = inverse(cameraToWorld);
         __currentWorldToCamera = __worldToCamera * __currentModelMatrix;
 
 }
@@ -111,12 +111,12 @@ Vector3 ProjectionCamera::cameraToNDC(const Vector3& vertexCamera) const {
     }
 }
 
-Vector3 ProjectionCamera::ndcToCamera(const Vector3& vertexNDC) const {
+Vector3 ProjectionCamera::NDCToCamera(const Vector3& vertexNDC) const {
     if (type == eOrthographic)
         return NDC2screen(vertexNDC.x(), vertexNDC.y(), vertexNDC.z());
     else {
-        real_t z = -vertexNDC.z();
-        return NDC2screen(vertexNDC.x() * z, vertexNDC.y() * z, vertexNDC.z());
+        real_t z = vertexNDC.z();
+        return NDC2screen(vertexNDC.x() * z / near, vertexNDC.y() * z / near, vertexNDC.z());
     }
 }
 
@@ -125,7 +125,7 @@ Vector3 ProjectionCamera::worldToRaster(const Vector3& vertexWorld, const uint16
 {
 
     Vector3 vertexCamera = __worldToCamera * vertexWorld;
-    return toRasterSpace(cameraToNDC(vertexCamera), imageWidth, imageHeight);
+    return NDCtoRasterSpace(cameraToNDC(vertexCamera), imageWidth, imageHeight);
 
 }
 
@@ -134,25 +134,20 @@ Vector3 ProjectionCamera::worldToCamera(const Vector3& vertexWorld) const
     return __currentWorldToCamera * vertexWorld;    
 }
 
-Vector3 ProjectionCamera::ndcToRaster(const Vector3& vertexNDC, const uint16_t imageWidth, const uint16_t imageHeight) const
-{
-    return toRasterSpace(vertexNDC, imageWidth, imageHeight);
-}
-
 Vector3 ProjectionCamera::cameraToRaster(const Vector3& vertexCamera, const uint16_t imageWidth, const uint16_t imageHeight) const
 {
-    return toRasterSpace(cameraToNDC(vertexCamera), imageWidth, imageHeight);
+    return NDCtoRasterSpace(cameraToNDC(vertexCamera), imageWidth, imageHeight);
 }
 
 Vector3 ProjectionCamera::cameraToWorld(const Vector3& vertexCamera) const
 {
-    return __cameraToWorld * vertexCamera;    
+    return inverse(__currentWorldToCamera) * vertexCamera;    
 }
 
 Vector3 ProjectionCamera::rasterToWorld(const Vector3& raster, const uint16_t imageWidth, const uint16_t imageHeight) const
 {
     Vector3 vertexNDC = rasterToNDC(raster, imageWidth, imageHeight);
-    return cameraToWorld(NDC2screen(vertexNDC.x(), vertexNDC.y(), vertexNDC.z()));
+    return cameraToWorld(NDCToCamera(vertexNDC));
 
 }
 

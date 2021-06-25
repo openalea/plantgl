@@ -4,6 +4,8 @@ from ._pglsg import *
 from . import cspline
 from . import bezier_nurbs
 from .nurbspatch_nd import NurbsPatch3D
+from .nurbsshape import *
+
 import warnings
 from .colormap import *
 
@@ -200,6 +202,31 @@ def _img_plot(self):
 Image.plot = _img_plot
 del _img_plot
 
+def _col3iter(col):
+    for v in (col.red, col.green, col.blue):
+        yield v
+
+Color3.__iter__ = _col3iter
+del _col3iter
+
+def _col4titer(col):
+    for v in (col.red, col.green, col.blue, col.alpha):
+        yield v
+
+Color4.__iter__ = _col4titer
+del _col4titer
+
 from .editablequantisedfunction import *
+
+def bbx_corners(bbx):
+    from itertools import product
+    from openalea.plantgl.math import Vector3
+    
+    lc = bbx.lowerLeftCorner
+    uc = bbx.upperRightCorner
+    return list(map(Vector3,product(*[(lc[i],uc[i]) for i in range(3)] )))
+
+BoundingBox.corners = bbx_corners
+del bbx_corners
 
 from . import __docufy
