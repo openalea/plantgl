@@ -83,7 +83,7 @@ def test_point():
     print('Camera : \t', b)
     c = z.camera().cameraToNDC(b)
     print('NDC :   \t', c)
-    d = z.camera().ndcToRaster(c, 800, 800)    
+    d = z.camera().NDCToRaster(c, 800, 800)    
     print('Raster : \t', d)
     e = z.camera().cameraToRaster(b, 800, 800)
     print('Raster : \t', e)

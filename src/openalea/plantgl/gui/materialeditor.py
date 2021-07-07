@@ -245,6 +245,7 @@ class MaterialPanelView (QGLWidget):
                     glCallList(self.spherelist)
                 glPopMatrix()
                 glColor3f(0,0,0)
+                glPolygonMode(GL_FRONT_AND_BACK,GL_FILL)
                 self.renderText(2*self.unitsize*i,2*self.unitsize*(j+1),4*self.unitsize,str(colindex))
                 colindex += 1
             glPushMatrix()

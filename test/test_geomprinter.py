@@ -8,7 +8,7 @@ def eval_code(sceneobj,verbose = True):
   assert sceneobj.isValid()
   hasname = sceneobj.isNamed()
   if not hasname:
-	  sceneobj.name = 'testedobject'
+    sceneobj.name = 'testedobject'
   fname = 'geomprinteroutput.geom'
   printer = pgl.PglFilePrinter(fname)
   sceneobj.apply(printer)

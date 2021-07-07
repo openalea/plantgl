@@ -120,8 +120,8 @@ bool NurbsCurve::Builder::isValid( ) const {
   }
 
   uint_t _size = (*CtrlPointList)->size();
-  if ( _size < 3 ) {
-    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Curve","CtrlPointList","Must be greater than 2.");
+  if ( _size < 2 ) {
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Curve","CtrlPointList","Must be greater or equal to 2.");
     return false;
   }
 
@@ -371,7 +371,7 @@ RealArray2Ptr NurbsCurve::computeDerivatesBasisFunctions(int n,real_t u, int spa
 
 Point4ArrayPtr  NurbsCurve::deriveAtH(real_t u, int d, int span ) const {
     int du = ( d < (int)__degree ? d : __degree);
-    Point4ArrayPtr ders(new Point4Array(d+1));
+    Point4ArrayPtr ders(new Point4Array(d+1, Vector4::ORIGIN));
     RealArray2Ptr derF = computeDerivatesBasisFunctions(du,u,span) ;
 
     for(int k=du;k>=0;--k){
@@ -383,10 +383,10 @@ Point4ArrayPtr  NurbsCurve::deriveAtH(real_t u, int d, int span ) const {
     return ders;
 }
 
-Point4ArrayPtr NurbsCurve::deriveAt(real_t  u, int d, int span ) const{
-    Point4ArrayPtr ders(new Point4Array(d+1));
+Point3ArrayPtr NurbsCurve::deriveAt(real_t  u, int d, int span ) const{
+    Point3ArrayPtr ders(new Point3Array(d+1, Vector3::ORIGIN));
     Point4ArrayPtr dersW = deriveAtH(u,d,span) ;
-    Vector4 v ;
+    Vector3 v(0,0,0) ;
     int k,i ;
 
     RealArray2 Bin(d+1,d+1);
@@ -407,7 +407,7 @@ Point4ArrayPtr NurbsCurve::deriveAt(real_t  u, int d, int span ) const{
     }
 
 
-    // Compute the derivative at the parmeter u
+    // Compute the derivative at the parameter u
 
     for( k = 0 ; k <= d ; k++ ){
         v.x() = dersW->getAt(k).x() ;
@@ -423,15 +423,15 @@ Point4ArrayPtr NurbsCurve::deriveAt(real_t  u, int d, int span ) const{
 }
 
 
-Vector4 NurbsCurve::getDerivativeAt(real_t u, int d) const {
-    if (d > __degree) return Vector4(0,0,0,0);
+Vector3 NurbsCurve::getDerivativeAt(real_t u, int d) const {
+    if (d > __degree) return Vector3(0,0,0);
     int span = findSpan(u) ;
-    Point4ArrayPtr ders = deriveAt(u,d, span) ;
+    Point3ArrayPtr ders = deriveAt(u,d, span) ;
     return ders->getAt(d) ;
 }
 
 
-Point4ArrayPtr NurbsCurve::getDerivativesAt(real_t u) const {
+Point3ArrayPtr NurbsCurve::getDerivativesAt(real_t u) const {
     int span = findSpan(u) ;
     return deriveAt(u,__degree, span) ;
 }
@@ -445,11 +445,7 @@ Vector3 NurbsCurve::getPointAt(real_t u) const{
     RealArrayPtr _basisFunctions = computeBasisFunctions(span,u);
     Vector4 Cw(0.0,0.0,0.0,0.0);
     for (uint_t j = 0; j <= __degree; j++) {
-        Vector4 Pj = __ctrlPointList->getAt( span - __degree + j );
-        Pj.x() *= Pj.w();
-        Pj.y() *= Pj.w();
-        Pj.z() *= Pj.w();
-
+        Vector4 Pj = __ctrlPointList->getAt( span - __degree + j ).wtoxyz();
         Cw += Pj * _basisFunctions->getAt(j);
     }
 

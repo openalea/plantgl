@@ -798,6 +798,11 @@ class PGLMATH_API Vector4 : public Tuple4<real_t>
       coordinate. */
   Vector3 project( ) const;
 
+  /** Returns the Vector3 corresponding to the projection of \e self.
+      The \c x, \c y and \c z  coordinates are divided by the \c w
+      coordinate. */
+  Vector4 wtoxyz( ) const;
+
   /// Returns the result of the multiplication of \e v by the scalar \e s.
   friend PGLMATH_API Vector4 operator*( const Vector4& v, const real_t& s );
   friend PGLMATH_API Vector4 operator*( const real_t& s, const Vector4& v );

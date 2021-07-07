@@ -64,6 +64,27 @@ PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
+inline Vector3 NDCtoRasterSpace(const Vector3& vertexNDC, const uint16_t imageWidth, const uint16_t imageHeight)
+{
+    // convert to raster space
+    Vector3 vertexRaster( 
+                          ((vertexNDC.x() + 1) / 2.) * imageWidth, 
+                          ((1 - vertexNDC.y()) / 2.) * imageHeight,
+                          vertexNDC.z());
+    return vertexRaster;
+}
+
+inline Vector3 rasterSpaceToNDC(const Vector3& raster, const uint16_t imageWidth, const uint16_t imageHeight)
+{
+    // convert raster to NDC space
+    Vector3 vertexNDC(  (raster.x()*2/imageWidth) - 1,
+                        1 - (raster.y()*2/imageHeight),
+                        raster.z());
+    return vertexNDC;
+}
+
+/* ----------------------------------------------------------------------- */
+
 /** 
     \class ProjectionCamera
     \brief A Rendering Engine based on ZBuffer.
@@ -90,18 +111,23 @@ public:
 
    Vector3 worldToCamera(const Vector3& vertexWorld) const;
    Vector3 cameraToNDC(const Vector3& vertexCamera) const;
-   Vector3 ndcToRaster(const Vector3& vertexNDC, const uint16_t imageWidth, const uint16_t imageHeight) const;
+   inline Vector3 NDCToRaster(const Vector3& vertexNDC, const uint16_t imageWidth, const uint16_t imageHeight) const
+    { return NDCtoRasterSpace(vertexNDC, imageWidth, imageHeight); }
+
    Vector3 cameraToRaster(const Vector3& vertexCamera, const uint16_t imageWidth, const uint16_t imageHeight) const;
 
    Vector3 rasterToWorld(const Vector3& raster, const uint16_t imageWidth, const uint16_t imageHeight) const;
-   Vector3 cameraToWorld(const Vector3& vertexCamera) const;
 
-   Vector3 ndcToCamera(const Vector3& vertexCamera) const ;
+   inline Vector3 rasterToNDC(const Vector3& raster, const uint16_t imageWidth, const uint16_t imageHeight ) const 
+   { return rasterSpaceToNDC(raster, imageWidth, imageHeight);}
+
+   Vector3 NDCToCamera(const Vector3& vertexCamera) const ;
+   Vector3 cameraToWorld(const Vector3& vertexCamera) const;
 
    BoundingBoxPtr getBoundingBoxView() const;
 
    Matrix4 getWorldToCameraMatrix() const { return __worldToCamera; }
-   Matrix4 getCameraToWorldMatrix() const { return __cameraToWorld; }
+   //  Matrix4 getCameraToWorldMatrix() const { return __cameraToWorld; }
 
    void transformModel(const Matrix4& transform);
    void pushModelTransformation();
@@ -147,7 +173,7 @@ protected:
 
    Vector3 __position;
 
-   Matrix4 __cameraToWorld;
+   // Matrix4 __cameraToWorld;
    Matrix4 __worldToCamera;
    std::stack<Matrix4> __modelMatrixStack;
    Matrix4 __currentModelMatrix;
@@ -156,25 +182,6 @@ protected:
 
 };
 
-
-inline Vector3 toRasterSpace(const Vector3& vertexNDC, const uint16_t imageWidth, const uint16_t imageHeight)
-{
-    // convert to raster space
-    Vector3 vertexRaster( 
-                          ((vertexNDC.x() + 1) / 2.) * imageWidth, 
-                          ((1 - vertexNDC.y()) / 2.) * imageHeight,
-                          vertexNDC.z());
-    return vertexRaster;
-}
-
-inline Vector3 rasterToNDC(const Vector3& raster, const uint16_t imageWidth, const uint16_t imageHeight)
-{
-    // convert raster to NDC space
-    Vector3 vertexNDC(  (raster.x()*2/imageWidth) - 1,
-                        1 - (raster.y()*2/imageWidth),
-                        raster.z());
-    return vertexNDC;
-}
 
 /* ----------------------------------------------------------------------- */
 

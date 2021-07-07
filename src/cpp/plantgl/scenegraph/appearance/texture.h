@@ -293,6 +293,9 @@ public:
             const Texture2DTransformationPtr& transformation = DEFAULT_TRANSFORMATION,
             const Color4& basecolor = DEFAULT_BASECOLOR);
 
+  Texture2D(const ImageTexturePtr& image,
+            const Color4& basecolor);
+
   Texture2D(const std::string& name,
             const ImageTexturePtr& image,
             const Texture2DTransformationPtr& transformation = DEFAULT_TRANSFORMATION,

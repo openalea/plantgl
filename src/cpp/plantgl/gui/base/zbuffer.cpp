@@ -43,6 +43,7 @@
 #include <plantgl/algo/opengl/util_glu.h>
 #include <plantgl/tool/util_assert.h>
 #include "zbuffer.h"
+#include <plantgl/math/util_math.h>
 
 PGL_USING_NAMESPACE
 

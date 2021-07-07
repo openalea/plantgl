@@ -280,18 +280,18 @@ public:
     \brief Computes the derivatives of the curve at the parameter \a u, \a v
     \author Michael Walker
   */
-  Point4MatrixPtr deriveAt(real_t  u, real_t v, int d, int uspan , int vspan  ) const;
+  Point3MatrixPtr deriveAt(real_t  u, real_t v, int d, int uspan , int vspan  ) const;
 
 
   /*! Returns the \e derivative of degree \e d for u = \e u, v = \e v.
      \pre
      - \e u, \e v must be in [0,1];*/
-  virtual Vector4 getDerivativeAt(real_t u, real_t v, int du, int dv) const;
+  virtual Vector3 getDerivativeAt(real_t u, real_t v, int du, int dv) const;
 
   /*! Returns the \e derivative of degree \e d for u = \e u, v = \e v.
      \pre
      - \e u, \e v must be in [0,1];*/
-  virtual Point4MatrixPtr getDerivativesAt(real_t u, real_t v) const;
+  virtual Point3MatrixPtr getDerivativesAt(real_t u, real_t v) const;
 
 
 

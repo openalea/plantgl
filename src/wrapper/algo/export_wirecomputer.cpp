@@ -40,46 +40,50 @@
 
 
 
-#include <plantgl/scenegraph/transformation/tapered.h>
-#include <plantgl/scenegraph/geometry/primitive.h>
+#include <boost/python.hpp>
 
+#include <plantgl/algo/base/wirecomputer.h>
+#include <plantgl/algo/base/discretizer.h>
+#include <plantgl/algo/base/merge.h>
+#include <plantgl/scenegraph/scene/scene.h>
 
-#include <plantgl/python/export_refcountptr.h>
-#include <plantgl/python/export_property.h>
-#include "export_sceneobject.h"
+/* ----------------------------------------------------------------------- */
 
 PGL_USING_NAMESPACE
 using namespace boost::python;
-#define bp boost::python
+using namespace std;
 
-DEF_POINTEE(Tapered)
+/* ----------------------------------------------------------------------- */
 
-
-PrimitivePtr tr_primitive(Tapered * obj) { return obj->getPrimitive(); }
-void tr_setprimitive(Tapered * obj, PrimitivePtr value) { obj->getPrimitive() = value; }
-
-void export_Tapered()
-{
-  class_< Tapered, TaperedPtr, bases< Transformed > , boost::noncopyable >
-    ("Tapered",
-     "Tapered describes an object to which it has been applied a Taper deformation.\n"
-     "A Taper deforms an object in order to be able to bound the object within a cone frustum of a specified base radius and top radius.\n"
-     "For each point composing an object, a Taper scale the polar coordinates according the zcoordinate.\n"
-     "The amplitude of the scale is given by the radii.\n",
-     init< real_t,real_t,const PrimitivePtr & >
-       ("Tapered(baseRadius, topRadius, primitive)",
-       (bp::arg("baseRadius") = Tapered::DEFAULT_BASE_RADIUS,
-        bp::arg("topRadius")  = Tapered::DEFAULT_TOP_RADIUS,
-        bp::arg("primitive")  = PrimitivePtr()) ))
-    .DEF_PGLBASE(Tapered)
-    .DEC_BT_PROPERTY_WDV(topRadius,Tapered,TopRadius,real_t,DEFAULT_TOP_RADIUS)
-    .DEC_BT_PROPERTY_WDV(baseRadius,Tapered,BaseRadius,real_t,DEFAULT_BASE_RADIUS)
-    // .DEC_PTR_PROPERTY(primitive,Deformed,Primitive,PrimitivePtr)
-    .add_property("primitive", &tr_primitive, &tr_setprimitive)
-    ;
-
-  implicitly_convertible< TaperedPtr, TransformedPtr >();
+GeometryPtr wire_geom(Geometry * obj){
+    Discretizer d;
+    WireComputer sf(d);
+    obj->apply(sf);
+    return sf.getWire();
 }
 
+GeometryPtr wire_sh(Shape * obj){
+    Discretizer d;
+    WireComputer sf(d);
+    obj->apply(sf);
+    return sf.getWire();
+}
+
+GeometryPtr py_getWire( WireComputer* w )
+{ return w->getWire(); }
 
 
+
+/* ----------------------------------------------------------------------- */
+
+void export_WireComputer()
+{
+  class_< WireComputer, bases<Action>, boost::noncopyable >
+    ("WireComputer", init<Discretizer&>("WireComputer() -> compute a wire representation."))
+    .add_property("wire", &py_getWire, "Return the wire representation of the shape")
+    .add_property("result",  &py_getWire)
+    ;
+  def("wire",&wire_geom,"Compute the wire representation of a geometry");
+  def("wire",&wire_sh,"Compute the wire representation of a shape");
+
+}
