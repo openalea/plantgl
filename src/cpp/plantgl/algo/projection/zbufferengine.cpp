@@ -901,35 +901,32 @@ ImageMutexPtr ZBufferEngine::getImageMutex(uint16_t imageWidth, uint16_t imageHe
    PGL(Point3ArrayPtr) points(new Point3Array());
    PGL(Color4ArrayPtr) colors(new Color4Array());
    Vector3 origin = __camera->position();
-   for (int32_t i = 0 ; i != width ; i++) {
+   for (int32_t i = 0 ; i < width ; i++) {
         for (int32_t j = 0 ; j < height ; j++) {
-            real_t cz = __depthBuffer->getAt(i,j);
-            if (__camera->isInZRange(cz)) {
-                real_t allcz = 0;
-                uint32_t count = 0;
-                for (int ii = pglMax(0,i-raywidth); ii <= pglMin<uint32_t>(height-1,i+raywidth); ++ii){
-                    for (int jj = pglMax(0,j-raywidth); jj <= pglMin<uint32_t>(width-1,j+raywidth); ++jj){
-                        real_t lcz = __depthBuffer->getAt(ii,jj);
-                        if (__camera->isInZRange(lcz)) {
-                            ++count;
-                            allcz += lcz;
-                        }
+            real_t cz = 0;
+            uint32_t count = 0;
+            for (int ii = pglMax<int32_t>(0,i-raywidth); ii <= pglMin<int32_t>(width-1,i+raywidth); ++ii){
+                for (int jj = pglMax<int32_t>(0,j-raywidth); jj <= pglMin<int32_t>(height-1,j+raywidth); ++jj){
+                    real_t lcz = __depthBuffer->getAt(ii,jj);
+                    if (__camera->isInZRange(lcz)) {
+                        ++count;
+                        cz += lcz;
                     }
                 }
-                allcz /= count;
-                Vector3 point = __camera->rasterToWorld(Vector3(i,j,allcz), width, height);
-                if (jitter > 0) {
-                    Vector3 nml = point-origin;
-                    real_t n = norm(nml);
-                    if(n > GEOM_EPSILON){
-                        nml /= n;
-                        point += nml*jitter*(-1+2.*(rand()/double(RAND_MAX)));
-                    }
+            }
+            cz /= count;
+            Vector3 point = __camera->rasterToWorld(Vector3(i,j,cz), width, height);
+            if (jitter > 0) {
+                Vector3 nml = point-origin;
+                real_t n = norm(nml);
+                if(n > GEOM_EPSILON){
+                    nml /= n;
+                    point += nml*jitter*(-1+2.*(rand()/double(RAND_MAX)));
                 }
-                if (point.isValid()) {
-                    points->push_back(point);
-                    colors->push_back(Color4(getFrameBufferAt(i,j),0));
-                }
+            }
+            if (point.isValid()) {
+                points->push_back(point);
+                colors->push_back(Color4(getFrameBufferAt(i,j),0));
             }
         }
     }
