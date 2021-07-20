@@ -50,7 +50,9 @@ jobs:
           ANACONDA_PASSWORD: ${{ secrets.ANACONDA_PASSWORD }}
       run: |
         # Build and Deploy
-        conda build . 
+        echo $CONDA_PY
+        echo $CONDA_NPY
+        sudo conda build . 
         if [ $? -eq 0 ]; then
           yes | anaconda login --password $ANACONDA_PASSWORD --username $ANACONDA_LOGIN
           anaconda upload `conda build . --output` -u $ANACONDA_OWNER --no-progress
