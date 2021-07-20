@@ -11,7 +11,7 @@ jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
-      max-parallel: 5
+      #max-parallel: 5
       matrix:
         os: [ubuntu-latest, macos-latest]
         env:
@@ -39,7 +39,7 @@ jobs:
         conda config --set always_yes yes
         conda config --set remote_read_timeout_secs 600
         conda config --set auto_update_conda False
-        conda install conda-build anaconda-client
+        sudo conda install conda-build anaconda-client
 
     - name: Build and Deploy
       env:
