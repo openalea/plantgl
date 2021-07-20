@@ -42,14 +42,12 @@ jobs:
         conda install conda-build anaconda-client
 
     - name: Build and Deploy
-      #environment: Conda build
-      with:
-          ANACONDA_LOGIN: ${{ secrets.ANACONDA_LOGIN }}
-          ANACONDA_OWNER: ${{ secrets.ANACONDA_OWNER }}
-          ANACONDA_PASSWORD: ${{ secrets.ANACONDA_PASSWORD }}
       env:
           CONDA_PY: ${{ matrix.CONDA_PY }}
           CONDA_NPY: ${{ matrix.CONDA_NPY }}
+          ANACONDA_LOGIN: ${{ secrets.ANACONDA_LOGIN }}
+          ANACONDA_OWNER: ${{ secrets.ANACONDA_OWNER }}
+          ANACONDA_PASSWORD: ${{ secrets.ANACONDA_PASSWORD }}
       run: |
         # Build and Deploy
         conda build . 
