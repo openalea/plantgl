@@ -6,22 +6,35 @@ on:
   pull_request:
     branches: [ master ]
 
+environment: Conda build
+
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       max-parallel: 5
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        include:
+          - CONDA_PY:37
+            CONDA_NPY:111   
+          - CONDA_PY:38 
+            CONDA_NPY:116
+          - CONDA_PY:39 
+            CONDA_NPY:119
 
     steps:
     - uses: actions/checkout@v2
 
     - name: Add conda to system path
       run: |
+        # Add conda to system path
         # $CONDA is an environment variable pointing to the root of the miniconda directory
         echo $CONDA/bin >> $GITHUB_PATH
 
     - name: Setup conda
       run: |
+        # Setup conda
         conda config --add channels conda-forge
         conda config --add channels fredboudon
         conda config --set always_yes yes
@@ -29,7 +42,19 @@ jobs:
         conda config --set auto_update_conda False
         conda install conda-build anaconda-client
 
-    - name: Build
+    - name: Build and Deploy
+      with:
+          ANACONDA_LOGIN: ${{ secrets.ANACONDA_LOGIN }}
+          ANACONDA_OWNER: ${{ secrets.ANACONDA_OWNER }}
+          ANACONDA_PASSWORD: ${{ secrets.ANACONDA_PASSWORD }}
+      env:
+          CONDA_PY: ${{ matrix.CONDA_PY }}
+          CONDA_NPY: ${{ matrix.CONDA_NPY }}
       run: |
-        conda build . --python=3.8 --numpy=1.16
+        # Build and Deploy
+        conda build . 
+        if [ $? -eq 0 ]; then
+          yes | anaconda login --password $ANACONDA_PASSWORD --username $ANACONDA_LOGIN
+          anaconda upload `conda build . --output` -u $ANACONDA_OWNER --no-progress
+        fi
 
