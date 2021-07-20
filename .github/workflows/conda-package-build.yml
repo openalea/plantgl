@@ -34,11 +34,11 @@ jobs:
     - name: Setup conda
       run: |
         # Setup conda
-        conda config --add channels conda-forge
-        conda config --add channels fredboudon
-        conda config --set always_yes yes
-        conda config --set remote_read_timeout_secs 600
-        conda config --set auto_update_conda False
+        sudo conda config --add channels conda-forge
+        sudo conda config --add channels fredboudon
+        sudo conda config --set always_yes yes
+        sudo conda config --set remote_read_timeout_secs 600
+        sudo conda config --set auto_update_conda False
         sudo conda install conda-build anaconda-client
 
     - name: Build and Deploy
