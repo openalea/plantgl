@@ -22,6 +22,8 @@ jobs:
           - CONDA_PY:39 
             CONDA_NPY:119
 
+    environment: anaconda_build
+
     steps:
     - uses: actions/checkout@v2
 
