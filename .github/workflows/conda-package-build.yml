@@ -35,9 +35,7 @@ jobs:
 
     - name: Setup conda
       run: |
-        # Setup conda
         sudo conda config --add channels conda-forge
-        sudo conda config --add channels fredboudon
         sudo conda config --set always_yes yes
         sudo conda config --set remote_read_timeout_secs 600
         sudo conda config --set auto_update_conda False
@@ -48,6 +46,13 @@ jobs:
           CONDA_PY: ${{ matrix.env.CONDA_PY }}
           CONDA_NPY: ${{ matrix.env.CONDA_NPY }}
       run: |
+        # Setup conda
+        sudo conda config --add channels conda-forge
+        sudo conda config --add channels fredboudon
+        sudo conda config --set always_yes yes
+        sudo conda config --set remote_read_timeout_secs 600
+        sudo conda config --set auto_update_conda False
+
         # Build
         if [[ "$CONDA_PY" = "" ]]; then
           echo "CONDA_PY is not defined"
