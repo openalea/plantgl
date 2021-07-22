@@ -61,10 +61,11 @@ jobs:
         export NUMPY_VERSION=${CONDA_NPY:0:1}.${CONDA_NPY:1:2}
 
         export BUILD_CMD="conda build . --python=$PYTHON_VERSION"
+        export BUILD_OUTPUT=`$BUILD_CMD --output`
 
         sudo $BUILD_CMD
 
-        echo "BUILD_CMD=$BUILD_CMD" >> $GITHUB_ENV
+        echo "BUILD_OUTPUT=$BUILD_OUTPUT" >> $GITHUB_ENV
 
     - name: Login
       env:
@@ -82,7 +83,7 @@ jobs:
     - name: Deploy
       env:
           ANACONDA_OWNER: ${{ secrets.ANACONDA_OWNER }}
-          BUILD_CMD: ${{ env.BUILD_CMD }}
+          BUILD_OUTPUT: ${{ env.BUILD_OUTPUT }}
       run: |
         # Deploy
         if [[ "$ANACONDA_OWNER" = "" ]]; then
@@ -90,8 +91,6 @@ jobs:
           exit -1
         fi
 
-        echo "BUILD_CMD:" $BUILD_CMD
-        export BUILD_OUTPUT=`$BUILD_CMD --output`
         echo "PACKAGE NAME:" $BUILD_OUTPUT
         if [[ "$BUILD_OUTPUT" = "" ]]; then
           echo "PACKAGE NAME is not defined"
