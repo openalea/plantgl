@@ -47,12 +47,6 @@ jobs:
           CONDA_NPY: ${{ matrix.env.CONDA_NPY }}
       run: |
         # Setup conda
-        sudo conda config --add channels conda-forge
-        sudo conda config --add channels fredboudon
-        sudo conda config --set always_yes yes
-        sudo conda config --set remote_read_timeout_secs 600
-        sudo conda config --set auto_update_conda False
-
         # Build
         if [[ "$CONDA_PY" = "" ]]; then
           echo "CONDA_PY is not defined"
@@ -65,10 +59,10 @@ jobs:
         export PYTHON_VERSION=${CONDA_PY:0:1}.${CONDA_PY:1:1}
         export NUMPY_VERSION=${CONDA_NPY:0:1}.${CONDA_NPY:1:2}
 
-        export BUILD_CMD="conda build . --python=$PYTHON_VERSION"
+        export BUILD_CMD="sudo conda build . --python=$PYTHON_VERSION"
         export BUILD_OUTPUT=`$BUILD_CMD --output`
 
-        sudo $BUILD_CMD
+        $BUILD_CMD
 
         echo "BUILD_OUTPUT=$BUILD_OUTPUT" >> $GITHUB_ENV
 
@@ -82,7 +76,7 @@ jobs:
           echo "ANACONDA_LOGIN is not defined"
           exit -1
         fi
-        yes | anaconda login --password $ANACONDA_PASSWORD --username $ANACONDA_LOGIN
+        yes | sudo anaconda login --password $ANACONDA_PASSWORD --username $ANACONDA_LOGIN
 
 
     - name: Deploy
@@ -101,5 +95,5 @@ jobs:
           echo "PACKAGE NAME is not defined"
           exit -1
         fi
-        anaconda upload $BUILD_OUTPUT -u $ANACONDA_OWNER --no-progress
+        sudo anaconda upload $BUILD_OUTPUT -u $ANACONDA_OWNER --no-progress
 
