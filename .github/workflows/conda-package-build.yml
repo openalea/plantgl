@@ -36,6 +36,7 @@ jobs:
     - name: Setup conda
       run: |
         sudo conda config --add channels conda-forge
+        sudo conda config --add channels fredboudon
         sudo conda config --set always_yes yes
         sudo conda config --set remote_read_timeout_secs 600
         sudo conda config --set auto_update_conda False
@@ -62,9 +63,14 @@ jobs:
         export BUILD_CMD="sudo conda build . --python=$PYTHON_VERSION"
         export BUILD_OUTPUT=`$BUILD_CMD --output`
 
+        if [[ "$BUILD_OUTPUT" = "" ]]; then
+          echo "PACKAGE NAME is not defined"
+          exit -1
+        fi
+        echo "BUILD_OUTPUT=$BUILD_OUTPUT" >> $GITHUB_ENV
+        
         $BUILD_CMD
 
-        echo "BUILD_OUTPUT=$BUILD_OUTPUT" >> $GITHUB_ENV
 
     - name: Login
       env:
@@ -91,9 +97,6 @@ jobs:
         fi
 
         echo "PACKAGE NAME:" $BUILD_OUTPUT
-        if [[ "$BUILD_OUTPUT" = "" ]]; then
-          echo "PACKAGE NAME is not defined"
-          exit -1
-        fi
+
         sudo anaconda upload $BUILD_OUTPUT -u $ANACONDA_OWNER --no-progress
 
