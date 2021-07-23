@@ -68,7 +68,7 @@ jobs:
           exit -1
         fi
         echo "BUILD_OUTPUT=$BUILD_OUTPUT" >> $GITHUB_ENV
-        
+
         $BUILD_CMD
 
 
@@ -82,7 +82,7 @@ jobs:
           echo "ANACONDA_LOGIN is not defined"
           exit -1
         fi
-        yes | sudo anaconda login --password $ANACONDA_PASSWORD --username $ANACONDA_LOGIN
+        yes | anaconda login --password $ANACONDA_PASSWORD --username $ANACONDA_LOGIN
 
 
     - name: Deploy
@@ -98,5 +98,5 @@ jobs:
 
         echo "PACKAGE NAME:" $BUILD_OUTPUT
 
-        sudo anaconda upload $BUILD_OUTPUT -u $ANACONDA_OWNER --no-progress
+        anaconda upload $BUILD_OUTPUT -u $ANACONDA_OWNER --no-progress
 
