@@ -54,10 +54,9 @@ PGL_USING(Index)
 template<class T>
 RCPtr<T> extract_array_from_list( boost::python::object l )
 {
-  boost::python::extract<int> e_int( l );
-  if( e_int.check() )
-    { return RCPtr<T>(new T( e_int() ));  }
-
+   if (PyLong_Check(l.ptr())){
+      return RCPtr<T>(new T( boost::python::extract<int>(l)() ));  
+  }
   return extract_pgllist<T>(l).toRCPtr(true);
 }
 
