@@ -326,6 +326,10 @@ public:
   inline void write(const GeometryPtr& var) { writeGeometry(var); }
 
   /// write a string value from stream
+  void writeCurve2D(const Curve2DPtr& var) { var->apply(*this); }
+  inline void write(const Curve2DPtr& var) { writeCurve2D(var); }
+
+  /// write a string value from stream
   void writeTransform4(const Transform4Ptr& var) ;
   inline void write(const Transform4Ptr& var) { writeTransform4(var); }
 
