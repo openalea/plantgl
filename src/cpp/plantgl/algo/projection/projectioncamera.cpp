@@ -158,7 +158,7 @@ BoundingBoxPtr ProjectionCamera::getBoundingBoxView() const
 
 
 bool ProjectionCamera::isInZRange(real_t z) const {
-    return (z >= near && z <= far);
+    return ((z-near) >= -GEOM_EPSILON && (z-far) <= GEOM_EPSILON);
 }
 
 bool ProjectionCamera::isInZRange(real_t zmin, real_t zmax) const{
@@ -203,9 +203,9 @@ void ProjectionCamera::scaleModel(const Vector3& v)
 }
 
 
-ProjectionCameraPtr ProjectionCamera::perspectiveCamera(real_t angleOfView, real_t aspectRatio, real_t near, real_t far)
+ProjectionCameraPtr ProjectionCamera::perspectiveCamera(real_t verticalAngleOfView, real_t aspectRatio, real_t near, real_t far)
 { 
-    real_t top = near * tan(angleOfView * GEOM_RAD/2.);
+    real_t top = near * tan(verticalAngleOfView * GEOM_RAD/2.);
     real_t bottom = -top;
     real_t right = top * aspectRatio;
     real_t left = -right;

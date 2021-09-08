@@ -84,7 +84,7 @@ void export_ProjectionEngine()
 
   class_< ProjectionEngine, boost::noncopyable > 
       ("ProjectionEngine", no_init)
-      .def("setPerspectiveCamera", &ProjectionEngine::setPerspectiveCamera, bp::args("angleOfView : degrees","aspectRatio", "near", "far"))
+      .def("setPerspectiveCamera", &ProjectionEngine::setPerspectiveCamera, bp::args("verticalAngleOfView : degrees","aspectRatio", "near", "far"))
       .def("setFrustumCamera", &ProjectionEngine::setFrustumCamera, bp::args("left","right","bottom", "top", "near", "far"))
       .def("setOrthographicCamera", &ProjectionEngine::setOrthographicCamera, bp::args("left","right","bottom", "top", "near", "far"))
       .def("lookAt", &ProjectionEngine::lookAt, bp::args("eye_position","target","up"))
