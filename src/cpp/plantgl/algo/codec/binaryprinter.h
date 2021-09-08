@@ -71,6 +71,8 @@ class StatisticComputer;
 class Scene;
 typedef RCPtr<Scene> ScenePtr;
 
+class Transform4;
+typedef RCPtr<Transform4> Transform4Ptr;
 
 /* ----------------------------------------------------------------------- */
 
@@ -318,6 +320,14 @@ public:
   /// write a string value from stream
   void writeString(const std::string& var);
   inline void write(const std::string& var) { writeString(var); }
+
+  /// write a string value from stream
+  void writeGeometry(const GeometryPtr& var) { var->apply(*this); }
+  inline void write(const GeometryPtr& var) { writeGeometry(var); }
+
+  /// write a string value from stream
+  void writeTransform4(const Transform4Ptr& var) ;
+  inline void write(const Transform4Ptr& var) { writeTransform4(var); }
 
   /// write a file name value from stream
   void writeFile(const std::string& var);

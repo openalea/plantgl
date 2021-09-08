@@ -366,6 +366,7 @@ bool PovPrinter::process( Inline * geomInline ) {
 bool PovPrinter::process( Material * material ) {
   GEOM_ASSERT(material);
 
+  if (!material->isNamed())material->setDefaultName();
   __texture = material->getName();
   __appearance = material;
 

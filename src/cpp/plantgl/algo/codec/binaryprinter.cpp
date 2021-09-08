@@ -340,8 +340,8 @@ fostream& operator<<( fostream& stream, TokenCode& c ){
     } \
   } \
   else { \
-    DEBUG_INFO(#type,"",obj->getObjectId())  \
-    printType(#type); writeString("") ; writeUint32(0); \
+    DEBUG_INFO(#type,obj->getName(),obj->getObjectId())  \
+    printType(#type); writeString(obj->getName()) ; writeUint32(0); \
   }
 
 #define GEOM_PRINT_APPEARANCE(val) \
@@ -568,6 +568,9 @@ void BinaryPrinter::writeString(const std::string& var)
 void BinaryPrinter::writeFile(const std::string& var)
 { __outputStream << '!' << var.c_str() << '!';  }
 
+void BinaryPrinter::writeTransform4(const Transform4Ptr& var) 
+{  write(var->getMatrix( )); }
+ 
 
 /* ----------------------------------------------------------------------- */
 bool BinaryPrinter::print(ScenePtr scene,string filename,const char * comment){
