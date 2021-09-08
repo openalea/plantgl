@@ -8,6 +8,8 @@ def random_point() : return Vector3(uniform(*pointrange),uniform(*pointrange),un
 def vid(id,dim):
     return id[0]*dim[1]*dim[2]+id[1]*dim[2]+id[2]
 
+ID = 1
+
 #print vid((1,2,3),(5,5,5))
 def test_point3grid_construct1():
     nbpoint = 100
@@ -17,7 +19,7 @@ def test_point3grid_construct1():
 def test_point3grid_construct2():
     nbpoint = 100
     p3list = [random_point() for i in range(nbpoint)]
-    p3grid = Point3Grid(0.5,p3list)
+    p3grid = Point3Grid(0.5*ID,p3list)
 
 def test_point3grid_construct3():
     nbpoint = 100
@@ -47,14 +49,14 @@ def test_point3grid_ball():
 def test_pointgrid_access():
     p3list = [(1,1,1),(6,6,6),(10,10,10),(20,20,20)]
     r = 0
-    p3grid = Point3Grid(r+1,p3list)
+    p3grid = Point3Grid((r+1)*ID,p3list)
     print([p3grid.query_ball_point(i,r) for i in p3list])
     print([[i] for i in range(len(p3list))])
     assert [p3grid.query_ball_point(i,r) for i in p3list] == [[i] for i in range(len(p3list))]
     
 def test_pointgrid_corners(nbpoint = 10):
     p3list = [(0,0,0),(10,10,10)]+[random_point() for i in range(nbpoint)]
-    p3grid = Point3Grid(1,p3list)
+    p3grid = Point3Grid(1*ID,p3list)
     corners = p3grid.getCorners()
     #print corners
     assert len(corners) == 8
@@ -71,7 +73,7 @@ def manual_closest(pt,plist):
     
 def test_pointgrid_closest(nbtest = 10, nbpoint = 10):
     p3list = [(0,0,0),(10,10,10)]+[random_point() for i in range(nbpoint)]
-    p3grid = Point3Grid(2,p3list)
+    p3grid = Point3Grid(2*ID,p3list)
     #print p3list
     #print p3grid.size(),p3grid.nbFilledVoxels()
     for i in range(nbtest):
@@ -95,17 +97,17 @@ def closest_point(p3grid,p3list,pt,target=None):
 
 def test_pointgrid_closest_dist1():
     p3list = [(0,0,0),(10,10,10)]+[(2.5,2.5,2.5),(5,5,5)]
-    p3grid = Point3Grid(1,p3list)
+    p3grid = Point3Grid(1*ID,p3list)
     closest_point(p3grid,p3list,Vector3(2.5,3.5,2.5),2)
 
 def test_pointgrid_closest_dist2():
     p3list = [(0,0,0),(10,10,10)]+[(2.5,2.5,2.5),(5,5,5)]
-    p3grid = Point3Grid(1,p3list)
+    p3grid = Point3Grid(1*ID,p3list)
     closest_point(p3grid,p3list,Vector3(2.5,4.5,2.5),2)
 
 def test_pointgrid_closest_dist3():
     p3list = [(0,0,0),(10,10,10)]+[(1.9,2.9,5),(3.1,1.1,5)]
-    p3grid = Point3Grid(1,p3list)
+    p3grid = Point3Grid(1*ID,p3list)
     closest_point(p3grid,p3list,Vector3(1.9,1.1,5),3)
     
 if __name__ == '__main__':
