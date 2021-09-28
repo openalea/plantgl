@@ -353,6 +353,21 @@ Color3 Color3::interpolate(const Color3& c1, const Color3& c2, real_t t)
 
 }
 
+Color3 Color3::interpolate( const Color3& v0 ,  real_t w0, const Color3& v1 ,  real_t w1, const Color3& v2 ,  real_t w2 )
+{
+    real_t sumw = w0+w1+w2;
+    w0 /= sumw;
+    w1 /= sumw;
+    w2 /= sumw;
+
+    real_t r = v0.getRed() * w0 + v1.getRed() * w1 + v2.getRed() * w2 ;
+    real_t g = v0.getGreen() * w0 + v1.getGreen() * w1 + v2.getGreen() * w2  ;
+    real_t b = v0.getBlue() * w0 + v1.getBlue() * w1 + v2.getBlue() * w2  ;
+    return Color4(uchar_t(pglMin(round(r),real_t(255.))), 
+                  uchar_t(pglMin(round(g),real_t(255.))),
+                  uchar_t(pglMin(round(b),real_t(255.))));
+}
+
 
 Color3& Color3::operator*=(const Color3& c)
 {
@@ -583,6 +598,23 @@ Color4 Color4::interpolate(const Color4& c1, const Color4& c2, real_t t)
 }
 
 
+Color4 Color4::interpolate( const Color4& v0 ,  real_t w0, const Color4& v1 ,  real_t w1, const Color4& v2 ,  real_t w2 )
+{
+    real_t sumw = w0+w1+w2;
+    w0 /= sumw;
+    w1 /= sumw;
+    w2 /= sumw;
+    real_t r = v0.getRed() * w0 + v1.getRed() * w1 + v2.getRed() * w2 ;
+    real_t g = v0.getGreen() * w0 + v1.getGreen() * w1 + v2.getGreen() * w2  ;
+    real_t b = v0.getBlue() * w0 + v1.getBlue() * w1 + v2.getBlue() * w2  ;
+    real_t a = v0.getAlpha() * w0 + v1.getAlpha() * w1 + v2.getAlpha() * w2  ;
+    return Color4(uchar_t(pglMin(round(r),real_t(255.))), 
+                  uchar_t(pglMin(round(g),real_t(255.))),
+                  uchar_t(pglMin(round(b),real_t(255.))),
+                  uchar_t(pglMin(round(a),real_t(255.))));
+}
+
+
 std::ostream& PGL(operator<<( std::ostream& stream, const Color4& c )) {
   return stream << "<" << (uint16_t)c.getRed() << "," << (uint16_t)c.getGreen() << ","
         << (uint16_t)c.getBlue() << "," << (uint16_t)c.getAlpha() << ">";
@@ -657,3 +689,4 @@ Color4 Color4::operator+(const Color4& c) const
 Color4 PGL(operator*)( const real_t& s, const Color4& v ) {
     return v * s ;
 }
+

@@ -40,7 +40,7 @@ using namespace std;
 #define bp boost::python
 
 
-boost::python::object py_grabZBufferPoints(ZBufferEngine * ze, real_t jitter = 0, int raywidth = 0){
+boost::python::object py_grabZBufferPoints(ZBufferEngine * ze, real_t jitter = 0, real_t raywidth = 0){
     std::pair<Point3ArrayPtr,Color4ArrayPtr> bufpoints = ze->grabZBufferPoints(jitter, raywidth);
     return boost::python::make_tuple(bufpoints.first,bufpoints.second);
 }

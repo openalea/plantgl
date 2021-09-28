@@ -1,22 +1,30 @@
-from ._pglsg import NurbsPatch, NurbsCurve2D
-from math import sqrt
+from ._pglsg import NurbsPatch, NurbsCurve2D, Point4Matrix
+from math import sqrt, pi
+
+def transpose(pm):
+    ni, nj = len(pm), len(pm[0])
+    return [[pm[i][j] for i in range(ni)] for j in range(nj)]
 
 def nurbsEllipsoid(xradius = 1, yradius = 1, zradius = 1):
     uknots = [0,0,0,0,1,1,1,1]
     vknots = [0,0,0,0,1/2,1/2,1/2,1,1,1,1]
+    uknots = [(i*pi) - pi/2 for i in uknots]
+    vknots = [i*2*pi for i in vknots]
     top = (0,0,1)
     bot = (0,0,-1)
     def p(point,w) :
         return [pi*r for pi,r in zip(point,[xradius,yradius,zradius])]+[w]
 
-    ctrlPoints = [ 
-        [ p(top,1), p(top,1/3), p(top,1/3), p(top,1), p(top,1/3), p(top,1/3), p(top,1) ],
-        [ p((2,0,1),1/3), p((2,4,1),1/9), p((-2,4,1),1/9), p((-2,0,1),1/3), p((-2,-4,1),1/9), p((2,-4,1),1/9), p((2,0,1),1/3) ],
+    ctrlPoints = transpose([ 
+        [ p(bot,1), p(bot,1/3), p(bot,1/3), p(bot,1), p(bot,1/3), p(bot,1/3), p(bot,1) ],
         [ p((2,0,-1),1/3), p((2,4,-1),1/9), p((-2,4,-1),1/9), p((-2,0,-1),1/3), p((-2,-4,-1),1/9), p((2,-4,-1),1/9), p((2,0,-1),1/3) ],
-        [ p(bot,1), p(bot,1/3), p(bot,1/3), p(bot,1), p(bot,1/3), p(bot,1/3), p(bot,1) ] 
-    ]
+        [ p((2,0,1),1/3), p((2,4,1),1/9), p((-2,4,1),1/9), p((-2,0,1),1/3), p((-2,-4,1),1/9), p((2,-4,1),1/9), p((2,0,1),1/3) ],
+        [ p(top,1), p(top,1/3), p(top,1/3), p(top,1), p(top,1/3), p(top,1/3), p(top,1) ]
+    ])
 
-    return NurbsPatch(ctrlPoints, uknots, vknots)
+
+
+    return NurbsPatch(ctrlPoints, vknots, uknots)
 
 def nurbsHalfEllipsoid(xradius = 1, yradius = 1, zradius = 1):
     uknots = [0,0,0,0,1,1,1,1]

@@ -156,7 +156,7 @@ ScenePtr AscCodec::read(const std::string &fname) {
 
 bool AscCodec::write(const std::string &fname, const ScenePtr &scene) {
   std::cout << "Write " << fname << std::endl;
-  std::ofstream file(fname.c_str());
+  std::ofstream file(fname.c_str(), std::ofstream::out);
 
   if (!file)
     return false;
@@ -190,6 +190,10 @@ bool AscCodec::write(const std::string &fname, const ScenePtr &scene) {
         bool hasColor = pointList->hasColorList();
         // col = i.appearance.ambient
         ProgressStatus st(pointList->getPointList()->size(), "Writing ascii file : %.2f%%");
+        Color4Array::const_iterator itcol;
+        if (hasColor){
+          itcol = pointList->getColorList()->begin();
+        }
         for (Point3Array::iterator pt = pointList->getPointList()->begin(); pt != pointList->getPointList()->end(); ++pt, ++st) {
           file << pt->x() << " " << pt->y() << " " << pt->z() << " ";
           if (!isxyzfile && !ispwnfile) {
@@ -198,7 +202,12 @@ bool AscCodec::write(const std::string &fname, const ScenePtr &scene) {
                         if isptsfile or istxtfile:
                             f.write(str(rgb2intensity(col)))
                         f.write(str(col.red)+' '+str(col.green)+' '+str(col.blue)+'\n')
+            
 */
+            if (hasColor){
+                file << (int)itcol->getRed() << " " << (int)itcol->getGreen() << " " << (int)itcol->getBlue();
+                ++itcol;
+            }
           }
           file << std::endl;
         }
