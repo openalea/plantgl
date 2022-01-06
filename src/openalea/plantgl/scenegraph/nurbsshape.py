@@ -8,8 +8,8 @@ def transpose(pm):
 def nurbsEllipsoid(xradius = 1, yradius = 1, zradius = 1):
     uknots = [0,0,0,0,1,1,1,1]
     vknots = [0,0,0,0,1/2,1/2,1/2,1,1,1,1]
-    uknots = [(i*pi) - pi/2 for i in uknots]
-    vknots = [i*2*pi for i in vknots]
+    #uknots = [(i*pi) - pi/2 for i in uknots]
+    #vknots = [i*2*pi for i in vknots]
     top = (0,0,1)
     bot = (0,0,-1)
     def p(point,w) :

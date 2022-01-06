@@ -377,7 +377,7 @@ Point4ArrayPtr  NurbsCurve::deriveAtH(real_t u, int d, int span ) const {
     for(int k=du;k>=0;--k){
         ders->setAt(k,Vector4(0,0,0,0)) ;
         for(int j=__degree;j>=0;--j){
-            ders->setAt(k, ders->getAt(k) + __ctrlPointList->getAt(span-__degree+j)*derF->getAt(k,j)) ;
+            ders->setAt(k, ders->getAt(k) + __ctrlPointList->getAt(span-__degree+j).wtoxyz()*derF->getAt(k,j)) ;
         }
     }
     return ders;

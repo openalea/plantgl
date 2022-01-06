@@ -425,14 +425,14 @@ Point4MatrixPtr  NurbsPatch::deriveAtH(real_t u, real_t v, int d, int uspan, int
     int dv = ( d < (int)__vdegree ? d : __vdegree);
 
     Point4MatrixPtr patchders(new Point4Matrix(d+1,d+1, Vector4::ORIGIN));
-    Point4Array temp(__vdegree+1, Vector4::ORIGIN) ;
     RealArray2Ptr UderF = derivatesBasisFunctions(du,u,uspan,__udegree,__uKnotList);
     RealArray2Ptr VderF = derivatesBasisFunctions(dv,v,vspan,__vdegree,__vKnotList);
 
     for(int k=0;k<=du;++k){
+        Point4Array temp(__vdegree+1, Vector4::ORIGIN) ;
         for(int s=0;s<=__vdegree;++s){
             for(int r=0;r<=__udegree;++r){
-                temp[s] +=  UderF->getAt(k,r)*__ctrlPointMatrix->getAt(uspan-__udegree+r,vspan-__vdegree+s) ;
+                temp[s] +=  UderF->getAt(k,r)*__ctrlPointMatrix->getAt(uspan-__udegree+r,vspan-__vdegree+s).wtoxyz() ;
             }
         }
         int dd = ( (d-k) < dv ? (d-k) : dv); //min(d-k,dv) ;
@@ -459,8 +459,6 @@ RealArray2 binomialCoef(int d) {
         for( int l = 1 ; l < d+1 ; l++ )
             if( n+1 >= l )
                 Bin.setAt( n+1 , l , Bin.getAt( n , l ) + Bin.getAt( n , l-1 ) ) ;
-            //else
-            //    Bin.setAt( n , l , 0.0 ) ;
     }
     return Bin;    
 }
@@ -474,7 +472,8 @@ Point3MatrixPtr NurbsPatch::deriveAt(real_t  u, real_t  v, int d, int uspan, int
     RealArray2 Bin = binomialCoef(d);
 
     for( int k = 0 ; k <= d ; k++ ){
-        for( int l = 0 ; l <= d-k ; l++){
+        // for( int l = 0 ; l <= d-k ; l++){
+        for( int l = 0 ; l <= d ; l++){
             vec.x() = dersW->getAt(k,l).x() ;
             vec.y() = dersW->getAt(k,l).y() ;
             vec.z() = dersW->getAt(k,l).z() ;
