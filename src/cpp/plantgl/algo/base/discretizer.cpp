@@ -1187,7 +1187,6 @@ bool Discretizer::process( Extrusion * extrusion ){
             }
             else _normal /= normnormal;
           }
-        // else _normal = _axis->getNormalAt(_start);
         _velocity.normalize();
         _normal.normalize();
         Vector3 _binormal = cross(_velocity,_normal);
@@ -1196,16 +1195,16 @@ bool Discretizer::process( Extrusion * extrusion ){
 
         Matrix3 _frame(_normal,_binormal,_velocity);
         OrthonormalBasis3D _transf(_frame);
-        Point3ArrayPtr _newPoint;
+        Point3ArrayPtr _newPoint = _crossPoints;
         if(_useTransf){
             Transformation2DPtr _transf2D =  (*_profileTransf)(_starttransf);
-            _newPoint = _transf2D->transform(_crossPoints);
-            _newPoint =  _transf.transform(_newPoint);
+            _newPoint = _transf2D->transform(_newPoint);
         }
-        else _newPoint =  _transf.transform(_crossPoints);
-             float _idPoint = 0;
-            real_t texv;
-            if(__computeTexCoord) texv = texvmapping->getValue(_start) * axislength;
+        _newPoint =  _transf.transform(_newPoint);
+
+        float _idPoint = 0;
+        real_t texv;
+        if(__computeTexCoord) texv = texvmapping->getValue(_start) * axislength;
         for(Point3Array::iterator _it = _newPoint->begin();
             _it != _newPoint->end();
             ++_it,++_idPoint,++_j,++_j2){
