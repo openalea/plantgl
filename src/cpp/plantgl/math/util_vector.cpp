@@ -640,6 +640,11 @@ Vector3::project( ) const {
   return Vector2(__X / __Z,__Y / __Z);
 }
 
+Vector3 Vector3::ztoxy( ) const {
+  return Vector3(__X * __Z, __Y * __Z, __Z);
+
+}
+
 int
 Vector3::getMaxAbsCoord() const
 {

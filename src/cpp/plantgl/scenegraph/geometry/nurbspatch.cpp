@@ -437,9 +437,8 @@ Point4MatrixPtr  NurbsPatch::deriveAtH(real_t u, real_t v, int d, int uspan, int
         }
         int dd = ( (d-k) < dv ? (d-k) : dv); //min(d-k,dv) ;
         for(int r=0;r<=dd;++r){
-            // patchders->setAt(k,r, Vector4::ORIGIN) ;
             for(int s=0;s<=__vdegree;++s){
-                patchders->getAt(k,r) += VderF->getAt(r,s)*temp[s] ;    //
+                patchders->getAt(k,r) += VderF->getAt(r,s)*temp[s] ;  
             }
         }
     }
@@ -451,7 +450,6 @@ RealArray2 binomialCoef(int d) {
 
     // Setup the first line
     Bin.setAt( 0, 0, 1.0) ;
-    // for( int l = d ; l > 0 ; --l ) Bin.setAt( 0 , l , 0.0 ) ;
 
     // Setup the other lines
     for( int n = 0 ; n < d ; n++ ){

@@ -457,20 +457,13 @@ Vector3 NurbsCurve::getPointAt(real_t u) const{
 
 Vector3 NurbsCurve::getTangentAt(real_t u) const {
     GEOM_ASSERT( (getFirstKnot() -u ) < GEOM_EPSILON &&  !((u - getLastKnot()) > GEOM_EPSILON));
-    Vector4 _derivate = getDerivativeAt( u, 1 );
-    if(!_derivate.w())
-        return Vector3(_derivate.x(),_derivate.y(),_derivate.z());
-    else return _derivate.project();
+    return getDerivativeAt( u, 1 );
 }
 
 Vector3 NurbsCurve::getNormalAt(real_t u) const{
     GEOM_ASSERT( (getFirstKnot() -u ) < GEOM_EPSILON &&  !((u - getLastKnot()) > GEOM_EPSILON));
     Vector3 _tangent = getTangentAt(u);
-    Vector4 _derivate = getDerivativeAt( u, 2 );
-    Vector3 _normal3;
-    if(!_derivate.w())
-        _normal3 = Vector3(_derivate.x(),_derivate.y(),_derivate.z());
-    else _normal3 = _derivate.project();
+    Vector3 _normal3 = getDerivativeAt( u, 2 );
     return (cross(cross(_tangent,_normal3),_tangent))/pow(norm(_tangent),real_t(4));
 }
 
@@ -956,10 +949,7 @@ Vector2 NurbsCurve2D::getPointAt(real_t u) const{
   RealArrayPtr _basisFunctions = basisFunctions(span,u,__degree,__knotList);
   Vector3 Cw(0.0,0.0,0.0);
   for (uint_t j = 0; j <= __degree; j++) {
-      Vector3 Pj = __ctrlPointList->getAt( span - __degree + j );
-      Pj.x() *= Pj.z();
-      Pj.y() *= Pj.z();
-
+      Vector3 Pj = __ctrlPointList->getAt( span - __degree + j ).ztoxy();
       Cw += Pj * _basisFunctions->getAt(j);
   }
 
@@ -982,16 +972,16 @@ Point3ArrayPtr  NurbsCurve2D::deriveAtH(real_t u, int d, int span ) const {
     for(int k=du;k>=0;--k){
         ders->setAt(k,Vector3(0,0,0)) ;
         for(int j=__degree;j>=0;--j){
-            ders->setAt(k, ders->getAt(k) + __ctrlPointList->getAt(span-__degree+j)*derF->getAt(k,j)) ;
+            ders->setAt(k, ders->getAt(k) + __ctrlPointList->getAt(span-__degree+j).ztoxy()*derF->getAt(k,j)) ;
         }
     }
     return ders;
 }
 
-Point3ArrayPtr NurbsCurve2D::deriveAt(real_t  u, int d, int span ) const{
-    Point3ArrayPtr ders(new Point3Array(d+1));
+Point2ArrayPtr NurbsCurve2D::deriveAt(real_t  u, int d, int span ) const{
+    Point2ArrayPtr ders(new Point2Array(d+1));
     Point3ArrayPtr dersW = deriveAtH(u,d,span) ;
-    Vector3 v ;
+    Vector2 v ;
     int k,i ;
 
     RealArray2 Bin(d+1,d+1);
@@ -1017,7 +1007,6 @@ Point3ArrayPtr NurbsCurve2D::deriveAt(real_t  u, int d, int span ) const{
     for( k = 0 ; k <= d ; k++ ){
         v.x() = dersW->getAt(k).x() ;
         v.y() = dersW->getAt(k).y() ;
-        v.z() = dersW->getAt(k).z() ;
         for(i=k ;i>0 ;--i){
             v -= ders->getAt(k-i)*(Bin.getAt(k,i)*dersW->getAt(i).z()) ;
         }
@@ -1028,34 +1017,27 @@ Point3ArrayPtr NurbsCurve2D::deriveAt(real_t  u, int d, int span ) const{
 }
 
 
-Vector3 NurbsCurve2D::getDerivativeAt(real_t u, int d) const {
-    if (d > __degree) return Vector3(0,0,0);
+Vector2 NurbsCurve2D::getDerivativeAt(real_t u, int d) const {
+    if (d > __degree) return Vector2(0,0);
     int span = findSpan(u) ;
-    Point3ArrayPtr ders = deriveAt(u,d, span) ;
+    Point2ArrayPtr ders = deriveAt(u,d, span) ;
     return ders->getAt(d) ;
 }
 
 
-Point3ArrayPtr NurbsCurve2D::getDerivativesAt(real_t u) const {
+Point2ArrayPtr NurbsCurve2D::getDerivativesAt(real_t u) const {
     int span = findSpan(u) ;
     return deriveAt(u,__degree, span) ;
 }
 Vector2 NurbsCurve2D::getTangentAt(real_t u) const {
     GEOM_ASSERT( (getFirstKnot() -u ) < GEOM_EPSILON &&  !((u - getLastKnot()) > GEOM_EPSILON));
-    Vector3 _derivate = getDerivativeAt( u, 1 );
-    if(!_derivate.z())
-        return Vector2(_derivate.x(),_derivate.y());
-    else return _derivate.project();
+    return getDerivativeAt( u, 1 );
 }
 
 Vector2 NurbsCurve2D::getNormalAt(real_t u) const{
     GEOM_ASSERT( (getFirstKnot() -u ) < GEOM_EPSILON &&  !((u - getLastKnot()) > GEOM_EPSILON));
     Vector2 _tangent = getTangentAt(u);
-    Vector3 _derivate = getDerivativeAt( u, 2 );
-    Vector2 _normal2;
-    if(!_derivate.z())
-        _normal2 = Vector2(_derivate.x(),_derivate.y());
-    else _normal2 = _derivate.project();
+    Vector2 _normal2 = getDerivativeAt( u, 2 );
     Vector3 nml3 = cross(cross(Vector3(_tangent,0),Vector3(_normal2,0)),Vector3(_tangent,0))/pow(norm(_tangent),real_t(4));
     return Vector2(nml3[0],nml3[1]);
 }
