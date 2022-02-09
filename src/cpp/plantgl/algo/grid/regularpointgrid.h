@@ -60,7 +60,7 @@ class ContainerReferencePolicy {
 public:
     ContainerReferencePolicy(const PointContainer& data) : __points(data) {}
 protected:
-    const PointContainer& __points;
+     const PointContainer& __points;
 };
 
 template<class PointContainer>
@@ -68,7 +68,7 @@ class LocalContainerPolicy {
 public:
     LocalContainerPolicy(const PointContainer& data) : __points(data) {}
 protected:
-    const PointContainer __points;
+     PointContainer __points;
 };
 
 
@@ -403,6 +403,21 @@ SpatialArrayN<std::vector<size_t>,typename PointContainer::element_type,NbDimens
         for(typename Base::const_iterator it = Base::begin(); it != Base::end(); ++it)
             if(!it->empty())++count;
         return count;
+    }
+
+    PointIndex add_point(const VectorType& point) {
+        VectorType minpoint = SpatialBase::getLowerCorner();
+        VectorType maxpoint = SpatialBase::getUpperCorner();
+        for (size_t i = 0; i < NbDimension; ++i){
+            if ((point[i] < minpoint[i]) || (point[i] > maxpoint[i]))
+                return -1;
+        }
+
+        PointIndex pid = points().size();
+        ContainerPolicy::__points.push_back(point);
+        VoxelId vid = this->cellIdFromPoint(point);
+        this->getAt(vid).push_back(pid);
+        return pid;
     }
 
 protected:

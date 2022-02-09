@@ -318,6 +318,7 @@ class pointgrid_func : public boost::python::def_visitor<pointgrid_func<PointGri
      .def("__getitem__",&py_getVoxelPointIndices<PointGrid>,bp::args("cellindex"),"Return the enabled points contained in the voxel")
      .def("nbPointInVoxel",&nbPointInVoxel<PointGrid>,bp::args("cellindex"),"Return the number of enabled points contained in the voxel")
      .def("nbPointInVoxelFromId",&nbPointInVoxelFromId<PointGrid>,bp::args("cellid"),"Return the number of enabled points contained in the voxel")
+     .def("add_point",&PointGrid::add_point, "Add a point in the grid. Should be contained in the voxels.")
          ;
     }
 };
