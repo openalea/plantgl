@@ -168,7 +168,7 @@ class NurbsPatch3D:
             for j in range(0,vdeg+1):
                 tmpVec = Vector4(0,0,0,0)
                 for k in range(0,udeg+1):
-                    tmpVec += self.__points[uspan-udeg+k][vspan-vdeg+j][wspan-wdeg+i] * Nu[k]
+                    tmpVec += self.__points[uspan-udeg+k][vspan-vdeg+j][wspan-wdeg+i].wtoxyz() * Nu[k]
                 tmp[i][j] = tmpVec
         
         tmp2 = [None for i in range(self.wdegree+1)]
