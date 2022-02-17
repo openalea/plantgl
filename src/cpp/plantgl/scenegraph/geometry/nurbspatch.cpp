@@ -136,7 +136,7 @@ bool NurbsPatch::Builder::isValid( ) const {
     uint_t _vsize = (*CtrlPointMatrix)->getRowSize();
 
     if (_usize < 2 ) {
-        pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Patch","CtrlPointMatrix","Size of Columnsmust be greater than 1.");
+        pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Patch","CtrlPointMatrix","Size of Columns must be greater than 1.");
         return false;
     }
 

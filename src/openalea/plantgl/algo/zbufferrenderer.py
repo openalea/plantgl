@@ -2,7 +2,7 @@ from math import *
 from openalea.plantgl.all import Vector3, Vector4, Matrix4, cross
 import numpy as np
 
-class ZBufferRenderer:
+class PyZBufferRenderer:
     def __init__(self, width, height):
         self.projectionMatrix = Matrix4.IDENTITY
         self.width = width
@@ -175,11 +175,88 @@ class ZBufferRenderer:
         plt.imshow(self.image)
         plt.show()
 
-def nZ(z, znear, zfar):
-    dz = float(zfar - znear)
-    c1 =  - 2*zfar*znear / dz
-    c2 =  (zfar + znear) / dz
-    return ((-c2 * z) - c1)/ (-z)
+def PyZBufferRenderer
+
+def horizontal_corners(bbx):
+    from itertools import product
+    from openalea.plantgl.math import Vector3
+    
+    lc = bbx.lowerLeftCorner
+    uc = bbx.upperRightCorner
+    mh = (lc.z+uc.z)/2
+    return [Vector3(uc.x,uc.y,mh),Vector3(lc.x,uc.y,mh), Vector3(lc.x,lc.y,mh),Vector3(uc.x,lc.y,mh)]
+
+def findClosestPoint(bbx, pos, dir):
+    hcorners = horizontal_corners(bbx)
+    closestpoint = Polyline(hcorners+[hcorners[0]]).findClosest(pos)[0]
+    mindist = dot(closestpoint-pos, dir)
+    for pt in hcorners:
+        ldist = dot(pt-pos, dir)
+        if ldist < mindist:
+            closestpoint = pt 
+            mindist = ldist
+    return closestpoint, mindist
+
+def scan_infos(scene,  scan_positions, debug = True):
+    bbx = BoundingBox(scene)
+    center = bbx.getCenter()
+    corners = bbx.corners()
+    lateral = Vector3(bbx.getSize().x,bbx.getSize().y,0)
+    laterals = [Vector3(lateral.x,lateral.y,0),Vector3(-lateral.x,lateral.y,0),
+                Vector3(-lateral.x,-lateral.y,0),Vector3(lateral.x,-lateral.y,0)]
+    up = Vector3(0,0,1)
+    shift = 2*20
+    if debug:
+        print('scan_positions:',scan_positions)
+    centers = []
+    scan_horizontal_angles = []
+    scan_vertical_angles = []
+    scan_lefts = []
+    znears = []
+    zfars = []
+    for pos in scan_positions:
+        pos = Vector3(pos)
+        h_angles = list(sorted([ (i,angle(center-pos,center+lat-pos, up)) for i,lat in enumerate(laterals) ], key=itemgetter(1)))
+        min_angle, max_angle = h_angles[0][1], h_angles[-1][1]
+        center_angle = (max_angle + min_angle)/2 
+        ncenter = pos + Matrix3.axisRotation(up, center_angle) * (center - pos)
+        centers.append(ncenter)
+        if debug : print('center:',degrees(angle(ncenter-pos,center-pos, up)), ncenter)
+        viewdirection = direction(ncenter-pos)
+
+        h_angles = list(sorted([ (i,angle(ncenter-pos,center+lat-pos, up)) for i,lat in enumerate(laterals) ], key=itemgetter(1)))
+        min_angle, max_angle = h_angles[0][1], h_angles[-1][1]
+        extend_angle = (max_angle - min_angle)
+        scan_horizontal_angles.append(extend_angle)
+
+        if debug : 
+            print(degrees(min_angle), degrees(max_angle))
+            print('hangle:',degrees(extend_angle))
+
+        closestpoint, mindist = findClosestPoint(bbx, pos, viewdirection)
+        print(mindist, norm(closestpoint-pos))
+
+        print(closestpoint, pos, bbx.getSize())
+        vangle = 2*angle(viewdirection*mindist,viewdirection*mindist+(up*bbx.getSize().z)) 
+        scan_vertical_angles.append(vangle)
+
+        if debug : print('vangle',degrees(vangle))
+
+        znears.append(mindist*0.95)
+        zfars.append(max(dot(c - pos,viewdirection) for c in corners)*1.05)
+
+        if debug : print("N&F:",znears[-1],zfars[-1])
+
+    return scan_positions, scan_horizontal_angles, scan_vertical_angles, znears, zfars, centers, bbx
+
+def from_bbox(bbox, azimut = 0, elevation = 0, zoom = 1, imagesize = (400,400), vertical_view_angle = 30 ):
+    direction = Vector3.
+    center = bbx.getCenter()
+    corners = bbx.corners()
+    lateral = Vector3(bbx.getSize().x,bbx.getSize().y,0)
+    laterals = [Vector3(lateral.x,lateral.y,0),Vector3(-lateral.x,lateral.y,0),
+                Vector3(-lateral.x,-lateral.y,0),Vector3(lateral.x,-lateral.y,0)]
+
 
 
 def test():
