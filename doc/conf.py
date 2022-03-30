@@ -19,12 +19,16 @@
 
 # -- Project information -----------------------------------------------------
 
-import os,sys
-from openalea.sconsx.util.config_deploy import HexVersion
+import os,sys,inspect
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0,parentdir) 
+
+from hexversion import HexVersion
 
 def getMetaInfo():
     metainfo = {}
-    execfile(os.path.join(os.pardir, 'src','plantgl','__init__.py'),{},metainfo)
+    exec(open(os.path.join(os.pardir, 'src','openalea','plantgl','__init__.py')).read(),{},metainfo)
     return metainfo['__metainfo__']
 
 globals().update(getMetaInfo())
@@ -93,7 +97,7 @@ html_theme_path = ["_themes"]
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+# html_static_path = ['_static']
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
@@ -135,7 +139,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
-latex_documents = [('contents', 'main.tex', project + ' documentation', authors, 'manual')]
+latex_documents = [('contents', 'main.tex', namespace + ' documentation', authors, 'manual')]
 
 
 # -- Options for manual page output ------------------------------------------
@@ -143,7 +147,7 @@ latex_documents = [('contents', 'main.tex', project + ' documentation', authors,
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'plantgl', u'Plantgl Documentation',
+    (master_doc, 'PlantGL', u'PlantGL Documentation',
      [author], 1)
 ]
 
@@ -154,7 +158,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'Plantgl', u'Plantgl Documentation',
-     author, 'Plantgl', 'One line description of project.',
+    (master_doc, 'PlantGL', u'PlantGL Documentation',
+     author, 'PlantGL', description,
      'Miscellaneous'),
 ]

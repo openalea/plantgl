@@ -1,39 +1,48 @@
-/*  -*-c++-*-----------------------------------------------------------------
+/* -*-c++-*-
+ *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr)
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
- * 
- *                      GNU General Public Licence
- *           
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *  -------------------------------------------------------------------------
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
+ *
+ *  ----------------------------------------------------------------------------
  */
+
 
 
 #include <QtGlobal>
 #include <QtGui/qpainter.h>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/QWidget>
     #include <QtWidgets/QTreeWidget>
     #include <QtWidgets/QTreeWidgetItem>
@@ -53,26 +62,25 @@
 #include "util_qstring.h"
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
 
 #define GEOM_MESH(obj,type) \
-	addNode(obj,type); \
-	addAttr("CCW",obj->getCCW()); \
-	addAttr("Solid",obj->getSolid()); \
-	addArray("PointList",obj->getPointList(),"Vector3"); \
-	addArray("IndexList",obj->getIndexList(),"Index"); \
-	addAttr("NormalPerVertex",obj->getNormalPerVertex()); \
-	addArray("NormalList",obj->getNormalList(),"Vector3"); \
-	addArray("NormalIndexList",obj->getNormalList(),"Index"); \
-	addAttr("ColorPerVertex",obj->getColorPerVertex()); \
-	addArray("ColorList",obj->getColorList(),"Color4"); \
-	addArray("ColorIndexList",obj->getColorIndexList(),"Index"); \
-	addArray("TexCoordList",obj->getTexCoordList(),"Vector2"); \
-	addArray("TexCoordIndexList",obj->getTexCoordIndexList(),"Index"); \
-	addAttrNode("Skeleton",SceneObjectPtr(obj->getSkeleton()),"Polyline"); \
+    addNode(obj,type); \
+    addAttr("CCW",obj->getCCW()); \
+    addAttr("Solid",obj->getSolid()); \
+    addArray("PointList",obj->getPointList(),"Vector3"); \
+    addArray("IndexList",obj->getIndexList(),"Index"); \
+    addAttr("NormalPerVertex",obj->getNormalPerVertex()); \
+    addArray("NormalList",obj->getNormalList(),"Vector3"); \
+    addArray("NormalIndexList",obj->getNormalList(),"Index"); \
+    addAttr("ColorPerVertex",obj->getColorPerVertex()); \
+    addArray("ColorList",obj->getColorList(),"Color4"); \
+    addArray("ColorIndexList",obj->getColorIndexList(),"Index"); \
+    addArray("TexCoordList",obj->getTexCoordList(),"Vector2"); \
+    addArray("TexCoordIndexList",obj->getTexCoordIndexList(),"Index"); \
+    addAttrNode("Skeleton",SceneObjectPtr(obj->getSkeleton()),"Polyline"); \
 
 /* ----------------------------------------------------------------------- */
 
@@ -145,30 +153,30 @@ void GeomListViewBuilder::init( ){
 /* ----------------------------------------------------------------------- */
 
 void GeomListViewBuilder::addNode(const SceneObject * node,
-								  const QString& type,
-								  int pixmaptouse){
+                                  const QString& type,
+                                  int pixmaptouse){
 
-   QString ptrid = QString("ptr=0x%1").arg(node->SceneObject::getId(),8,16,QChar('0'));
+   QString ptrid = QString("ptr=0x%1").arg(node->SceneObject::getObjectId(),8,16,QChar('0'));
    QString name = QString(node->getName().c_str());
    QStringList labels;
    labels << name << ptrid << type;
-   if (name.isEmpty()) name = type.toLower()+"_"+QString::number(node->getId());
+   if (name.isEmpty()) name = type.toLower()+"_"+QString::number(node->getObjectId());
    QTreeWidgetItem * item = new QTreeWidgetItem(__currentNodeItem,labels);
    switch (pixmaptouse){
-	default:
-	case 0:
-		item->setIcon(0,__pixgeom);
-		break;
-	case 1:
-		item->setIcon(0,__pixshape);
-		break;
-	case 2:
-		item->setIcon(0,__pixappe);
-		break;
-	case 3:
-		item->setIcon(0,__pixtransf);
-		break;
-	}
+    default:
+    case 0:
+        item->setIcon(0,__pixgeom);
+        break;
+    case 1:
+        item->setIcon(0,__pixshape);
+        break;
+    case 2:
+        item->setIcon(0,__pixappe);
+        break;
+    case 3:
+        item->setIcon(0,__pixtransf);
+        break;
+    }
 
 
    __currentNodeItem->addChild(item);
@@ -181,12 +189,12 @@ void GeomListViewBuilder::addNode(const SceneObject * node,
 
 void GeomListViewBuilder::endNode(){
   __currentSiblingItem = __currentNodeItem;
-	popItems();
+    popItems();
 }
 
 void GeomListViewBuilder::pushItems()
 {
-	__stackItem.push(qMakePair(__currentNodeItem,__currentAttrItem));
+    __stackItem.push(qMakePair(__currentNodeItem,__currentAttrItem));
 }
 
 void GeomListViewBuilder::popItems()
@@ -197,64 +205,64 @@ void GeomListViewBuilder::popItems()
 }
 
 void GeomListViewBuilder::addAttr(const QString& name, bool value){
-	addAttr(name,QString::number(value),"Boolean");
+    addAttr(name,QString::number(value),"Boolean");
 }
 
 void GeomListViewBuilder::addAttr(const QString& name, real_t value){
-	addAttr(name,QString::number(value),"Real");
+    addAttr(name,QString::number(value),"Real");
 }
 
 void GeomListViewBuilder::addAttrAngle(const QString& name, real_t value){
-	addAttr(name,QString::number(value*GEOM_DEG),"Degrees");
+    addAttr(name,QString::number(value*GEOM_DEG),"Degrees");
 }
 
 void GeomListViewBuilder::addAttr(const QString& name, uint_t value){
-	addAttr(name,QString::number(value),"UInt32");
+    addAttr(name,QString::number(value),"UInt32");
 }
 
 void GeomListViewBuilder::addAttr(const QString& name, uint16_t value){
-	addAttr(name,QString::number(value),"UInt16");
+    addAttr(name,QString::number(value),"UInt16");
 }
 
 void GeomListViewBuilder::addAttr(const QString& name, uchar_t value){
-	addAttr(name,QString::number(value),"UInt8");
+    addAttr(name,QString::number(value),"UInt8");
 }
 
 void GeomListViewBuilder::addAttr(const QString& name, const Vector2& value){
-	addAttr(name,toQString(value),"Vector2");
+    addAttr(name,toQString(value),"Vector2");
 }
 
 void GeomListViewBuilder::addAttr(const QString& name, const Vector3& value){
-	addAttr(name,toQString(value),"Vector3");
+    addAttr(name,toQString(value),"Vector3");
 }
 
 void GeomListViewBuilder::addAttr(const QString& name, const Vector4& value){
-	addAttr(name,toQString(value),"Vector4");
+    addAttr(name,toQString(value),"Vector4");
 }
 
 void GeomListViewBuilder::addAttr(const QString& name, const Color3& value){
-	addAttr(name,toQString(value),"Color3");
+    addAttr(name,toQString(value),"Color3");
 }
 
 void GeomListViewBuilder::addAttr(const QString& name, const Color4& value){
-	addAttr(name,toQString(value),"Color4");
+    addAttr(name,toQString(value),"Color4");
 }
 
 void GeomListViewBuilder::addAttr(const QString& name, const Index& value){
-	addAttr(name,toQString(value),"Index");
+    addAttr(name,toQString(value),"Index");
 }
 
 void GeomListViewBuilder::addAttr(const QString& name, const Index3& value){
-	addAttr(name,toQString(value),"Index3");
+    addAttr(name,toQString(value),"Index3");
 }
 
 void GeomListViewBuilder::addAttr(const QString& name, const Index4& value){
-	addAttr(name,toQString(value),"Index4");
+    addAttr(name,toQString(value),"Index4");
 }
 
 void GeomListViewBuilder::addAttr(const QString& name,
-								  const QString& value,
-								  const QString& type ){
+                                  const QString& value,
+                                  const QString& type ){
    QStringList labels;
    labels << name << value << type;
    QTreeWidgetItem * item = new QTreeWidgetItem(__currentNodeItem,labels);
@@ -265,32 +273,32 @@ void GeomListViewBuilder::addAttr(const QString& name,
 }
 
 void GeomListViewBuilder::addAttr(const QString& name, const Transform4Ptr& value){
-	pushItems();
-	__currentNodeItem = __currentAttrItem;
-	__currentAttrItem = NULL;
+    pushItems();
+    __currentNodeItem = __currentAttrItem;
+    __currentAttrItem = NULL;
     QString val = "ptr="+(value?QString("0x%1").arg(ptr_to_uint32(value),8,16,QChar('0')):"NULL");
     // QString val = "ptr="+(!value.isNull()?QString("0x%1").arg(value.toUint32()):"NULL");
-	addAttrPtr(name, val,"Transform4");
+    addAttrPtr(name, val,"Transform4");
 
-	if(value){
-		Vector3 scale, rotate, translate;
-		value->getTransformation( scale, rotate, translate );
-		addAttr("Scale",scale);
-		addAttrAngle("Azimuth",rotate.x());
-		addAttrAngle("Elevation",rotate.y());
-		addAttrAngle("Roll",rotate.z());
-		addAttr("Translation",translate);
-	}
-	popItems();
+    if(value){
+        Vector3 scale, rotate, translate;
+        value->getTransformation( scale, rotate, translate );
+        addAttr("Scale",scale);
+        addAttrAngle("Azimuth",rotate.x());
+        addAttrAngle("Elevation",rotate.y());
+        addAttrAngle("Roll",rotate.z());
+        addAttr("Translation",translate);
+    }
+    popItems();
 }
 
 void GeomListViewBuilder::addAttrPtr(const QString& name,
-								     const QString& value,
-									 const QString& type ){
+                                     const QString& value,
+                                     const QString& type ){
    QStringList labels; labels << name << value << type;
    QTreeWidgetItem * item = new QTreeWidgetItem(__currentNodeItem,
-											   // __currentAttrItem,
-											  labels);
+                                               // __currentAttrItem,
+                                              labels);
    item->setIcon(0,__pixattptr);
    __currentNodeItem->addChild(item);
    __currentAttrItem = item;
@@ -300,59 +308,59 @@ template <class T>
 void GeomListViewBuilder::addArray(const QString& name, const T& _array, const QString& type)
 {
   addAttrPtr(name,
-			 "ptr="+(_array?QString("0x%1").arg(ptr_to_uint32(_array),8,16,QChar('0')):"NULL"),
-//			 "ptr="+(_array?QString("0x%1").arg(ptr_to_uint32(_array):"NULL"),
-			 "Array<"+type+">["+QString::number(_array?_array->size():0)+']');
+             "ptr="+(_array?QString("0x%1").arg(ptr_to_uint32(_array),8,16,QChar('0')):"NULL"),
+//           "ptr="+(_array?QString("0x%1").arg(ptr_to_uint32(_array):"NULL"),
+             "Array<"+type+">["+QString::number(_array?_array->size():0)+']');
 
-  if(__fullmode && _array){ 
-	  pushItems();
-	__currentNodeItem = __currentAttrItem;
-	__currentAttrItem = NULL;
+  if(__fullmode && _array){
+      pushItems();
+    __currentNodeItem = __currentAttrItem;
+    __currentAttrItem = NULL;
 
-    for(uint_t it = 0; it < _array->size() ; it++) { 
-		addAttr('['+QString::number(it)+']',_array->getAt(it));
+    for(uint_t it = 0; it < _array->size() ; it++) {
+        addAttr('['+QString::number(it)+']',_array->getAt(it));
     }
-	popItems();
-  } 
+    popItems();
+  }
 }
 
 void GeomListViewBuilder::addArrayAngle(const QString& name, const RealArrayPtr& _array)
 {
   addAttrPtr(name,
-			 (_array?QString("ptr=0x%1").arg(ptr_to_uint32(_array),8,16,QChar('0')):"ptr=NULL"),
-//			 (_array?QString("ptr=0x%1").arg(ptr_to_uint32(_array)):"ptr=NULL"),
-			 "Array<Angle>["+QString::number(_array?_array->size():0)+']');
+             (_array?QString("ptr=0x%1").arg(ptr_to_uint32(_array),8,16,QChar('0')):"ptr=NULL"),
+//           (_array?QString("ptr=0x%1").arg(ptr_to_uint32(_array)):"ptr=NULL"),
+             "Array<Angle>["+QString::number(_array?_array->size():0)+']');
 
-  if(__fullmode && _array){ 
-	  pushItems();
-	__currentNodeItem = __currentAttrItem;
-	__currentAttrItem = NULL;
+  if(__fullmode && _array){
+      pushItems();
+    __currentNodeItem = __currentAttrItem;
+    __currentAttrItem = NULL;
 
-    for(uint_t it = 0; it < _array->size() ; it++) { 
-		addAttrAngle('['+QString::number(it)+']',_array->getAt(it));
+    for(uint_t it = 0; it < _array->size() ; it++) {
+        addAttrAngle('['+QString::number(it)+']',_array->getAt(it));
     }
-	popItems();
-  } 
+    popItems();
+  }
 }
 
 template <class T>
 void GeomListViewBuilder::addArrayNode(const QString& name, const T& _array, const QString& type)
 {
   addAttrPtr(name,
-			 "ptr="+(_array?QString("0x%1").arg(ptr_to_uint32(_array),8,16,QChar('0')):"NULL"),
-//			 "ptr="+(_array?QString("0x%1").arg(ptr_to_uint32(_array)):"NULL"),
-			 "Array<"+type+">["+QString::number(_array?_array->size():0)+']');
+             "ptr="+(_array?QString("0x%1").arg(ptr_to_uint32(_array),8,16,QChar('0')):"NULL"),
+//           "ptr="+(_array?QString("0x%1").arg(ptr_to_uint32(_array)):"NULL"),
+             "Array<"+type+">["+QString::number(_array?_array->size():0)+']');
 
-  if( _array){ 
-	pushItems();
-	__currentNodeItem = __currentAttrItem;
-	__currentAttrItem = NULL;
+  if( _array){
+    pushItems();
+    __currentNodeItem = __currentAttrItem;
+    __currentAttrItem = NULL;
 
-    for(uint_t it = 0; it < _array->size() ; it++) { 
-		_array->getAt(it)->apply(*this);
+    for(uint_t it = 0; it < _array->size() ; it++) {
+        _array->getAt(it)->apply(*this);
     }
-	popItems();
-  } 
+    popItems();
+  }
 }
 
 
@@ -360,30 +368,30 @@ template <class T>
 void GeomListViewBuilder::addMatrix(const QString& name, const T& _matrix, const QString& type)
 {
   addAttrPtr(name,
-			 "ptr="+(_matrix?QString("0x%1").arg(ptr_to_uint32(_matrix),8,16,QChar('0')):"NULL"),
-//			 "ptr="+(_matrix?QString("0x%1").arg(ptr_to_uint32(_matrix)):"NULL"),
-			 "Matrix<"+type+">["+QString::number(_matrix?_matrix->getColumnSize():0)+','+
-			 QString::number(_matrix?_matrix->getRowSize():0)+']');
+             "ptr="+(_matrix?QString("0x%1").arg(ptr_to_uint32(_matrix),8,16,QChar('0')):"NULL"),
+//           "ptr="+(_matrix?QString("0x%1").arg(ptr_to_uint32(_matrix)):"NULL"),
+             "Matrix<"+type+">["+QString::number(_matrix?_matrix->getColumnSize():0)+','+
+             QString::number(_matrix?_matrix->getRowSize():0)+']');
 
-  if(__fullmode && _matrix){ 
-	  pushItems();
-	__currentNodeItem = __currentAttrItem;
-	__currentAttrItem = NULL;
+  if(__fullmode && _matrix){
+      pushItems();
+    __currentNodeItem = __currentAttrItem;
+    __currentAttrItem = NULL;
 
-	for(uint_t it1 = 0; it1 < _matrix->getColumnSize() ; it1++) { 
-		for(uint_t it2 = 0; it2 < _matrix->getRowSize() ; it2++) { 
-			addAttr('['+QString::number(it1)+','+QString::number(it2)+']',_matrix->getAt(it1,it2));
-		}
-	}
-	popItems();
-  } 
+    for(uint_t it1 = 0; it1 < _matrix->getColumnSize() ; it1++) {
+        for(uint_t it2 = 0; it2 < _matrix->getRowSize() ; it2++) {
+            addAttr('['+QString::number(it1)+','+QString::number(it2)+']',_matrix->getAt(it1,it2));
+        }
+    }
+    popItems();
+  }
 }
 
 
 
 void GeomListViewBuilder::addAttrNode(const QString& name,
-								     const SceneObjectPtr& obj,
-									 const QString& type ){
+                                     const SceneObjectPtr& obj,
+                                     const QString& type ){
    QString value = "ptr="+(obj?QString("0x%1").arg(ptr_to_uint32(obj),8,16,QChar('0')):"NULL");
 //   QString value = "ptr="+(obj?QString("0x%1").arg(ptr_to_uint32(obj)):"NULL");
    pushItems();
@@ -391,7 +399,7 @@ void GeomListViewBuilder::addAttrNode(const QString& name,
    __currentNodeItem = __currentAttrItem;
    __currentAttrItem = NULL;
    if(obj){
-	obj->apply(*this);
+    obj->apply(*this);
    }
    popItems();
 }
@@ -622,10 +630,10 @@ bool GeomListViewBuilder::process( Extrusion * extrusion ){
   addAttr("CCW",extrusion->getCCW());
   addAttr("Solid",extrusion->getSolid());
   if(extrusion->getProfileTransformation()){
-	  const ProfileTransformationPtr& prof = extrusion->getProfileTransformation();
-	  addArray("Scale",prof->getScale(),"Vector2");
-	  addArrayAngle("Orientation",prof->getOrientation());
-	  addArray("KnotList",prof->getKnotList(),"Real");
+      const ProfileTransformationPtr& prof = extrusion->getProfileTransformation();
+      addArray("Scale",prof->getScale(),"Vector2");
+      addArrayAngle("Orientation",prof->getOrientation());
+      addArray("KnotList",prof->getKnotList(),"Real");
   }
   addAttr("InitialNormal",extrusion->getInitialNormal());
 
@@ -992,7 +1000,7 @@ bool GeomListViewBuilder::process( BezierCurve2D * bezierCurve  ) {
   addAttr("Stride",bezierCurve->getStride());
   addAttr("Width",bezierCurve->getWidth());
   addArray("CtrlPointList",bezierCurve->getCtrlPointList(),"Vector3");
- 
+
   endNode();
   return true;
 }
@@ -1072,7 +1080,7 @@ bool GeomListViewBuilder::process( Text * text  ) {
   addAttr("Position",text->getPosition());
   addAttr("ScreenCoordinates",text->getScreenCoordinates());
   addAttrNode("FontStyle",SceneObjectPtr(text->getFontStyle()),"Font");
-  
+
   endNode();
   return true;
 }

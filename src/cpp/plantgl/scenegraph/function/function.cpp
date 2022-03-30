@@ -3,31 +3,41 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon et al.
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 #include "function.h"
 #include <plantgl/math/util_math.h>
@@ -35,13 +45,12 @@
 #include <plantgl/scenegraph/geometry/polyline.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 uint_t QuantisedFunction::DEFAULT_SAMPLING(100);
 bool QuantisedFunction::DEFAULT_CLAMPED(true);
 
-QuantisedFunction::QuantisedFunction(const Curve2DPtr& curve, uint_t sampling, bool clamped) : 
+QuantisedFunction::QuantisedFunction(const Curve2DPtr& curve, uint_t sampling, bool clamped) :
     RefCountObject(), __values(0), __sampling(sampling),__firstx(0.0),__lastx(1.0),__clamped(clamped)
 { build(curve);}
 
@@ -54,7 +63,7 @@ QuantisedFunction::QuantisedFunction(const std::vector<real_t>& values, real_t f
     RefCountObject(), __values(values), __sampling(values.size()), __firstx(firstx),__lastx(lastx),__clamped(clamped)
 { }
 
-QuantisedFunction::~QuantisedFunction() 
+QuantisedFunction::~QuantisedFunction()
 { }
 
 real_t QuantisedFunction::getIndex(real_t x) const
@@ -71,10 +80,10 @@ real_t QuantisedFunction::getValue(real_t x) const
     else if (x > __lastx) x = __lastx;
   }
   if (!(x > __firstx - GEOM_EPSILON)){
-	  pglError("QuantisedFunction : x=%f < firstX=%f.",x,__firstx);
+      pglError("QuantisedFunction : x=%f < firstX=%f.",x,__firstx);
   }
   if (!(x < __lastx + GEOM_EPSILON)){
-	  pglError("QuantisedFunction : x=%f > lastX=%f.",x,__lastx);
+      pglError("QuantisedFunction : x=%f > lastX=%f.",x,__lastx);
   }
 
 
@@ -90,7 +99,7 @@ real_t QuantisedFunction::getValue(real_t x) const
         return w1*__values[floorindex] + diff*__values[floorindex+1];
 }
 
-real_t QuantisedFunction::findX(real_t y, bool& found, real_t startingX) const 
+real_t QuantisedFunction::findX(real_t y, bool& found, real_t startingX) const
 {
   assert(isValid());
   pglError("QuantisedFunction : x=%f not in [%f, %f].",startingX,__firstx,__lastx);
@@ -120,7 +129,7 @@ bool QuantisedFunction::build(const Curve2DPtr& curve, uint_t sampling)
     return true;
 }
 
-bool QuantisedFunction::isMonotonous(bool strictly) const 
+bool QuantisedFunction::isMonotonous(bool strictly) const
 {
   return isIncreasing(strictly) || isDecreasing(strictly);
 }
@@ -172,7 +181,7 @@ void QuantisedFunction::computeCache(const Curve2DPtr& curve)
 
 real_t QuantisedFunction::computeValue(const Curve2DPtr& curve, real_t x, real_t maxerror)
 {
-	if (!check(curve)) pglError("QuantisedFunction : not a valid curve to quantized.");
+    if (!check(curve)) pglError("QuantisedFunction : not a valid curve to quantized.");
     return _computeValue(curve,x,maxerror);
 }
 

@@ -1,33 +1,44 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Plant Graphic Library
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR Cirad/Inria/Inra Dap - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
+
 
 #include <plantgl/python/export_list.h>
 #include <plantgl/python/extract_list.h>
@@ -42,76 +53,76 @@ template<class T>
 RCPtr<T> extract_array2_from_list( boost::python::object l )
 {
   if (l.ptr() == Py_None) return RCPtr<T>();
-  boost::python::object row_iter_obj = boost::python::object( boost::python::handle<>( PyObject_GetIter( l.ptr() ) ) );
+  boost::python::object row_iter_obj = boost::python::object( boost::python::handle<PyObject>( PyObject_GetIter( l.ptr() ) ) );
   uint_t rows= boost::python::extract<uint_t>(l.attr("__len__")());
-  boost::python::object col_obj= row_iter_obj.attr( "next" )();
+  boost::python::object col_obj= boost::python::object(boost::python::handle<PyObject>(PyIter_Next(row_iter_obj.ptr())));
   uint_t cols= boost::python::extract<uint_t>(col_obj.attr("__len__")());
-  boost::python::object col_iter_obj= boost::python::object( boost::python::handle<>( PyObject_GetIter( col_obj.ptr() ) ) );
+  boost::python::object col_iter_obj= boost::python::object( boost::python::handle<PyObject>( PyObject_GetIter( col_obj.ptr() ) ) );
   RCPtr<T> array= RCPtr<T>(new T(rows,cols));
 
-  for(uint_t i=0; i < rows; ++i )	
-	 {	
-		if (i != 0) {
-			col_obj= row_iter_obj.attr( "next" )();	
-			col_iter_obj= boost::python::object( boost::python::handle<>( PyObject_GetIter( col_obj.ptr() ) ) );
-			uint_t c= boost::python::extract<uint_t>(col_obj.attr("__len__")());
-			if( c != cols ) throw PythonExc_IndexError("Array2 has invalid number of element in a row.");
-		}
-	    for(uint_t j=0; j < cols; ++j )
-	    {
-			boost::python::object obj;
-			obj = col_iter_obj.attr( "next" )();
+  for(uint_t i=0; i < rows; ++i )
+     {
+        if (i != 0) {
+            col_obj= boost::python::object(boost::python::handle<PyObject>(PyIter_Next(row_iter_obj.ptr())));
+            col_iter_obj= boost::python::object( boost::python::handle<PyObject>( PyObject_GetIter( col_obj.ptr() ) ) );
+            uint_t c= boost::python::extract<uint_t>(col_obj.attr("__len__")());
+            if( c != cols ) throw PythonExc_IndexError("Array2 has invalid number of element in a row.");
+        }
+        for(uint_t j=0; j < cols; ++j )
+        {
+            boost::python::object obj;
+            obj = boost::python::object(boost::python::handle<PyObject>(PyIter_Next(col_iter_obj.ptr())));
             array->setAt(i,j,boost::python::extract<typename T::element_type>(obj));
-	    }
-	}
+        }
+    }
   return array;
 }
 
 template<class T>
 struct array2_from_list {
-  array2_from_list() { 
-	boost::python::converter::registry::push_back( &convertible, &construct, boost::python::type_id<T>()); 
-  } 
-  static void* convertible(PyObject* py_obj){ 
-    if( py_obj !=  Py_None && !PySequence_Check( py_obj ) ) return 0; 
-    return py_obj; 
-  } 
-  static void construct( PyObject* py_obj, boost::python::converter::rvalue_from_python_stage1_data* data){ 
-   typedef boost::python::converter::rvalue_from_python_storage<T> vector_storage_t;  
-   vector_storage_t* the_storage = reinterpret_cast<vector_storage_t*>( data ); 
-   void* memory_chunk = the_storage->storage.bytes; 
+  array2_from_list() {
+    boost::python::converter::registry::push_back( &convertible, &construct, boost::python::type_id<T>());
+  }
+  static void* convertible(PyObject* py_obj){
+    if( py_obj !=  Py_None && !PySequence_Check( py_obj ) ) return 0;
+    return py_obj;
+  }
+  static void construct( PyObject* py_obj, boost::python::converter::rvalue_from_python_stage1_data* data){
+   typedef boost::python::converter::rvalue_from_python_storage<T> vector_storage_t;
+   vector_storage_t* the_storage = reinterpret_cast<vector_storage_t*>( data );
+   void* memory_chunk = the_storage->storage.bytes;
    if (py_obj != Py_None){
-    boost::python::list py_sequence( boost::python::handle<>( boost::python::borrowed( py_obj ) ) ); 
-    RCPtr<T> result = extract_array2_from_list<T>(py_sequence); 
+    boost::python::list py_sequence( boost::python::handle<PyObject>( boost::python::borrowed( py_obj ) ) );
+    RCPtr<T> result = extract_array2_from_list<T>(py_sequence);
     new (memory_chunk) T (*result);
    }
    else { new (memory_chunk) T(0); }
-   data->convertible = memory_chunk; 
-  } 
-}; 
+   data->convertible = memory_chunk;
+  }
+};
 
 template<class T>
-struct array2_ptr_from_list { 
-  array2_ptr_from_list() { 
-	boost::python::converter::registry::push_back( &convertible, &construct, boost::python::type_id< RCPtr<T> >()); 
-  } 
-  static void* convertible(PyObject* py_obj){ 
-    if( py_obj !=  Py_None && !PySequence_Check( py_obj ) ) return 0; 
-    return py_obj; 
-  } 
-  static void construct( PyObject* py_obj, boost::python::converter::rvalue_from_python_stage1_data* data){ 
-   typedef boost::python::converter::rvalue_from_python_storage<T> vector_storage_t;  
-   vector_storage_t* the_storage = reinterpret_cast<vector_storage_t*>( data ); 
-   void* memory_chunk = the_storage->storage.bytes; 
+struct array2_ptr_from_list {
+  array2_ptr_from_list() {
+    boost::python::converter::registry::push_back( &convertible, &construct, boost::python::type_id< RCPtr<T> >());
+  }
+  static void* convertible(PyObject* py_obj){
+    if( py_obj !=  Py_None && !PySequence_Check( py_obj ) ) return 0;
+    return py_obj;
+  }
+  static void construct( PyObject* py_obj, boost::python::converter::rvalue_from_python_stage1_data* data){
+   typedef boost::python::converter::rvalue_from_python_storage<T> vector_storage_t;
+   vector_storage_t* the_storage = reinterpret_cast<vector_storage_t*>( data );
+   void* memory_chunk = the_storage->storage.bytes;
    RCPtr<T> result;
    if (py_obj != Py_None){
-    boost::python::list py_sequence( boost::python::handle<>( boost::python::borrowed( py_obj ) ) ); 
-    result = extract_array2_from_list<T>(py_sequence); 
+    boost::python::list py_sequence( boost::python::handle<PyObject>( boost::python::borrowed( py_obj ) ) );
+    result = extract_array2_from_list<T>(py_sequence);
    }
-   new (memory_chunk) RCPtr<T> (result); 
-   data->convertible = memory_chunk; 
-  } 
-}; 
+   new (memory_chunk) RCPtr<T> (result);
+   data->convertible = memory_chunk;
+  }
+};
 
 
 
@@ -314,16 +325,16 @@ void array2_reshape( T * array, size_t nbrow, size_t nbcol)
 template<class T>
 bool save(T * a, std::string fname)
 {
-    leofstream stream(fname.c_str());
+    std::ofstream stream(fname.c_str(), std::ios::out | std::ios::binary);
     if(!stream)return false;
     else {
-	    std::string cwd = get_cwd();
-		chg_dir(get_dirname(fname));
-        PGL(BinaryPrinter) _bp(stream);
+        std::string cwd = get_cwd();
+        chg_dir(get_dirname(fname));
+        BinaryPrinter _bp(stream);
         _bp.header();
         _bp.writeUint32(1);
         _bp.dumpMatrix(*a);
-		chg_dir(cwd);
+        chg_dir(cwd);
         return true;
     }
 }
@@ -333,34 +344,34 @@ bool save(T * a, std::string fname)
 template<class T>
 RCPtr<T> load(std::string fname)
 {
-	    std::string cwd = get_cwd();
-		chg_dir(get_dirname(fname));
-        PGL(BinaryParser) _bp(*PglErrorStream::error);
+        std::string cwd = get_cwd();
+        chg_dir(get_dirname(fname));
+        BinaryParser _bp(*PglErrorStream::error);
         RCPtr<T> result;
-        if ( _bp.open(fname) && _bp.readHeader()) {            
+        if ( _bp.open(fname) && _bp.readHeader()) {
             uint32_t nbelem = _bp.readUint32();
             if (nbelem > 1) result = _bp.loadMatrix<T>();
         }
-		chg_dir(cwd);
+        chg_dir(cwd);
         return result;
 }
 
 
 template<class T>
-struct array2_pickle_suite : boost::python::pickle_suite 
-{ 
-    static boost::python::tuple getinitargs(T const& ar) 
-	{ 
-		boost::python::list args; 
+struct array2_pickle_suite : boost::python::pickle_suite
+{
+    static boost::python::tuple getinitargs(T const& ar)
+    {
+        boost::python::list args;
         for(uint_t i= 0; i < ar.getRowNb(); i++ ){
-		    boost::python::list l; 
-		    for(typename T::const_iterator it = ar.beginRow(i); it != ar.endRow(i); ++it) 
-			    l.append(*it); 
-			args.append(l); 
+            boost::python::list l;
+            for(typename T::const_iterator it = ar.beginRow(i); it != ar.endRow(i); ++it)
+                l.append(*it);
+            args.append(l);
         }
-		return boost::python::make_tuple(args);  
-	} 
-}; 
+        return boost::python::make_tuple(args);
+    }
+};
 
 #define EXPORT_ARRAY_IO_FUNC( ARRAY ) \
     .def( "save",         &save<ARRAY> ) \
@@ -376,35 +387,36 @@ class array2_func : public boost::python::def_visitor<array2_func<ARRAY> >
     template <class classT>
     void visit(classT& c) const
     {
-        c // .def( "__getitem__", &array2_getrow<ARRAY>  ) 
-         .def( "__setitem__", &array2_setitem<ARRAY> )				
-         .def( "__len__", &array2_rownb<ARRAY> )					
-         .def( "__contains__", &ARRAY::contains )					
-         .def( "empty", &ARRAY::empty )					
-         .def( "reshape", &array2_reshape<ARRAY>, boost::python::args("nbrow","nbcolumn") )					
-         .def( "clear", &ARRAY::clear )					
-         .def( "isUnique", &ARRAY::isUnique )					
-         .def( "getRow", &array2_getrow<ARRAY>  ) 
-         .def( "getRowNb", &array2_rownb<ARRAY>  ) 
-         .def( "getRowSize", &array2_rowsize<ARRAY>  ) 
-         .def( "getColumn", &array2_getcolumn<ARRAY>  ) 
-         .def( "getColumnNb", &array2_colnb<ARRAY>  ) 
-         .def( "getColumnSize", &array2_colsize<ARRAY>  ) 
-         .def( "getDiagonal", &array2_getdiag<ARRAY>  ) 
-         .def( "transpose", &array2_transpose<ARRAY>  ) 
-	     .def( "submatrix", &array2_submatrix<ARRAY>, boost::python::args("row","column","nbrow","nbcolumn") ) 
-         .def( "insertRow", &array2_insertRow<ARRAY>  ) 
-         .def( "insertColumn", &array2_insertColumn<ARRAY>  ) 
-         .def( "pushRow", &array2_pushRow<ARRAY>  ) 
+        c // .def( "__getitem__", &array2_getrow<ARRAY>  )
+         .def( "__setitem__", &array2_setitem<ARRAY> )
+         .def( "__len__", &array2_rownb<ARRAY> )
+         .def( "__contains__", &ARRAY::contains )
+         .def( "empty", &ARRAY::empty )
+         .def( "reshape", &array2_reshape<ARRAY>, boost::python::args("nbrow","nbcolumn") )
+         .def( "clear", &ARRAY::clear )
+         .def( "isUnique", &ARRAY::isUnique )
+         .def( "getRow", &array2_getrow<ARRAY>  )
+         .def( "getRowNb", &array2_rownb<ARRAY>  )
+         .def( "getRowSize", &array2_rowsize<ARRAY>  )
+         .def( "getColumn", &array2_getcolumn<ARRAY>  )
+         .def( "getColumnNb", &array2_colnb<ARRAY>  )
+         .def( "getColumnSize", &array2_colsize<ARRAY>  )
+         .def( "getDiagonal", &array2_getdiag<ARRAY>  )
+         .def( "transpose", &array2_transpose<ARRAY>  )
+         .def( "submatrix", &array2_submatrix<ARRAY>, boost::python::args("row","column","nbrow","nbcolumn") )
+         .def( "insertRow", &array2_insertRow<ARRAY>  )
+         .def( "insertColumn", &array2_insertColumn<ARRAY>  )
+         .def( "pushRow", &array2_pushRow<ARRAY>  )
          .def( "pushColumn", &array2_pushColumn<ARRAY>  )
          .def( "sizes", &array2_sizes<ARRAY>  )
          .def( "size", &array2_size<ARRAY>  )
          .def( "__iter__", &array2_getiter<ARRAY> )
          EXPORT_ARRAY_IO_FUNC(ARRAY)
- 	    .def_pickle(array2_pickle_suite<ARRAY>());
+        .def_pickle(array2_pickle_suite<ARRAY>());
 
         boost::python::class_<Array2Iter<ARRAY> >("Iterator",boost::python::no_init)
          .def("next",&Array2Iter<ARRAY>::next)
+         .def("__next__",&Array2Iter<ARRAY>::next)
          .def("__iter__",&Array2Iter<ARRAY>::nothing,boost::python::return_self<>())
         ;
     }
@@ -471,7 +483,7 @@ RCPtr<T> array2_inverse( T * array )
 template<class T>
 boost::python::object array2_svd( T * array )
 {
-	SVDMatrix<typename T::element_type> m;
+    SVDMatrix<typename T::element_type> m;
   int res = m.decompose(*array);
   if(!res) throw PythonExc_ValueError();
   return boost::python::make_tuple(make_list<std::vector<typename T::element_type> >(m.getSig())(),m.getU(),m.getV());
@@ -487,18 +499,18 @@ class numarray2_func : public boost::python::def_visitor<numarray2_func<ARRAY> >
     template <class classT>
     void visit(classT& c) const
     {
-        c.def( "__iadd__",&array2_iadd<ARRAY>  ) 
-         .def( "__iadd__",&array2_iadde<ARRAY>  ) 
-         .def( "__add__", &array2_add<ARRAY> )				
-         .def( "__add__", &array2_adde<ARRAY> )				
-         .def( "__isub__",&array2_isub<ARRAY>  ) 
-         .def( "__isub__",&array2_isube<ARRAY>  ) 
-         .def( "__sub__", &array2_sub<ARRAY> )				
-         .def( "__sub__", &array2_sube<ARRAY> )				
-         .def( "__imul__",&array2_imule<ARRAY>  ) 
-         .def( "__mul__", &array2_mul<ARRAY> )				
-         .def( "__mul__", &array2_mule<ARRAY> )				
-         .def( "inverse", &array2_inverse<ARRAY> )				
+        c.def( "__iadd__",&array2_iadd<ARRAY>  )
+         .def( "__iadd__",&array2_iadde<ARRAY>  )
+         .def( "__add__", &array2_add<ARRAY> )
+         .def( "__add__", &array2_adde<ARRAY> )
+         .def( "__isub__",&array2_isub<ARRAY>  )
+         .def( "__isub__",&array2_isube<ARRAY>  )
+         .def( "__sub__", &array2_sub<ARRAY> )
+         .def( "__sub__", &array2_sube<ARRAY> )
+         .def( "__imul__",&array2_imule<ARRAY>  )
+         .def( "__mul__", &array2_mul<ARRAY> )
+         .def( "__mul__", &array2_mule<ARRAY> )
+         .def( "inverse", &array2_inverse<ARRAY> )
          .def( "svd",     &array2_svd<ARRAY> )
         ;
     }
@@ -510,11 +522,11 @@ std::string PREFIX##_str(ARRAY * a) { return array2_str<ARRAY>(a, #ARRAY); }
 
 #define EXPORT_FUNCTION( PREFIX, ARRAY) \
   DEF_POINTEE( ARRAY ) \
-  EXPORT_FUNCTION2( PREFIX, ARRAY) 
+  EXPORT_FUNCTION2( PREFIX, ARRAY)
 
 
 #define EXPORT_CLASS_ARRAY( PREFIX, ARRAY )\
-    class_< ARRAY, ARRAY##Ptr, boost::noncopyable>( #ARRAY , init<size_t,size_t>( #ARRAY "(int rows, int cols)", args("rows","cols")) ) \
+    class_< ARRAY, ARRAY##Ptr, bases<RefCountObject>, boost::noncopyable>( #ARRAY , init<size_t,size_t>( #ARRAY "(int rows, int cols)", args("rows","cols")) ) \
     .def( "__init__", make_constructor( &extract_array2_from_list<ARRAY> ), #ARRAY "([[a,b,c],[d,e,f]])" ) \
 
 #define EXPORT_ARRAY_FUNC_COMMON( ARRAY, PREFIX ) \
@@ -526,21 +538,22 @@ std::string PREFIX##_str(ARRAY * a) { return array2_str<ARRAY>(a, #ARRAY); }
 #define EXPORT_ARRAYITERATOR( ARRAY ) \
     class_<Array2Iter<ARRAY> >(#ARRAY "Iterator",no_init) \
     .def("next",&Array2Iter<ARRAY>::next) \
+    .def("__next__",&Array2Iter<ARRAY>::next) \
     .def("__iter__",&Array2Iter<ARRAY>::nothing,return_self<>()); \
 
 #define EXPORT_ARRAY_BT( PREFIX, ARRAY ) \
     EXPORT_CLASS_ARRAY( PREFIX, ARRAY ) \
     .def( "__getitem__", &array2_bt_getitem<ARRAY> ) \
-	EXPORT_ARRAY_FUNC_COMMON( ARRAY, PREFIX ) \
+    EXPORT_ARRAY_FUNC_COMMON( ARRAY, PREFIX ) \
 
 
 #define EXPORT_ARRAY_CT( PREFIX, ARRAY ) \
     EXPORT_CLASS_ARRAY( PREFIX, ARRAY  ) \
     .def( "__getitem__", &array2_ct_getitem<ARRAY> , return_internal_reference<1>() ) \
-	EXPORT_ARRAY_FUNC_COMMON( ARRAY, PREFIX ) \
+    EXPORT_ARRAY_FUNC_COMMON( ARRAY, PREFIX ) \
 
 
 #define EXPORT_CONVERTER( ARRAY ) \
-	array2_from_list<ARRAY>();  \
-	array2_ptr_from_list<ARRAY>(); 
+    array2_from_list<ARRAY>();  \
+    array2_ptr_from_list<ARRAY>();
 

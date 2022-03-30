@@ -1,13 +1,11 @@
-# do not edit the following line. It will be updated automatically
-{% set version = "2.23.2" %}
+{% set data = load_setup_py_data() %}
 
 package:
   name: openalea.plantgl
-  version: {{ version }}
+  version: {{ data.get('version') }}
 
 source:
   path: ..
-
 
 about:
   home: https://github.com/openalea/plantgl
@@ -15,49 +13,85 @@ about:
   summary: An open-source graphic toolkit for the creation, simulation and analysis of 3D virtual plants.
 
 build:
-  preserve_egg_dir: True
   number: 1
+  preserve_egg_dir: True
 
 requirements:
+  host:
+      - python {{PY_VER}}
+      - setuptools
+      - numpy =1.20
+      - qt
+      - pyqt
+      - libpng
+      - zlib
+      - eigen
+      - cgal-cpp
+      - qhull
+      - ann
+      - boost                              # [unix]
+      - boost <1.74                        # [win] # v1.74 has a bug on windows.
+      - expat                              # [linux]
+      - libxcb                             # [linux]
+      - pthread-stubs                      # [linux]
+      - {{ cdt('mesa-libgl-devel') }}      # [linux]
+      - libglu                            # [linux]
+      - xorg-libxfixes                    # [linux]
+          
   build:
-   - python
-   - setuptools
-   - openalea.deploy
-   - scons
-   - openalea.sconsx
-   - qt <5
-   - boost
-   - bison [unix]
-   - flex 2.5.39 [unix]
-   - m2-bison [win]
-   - m2-flex  [win]
-   - cgal [unix]
-   - gmp [unix]
-   - eigen
-   - ann
-   - qhull
-   - patchelf [linux]
+      - python {{PY_VER}}                 
+      - binutils_impl_linux-64            # [linux]
+      - {{ compiler('cxx') }}
+      - bison =3.4                             # [unix]
+      - flex                              # [unix]
+      - m2-bison                          # [win]
+      - m2-flex                           # [win]
+      - menuinst                          # [win]
+      - cmake
+      - pkg-config                        # [linux]
+      - make                              # [unix]
+      - {{ cdt('mesa-libgl-devel') }}     # [linux]
+      - {{ cdt('mesa-dri-drivers') }}     # [linux]
+      - {{ cdt('libxext') }}              # [linux]
+      - {{ cdt('libselinux') }}           # [linux]
+      - {{ cdt('libxdamage') }}           # [linux]
+      - {{ cdt('libxfixes') }}            # [linux]
+      - {{ cdt('libxxf86vm') }}           # [linux]
+      - {{ cdt('libxcb') }}               # [linux]
+      - {{ cdt('expat-devel') }}          # [linux]
+
   run:
-   - python
-   - openalea.deploy
-   - openalea.core
-   - qt <5 #{{ pin_compatible('qt', exact=True) }}
-   - pyqt
-   - gmp [unix]
-   - cgal [unix]
-   - qhull
-   - ann
-   - boost #{{ pin_compatible('boost', exact=True) }}
-   - path.py
+      - python {{PY_VER}}
+      - setuptools
+      - ipython
+      - {{ pin_compatible('numpy',    max_pin='x.x') }}
+      - {{ pin_compatible('boost',    max_pin='x.x.x') }} 
+      - {{ pin_compatible('qhull',    max_pin='x.x') }} 
+      - {{ pin_compatible('eigen',    max_pin='x.x') }} 
+      - {{ pin_compatible('cgal-cpp', max_pin='x.x') }} 
+      - {{ pin_compatible('ann',      max_pin='x.x') }} 
+      - {{ pin_compatible('qt',       max_pin='x.x') }} 
+      - {{ pin_compatible('libpng',   max_pin='x.x') }} 
+      - {{ pin_compatible('zlib',     max_pin='x.x') }} 
+      - pyqt
+      - pyopengl
+      - pyqglviewer
+      - xorg-libxfixes                     # [linux]
+      - libglu                             # [linux]
 
 test:
-  requires:
-    - nose
-  imports:
-    - openalea.plantgl
-  source_files:
-    - test/test_*.py
-    - test/data
-    - share/
-  commands:
-   - nosetests -v -I test_viewer.py -I test_projpershape.py -I thread.py -I test_geomprinter.py -I test_coneofperception.py -I test_pointgrid.py # -I test_bbox.py -I test_codec.py
+   requires:
+     - pytest
+     - matplotlib-base
+     - pandas
+   imports:
+     - openalea.plantgl
+     - openalea.plantgl.all
+   source_files:
+     - test/**
+     - share/**
+   commands:
+     - cd test
+     - pytest -v --ignore=tofix --ignore=ui --ignore=oatest  # [unix]
+     - pytest -v --ignore=tofix --ignore=ui --ignore=oatest --ignore=test_shared_data.py  # [win]
+

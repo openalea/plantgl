@@ -1,35 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2009 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al.
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 #ifndef __regularpointgrid_h__
 #define __regularpointgrid_h__
@@ -52,7 +60,7 @@ class ContainerReferencePolicy {
 public:
     ContainerReferencePolicy(const PointContainer& data) : __points(data) {}
 protected:
-    const PointContainer& __points;
+     const PointContainer& __points;
 };
 
 template<class PointContainer>
@@ -60,16 +68,16 @@ class LocalContainerPolicy {
 public:
     LocalContainerPolicy(const PointContainer& data) : __points(data) {}
 protected:
-    const PointContainer __points;
+     PointContainer __points;
 };
 
 
 template<class VectorType>
-bool is_point_in_cone(const VectorType& point, 
+bool is_point_in_cone(const VectorType& point,
                       const VectorType& coneorigin, const VectorType& conedirection,
-                      real_t coneradius,  real_t coneangle = GEOM_HALF_PI) 
+                      real_t coneradius,  real_t coneangle = GEOM_HALF_PI)
 {
-    VectorType mconedirection = conedirection.normed(); 
+    VectorType mconedirection = conedirection.normed();
     real_t cosconeangle = cos(coneangle / 2);
     VectorType pointtoconeorigin = point-coneorigin;
     real_t dist = pointtoconeorigin.normalize();
@@ -82,11 +90,14 @@ bool is_point_in_cone(const VectorType& point,
 
 template <class PointContainer,
         class ContainerPolicy = LocalContainerPolicy<PointContainer>,
-        int NbDimension = TOOLS::Dimension<typename PointContainer::element_type>::Nb >
-class PointGrid : public ContainerPolicy, public TOOLS::SpatialArrayN<std::vector<size_t>,typename PointContainer::element_type,NbDimension>
+        int NbDimension =
+Dimension<typename PointContainer::element_type>::Nb >
+class PointGrid : public ContainerPolicy, public
+SpatialArrayN<std::vector<size_t>,typename PointContainer::element_type,NbDimension>
 {
 public:
-    typedef TOOLS::SpatialArrayN<std::vector<size_t>,typename PointContainer::element_type,NbDimension> SpatialBase;
+    typedef
+SpatialArrayN<std::vector<size_t>,typename PointContainer::element_type,NbDimension> SpatialBase;
     typedef typename SpatialBase::Base Base;
 
     typedef PointContainer ContainerType;
@@ -202,7 +213,7 @@ public:
 
     PointIndexList query_points_in_cone(const VectorType& coneorigin, const VectorType& conedirection,
                                        real_t coneradius,  real_t coneangle = GEOM_HALF_PI) const{
-        VectorType mdirection = conedirection.normed(); 
+        VectorType mdirection = conedirection.normed();
         VoxelIdList voxels = this->query_voxels_in_cone(coneorigin,mdirection,coneradius,coneangle);
         PointIndexList res;
         real_t cosconeangle = cos(coneangle / 2);
@@ -238,11 +249,11 @@ public:
         while (radius == maxdist && iter < maxiter){
             // iter throught box layers of voxels
             VoxelIdList voxelids = this->query_voxels_in_box(centervxl,Index(iter),Index(iter));
-            for(typename VoxelIdList::const_iterator itVoxel = voxelids.begin(); 
+            for(typename VoxelIdList::const_iterator itVoxel = voxelids.begin();
                 itVoxel != voxelids.end(); ++itVoxel){
                 // iter throught points
                 const PointIndexList& voxelpointlist = getVoxelPointIndices(*itVoxel);
-                for(typename PointIndexList::const_iterator itPointIndex = voxelpointlist.begin(); 
+                for(typename PointIndexList::const_iterator itPointIndex = voxelpointlist.begin();
                     itPointIndex != voxelpointlist.end(); ++itPointIndex){
                     // Find closest point in voxel
                     real_t dist = norm(points().getAt(*itPointIndex)-point);
@@ -260,12 +271,12 @@ public:
                 if (radius > enclosedballradius){
                     // other points not in the box but in the sphere can be closer
                     VoxelIdList voxels = this->query_voxels_around_point(point,radius,enclosedballradius);
-                    for(typename VoxelIdList::const_iterator itvoxel = voxels.begin(); 
+                    for(typename VoxelIdList::const_iterator itvoxel = voxels.begin();
                         itvoxel != voxels.end(); ++itvoxel){
                         const PointIndexList& voxelpointlist = Base::getAt(*itvoxel);
                         if(!voxelpointlist.empty()){
-                            for(typename PointIndexList::const_iterator itPointIndex = 
-                                voxelpointlist.begin(); itPointIndex != voxelpointlist.end(); 
+                            for(typename PointIndexList::const_iterator itPointIndex =
+                                voxelpointlist.begin(); itPointIndex != voxelpointlist.end();
                                 ++itPointIndex){
                                 // Find closest point in voxel
                                 real_t dist = norm(points().getAt(*itPointIndex)-point);
@@ -308,7 +319,7 @@ public:
         return true;
     }
 
-    inline void disable_points(const PointIndexList& pids) 
+    inline void disable_points(const PointIndexList& pids)
     { disable_points(pids.begin(), pids.end()); }
 
     template<class ConstIterator>
@@ -318,7 +329,7 @@ public:
             }
     }
 
-    inline void enable_points(const PointIndexList& pids) 
+    inline void enable_points(const PointIndexList& pids)
     {  enable_points(pids.begin(), pids.end()); }
 
     template<class ConstIterator>
@@ -329,44 +340,44 @@ public:
     }
 
     PointContainerPtr get_enabled_points() const {
-		PointContainerPtr result(new PointContainer());
+        PointContainerPtr result(new PointContainer());
         for(PointIndex itPointIndex = 0; itPointIndex < points().size(); ++itPointIndex){
-				if(is_point_enabled(itPointIndex)){
-					result->push_back(points()[itPointIndex]);
-				}
+                if(is_point_enabled(itPointIndex)){
+                    result->push_back(points()[itPointIndex]);
+                }
         }
-		return result; 
-	}
+        return result;
+    }
 
     PointContainerPtr get_disabled_points() const {
-		PointContainerPtr result(new PointContainer());
+        PointContainerPtr result(new PointContainer());
         for(PointIndex itPointIndex = 0; itPointIndex < points().size(); ++itPointIndex){
-				if(!is_point_enabled(itPointIndex)){
-					result->push_back(points()[itPointIndex]);
-				}
+                if(!is_point_enabled(itPointIndex)){
+                    result->push_back(points()[itPointIndex]);
+                }
         }
-		return result; 
-	}
+        return result;
+    }
 
     PointIndexList get_enabled_point_indices() const {
-		PointIndexList result;
+        PointIndexList result;
         for(PointIndex itPointIndex = 0; itPointIndex < points().size(); ++itPointIndex){
-				if(is_point_enabled(itPointIndex)){
-					result.push_back(itPointIndex);
-				}
+                if(is_point_enabled(itPointIndex)){
+                    result.push_back(itPointIndex);
+                }
         }
-		return result; 
-	}
+        return result;
+    }
 
     PointIndexList get_disabled_point_indices() const {
-		PointIndexList result;
+        PointIndexList result;
         for(PointIndex itPointIndex = 0; itPointIndex < points().size(); ++itPointIndex){
-				if(!is_point_enabled(itPointIndex)){
-					result.push_back(itPointIndex);
-				}
+                if(!is_point_enabled(itPointIndex)){
+                    result.push_back(itPointIndex);
+                }
         }
-		return result; 
-	}
+        return result;
+    }
 
 
     template<class Array>
@@ -375,7 +386,7 @@ public:
         for(typename Array::const_iterator itp = pointlist.begin(); itp != pointlist.end(); ++itp){
             if(is_point_enabled(*itp)) result.push_back(*itp);
         }
-        return result; 
+        return result;
     }
 
     template<class Array>
@@ -384,7 +395,7 @@ public:
         for(typename Array::const_iterator itp = pointlist.begin(); itp != pointlist.end(); ++itp){
             if(!is_point_enabled(*itp)) result.push_back(*itp);
         }
-        return result; 
+        return result;
     }
 
     size_t nbFilledVoxels() const {
@@ -392,6 +403,21 @@ public:
         for(typename Base::const_iterator it = Base::begin(); it != Base::end(); ++it)
             if(!it->empty())++count;
         return count;
+    }
+
+    PointIndex add_point(const VectorType& point) {
+        VectorType minpoint = SpatialBase::getLowerCorner();
+        VectorType maxpoint = SpatialBase::getUpperCorner();
+        for (size_t i = 0; i < NbDimension; ++i){
+            if ((point[i] < minpoint[i]) || (point[i] > maxpoint[i]))
+                return -1;
+        }
+
+        PointIndex pid = points().size();
+        ContainerPolicy::__points.push_back(point);
+        VoxelId vid = this->cellIdFromPoint(point);
+        this->getAt(vid).push_back(pid);
+        return pid;
     }
 
 protected:
@@ -408,21 +434,22 @@ protected:
         registerData(data->begin(),data->end(),startingindex);
     }
 
-	/*
-	inline void print_index(const std::string& before, 
-					   const Index& index,
-					   const std::string& after = "\n") const{
-		printf("%s (",before.c_str());
-		for (size_t i = 0; i < NbDimension-1; ++i){
-			printf("%i,",index[i]);
-		}
-		printf("%i) %s",index[NbDimension-1],after.c_str());
-	}*/
-		
+    /*
+    inline void print_index(const std::string& before,
+                       const Index& index,
+                       const std::string& after = "\n") const{
+        printf("%s (",before.c_str());
+        for (size_t i = 0; i < NbDimension-1; ++i){
+            printf("%i,",index[i]);
+        }
+        printf("%i) %s",index[NbDimension-1],after.c_str());
+    }*/
+
 
 };
 
-template <class PointContainer, int NbDimension = TOOLS::Dimension<typename PointContainer::element_type>::Nb >
+template <class PointContainer, int NbDimension =
+Dimension<typename PointContainer::element_type>::Nb >
 class PointRefGrid : public PointGrid<PointContainer,ContainerReferencePolicy<PointContainer>,  NbDimension>
 {
 public:

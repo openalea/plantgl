@@ -3,31 +3,41 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon et al.
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 
 
@@ -39,7 +49,6 @@
 #include <plantgl/scenegraph/container/geometryarray2.h>
 #include "polyline.h"
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -65,7 +74,7 @@ Group::Builder::~Builder( ) {
 SceneObjectPtr Group::Builder::build( ) const {
   if (isValid())
     return SceneObjectPtr(new Group(*GeometryList,
-				 Skeleton ? *Skeleton : DEFAULT_SKELETON));
+                 Skeleton ? *Skeleton : DEFAULT_SKELETON));
   return SceneObjectPtr();
 }
 
@@ -92,16 +101,16 @@ bool Group::Builder::isValid( ) const {
     const GeometryPtr& _geometry = (*GeometryList)->getAt(_i);
     if (! (_geometry) ) {
       pglErrorEx
-	  (PGLWARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Group","GeometryList",number(_i + 1).c_str(),"Must not be a null Geometry Object.");
+      (PGLWARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Group","GeometryList",number(_i + 1).c_str(),"Must not be a null Geometry Object.");
       return false;
-    };	
+    };
     if (!_geometry->isValid() ) {
       pglErrorEx
-	  (PGLWARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Group","GeometryList",number(_i + 1).c_str(),"Must be a valid Geometry Object.");
+      (PGLWARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Group","GeometryList",number(_i + 1).c_str(),"Must be a valid Geometry Object.");
       return false;
-    };	
+    };
  };
-  
+
   return true;
 }
 
@@ -123,6 +132,15 @@ Group::Group( const GeometryArrayPtr& geometryList,
   GEOM_ASSERT(isValid());
 }
 
+Group::Group( const iterator begin, const iterator end,
+         const PolylinePtr& skeleton ):
+  Geometry(),
+  __geometryList(new GeometryArray(begin, end)),
+  __skeleton(skeleton) {
+  GEOM_ASSERT(isValid());
+}
+
+
 Group::~Group( ) {
 }
 
@@ -134,39 +152,39 @@ Group::getGeometryListAt( uint_t i ) const {
   return __geometryList->getAt(i);
 }
 
-GeometryPtr& 
+GeometryPtr&
 Group::getGeometryListAt( uint_t i ) {
   GEOM_ASSERT(i < __geometryList->size());
   return __geometryList->getAt(i);
 }
 
-const GeometryArrayPtr& 
+const GeometryArrayPtr&
 Group::getGeometryList( ) const {
   return __geometryList;
 }
-GeometryArrayPtr& 
+GeometryArrayPtr&
 Group::getGeometryList( ) {
   return __geometryList;
 }
 
-uint_t 
+uint_t
 Group::getGeometryListSize( ) const {
   return __geometryList->size();
 }
 
 /* ----------------------------------------------------------------------- */
 
-const PolylinePtr& 
+const PolylinePtr&
 Group::getSkeleton( ) const {
   return __skeleton;
 }
 
-PolylinePtr& 
+PolylinePtr&
 Group::getSkeleton( ){
   return __skeleton;
 }
 
-bool 
+bool
 Group::isSkeletonToDefault( ) const {
   return __skeleton == DEFAULT_SKELETON;
 }
@@ -229,17 +247,17 @@ bool Group::isValid( ) const {
   for (uint_t _i = 0; _i < _size ; _i++) {
       const GeometryPtr& _geometry = __geometryList->getAt(_i);
       if (! (_geometry) && (_geometry->isValid())) {
-	  pglErrorEx
-	      (PGLWARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Group","GeometryList",number(_i + 1).c_str(),"Must be a valid Geometry Object.");
-	  return false;
-      };	
+      pglErrorEx
+          (PGLWARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Group","GeometryList",number(_i + 1).c_str(),"Must be a valid Geometry Object.");
+      return false;
+      };
   };
   return true;
 }
 
 /* ----------------------------------------------------------------------- */
 
-SceneObjectPtr Group::copy(DeepCopier& copier) const 
+SceneObjectPtr Group::copy(DeepCopier& copier) const
 {
   Group * ptr = new Group(*this);
   copier.copy_recursive_object_attribute(ptr->getGeometryList());

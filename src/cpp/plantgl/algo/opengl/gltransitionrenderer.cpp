@@ -3,33 +3,40 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon et al.
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
-
-
 
 
 #include "gltransitionrenderer.h"
@@ -43,11 +50,11 @@ PGL_USING_NAMESPACE
 
 #define GEOM_GLRENDERER_CHECK_APPEARANCE(app) \
   if ((__appearance) && \
-      (__appearance->getId() == app->getId())) return true;
+      (__appearance->getObjectId() == app->getObjectId())) return true;
 
 
 #define GEOM_GLRENDERER_UPDATE_APPEARANCE(app) \
-  __appearance = AppearancePtr(app); 
+  __appearance = AppearancePtr(app);
 
 
 #define GEOM_GLRENDERER_COLOR3(color) \
@@ -60,14 +67,14 @@ PGL_USING_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 
-GLTransitionRenderer::GLTransitionRenderer( Discretizer& discretizer, 
+GLTransitionRenderer::GLTransitionRenderer( Discretizer& discretizer,
 #ifndef PGL_CORE_WITHOUT_QT
-											QGLWidget * widget, 
+                                            QGLWidget * widget,
 #endif
-											uint_t step ) :
+                                            uint_t step ) :
   GLRenderer( discretizer
 #ifndef PGL_CORE_WITHOUT_QT
-    , widget 
+    , widget
 #endif
     ),
   __totalstep(step),
@@ -82,14 +89,14 @@ GLTransitionRenderer::~GLTransitionRenderer( ) {
 }
 
 
-void 
+void
 GLTransitionRenderer::clear( ) {
   GLRenderer::clear();
   __scene1 = ScenePtr();
   __scene2 = ScenePtr();
 }
 
-const uint_t 
+const uint_t
 GLTransitionRenderer::getTotalStep() const {
   return __totalstep;
 }
@@ -109,7 +116,7 @@ void GLTransitionRenderer::setScene(ScenePtr scene1, ScenePtr scene2){
 
 /* ----------------------------------------------------------------------- */
 
-bool 
+bool
 GLTransitionRenderer::endProcess(){
   return true;
 }
@@ -128,7 +135,7 @@ bool GLTransitionRenderer::process( Material * material ) {
   _rgba[2] = (GLfloat)_ambient.getBlueClamped();
   _rgba[3] = __transparency;
   glMaterialfv(GL_FRONT,GL_AMBIENT,_rgba);
-  
+
   const real_t& _diffuse = material->getDiffuse();
   _rgba[0] *= _diffuse;
   _rgba[1] *= _diffuse;
@@ -155,7 +162,7 @@ bool GLTransitionRenderer::process( Material * material ) {
   GEOM_GLRENDERER_UPDATE_APPEARANCE(material);
 
   GEOM_ASSERT(glGetError() == GL_NO_ERROR);
-  return true; 
+  return true;
 }
 
 
@@ -180,7 +187,7 @@ bool GLTransitionRenderer::process( MonoSpectral * monoSpectral ) {
   GEOM_GLRENDERER_UPDATE_APPEARANCE(monoSpectral);
 
   GEOM_ASSERT(glGetError() == GL_NO_ERROR);
-  return true; 
+  return true;
 }
 
 
@@ -207,7 +214,7 @@ bool GLTransitionRenderer::process( MultiSpectral * multiSpectral ) {
   GEOM_GLRENDERER_UPDATE_APPEARANCE(multiSpectral);
 
   GEOM_ASSERT(glGetError() == GL_NO_ERROR);
-  return true; 
+  return true;
 }
 
 
@@ -215,7 +222,7 @@ bool GLTransitionRenderer::process( MultiSpectral * multiSpectral ) {
 
 bool GLTransitionRenderer::rend(uint_t step){
   if(step >= __totalstep)step = __totalstep - 1;
-  
+
   if(__laststep != step){
     clearSceneList();
     __laststep = step;
@@ -223,40 +230,40 @@ bool GLTransitionRenderer::rend(uint_t step){
   if(beginSceneList()){
     if(step <= 0){
       if(__scene1){
-	__transparency = (GLfloat)1;
-	__scene1->apply(*this);
+    __transparency = (GLfloat)1;
+    __scene1->apply(*this);
       }
     }
     else if(step >= __totalstep){
       if(__scene2){
-	__transparency = (GLfloat)1;
-	__scene2->apply(*this);
-      }	
+    __transparency = (GLfloat)1;
+    __scene2->apply(*this);
+      }
     }
     else {
       if(step < __totalstep/2){
-	if(__scene1){
-	  __transparency = (GLfloat)((float)(__totalstep - step -1) 
-				     / (float)(__totalstep - 1));
-	  __scene1->apply(*this);
-	}
-	if(__scene2){
-	__transparency = (GLfloat)((float)step /(float) (__totalstep - 1));
-	__scene2->apply(*this);
-	}
+    if(__scene1){
+      __transparency = (GLfloat)((float)(__totalstep - step -1)
+                     / (float)(__totalstep - 1));
+      __scene1->apply(*this);
+    }
+    if(__scene2){
+    __transparency = (GLfloat)((float)step /(float) (__totalstep - 1));
+    __scene2->apply(*this);
+    }
       }
       else {
-	if(__scene2){
-	  __transparency = (GLfloat)((float)step /(float) (__totalstep - 1));
-	  __scene2->apply(*this);
-	}
-	if(__scene1){
-	  __transparency = (GLfloat)((float)(__totalstep - step -1) 
-				     / (float)(__totalstep - 1));
-	  __scene1->apply(*this);
-	}
+    if(__scene2){
+      __transparency = (GLfloat)((float)step /(float) (__totalstep - 1));
+      __scene2->apply(*this);
+    }
+    if(__scene1){
+      __transparency = (GLfloat)((float)(__totalstep - step -1)
+                     / (float)(__totalstep - 1));
+      __scene1->apply(*this);
+    }
       }
-    }    
+    }
     __appearance = AppearancePtr();
     endSceneList();
   }

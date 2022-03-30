@@ -1,35 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr)
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 #include <plantgl/algo/opengl/util_gl.h>
 #include <plantgl/algo/opengl/util_glu.h>
@@ -37,7 +45,7 @@
 #include <plantgl/gui/viewer/util_qstring.h>
 
 #include <QtGlobal>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/QTabWidget>
     #include <QtWidgets/qlineedit.h>
     #include <QtWidgets/qcombobox.h>
@@ -65,8 +73,8 @@
 
 #include "filemanager.h"
 #include "camera.h"
-#include "interface/cameraqt.h"
-#include "interface/cameraqt2.h"
+#include "interface/ui_cameraqt.h"
+#include "interface/ui_cameraqt2.h"
 #include "icons.h"
 #include "glframe.h"
 #include "event.h"
@@ -75,7 +83,6 @@
 #include <plantgl/math/util_math.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 ViewCameraMenu::ViewCameraMenu(ViewCameraGL * camera,QWidget * parent, const char * name):
@@ -146,8 +153,8 @@ ViewCameraMenu::setProjectionMode(bool b)
 void
 ViewCameraMenu::setCoordSys(int b)
 {
-	idGEOMcoord->setChecked(b ==1);
-	idGLcoord->setChecked(b ==0);
+    idGEOMcoord->setChecked(b ==1);
+    idGLcoord->setChecked(b ==0);
 }
 
 
@@ -174,7 +181,7 @@ ViewCameraGL::ViewCameraGL(QGLWidget * parent, const char * name) :
   __lockdim(false),
   __resizePolicy(eKeepObjectSize)
 {
-	init();
+    init();
 }
 
 ViewCameraGL::ViewCameraGL(QObject * parent, const char * name) :
@@ -197,7 +204,7 @@ ViewCameraGL::ViewCameraGL(QObject * parent, const char * name) :
   __lockdim(false),
   __resizePolicy(eKeepObjectSize)
 {
-	init();
+    init();
 }
 
 ViewCameraGL::~ViewCameraGL()
@@ -206,7 +213,7 @@ ViewCameraGL::~ViewCameraGL()
 
 void ViewCameraGL::init()
 {
-  
+
   ViewerSettings settings;
   settings.beginGroup("Camera");
   bool autofit = settings.value("AutoFit",!__lockdim).toBool();
@@ -279,32 +286,32 @@ void ViewCameraGL::nextView()
 {
   switch((int)__azimuth){
   case 90:
-	__elevation = 0;
-	__azimuth = 180;
-	break;
+    __elevation = 0;
+    __azimuth = 180;
+    break;
   case 180:
-	__elevation = 0;
-	__azimuth = -90;
-	break;
+    __elevation = 0;
+    __azimuth = -90;
+    break;
   case -90:
-	__elevation = 90;
-	__azimuth = 0;
-	break;
+    __elevation = 90;
+    __azimuth = 0;
+    break;
   case 0:
-	if(__elevation == 90)
-	  __elevation = -90;
-	else if(__elevation == -90){
-	  __elevation = 0;
-	}
-	else if(__elevation == 0){
-	  __azimuth = 90;
-	}
-	else __elevation = 0;
-	break;
+    if(__elevation == 90)
+      __elevation = -90;
+    else if(__elevation == -90){
+      __elevation = 0;
+    }
+    else if(__elevation == 0){
+      __azimuth = 90;
+    }
+    else __elevation = 0;
+    break;
   default:
-	__elevation = 0;
-	__azimuth = 0;
-	break;
+    __elevation = 0;
+    __azimuth = 0;
+    break;
   }
   emit azimuthChanged(__azimuth);
   emit elevationChanged(__elevation);
@@ -313,18 +320,18 @@ void ViewCameraGL::nextView()
 
 void ViewCameraGL::setAngles(double azimuth, double elevation)
 {
-	__azimuth = azimuth;
-	__elevation = elevation;
+    __azimuth = azimuth;
+    __elevation = elevation;
 }
 
 void
 ViewCameraGL::setAzimuth(double azimuth)
 {
   if(__azimuth != azimuth){
-	__azimuth = azimuth;
-//	emit azimuthChanged(QString::number(__azimuth));
-	emit azimuthChanged(__azimuth);
-	emit valueChanged();
+    __azimuth = azimuth;
+//  emit azimuthChanged(QString::number(__azimuth));
+    emit azimuthChanged(__azimuth);
+    emit valueChanged();
   }
 }
 
@@ -332,10 +339,10 @@ void
 ViewCameraGL::setElevation(double elevation)
 {
   if(__elevation != elevation){
-	__elevation = elevation;
-//	emit elevationChanged(QString::number(__elevation));
-	emit elevationChanged(__elevation);
-	emit valueChanged();
+    __elevation = elevation;
+//  emit elevationChanged(QString::number(__elevation));
+    emit elevationChanged(__elevation);
+    emit valueChanged();
   }
 }
 
@@ -343,9 +350,9 @@ void
 ViewCameraGL::setZoom(double zoom)
 {
   if(__translation.x() != zoom){
-	__translation.x() = zoom;
-	emit zoomChanged(__translation.x());
-	emit valueChanged();
+    __translation.x() = zoom;
+    emit zoomChanged(__translation.x());
+    emit valueChanged();
   }
 }
 
@@ -354,10 +361,10 @@ void
 ViewCameraGL::setAzimuth(int azimuth)
 {
   if(__azimuth != azimuth){
-	__azimuth = azimuth;
-//	emit azimuthChanged(QString::number(__azimuth));
-	emit azimuthChanged(__azimuth);
-	emit valueChanged();
+    __azimuth = azimuth;
+//  emit azimuthChanged(QString::number(__azimuth));
+    emit azimuthChanged(__azimuth);
+    emit valueChanged();
   }
 }
 
@@ -365,10 +372,10 @@ void
 ViewCameraGL::setElevation(int elevation)
 {
   if(__elevation != elevation){
-	__elevation = elevation;
-//	emit elevationChanged(QString::number(__elevation));
-	emit elevationChanged(__elevation);
-	emit valueChanged();
+    __elevation = elevation;
+//  emit elevationChanged(QString::number(__elevation));
+    emit elevationChanged(__elevation);
+    emit valueChanged();
   }
 }
 
@@ -376,9 +383,9 @@ void
 ViewCameraGL::setZoom(int zoom)
 {
   if(__translation.x() != zoom){
-	__translation.x() = zoom;
-	emit zoomChanged(__translation.x());
-	emit valueChanged();
+    __translation.x() = zoom;
+    emit zoomChanged(__translation.x());
+    emit valueChanged();
   }
 }
 
@@ -529,9 +536,9 @@ void
 ViewCameraGL::buildCamera(const BoundingBoxPtr& bbox, bool force)
 {
    if(!__lockdim || force || first){
-	initialize(bbox);
+    initialize(bbox);
     glInitProjectionMatrix();
-	first = false;
+    first = false;
    }
 }
 
@@ -545,7 +552,7 @@ ViewCameraGL::initialize(const BoundingBoxPtr& bbox)
   if(bbox){
     Vector3 size = bbox->getSize();
     radius = norm(Vector2(size.y(),size.z()));
-	center = bbox->getCenter();
+    center = bbox->getCenter();
   }
   initialize(radius,center);
 }
@@ -606,7 +613,7 @@ void ViewCameraGL::updateActualViewAngle()
       /// For 500x500 window, the view_angle is __default_view_angle (60)
       /// Else view_angle is recomputed (OpenGL programming guide, second edition v1.1 p131)
       /// to see a bigger part of the scene but at the same scale.
-      double rad = __radius * __height/500 ;    
+      double rad = __radius * __height/500 ;
       double dist = __eye.x();
       __view_angle = (2.0*atan2(rad,dist))*GEOM_DEG;
   }
@@ -640,7 +647,7 @@ ViewCameraGL::beginSelectGL(int x, int y)
 
 }
 
-void 
+void
 ViewCameraGL::beginSelectGL(const QRect& region)
 {
   GEOM_GL_ERROR;
@@ -693,7 +700,7 @@ ViewCameraGL::glPushModelViewMatrix()
   }
   else { /// GL Coordinates
                 glGeomTranslate(geom2gl(__translation));
-				glGeomRotate(Vector3::OX,__elevation);
+                glGeomRotate(Vector3::OX,__elevation);
                 glGeomRotate(Vector3::OY,-__azimuth);
   }
   GEOM_GL_ERROR;
@@ -717,7 +724,7 @@ ViewCameraGL::glPushProjectionMatrix()
   if(__projectionmode){
     geomPerspective(__view_angle,__width/__height,__near_plane-dep,__far_plane-dep);
 
- 
+
   }
   else {
     double l = (__eye.x()-__translation.x())*tan((__view_angle/2)*GEOM_RAD);
@@ -834,9 +841,9 @@ void ViewCameraGL::lockDim(int i)
 void ViewCameraGL::lockDim(bool b)
 {
   if(__lockdim != b){
-	__lockdim = b;
-	emit lockDimChanged(__lockdim);
-	if(!__lockdim)reDim();
+    __lockdim = b;
+    emit lockDimChanged(__lockdim);
+    if(!__lockdim)reDim();
   }
 }
 
@@ -886,14 +893,14 @@ Vector3 ViewCameraGL::getPosition(){
         return pos;
 }
 
-void 
+void
 ViewCameraGL::setPosition(const QString& position){
-	QStringList l = position.split(',');
+    QStringList l = position.split(',');
     setPosition(Vector3(l[0].toFloat(),l[1].toFloat(),l[2].toFloat()),
-	l[3].toFloat(),l[4].toFloat());
+    l[3].toFloat(),l[4].toFloat());
 }
 
-void 
+void
 ViewCameraGL::setPosition(const Vector3& position){
   Vector3::Spherical tr(position);
   __azimuth = tr.theta* GEOM_DEG;
@@ -907,7 +914,7 @@ ViewCameraGL::setPosition(const Vector3& position){
   emit valueChanged();
 }
 
-void 
+void
 ViewCameraGL::setPosition(const Vector3& position, double az, double el){
 
   Matrix3 m = Matrix3::eulerRotationZYX(Vector3(az* GEOM_RAD,el* GEOM_RAD,0));
@@ -924,7 +931,7 @@ ViewCameraGL::setPosition(const Vector3& position, double az, double el){
  emit valueChanged();
 }
 
-void 
+void
 ViewCameraGL::lookAt(const Vector3& pos,const Vector3& target){
 //  qWarning(QString("**>")+QSV(pos)+' - '+QSV(dir));
   Vector3 p = pos - target  ;
@@ -933,7 +940,7 @@ ViewCameraGL::lookAt(const Vector3& pos,const Vector3& target){
   setPosition(pos,tr.theta* GEOM_DEG,(tr.phi* GEOM_DEG)-90);
 }
 
-void 
+void
 ViewCameraGL::lookIn(const Vector3& position,const Vector3& dir){
   Vector3::Spherical tr(-dir);
   double az = tr.theta* GEOM_DEG;
@@ -946,7 +953,7 @@ ViewCameraGL::lookIn(const Vector3& position,const Vector3& dir){
   __translation = __eye - pos;
 }
 
-void 
+void
 ViewCameraGL::setResizePolicy(int value)
 {
     __resizePolicy = (eCameraResizePolicy)value;
@@ -954,32 +961,32 @@ ViewCameraGL::setResizePolicy(int value)
 
 }
 
-void 
+void
 ViewCameraGL::cameraEvent(ViewEvent * ev){
     int evtype = ev->type();
-	if (evtype == ViewEvent::eCameraSet) {
-		ViewCameraSetEvent * e = (ViewCameraSetEvent *)ev;
-		switch(e->arg5){
-			case 0:
-				setPosition(e->arg1);
-			break;
-			case 1:
-				setPosition(e->arg1,e->arg3,e->arg4);
-			break;
-			case 2:
-				lookAt(e->arg1,e->arg2);
-			break;
-			case 3:
-				lookAt(getPosition(),e->arg2);
-			break;
-		}
-	}
-	else if (evtype == ViewEvent::eCameraGet){
-		ViewCameraGetEvent * e = (ViewCameraGetEvent *)ev;
-		*e->result = getPosition();
-		*e->arg1 = getDirection();
-		*e->arg2 = getUp();
-	}
+    if (evtype == ViewEvent::eCameraSet) {
+        ViewCameraSetEvent * e = (ViewCameraSetEvent *)ev;
+        switch(e->arg5){
+            case 0:
+                setPosition(e->arg1);
+            break;
+            case 1:
+                setPosition(e->arg1,e->arg3,e->arg4);
+            break;
+            case 2:
+                lookAt(e->arg1,e->arg2);
+            break;
+            case 3:
+                lookAt(getPosition(),e->arg2);
+            break;
+        }
+    }
+    else if (evtype == ViewEvent::eCameraGet){
+        ViewCameraGetEvent * e = (ViewCameraGetEvent *)ev;
+        *e->result = getPosition();
+        *e->arg1 = getDirection();
+        *e->arg2 = getUp();
+    }
     else if (evtype == ViewEvent::eSetViewAngle){
         ViewSetViewAngleEvent * e = (ViewSetViewAngleEvent *)ev;
         setViewAngle(e->arg1);
@@ -1227,17 +1234,34 @@ ViewCameraGL::fillToolBar(QToolBar * toolBar)
 {
   QPixmap home(ViewerIcon::getPixmap(ViewerIcon::home));
   QPixmap persp(ViewerIcon::getPixmap(ViewerIcon::perspective));
+  QAction * bt = toolBar->addAction(home,tr("Home Position"),this, SLOT(home()));
+  bt->setWhatsThis(tr("<b>Home Position</b><br><br>"
+    "Set the view to the Initial Position.<br>"
+    "You can also use Menu <br><b>Tools > Camera > Home</b><br>"));
+
+  bt = toolBar->addAction(persp,tr("Perspective Camera"),
+                         this, SLOT(changeCameraMode()));
+  bt->setWhatsThis(tr("<b>Projection</b><br><br>"
+    "Camera can be <b>Perspective</b> or <b>Orthographic</b>.<br><br>"
+    "Setting this button <i>On</i> make the camera in Perspective mode, "
+    "<i>Off</i> in Orthographic mode<br><br>"
+    "You can also use Menu <br><b>Tools > Camera > Projection</b><br>"
+    ));
+   bt->setCheckable(true) ;
+   bt->setChecked(__projectionmode);
+   QObject::connect(this,SIGNAL(projectionChanged(bool)),bt,SLOT(setChecked(bool)));
+}
+
+void
+ViewCameraGL::fillToolBarAdditionnal(QToolBar * toolBar)
+{
   QPixmap eye(ViewerIcon::getPixmap(ViewerIcon::eye));
   QPixmap eyef(ViewerIcon::getPixmap(ViewerIcon::eyef));
   drawArrow(&eye,2);
   QBitmap mask=eye.mask();
   drawArrow(&mask,2);
-  QAction * bt = toolBar->addAction(home,tr("Home Position"),this, SLOT(home()));
-  bt->setWhatsThis(tr("<b>Home Position</b><br><br>"
-	"Set the view to the Initial Position.<br>"
-	"You can also use Menu <br><b>Tools > Camera > Home</b><br>"));
 
-  bt = toolBar->addAction(eye,tr("Camera Position"));
+  QAction * bt = toolBar->addAction(eye,tr("Camera Position"));
   QMenu * selctmenu = new QMenu(toolBar);
   selctmenu->addAction(tr("Front View (YZ)"),this,SLOT(YZView()));
   selctmenu->addAction(tr("Right View (XZ)"),this,SLOT(XZView()));
@@ -1247,21 +1271,9 @@ ViewCameraGL::fillToolBar(QToolBar * toolBar)
 
   bt = toolBar->addAction(eyef,tr("Fit to Window"),this, SLOT(reDim()));
   bt->setWhatsThis(tr("<b>Fit to Window</b><br><br>"
-	"Set the view to fit the scene.<br>"
-	"You can also use Menu <br><b>Tools > Camera > Fit to Window</b><br>"));
+    "Set the view to fit the scene.<br>"
+    "You can also use Menu <br><b>Tools > Camera > Fit to Window</b><br>"));
 
-  bt = toolBar->addAction(persp,tr("Perspective Camera"),
-                         this, SLOT(changeCameraMode()));
-  bt->setWhatsThis(tr("<b>Projection</b><br><br>"
-	"Camera can be <b>Perspective</b> or <b>Orthographic</b>.<br><br>"
-	"Setting this button <i>On</i> make the camera in Perspective mode, "
-	"<i>Off</i> in Orthographic mode<br><br>"
-	"You can also use Menu <br><b>Tools > Camera > Projection</b><br>"
-	));
-   bt->setCheckable(true) ;
-   bt->setChecked(__projectionmode);
-   QObject::connect(this,SIGNAL(projectionChanged(bool)),bt,SLOT(setChecked(bool)));
-   toolBar->addSeparator();
 }
 
 void ViewCameraGL::save() const
@@ -1286,9 +1298,9 @@ ViewCameraGL::read()
 void ViewCameraGL::save(const QString& filename) const
 {
     QFile file(filename);
-	if(file.open( QIODevice::WriteOnly )) {
+    if(file.open( QIODevice::WriteOnly )) {
         file.flush();
-		QTextStream stream ( &file );
+        QTextStream stream ( &file );
         stream << __azimuth << " " << __elevation;
         stream << " " << __stepMove;
         OV(stream,__center);
@@ -1296,10 +1308,10 @@ void ViewCameraGL::save(const QString& filename) const
         OV(stream,__translation);
 
         stream << " " << __radius << " " << __far_plane << " " << __near_plane;
-		stream << " " << __default_view_angle << " " <<  __view_angle;
-		stream << " " << __projectionmode << " " << __geomsys;
+        stream << " " << __default_view_angle << " " <<  __view_angle;
+        stream << " " << __projectionmode << " " << __geomsys;
      }
-	else QMessageBox::warning(__frame,tr("File Access"),tr("Cannot Open File")+" \""+filename+"\".",tr("Abort"));
+    else QMessageBox::warning(__frame,tr("File Access"),tr("Cannot Open File")+" \""+filename+"\".",tr("Abort"));
 }
 
 
@@ -1340,6 +1352,6 @@ void ViewCameraGL::read(const QString& filename)
     emit coordSysChanged(__geomsys);
     emit valueChanged();
         }
-	else QMessageBox::warning(__frame,tr("File Access"),tr("Cannot Open File")+" \""+filename+"\".",tr("Abort"));
+    else QMessageBox::warning(__frame,tr("File Access"),tr("Cannot Open File")+" \""+filename+"\".",tr("Abort"));
 
 }

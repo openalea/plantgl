@@ -3,7 +3,7 @@
 
 .. _PlantGL_user:
 
-Plantgl User Guide
+PlantGL User Guide
 ##################
 
 :Version: |version|
@@ -11,20 +11,22 @@ Plantgl User Guide
 :Date: |today|
 
 This reference manual details functions, modules, and objects included in 
-VPlants.Plantgl, describing what they are and what they do. For learning
-how to use VPlants.Plantgl see :ref:`PlantGL_reference`.
+OpenAlea.Plantgl, describing what they are and what they do. For learning
+how to use OpenAlea.Plantgl see :ref:`PlantGL_reference`.
 
 
 .. toctree::
     :maxdepth: 1
     :numbered:
 
+    contents.rst
     quickstart.rst
     tutorial.rst
+    turtle.rst
 
 
 .. warning::
 
    This "Reference Guide" is still very much work in progress; the material
-   is not organized, and many aspects of VPlants.Plantgl are not 
+   is not organized, and many aspects of OpenAlea.PlantGL are not 
    covered.
