@@ -38,7 +38,7 @@ def getPGLVersionString():
     return HexVersion.from_cpp_define('PGL_VERSION',p).to_string()
 
 project = 'PlantGL'
-copyright = '2007-2019, Cirad, Inria'
+copyright = '2007-2022, Cirad, Inria'
 version = getPGLVersionString()
 release = version
 author = authors
