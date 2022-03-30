@@ -250,10 +250,10 @@ def scan_infos(scene,  scan_positions, debug = True):
     return scan_positions, scan_horizontal_angles, scan_vertical_angles, znears, zfars, centers, bbx
 
 def from_bbox(bbox, azimut = 0, elevation = 0, zoom = 1, imagesize = (400,400), vertical_view_angle = 30 ):
-    direction = Vector3.
-    center = bbx.getCenter()
-    corners = bbx.corners()
-    lateral = Vector3(bbx.getSize().x,bbx.getSize().y,0)
+    #direction = Vector3.
+    center = bbox.getCenter()
+    corners = bbox.corners()
+    lateral = Vector3(bbox.getSize().x,bbox.getSize().y,0)
     laterals = [Vector3(lateral.x,lateral.y,0),Vector3(-lateral.x,lateral.y,0),
                 Vector3(-lateral.x,-lateral.y,0),Vector3(lateral.x,-lateral.y,0)]
 
@@ -269,7 +269,7 @@ def test():
 
 
 if __name__ == '__main__':
-    renderer = ZBufferRenderer(100, 100)
+    renderer = PyZBufferRenderer(100, 100)
     print(renderer.setPerspective(30, 1, 0.1, 100))
     print(renderer.lookAt(Vector3(5,0,1), (0,0,0),(0,0,1)))
     print(renderer.projectionMatrix)
