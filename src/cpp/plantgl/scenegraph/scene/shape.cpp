@@ -3,31 +3,41 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon et al.
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 #include "shape.h"
 #include <plantgl/scenegraph/core/pgl_messages.h>
@@ -36,7 +46,6 @@
 #include <plantgl/tool/util_types.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 using namespace std;
 
@@ -96,11 +105,11 @@ void Shape::Builder::destroy() {
 bool Shape::Builder::isValid( ) const{
   if (! (Geometry)){
     pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Shape","Geometry","Must be not null.");
-	return false;
+    return false;
   }
   if (! (*Geometry)){
     pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Shape","Geometry","Must be not null.");
-	return false;
+    return false;
   }
   return true;
 }
@@ -111,8 +120,9 @@ Shape::Shape( ) :
     Shape3D(),
     appearance(),
     geometry(),
-    id(getSceneObjectId()),
+    id(),
     parentId(NOID){
+        setDefaultId();
 }
 
 Shape::Shape( const GeometryPtr& _geom,
@@ -124,12 +134,12 @@ Shape::Shape( const GeometryPtr& _geom,
     geometry(_geom),
     id(_id),
     parentId(_parentId){
-    if(id == NOID)id = getSceneObjectId();
+    if(id == NOID)setDefaultId();
     setComputedName();
 }
 
 Shape::Shape( const string& name,
-					  const GeometryPtr& _geom,
+                      const GeometryPtr& _geom,
                       const AppearancePtr& _app,
                       uint_t _id,
                       uint_t _parentId) :
@@ -138,7 +148,7 @@ Shape::Shape( const string& name,
     geometry(_geom),
     id(_id),
     parentId(_parentId) {
-    if(id == NOID)id = getSceneObjectId();
+    if(id == NOID)setDefaultId();
     setName(name);
 }
 
@@ -151,12 +161,12 @@ Shape::Shape( const GeometryPtr& _geom,
     geometry(_geom),
     id(_id),
     parentId(_parentId){
-    if(id == NOID)id = getSceneObjectId();
+    if(id == NOID)setDefaultId();
     setComputedName();
 }
 
 Shape::Shape( const string& name,
-					  const GeometryPtr& _geom,
+                      const GeometryPtr& _geom,
                       const ImageTexturePtr& _app,
                       uint_t _id,
                       uint_t _parentId) :
@@ -165,7 +175,7 @@ Shape::Shape( const string& name,
     geometry(_geom),
     id(_id),
     parentId(_parentId) {
-    if(id == NOID)id = getSceneObjectId();
+    if(id == NOID)setDefaultId();
     setName(name);
 }
 Shape::~Shape() {
@@ -173,6 +183,12 @@ Shape::~Shape() {
     cerr <<"Shape " <<  __name << " destroyed" << endl;
 #endif
 }
+
+void Shape::setDefaultId()
+{
+    id = (uintptr_t)getObjectId();    
+}
+
 
 /* ----------------------------------------------------------------------- */
 
@@ -182,9 +198,9 @@ void Shape::setComputedName(){
         if (! geometry->isNamed()) {
           string _name;
           if(id != NOID)
-            _name = "GEOMID_"+number(id)+"_"+number(geometry->getId());
+            _name = "GEOMID_"+number(id)+"_"+number(geometry->getObjectId());
           else
-            _name = "GEOM_"+number(geometry->getId());
+            _name = "GEOM_"+number(geometry->getObjectId());
           geometry->setName(_name);
         };
 
@@ -193,18 +209,18 @@ void Shape::setComputedName(){
       if (! appearance->isNamed()) {
         string _name;
         if(id != NOID)
-          _name = "APPID_"+number(id)+"_"+number(appearance->getId());
+          _name = "APPID_"+number(id)+"_"+number(appearance->getObjectId());
         else
-          _name = "APP_"+number(appearance->getId());
+          _name = "APP_"+number(appearance->getObjectId());
         appearance->setName(_name);
       }
 
     // Sets the label to the self
     if ( __name.empty() ) {
       if(id != NOID)
-        __name = "SHAPEID_"+number(id)+"_"+number(SceneObject::getId());
+        __name = "SHAPEID_"+number(id)+"_"+number(getObjectId());
       else
-        __name = "SHAPE_"+number(SceneObject::getId());
+        __name = "SHAPE_"+number(getObjectId());
     };
 }
 
@@ -257,7 +273,7 @@ AppearancePtr& Shape::getAppearance(){
   return appearance;
 }
 
-size_t Shape::getId() const {
+uint_t Shape::getId() const {
   return id;
 }
 
@@ -265,25 +281,27 @@ uint_t& Shape::getId(){
   return id;
 }
 
+#ifndef PGL_NO_DEPRECATED
 size_t Shape::getSceneObjectId() const
 {
     return (size_t)this;
 }
+#endif
 
 /* ----------------------------------------------------------------------- */
 
 bool Shape::isValid( ) const {
   if (! (geometry)){
     pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Shape","Geometry","Must be not null.");
-	return false;
+    return false;
   }
   if (! (geometry->isValid())) {
     pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Shape","Geometry","Must be valid.");
-	return false;
+    return false;
   }
   if ((appearance) && (! appearance->isValid())) {
     pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Shape","Appearance","Must be valid.");
-	return false;
+    return false;
   }
   return true;
 }

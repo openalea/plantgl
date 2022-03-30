@@ -1,35 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al.
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 /* ----------------------------------------------------------------------- */
 
@@ -58,16 +66,15 @@
 #include <list>
 #include <fstream>
 
-#ifdef WITH_BISONFLEX
+#ifdef PGL_WITH_BISONFLEX
 #include "scne_parser.h"    /// fonction pour parser les sceneobjects.
 #endif
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
-#ifdef WITH_BISONFLEX
+#ifdef PGL_WITH_BISONFLEX
 /// structure de donnees pour parser les sceneobjects.
-#ifdef BISON_HPP
+#ifdef PGL_BISON_HPP
 #include "scne_parser.hpp"
 #else
 #include "scne_parser.cpp.h"
@@ -89,11 +96,10 @@ using namespace std;
 /* ----------------------------------------------------------------------- */
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-#ifdef WITH_BISONFLEX
+#ifdef PGL_WITH_BISONFLEX
 
 bool PGL(geom_read)(std::istream& stream, SceneObjectSymbolTable& table, ScenePtr& scene, const std::string& fname)
 {
@@ -104,106 +110,106 @@ bool PGL(geom_read)(std::istream& stream, SceneObjectSymbolTable& table, ScenePt
     bool b =_parser.parse(&_sceneLexer,*PglErrorStream::error,scene.get());
     t.stop();
     if(isParserVerbose())printf("Parse file %s in %.2f sec.\n", fname.c_str(),t.elapsedTime());
-	return b;
+    return b;
 }
 
 #endif
 
 /* ----------------------------------------------------------------------- */
 
-GeomCodec::GeomCodec() : 
-	SceneCodec("GEOM", ReadWrite ) 
-	{}
+GeomCodec::GeomCodec() :
+    SceneCodec("GEOM", ReadWrite )
+    {}
 
 SceneFormatList GeomCodec::formats() const
 {
-	SceneFormat _format;
-	_format.name = "GEOM";
-#ifdef WITH_BISONFLEX
-	_format.suffixes.push_back("geom");
+    SceneFormat _format;
+    _format.name = "GEOM";
+#ifdef PGL_WITH_BISONFLEX
+    _format.suffixes.push_back("geom");
 #endif
-	_format.suffixes.push_back("bgeom");
-	_format.comment = "The Standart PlantGL format.";
-	SceneFormatList _formats;
-	_formats.push_back(_format);
-	return _formats;
+    _format.suffixes.push_back("bgeom");
+    _format.comment = "The Standart PlantGL format.";
+    SceneFormatList _formats;
+    _formats.push_back(_format);
+    return _formats;
 }
 
 ScenePtr GeomCodec::read(const std::string& fname)
 {
   if(BinaryParser::isAGeomBinaryFile(fname)){
-	  BinaryParser _parser(*PglErrorStream::error);
-	  _parser.parse(fname);
-	  return _parser.getScene();
+      BinaryParser _parser(*PglErrorStream::error);
+      _parser.parse(fname);
+      return _parser.getScene();
   }
 /*  else  if(get_suffix(fname)=="smb"){
     GeometryPtr a(new AmapSymbol(fname));
-	ScenePtr sc = new Scene();
-	sc->add(Shape(a,Material::DEFAULT_MATERIAL));
+    ScenePtr sc = new Scene();
+    sc->add(Shape(a,Material::DEFAULT_MATERIAL));
     return sc;
   } */
-#ifdef WITH_BISONFLEX
+#ifdef PGL_WITH_BISONFLEX
   else {
     ifstream _file(fname.c_str());
-	SceneObjectSymbolTable table;
-	ScenePtr scene(new Scene());
-	bool b = geom_read(_file,table,scene,fname);
+    SceneObjectSymbolTable table;
+    ScenePtr scene(new Scene());
+    bool b = geom_read(_file,table,scene,fname);
     if(!b) return ScenePtr();
-	else {
-		if(scene && !scene->empty()) return scene;
-		else return ScenePtr(new Scene(table));
-	}
+    else {
+        if(scene && !scene->empty()) return scene;
+        else return ScenePtr(new Scene(table));
+    }
   }
-#endif  
+#endif
 }
 
-bool GeomCodec::write(const std::string& fname,const ScenePtr&	scene)
+bool GeomCodec::write(const std::string& fname,const ScenePtr&  scene)
 {
-	std::string ext = get_suffix(fname);
-	ext = toUpper(ext);
-	if(ext == "BGEOM"){
-		BinaryPrinter::print(scene,fname,"File Generated with PlantGL.");
+    std::string ext = get_suffix(fname);
+    ext = toUpper(ext);
+    if(ext == "BGEOM"){
+        BinaryPrinter::print(scene,fname,"File Generated with PlantGL.");
         return true;
-	}
-	else{
-		std::ofstream stream(fname.c_str());
-		if(stream){
-			Printer p(stream,stream,stream);
-			scene->apply(p);
+    }
+    else{
+        std::ofstream stream(fname.c_str());
+        if(stream){
+            Printer p(stream,stream,stream);
+            scene->apply(p);
             return true;
-		}
+        }
         else return false;
-	}
+    }
 }
 
 /* ----------------------------------------------------------------------- */
 
-BGeomCodec::BGeomCodec() : 
-	SceneCodec("BGEOM", ReadWrite ) 
-	{}
+BGeomCodec::BGeomCodec() :
+    SceneCodec("BGEOM", ReadWrite )
+    {}
 
 SceneFormatList BGeomCodec::formats() const
 {
-	SceneFormat _format;
-	_format.name = "BGEOM";
-	_format.suffixes.push_back("bgeom");
-	_format.comment = "The Standart PlantGL binary format.";
-	SceneFormatList _formats;
-	_formats.push_back(_format);
-	return _formats;
+    SceneFormat _format;
+    _format.name = "BGEOM";
+    _format.suffixes.push_back("bgeom");
+    _format.comment = "The Standart PlantGL binary format.";
+    SceneFormatList _formats;
+    _formats.push_back(_format);
+    return _formats;
 }
 
 ScenePtr BGeomCodec::read(const std::string& fname)
 {
   if(BinaryParser::isAGeomBinaryFile(fname)){
-	  BinaryParser _parser(*PglErrorStream::error);
-	  _parser.parse(fname);
-	  return _parser.getScene();
+      BinaryParser _parser(*PglErrorStream::error);
+      _parser.parse(fname);
+      return _parser.getScene();
   }
   else return ScenePtr();
 }
 
-bool BGeomCodec::write(const std::string& fname,const ScenePtr&	scene)
+bool BGeomCodec::write(const std::string& fname,const ScenePtr& scene)
 {
     BinaryPrinter::print(scene,fname,"File Generated with PlantGL.");
     return true;

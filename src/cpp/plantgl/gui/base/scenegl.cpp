@@ -1,35 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr)
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
- * 
- *                      GNU General Public Licence
- *           
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
+ *
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
+
 
 #include "scenegl.h"
 #include "camera.h"
@@ -38,7 +46,7 @@
 #include "event.h"
 #include <QtCore/qfile.h>
 
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/qfiledialog.h>
     #include <QtWidgets/qmessagebox.h>
 #else
@@ -49,10 +57,10 @@
 
 /* ----------------------------------------------------------------------- */
 
-ViewRendererGL::ViewRendererGL(QGLWidget * parent, 
-			       const char * name):
+ViewRendererGL::ViewRendererGL(QGLWidget * parent,
+                   const char * name):
   ViewObjectGL(parent,name),
-	__readTime(QDateTime::currentDateTime()) 
+    __readTime(QDateTime::currentDateTime())
 {
 }
 
@@ -62,32 +70,32 @@ ViewRendererGL::~ViewRendererGL()
 
 bool ViewRendererGL::isEmpty() const { return true; }
 
-void 
+void
 ViewRendererGL::connectTo(QGLWidget *g)
 {
   ViewObjectGL::connectTo(g);
   __frame = g;
 }
 
-void 
+void
 ViewRendererGL::connectTo(ViewStatusBar * s)
 {
   ViewObjectGL::connectTo(s);
 }
 
-void 
+void
 ViewRendererGL::connectTo(ViewErrorDialog *e)
 {
   ViewObjectGL::connectTo(e);
 }
 
 
-void 
+void
 ViewRendererGL::changeModeEvent(ViewGLFrame::Mode m)
 {
 }
 
-void 
+void
 ViewRendererGL::setRotationMode()
 {
   emit changeMode(ViewGLFrame::Rotation);
@@ -114,16 +122,16 @@ void
 ViewRendererGL::selectionEvent(const std::vector<uint_t>& i)
 {
   for(std::vector<uint_t>::const_iterator _it = i.begin();
-	  _it != i.end(); _it++)
-	  selectionEvent(*_it);
+      _it != i.end(); _it++)
+      selectionEvent(*_it);
 }
 
 void
 ViewRendererGL::selectionIdEvent(const std::vector<uint_t>& i)
 {
   for(std::vector<uint_t>::const_iterator _it = i.begin();
-	  _it != i.end(); _it++)
-	  selectionEvent(*_it);
+      _it != i.end(); _it++)
+      selectionEvent(*_it);
 }
 
 void
@@ -132,26 +140,26 @@ ViewRendererGL::selectionEvent(QTreeWidgetItem *)
   qDebug("selectionEvent(QTreeWidgetItem *) not implemented in current Renderer");
 }
 
-std::vector<uint_t> 
+std::vector<uint_t>
 ViewRendererGL::getSelectionIds() const
 {
   qDebug("std::vector<uint_t> getSelectionIds() const not implemented in current Renderer");
   return std::vector<uint_t>(0);
 }
 
-uint_t 
+uint_t
 ViewRendererGL::translateId(uint_t id) const
 {
-	return id;
+    return id;
 }
 
 bool
 ViewRendererGL::endSelect()
 {
-	return false;
+    return false;
 }
 
-void 
+void
 ViewRendererGL::endEvent()
 {
 }
@@ -167,7 +175,7 @@ ViewRendererGL::addOpenEntries(QMenu * menu)
   return false;
 }
 
-bool 
+bool
 ViewRendererGL::addImportEntries(QMenu * menu)
 {
   return false;
@@ -184,26 +192,26 @@ ViewRendererGL::addExportEntries(QMenu * menu)
 {
   return false;
 }
-  
+
 bool
 ViewRendererGL::addProperties(QTabWidget * tab)
 {
   return false;
 }
 
-bool 
+bool
 ViewRendererGL::addOtherMenu(QMenuBar * menu)
 {
   return false;
 }
 
-bool 
+bool
 ViewRendererGL::addEditEntries(QMenu * menu)
 {
-	return false;
+    return false;
 }
 
-bool 
+bool
 ViewRendererGL::addOtherToolBar(QMainWindow * menu)
 {
   return false;
@@ -214,13 +222,13 @@ bool ViewRendererGL::browse(QTreeWidget *,bool)
   return false;
 }
 
-bool 
+bool
 ViewRendererGL::open(const QString& filename)
 {
   return false;
 }
 
-bool 
+bool
 ViewRendererGL::openStream(std::istream& stream)
 {
   return false;
@@ -244,42 +252,42 @@ ViewRendererGL::addFile(const QString& filename)
 {
 }
 
-void 
+void
 ViewRendererGL::save()
 {
   saveAs(__filename);
   __readTime = QDateTime::currentDateTime();
 }
 
-void 
+void
 ViewRendererGL::refresh()
 {
   if(!__filename.isEmpty()){
-	openFile(__filename);
+    openFile(__filename);
   }
   else refreshDisplay();
 }
 
-void 
+void
 ViewRendererGL::refreshDisplay()
 {
 }
 
-void 
+void
 ViewRendererGL::close()
 {
   clear();
   emit valueChanged();
 }
 
-void 
+void
 ViewRendererGL::saveAs()
 {
   QString filename = ViewFileManager::getSaveFileName(__filename,"","All Files (*.*)",__frame,"SaveAs");
   if(!filename.isEmpty()){
     if(saveAs(filename)){
       __filename = filename;
-	  __readTime = QDateTime::currentDateTime();
+      __readTime = QDateTime::currentDateTime();
       emit filenameChanged(__filename);
     }
   }
@@ -304,52 +312,52 @@ void
 ViewRendererGL::checkFileModification()
 {
   if(!__filename.isEmpty()){
-	if(QFileInfo(__filename).lastModified() > __readTime){
-	  __readTime = QDateTime::currentDateTime();
-	  if(QFileInfo(__filename).lastModified() > __readTime)
-		__readTime = QFileInfo(__filename).lastModified();
-	  if(QMessageBox:: information (__frame, "File Modification", 
-		__filename + " has been modified.\nLast Modification : "
-		+QFileInfo(__filename).lastModified().toString()
-		+" - Reading Time : "
-		+__readTime.toString()
-		+"\nReload ?","Yes","No") == 0){
-		refresh();
-	  }
-	}
+    if(QFileInfo(__filename).lastModified() > __readTime){
+      __readTime = QDateTime::currentDateTime();
+      if(QFileInfo(__filename).lastModified() > __readTime)
+        __readTime = QFileInfo(__filename).lastModified();
+      if(QMessageBox:: information (__frame, "File Modification",
+        __filename + " has been modified.\nLast Modification : "
+        +QFileInfo(__filename).lastModified().toString()
+        +" - Reading Time : "
+        +__readTime.toString()
+        +"\nReload ?","Yes","No") == 0){
+        refresh();
+      }
+    }
   }
 }
 
-void 
+void
 ViewRendererGL::clear()
 {
-  if(__filename != QString::null){
-	__filename = QString::null;
-	emit filenameChanged(__filename);
+  if(__filename != QString()){
+    __filename = QString();
+    emit filenameChanged(__filename);
   }
 }
 
 /// Get the global Bounding Box.
-const PGL(BoundingBoxPtr) 
+const PGL(BoundingBoxPtr)
 ViewRendererGL::getGlobalBoundingBox() const
 {
-	return PGL(BoundingBoxPtr)(new PGL(BoundingBox)(Vector3(-1,-1,-1),Vector3(1,1,1)));
+    return PGL(BoundingBoxPtr)(new PGL(BoundingBox)(Vector3(-1,-1,-1),Vector3(1,1,1)));
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 ViewSceneRendererGL::ViewSceneRendererGL(ViewCameraGL * camera,
-					 ViewLightGL * light,
-					 QGLWidget * parent, 
-					 const char * name):
+                     ViewLightGL * light,
+                     QGLWidget * parent,
+                     const char * name):
   ViewRendererGL(parent,name),
   __camera(camera),
   __light(light),
   __animated(eStatic)
 {
   if(camera)
-	QObject::connect(camera,SIGNAL(needReDim()),this,SLOT(computeCamera()));  
+    QObject::connect(camera,SIGNAL(needReDim()),this,SLOT(computeCamera()));
 }
 
 ViewSceneRendererGL::~ViewSceneRendererGL()
@@ -373,21 +381,21 @@ ViewSceneRendererGL::setCamera(ViewCameraGL * camera)
 {
   __camera = camera;
   if(camera)
-	QObject::connect(camera,SIGNAL(needReDim()),this,SLOT(computeCamera()));  
+    QObject::connect(camera,SIGNAL(needReDim()),this,SLOT(computeCamera()));
 }
 
-void 
+void
 ViewSceneRendererGL::setLight(ViewLightGL * light)
 {
   __light = light;
 }
 
-void  
+void
 ViewSceneRendererGL::computeCamera()
 {
 }
 
-void 
+void
 ViewSceneRendererGL::useDisplayList(bool)
 {
 }
@@ -404,12 +412,12 @@ bool ViewRendererGL::event(QEvent * e)
   }
   else if(etype == ViewEvent::eFileChange){
     ViewFileChangeEvent * k = ( ViewFileChangeEvent * )e;
-	openFile(k->arg1);
+    openFile(k->arg1);
     return true;
   }
   else if(etype == ViewEvent::eRefresh){
     // ViewRefreshEvent * k = ( ViewRefreshEvent * )e;
-	refresh();
+    refresh();
     return true;
   }
   else return(QObject::event(e));

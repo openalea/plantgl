@@ -52,17 +52,17 @@ OpenGL(TM) is a trademark of Silicon Graphics, Inc.
 
 #include "../algo_config.h"
 
-#ifndef WITH_GLUT
-#ifndef WITHOUT_GLUT
+#ifndef PGL_WITH_GLUT
+#ifndef PGL_WITHOUT_GLUT
 
 /// By default, we don't use glut.
-#define WITHOUT_GLUT
+#define PGL_WITHOUT_GLUT
 
 #endif
 #endif
 
-#ifdef WITH_GLUT
-#undef WITHOUT_GLUT
+#ifdef PGL_WITH_GLUT
+#undef PGL_WITHOUT_GLUT
 #endif
 
 
@@ -80,7 +80,7 @@ void ALGO_API geomWireCube(GLdouble size);
 /// equivalent to glutSolidCube()
 void ALGO_API geomSolidCube(GLdouble size);
 
-#ifdef WITHOUT_GLUT
+#ifdef PGL_WITHOUT_GLUT
 //#include <GL/glut.h>
 //#else
 

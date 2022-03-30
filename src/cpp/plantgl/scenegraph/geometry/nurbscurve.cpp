@@ -3,34 +3,44 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon et al.
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
 
 
- 
+
+
 
 #include "nurbscurve.h"
 #include <plantgl/scenegraph/core/pgl_messages.h>
@@ -45,7 +55,6 @@
 #endif
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 using namespace std;
 
@@ -111,8 +120,8 @@ bool NurbsCurve::Builder::isValid( ) const {
   }
 
   uint_t _size = (*CtrlPointList)->size();
-  if ( _size < 3 ) {
-    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Curve","CtrlPointList","Must be greater than 2.");
+  if ( _size < 2 ) {
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Curve","CtrlPointList","Must be greater or equal to 2.");
     return false;
   }
 
@@ -194,8 +203,8 @@ NurbsCurve::NurbsCurve(  ) :
 NurbsCurve::NurbsCurve(  const Point4ArrayPtr& ctrlPoints,
                          const RealArrayPtr  knots,
                          uint_t degree,
-                         uint_t stride, 
-		                 uchar_t width ) :
+                         uint_t stride,
+                         uchar_t width ) :
   BezierCurve(ctrlPoints, stride, width),
   __degree(degree),
   __knotList(knots)
@@ -208,8 +217,8 @@ NurbsCurve::NurbsCurve(  const Point4ArrayPtr& ctrlPoints,
 NurbsCurve::NurbsCurve(  const Point4ArrayPtr& ctrlPoints,
                          uint_t degree,
                          const RealArrayPtr  knots,
-                         uint_t stride, 
-		                 uchar_t width ) :
+                         uint_t stride,
+                         uchar_t width ) :
   BezierCurve(ctrlPoints, stride, width),
   __degree(degree),
   __knotList(knots)
@@ -222,8 +231,8 @@ NurbsCurve::NurbsCurve(  const Point4ArrayPtr& ctrlPoints,
 NurbsCurve::NurbsCurve(  const Point3ArrayPtr& ctrlPoints,
                          uint_t degree,
                          const RealArrayPtr  knots,
-                         uint_t stride, 
-		                 uchar_t width ) :
+                         uint_t stride,
+                         uchar_t width ) :
   BezierCurve(ctrlPoints, stride, width),
   __degree(degree),
   __knotList(knots)
@@ -280,7 +289,7 @@ bool NurbsCurve::setKnotListToDefault( ){
     return true;
 }
 
-TOOLS(RealArrayPtr) NurbsCurve::defaultKnotList( uint_t nbCtrlPoints, uint_t degree)
+RealArrayPtr NurbsCurve::defaultKnotList( uint_t nbCtrlPoints, uint_t degree)
 {
     uint_t _size = nbCtrlPoints + degree + 1;
     RealArrayPtr knotList = RealArrayPtr(new RealArray(_size));
@@ -299,7 +308,7 @@ bool NurbsCurve::isKnotListToDefault( ) const {
     return defaultKnotListTest(getKnotList(),__ctrlPointList->size(),__degree);
 }
 
-bool NurbsCurve::defaultKnotListTest(const TOOLS(RealArrayPtr)& knots, uint_t nbCtrlPoints, uint_t degree )
+bool NurbsCurve::defaultKnotListTest(const RealArrayPtr& knots, uint_t nbCtrlPoints, uint_t degree )
 {
     if( !knots ) return true;
     uint_t _size=knots->size();
@@ -362,22 +371,22 @@ RealArray2Ptr NurbsCurve::computeDerivatesBasisFunctions(int n,real_t u, int spa
 
 Point4ArrayPtr  NurbsCurve::deriveAtH(real_t u, int d, int span ) const {
     int du = ( d < (int)__degree ? d : __degree);
-    Point4ArrayPtr ders(new Point4Array(d+1));
+    Point4ArrayPtr ders(new Point4Array(d+1, Vector4::ORIGIN));
     RealArray2Ptr derF = computeDerivatesBasisFunctions(du,u,span) ;
 
     for(int k=du;k>=0;--k){
         ders->setAt(k,Vector4(0,0,0,0)) ;
         for(int j=__degree;j>=0;--j){
-            ders->setAt(k, ders->getAt(k) + __ctrlPointList->getAt(span-__degree+j)*derF->getAt(k,j)) ;
+            ders->setAt(k, ders->getAt(k) + __ctrlPointList->getAt(span-__degree+j).wtoxyz()*derF->getAt(k,j)) ;
         }
     }
     return ders;
 }
 
-Point4ArrayPtr NurbsCurve::deriveAt(real_t  u, int d, int span ) const{
-    Point4ArrayPtr ders(new Point4Array(d+1));
+Point3ArrayPtr NurbsCurve::deriveAt(real_t  u, int d, int span ) const{
+    Point3ArrayPtr ders(new Point3Array(d+1, Vector3::ORIGIN));
     Point4ArrayPtr dersW = deriveAtH(u,d,span) ;
-    Vector4 v ;
+    Vector3 v(0,0,0) ;
     int k,i ;
 
     RealArray2 Bin(d+1,d+1);
@@ -398,7 +407,7 @@ Point4ArrayPtr NurbsCurve::deriveAt(real_t  u, int d, int span ) const{
     }
 
 
-    // Compute the derivative at the parmeter u
+    // Compute the derivative at the parameter u
 
     for( k = 0 ; k <= d ; k++ ){
         v.x() = dersW->getAt(k).x() ;
@@ -414,15 +423,15 @@ Point4ArrayPtr NurbsCurve::deriveAt(real_t  u, int d, int span ) const{
 }
 
 
-Vector4 NurbsCurve::getDerivativeAt(real_t u, int d) const {
-    if (d > __degree) return Vector4(0,0,0,0);
+Vector3 NurbsCurve::getDerivativeAt(real_t u, int d) const {
+    if (d > __degree) return Vector3(0,0,0);
     int span = findSpan(u) ;
-    Point4ArrayPtr ders = deriveAt(u,d, span) ;
+    Point3ArrayPtr ders = deriveAt(u,d, span) ;
     return ders->getAt(d) ;
 }
 
 
-Point4ArrayPtr NurbsCurve::getDerivativesAt(real_t u) const {
+Point3ArrayPtr NurbsCurve::getDerivativesAt(real_t u) const {
     int span = findSpan(u) ;
     return deriveAt(u,__degree, span) ;
 }
@@ -436,11 +445,7 @@ Vector3 NurbsCurve::getPointAt(real_t u) const{
     RealArrayPtr _basisFunctions = computeBasisFunctions(span,u);
     Vector4 Cw(0.0,0.0,0.0,0.0);
     for (uint_t j = 0; j <= __degree; j++) {
-        Vector4 Pj = __ctrlPointList->getAt( span - __degree + j );
-        Pj.x() *= Pj.w();
-        Pj.y() *= Pj.w();
-        Pj.z() *= Pj.w();
-
+        Vector4 Pj = __ctrlPointList->getAt( span - __degree + j ).wtoxyz();
         Cw += Pj * _basisFunctions->getAt(j);
     }
 
@@ -452,20 +457,13 @@ Vector3 NurbsCurve::getPointAt(real_t u) const{
 
 Vector3 NurbsCurve::getTangentAt(real_t u) const {
     GEOM_ASSERT( (getFirstKnot() -u ) < GEOM_EPSILON &&  !((u - getLastKnot()) > GEOM_EPSILON));
-    Vector4 _derivate = getDerivativeAt( u, 1 );
-    if(!_derivate.w())
-        return Vector3(_derivate.x(),_derivate.y(),_derivate.z());
-    else return _derivate.project();
+    return getDerivativeAt( u, 1 );
 }
 
 Vector3 NurbsCurve::getNormalAt(real_t u) const{
     GEOM_ASSERT( (getFirstKnot() -u ) < GEOM_EPSILON &&  !((u - getLastKnot()) > GEOM_EPSILON));
     Vector3 _tangent = getTangentAt(u);
-    Vector4 _derivate = getDerivativeAt( u, 2 );
-    Vector3 _normal3;
-    if(!_derivate.w())
-        _normal3 = Vector3(_derivate.x(),_derivate.y(),_derivate.z());
-    else _normal3 = _derivate.project();
+    Vector3 _normal3 = getDerivativeAt( u, 2 );
     return (cross(cross(_tangent,_normal3),_tangent))/pow(norm(_tangent),real_t(4));
 }
 
@@ -473,7 +471,7 @@ Vector3 NurbsCurve::getNormalAt(real_t u) const{
   \brief project a point onto the curve
 
   It finds the closest point in the curve to a point $p$.
-  For more information, see A6.4 and A6.5 on p 231 of the 
+  For more information, see A6.4 and A6.5 on p 231 of the
   NURBS book
 
   \param p  the point \a p being projected
@@ -484,12 +482,12 @@ Vector3 NurbsCurve::getNormalAt(real_t u) const{
   \param e2  the maximal error
   \param maxTry  the maximum number of times to try before returning from the function
 
-  \author Philippe Lavoie 
+  \author Philippe Lavoie
   \date 24 January 1997
 */
-Vector3 NurbsCurve::projectTo(const Vector3& p, 
-								real_t guess, real_t& u,
-								real_t e1, real_t e2,int maxTry) const{
+Vector3 NurbsCurve::projectTo(const Vector3& p,
+                                real_t guess, real_t& u,
+                                real_t e1, real_t e2,int maxTry) const{
   Vector3 r;
   real_t un ;
   real_t c1, c2;
@@ -511,8 +509,8 @@ Vector3 NurbsCurve::projectTo(const Vector3& p,
  /*   getDerivativeAt(u,2,Cd) ;
     cd = Cd[1] ;
     cdd = Cd[2] ;*/
-	cd = getDerivativeAt(u,1).project();
-	cdd = getDerivativeAt(u,2).project();
+    cd = getDerivativeAt(u,1).project();
+    cdd = getDerivativeAt(u,2).project();
     c1 = normSquared(c-p) ;
     if(c1<e1*e1){
       r = c ;
@@ -527,9 +525,9 @@ Vector3 NurbsCurve::projectTo(const Vector3& p,
       r =c ;
       return r;
     }
-    
+
     un = u- cd*(c-p)/(cdd*(c-p)+normSquared(cd)) ;
-    
+
     if(un<getFirstKnot()) un = getFirstKnot() ;
     if(un>getLastKnot()) un = getLastKnot() ;
 
@@ -543,10 +541,10 @@ Vector3 NurbsCurve::projectTo(const Vector3& p,
 }
 
 
-uint_t 
-PGL(findSpan)(real_t u,  
-	 uint_t _degree, 
-	 const RealArrayPtr& _knotList ){
+uint_t
+PGL(findSpan)(real_t u,
+     uint_t _degree,
+     const RealArrayPtr& _knotList ){
     uint_t n = _knotList->size()-_degree -1;
 
   if( u >= _knotList->getAt( n ) )return ( n -1 );
@@ -951,10 +949,7 @@ Vector2 NurbsCurve2D::getPointAt(real_t u) const{
   RealArrayPtr _basisFunctions = basisFunctions(span,u,__degree,__knotList);
   Vector3 Cw(0.0,0.0,0.0);
   for (uint_t j = 0; j <= __degree; j++) {
-      Vector3 Pj = __ctrlPointList->getAt( span - __degree + j );
-      Pj.x() *= Pj.z();
-      Pj.y() *= Pj.z();
-
+      Vector3 Pj = __ctrlPointList->getAt( span - __degree + j ).ztoxy();
       Cw += Pj * _basisFunctions->getAt(j);
   }
 
@@ -977,16 +972,16 @@ Point3ArrayPtr  NurbsCurve2D::deriveAtH(real_t u, int d, int span ) const {
     for(int k=du;k>=0;--k){
         ders->setAt(k,Vector3(0,0,0)) ;
         for(int j=__degree;j>=0;--j){
-            ders->setAt(k, ders->getAt(k) + __ctrlPointList->getAt(span-__degree+j)*derF->getAt(k,j)) ;
+            ders->setAt(k, ders->getAt(k) + __ctrlPointList->getAt(span-__degree+j).ztoxy()*derF->getAt(k,j)) ;
         }
     }
     return ders;
 }
 
-Point3ArrayPtr NurbsCurve2D::deriveAt(real_t  u, int d, int span ) const{
-    Point3ArrayPtr ders(new Point3Array(d+1));
+Point2ArrayPtr NurbsCurve2D::deriveAt(real_t  u, int d, int span ) const{
+    Point2ArrayPtr ders(new Point2Array(d+1));
     Point3ArrayPtr dersW = deriveAtH(u,d,span) ;
-    Vector3 v ;
+    Vector2 v ;
     int k,i ;
 
     RealArray2 Bin(d+1,d+1);
@@ -1012,7 +1007,6 @@ Point3ArrayPtr NurbsCurve2D::deriveAt(real_t  u, int d, int span ) const{
     for( k = 0 ; k <= d ; k++ ){
         v.x() = dersW->getAt(k).x() ;
         v.y() = dersW->getAt(k).y() ;
-        v.z() = dersW->getAt(k).z() ;
         for(i=k ;i>0 ;--i){
             v -= ders->getAt(k-i)*(Bin.getAt(k,i)*dersW->getAt(i).z()) ;
         }
@@ -1023,35 +1017,28 @@ Point3ArrayPtr NurbsCurve2D::deriveAt(real_t  u, int d, int span ) const{
 }
 
 
-Vector3 NurbsCurve2D::getDerivativeAt(real_t u, int d) const {
-    if (d > __degree) return Vector3(0,0,0);
+Vector2 NurbsCurve2D::getDerivativeAt(real_t u, int d) const {
+    if (d > __degree) return Vector2(0,0);
     int span = findSpan(u) ;
-    Point3ArrayPtr ders = deriveAt(u,d, span) ;
+    Point2ArrayPtr ders = deriveAt(u,d, span) ;
     return ders->getAt(d) ;
 }
 
 
-Point3ArrayPtr NurbsCurve2D::getDerivativesAt(real_t u) const {
+Point2ArrayPtr NurbsCurve2D::getDerivativesAt(real_t u) const {
     int span = findSpan(u) ;
     return deriveAt(u,__degree, span) ;
 }
 Vector2 NurbsCurve2D::getTangentAt(real_t u) const {
     GEOM_ASSERT( (getFirstKnot() -u ) < GEOM_EPSILON &&  !((u - getLastKnot()) > GEOM_EPSILON));
-    Vector3 _derivate = getDerivativeAt( u, 1 );
-    if(!_derivate.z())
-        return Vector2(_derivate.x(),_derivate.y());
-    else return _derivate.project();
+    return getDerivativeAt( u, 1 );
 }
 
 Vector2 NurbsCurve2D::getNormalAt(real_t u) const{
     GEOM_ASSERT( (getFirstKnot() -u ) < GEOM_EPSILON &&  !((u - getLastKnot()) > GEOM_EPSILON));
     Vector2 _tangent = getTangentAt(u);
-    Vector3 _derivate = getDerivativeAt( u, 2 );
-    Vector2 _normal2;
-    if(!_derivate.z())
-        _normal2 = Vector2(_derivate.x(),_derivate.y());
-    else _normal2 = _derivate.project();
+    Vector2 _normal2 = getDerivativeAt( u, 2 );
     Vector3 nml3 = cross(cross(Vector3(_tangent,0),Vector3(_normal2,0)),Vector3(_tangent,0))/pow(norm(_tangent),real_t(4));
-	return Vector2(nml3[0],nml3[1]);
+    return Vector2(nml3[0],nml3[1]);
 }
 /* ----------------------------------------------------------------------- */

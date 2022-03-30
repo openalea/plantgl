@@ -6,7 +6,7 @@
 .. module:: PlantGL
 
 PlantGL : The Plant Geometric Library
-#############################
+######################################
 
 Module description
 ==================

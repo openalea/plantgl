@@ -1,10 +1,8 @@
-name: openalea-doc
+name: plantgl-doc
 channels:
-  - openalea
+  - fredboudon
+  - conda-forge
   - defaults
 dependencies:
-  - python=2.7
-  - mpfr<4
-  - openalea.sconsx
-  - openalea.misc
   - openalea.plantgl
+  - pip

@@ -1,35 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al.
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 
 #include "scne_binaryparser.h"
@@ -54,7 +62,6 @@
 #include <typeinfo>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 using namespace std;
 using namespace STDEXT;
@@ -264,12 +271,12 @@ static uint_t count_name(0);
 const SceneObjectPtr BinaryParser::NULLPTR;
 
 /* ----------------------------------------------------------------------- */
-BinaryParser::BinaryParser(ostream& output,int max_errors) :
+BinaryParser::BinaryParser(ostream& output,int max_errors, fistream * _stream) :
     __scene(new Scene()),
     __roots(0),
     __referencetable(),
     __outputStream(output),
-    stream(0),
+    stream(_stream),
     __tokens(NULL),
     __max_errors(max_errors),
     __errors_count(0),
@@ -479,7 +486,8 @@ SceneObject * BinaryParser::getNext(uint_t _class){
 /* ----------------------------------------------------------------------- */
 
 bool BinaryParser::isAGeomBinaryFile(const string& filename){
-    leifstream stream(filename.c_str());
+    bifstream stream(filename.c_str());
+    stream.setByteOrder(PglLittleEndian);
     if(!stream)return false;
     char tokBegin[7];
     stream.read(tokBegin,6);
@@ -617,7 +625,9 @@ bool BinaryParser::readSceneHeader(){
 /* ----------------------------------------------------------------------- */
 bool BinaryParser::open(const std::string& filename)
 {
-    stream = new leifstream(filename.c_str());
+    stream = new bifstream(filename.c_str());
+    stream->setByteOrder(PglLittleEndian);
+
     if(!*stream){
         pglErrorEx(PGLERRORMSG(C_FILE_OPEN_ERR_s),filename.c_str());
         delete stream;
@@ -649,11 +659,17 @@ bool BinaryParser::eof()
 /// The parsing function.
 bool BinaryParser::parse(const string& filename){
     if(!open(filename)) return false;
-    if(!readHeader())return false;
-    if(!readSceneHeader())return false;
-	PglErrorStream::Binder psb(__outputStream);
     string p = get_cwd();
     chg_dir(get_dirname(filename));
+    bool res = parse();
+    chg_dir(p);
+    return res;
+}
+
+bool BinaryParser::parse(){
+    if(!readHeader())return false;
+    if(!readSceneHeader())return false;
+    PglErrorStream::Binder psb(__outputStream);
     Timer t;
     __errors_count=0;
     shape_nb=0;
@@ -670,8 +686,21 @@ bool BinaryParser::parse(const string& filename){
     }
 #endif
     close();
-    chg_dir(p);
     return true;
+}
+
+#include <sstream>
+
+ScenePtr BinaryParser::frombinarystring(const std::string& content)
+{
+    std::ostringstream ostream;
+    std::istringstream sstream(content);
+    fistream * stream = new fistream(sstream);
+    stream->setByteOrder(PglLittleEndian);
+    BinaryParser parser(ostream, 5, stream);
+    parser.parse();
+    return parser.getScene();
+
 }
 
 /* ----------------------------------------------------------------------- */
@@ -717,7 +746,7 @@ bool BinaryParser::readNext(){
   else if(_classname == "Revolution")         return readRevolution();
   else if(_classname == "Swung")              return readSwung();
   else if(_classname == "Scaled")             return readScaled();
-  else if(_classname == "ScreenProjected")    return readScreenProjected();	  
+  else if(_classname == "ScreenProjected")    return readScreenProjected();   
   else if(_classname == "Sphere")             return readSphere();
   else if(_classname == "Tapered")            return readTapered();
   else if(_classname == "Translated")         return readTranslated();
@@ -783,17 +812,22 @@ bool BinaryParser::readShape(){
 
     if(readNext())
        a->getGeometry() = dynamic_pointer_cast<Geometry>(__result);
-	if(readNext()){
+    if(readNext()){
         a->getAppearance() = dynamic_pointer_cast<Appearance>(__result);
-		if (is_null_ptr(a->getAppearance()) && __tokens->getVersion() <= 2.3f && is_valid_ptr(__result)){
-			ImageTexturePtr imgtex = dynamic_pointer_cast<ImageTexture>(__result);
-			if(imgtex) {
-				a->getAppearance() = AppearancePtr(new Texture2D(imgtex));
-			}
-		}
-	}
+        if (is_null_ptr(a->getAppearance()) && __tokens->getVersion() <= 2.3f && is_valid_ptr(__result)){
+            ImageTexturePtr imgtex = dynamic_pointer_cast<ImageTexture>(__result);
+            if(imgtex) {
+                a->getAppearance() = AppearancePtr(new Texture2D(imgtex));
+            }
+        }
+    }
 
-    if((a->getGeometry()) && (a->getAppearance())){
+    if(a->getGeometry()){
+        if (!a->getAppearance() || !a->getAppearance()->isValid()){
+            __outputStream << "*** PARSER: <Shape : " << (_name.empty() ? "(unamed)" : _name ) << "> Appearance not valid. Setting it to default." << endl;
+            a->getAppearance() = AppearancePtr(new Material());
+
+        }
         if(!_name.empty())a->setName(_name);
         __result = SceneObjectPtr(a);
         Shape3DPtr sh = Shape3DPtr(a);
@@ -807,7 +841,7 @@ bool BinaryParser::readShape(){
         }
         if(isParserVerbose())
           if(__roots % 50 == 0 || __roots == __scene->size())
-			 printf("\x0d Already parsed : %i %% shapes.", 100*__roots / __scene->size());
+             printf("\x0d Already parsed : %i %% shapes.", 100*__roots / __scene->size());
         return true;
     }
     else{
@@ -865,28 +899,35 @@ bool BinaryParser::readTexture2D() {
 
     GEOM_INIT_OBJ(texture, 42, Texture2D);
 
+    bool invalid = false;
+
     if(readNext())
         texture->getImage() = dynamic_pointer_cast<ImageTexture>(__result);
+
     if(!texture->getImage()){
         __outputStream << "*** PARSER: <Texture2D : " << (_name.empty() ? "(unamed)" : _name ) << "> Image not valid." << endl;
-        GEOM_DEL_OBJ(texture,42) ;
-        return false;
+        invalid = true;
     }
 
     IF_GEOM_NOTDEFAULT(_default,0)
-	{
-		if(readNext())
-			texture->getTransformation() = dynamic_pointer_cast<Texture2DTransformation>(__result);
-		if(!texture->getTransformation()){
-			__outputStream << "*** PARSER: <Texture2D : " << (_name.empty() ? "(unamed)" : _name ) << "> Transformation not valid." << endl;
-			GEOM_DEL_OBJ(texture,42) ;
-			return false;
-		}
-	}
+    {
+        if(readNext())
+            texture->getTransformation() = dynamic_pointer_cast<Texture2DTransformation>(__result);
+        if(!texture->getTransformation()){
+            __outputStream << "*** PARSER: <Texture2D : " << (_name.empty() ? "(unamed)" : _name ) << "> Transformation not valid." << endl;
+            invalid = true;
+        }
+    }
 
     if( __tokens->getVersion() >= 2.3f){
         IF_GEOM_NOTDEFAULT(_default,1)
              GEOM_READ_FIELD(texture,BaseColor,Color4);
+    }
+
+
+    if (invalid) {
+        GEOM_DEL_OBJ(texture,42) ;
+        return false;
     }
 
     GEOM_PARSER_SETNAME(_name,_ident,texture,Texture2D);
@@ -912,46 +953,52 @@ bool BinaryParser::readImageTexture() {
     float version =  __tokens->getVersion();
 
     if( version >= 2.3f){
-		IF_GEOM_NOTDEFAULT(_default,0)
-			GEOM_READ_FIELD(mat,RepeatS,Bool) ;
+        IF_GEOM_NOTDEFAULT(_default,0)
+            GEOM_READ_FIELD(mat,RepeatS,Bool) ;
 
-		IF_GEOM_NOTDEFAULT(_default,1)
-			GEOM_READ_FIELD(mat,RepeatT,Real);
+        IF_GEOM_NOTDEFAULT(_default,1)
+            GEOM_READ_FIELD(mat,RepeatT,Bool);
 
         if( version < 2.4f){
             IF_GEOM_NOTDEFAULT(_default,2)
                 real_t transparency = readReal();
         }
-	}
-	else {
-		MaterialPtr oldmat(new Material());
-		IF_GEOM_NOTDEFAULT(_default,0)
-			GEOM_READ_FIELD(oldmat,Ambient,Color3) ;
+    }
+    else {
+        MaterialPtr oldmat(new Material());
+        IF_GEOM_NOTDEFAULT(_default,0)
+            GEOM_READ_FIELD(oldmat,Ambient,Color3) ;
 
-		IF_GEOM_NOTDEFAULT(_default,1)
-			GEOM_READ_FIELD(oldmat,Diffuse,Real);
+        IF_GEOM_NOTDEFAULT(_default,1)
+            GEOM_READ_FIELD(oldmat,Diffuse,Real);
 
-		IF_GEOM_NOTDEFAULT(_default,2)
-			GEOM_READ_FIELD(oldmat,Specular,Color3);
+        IF_GEOM_NOTDEFAULT(_default,2)
+            GEOM_READ_FIELD(oldmat,Specular,Color3);
 
-		IF_GEOM_NOTDEFAULT(_default,3)
-			GEOM_READ_FIELD(oldmat,Emission,Color3);
+        IF_GEOM_NOTDEFAULT(_default,3)
+            GEOM_READ_FIELD(oldmat,Emission,Color3);
 
-		IF_GEOM_NOTDEFAULT(_default,4)
-			GEOM_READ_FIELD(oldmat,Shininess,Real);
+        IF_GEOM_NOTDEFAULT(_default,4)
+            GEOM_READ_FIELD(oldmat,Shininess,Real);
 
-		IF_GEOM_NOTDEFAULT(_default,5)
-			GEOM_READ_FIELD(oldmat,Transparency,Real);
-	}
+        IF_GEOM_NOTDEFAULT(_default,5)
+            GEOM_READ_FIELD(oldmat,Transparency,Real);
+    }
 
     if( version >= 1.8f){
         IF_GEOM_NOTDEFAULT(_default,6)
             GEOM_READ_FIELD(mat,Mipmaping,Bool);
     }
 
-    if (FileName.empty() || !exists(FileName.c_str())) {
+    if (FileName.empty()) {
         string label = "ImageTexture : " + string((_name.empty() ? "(unamed)" : _name));
         pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),label.c_str(),"FileName");
+        MaterialPtr defmat(new Material());
+        GEOM_PARSER_SETNAME(_name,_ident,defmat,Material);
+    }
+    else if (!exists(FileName.c_str())) {
+        string label = "ImageTexture : " + string((_name.empty() ? "(unamed)" : _name));
+        pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),label.c_str(),"FileName",FileName.c_str());
         MaterialPtr defmat(new Material());
         GEOM_PARSER_SETNAME(_name,_ident,defmat,Material);
     }
@@ -972,17 +1019,17 @@ bool BinaryParser::readTexture2DTransformation() {
 
     GEOM_INIT_OBJ(obj, 43, Texture2DTransformation);
 
-	IF_GEOM_NOTDEFAULT(_default,0)
-		GEOM_READ_FIELD(obj,Scale,Vector2) ;
+    IF_GEOM_NOTDEFAULT(_default,0)
+        GEOM_READ_FIELD(obj,Scale,Vector2) ;
 
-	IF_GEOM_NOTDEFAULT(_default,1)
-		GEOM_READ_FIELD(obj,Translation,Vector2);
+    IF_GEOM_NOTDEFAULT(_default,1)
+        GEOM_READ_FIELD(obj,Translation,Vector2);
 
-	IF_GEOM_NOTDEFAULT(_default,2)
-		GEOM_READ_FIELD(obj,RotationCenter,Vector2);
+    IF_GEOM_NOTDEFAULT(_default,2)
+        GEOM_READ_FIELD(obj,RotationCenter,Vector2);
 
-	IF_GEOM_NOTDEFAULT(_default,3)
-		GEOM_READ_FIELD(obj,RotationAngle,Real);
+    IF_GEOM_NOTDEFAULT(_default,3)
+        GEOM_READ_FIELD(obj,RotationAngle,Real);
 
     GEOM_PARSER_SETNAME(_name,_ident,obj,ImageTexture);
 
@@ -1417,10 +1464,10 @@ bool BinaryParser::readExtrusion() {
       }
 
     }
-	if( __tokens->getVersion() >= 2.2f){
-		IF_GEOM_NOTDEFAULT(_default,5){
-			GEOM_READ_FIELD(obj,InitialNormal,Vector3);
-		}
+    if( __tokens->getVersion() >= 2.2f){
+        IF_GEOM_NOTDEFAULT(_default,5){
+            GEOM_READ_FIELD(obj,InitialNormal,Vector3);
+        }
     }
 
     if(readNext()){
@@ -1596,8 +1643,7 @@ bool BinaryParser::readGroup() {
       }
 
 
-    uint_t _sizej;
-    *stream >> _sizej;
+    uint32_t _sizej = readUint32();
     obj->getGeometryList()= GeometryArrayPtr(new GeometryArray(_sizej));
     uint_t err = 0;
     GeometryArray::iterator _it = obj->getGeometryList()->begin();
@@ -1638,42 +1684,43 @@ bool BinaryParser::readIFS() {
     IF_GEOM_NOTDEFAULT(_default,0)
         GEOM_READ_FIELD(obj,Depth,Uchar);
 
-    uint_t size;
-    *stream >> size;
+    uint32_t size = readUint32();
     obj->getTransfoList()= Transform4ArrayPtr(new Transform4Array(size));
+
+#ifdef GEOM_DEBUG
+  cerr << "must find " << size << " Transform4" << endl;
+#endif
 
     uint_t err= 0;
     Transform4Array::iterator _ti= obj->getTransfoList()->begin();
     Transform4Array::iterator _tend= obj->getTransfoList()->end();
     for( uint_t num = 0;
          num < size && _ti != _tend && !stream->eof();
-         num++ )
-      {
-      Vector4 col[4];
-      for( uchar_t i= 0; i < 4; i++ )
-        *stream >> col[i];
-      Matrix4 m(col[0],col[1],col[2],col[3]);
-      if( m.isValid() )
-        {
-        (*_ti)= Transform4Ptr( new Transform4( m ));
-        _ti++;
+         num++ ) {
+        Matrix4 m = readMatrix4();
+#ifdef GEOM_DEBUG
+        cerr << "find Matrix4" << m << endl;
+#endif
+        if( m.isValid() ) {
+            (*_ti)= Transform4Ptr( new Transform4( m ));
+            _ti++;
         }
-      else
-        {
-        err++;
-        __outputStream << "*** PARSER: <IFS : " << (_name.empty() ? "(unamed)" : _name ) << "> A Transfo component is not valid." << endl;
+        else {
+            err++;
+            __outputStream << "*** PARSER: <IFS : " << (_name.empty() ? "(unamed)" : _name ) << "> A Transfo component is not valid." << endl;
         }
-      }
+    }
 
     if(readNext())
         obj->getGeometry() = dynamic_pointer_cast<Geometry>(__result);
 
-    if( err >= size-1 || (!obj->getGeometry()) )
-      {
+    if( (err > 0 && err >= size-1) || (!obj->getGeometry()) )
+    {
       obj->getDepth()= IFS::DEFAULT_DEPTH;
       obj->getTransfoList()= Transform4ArrayPtr();
       GEOM_DEL_OBJ(obj,38) ;
-      }
+      return false;
+    }
 
     GEOM_PARSER_SETNAME(_name,_ident,obj,IFS);
     return true;
@@ -2372,7 +2419,7 @@ bool BinaryParser::readText() {
     GEOM_INIT_OBJ(obj, 40, Text);
 
     GEOM_READ_FIELD(obj,String,String);
-    std::cerr << "String :\"" << obj->getString() << '"' << std::endl;
+    // std::cerr << "String :\"" << obj->getString() << '"' << std::endl;
 
     IF_GEOM_NOTDEFAULT(_default,0){
       if(readNext()){

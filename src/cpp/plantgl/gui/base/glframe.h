@@ -1,35 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr)
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 
 /*! \file view_glframe.h
@@ -43,7 +51,7 @@
 
 /* ----------------------------------------------------------------------- */
 #include <QtGlobal>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/QToolButton>
 #else
     #include <QtGui/QToolButton>
@@ -106,7 +114,7 @@ class VIEW_API ViewGLFrame : public QGLWidget
 
     public:
 
-	  enum Mode { Rotation, Selection, MultipleSelection };
+      enum Mode { Rotation, Selection, MultipleSelection };
 
   /// Last GL Frame created.
   static ViewGLFrame * LAST_GL_FRAME;
@@ -177,20 +185,24 @@ class VIEW_API ViewGLFrame : public QGLWidget
   std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)> grabZBufferPoints( ) ;
 
 
-  ViewRayBuffer * castRays( const Vector3& position, 
-						     const Vector3& direction, 
-						     const Vector3& dx, 
-							 const Vector3& dy,
-						     int sx, int sy) ;
+  /// Grab depth and color points
+  std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)> grabZBufferPointsWithJitter(float jitter, int raywidth, bool mixcolor = true ) ;
+
+
+  ViewRayBuffer * castRays( const Vector3& position,
+                             const Vector3& direction,
+                             const Vector3& dx,
+                             const Vector3& dy,
+                             int sx, int sy) ;
 
 
   int getProjectionPixel();
   double getPixelWidth();
   double getProjectionSize(int* nbpixel = NULL, double* pixelwidth = NULL);
 
-  std::vector<std::pair<uint_t,uint_t> > 
+  std::vector<std::pair<uint_t,uint_t> >
   getProjectionPixelPerColor(double* pixelwidth = NULL);
-  
+
   virtual void connectTo(ViewStatusBar *);
 
   virtual void connectTo(ViewErrorDialog *);
@@ -220,10 +232,10 @@ class VIEW_API ViewGLFrame : public QGLWidget
   bool isPixelBufferUsed()  { return __usePBuffer; }
 
   void makeItCurrent();
-  
+
   void activateRedraw(bool b);
   bool isRedrawEnabled() { return __redrawEnabled; }
- 
+
 public slots:
 
   void redrawGL();
@@ -271,7 +283,7 @@ public slots:
   void glSmoothShadeModel(bool b);
 
   void glFlatShadeModel(bool b);
-  
+
   void glTwoSideShadeModel(bool b);
 
   void glDithering(bool b);
@@ -285,7 +297,7 @@ public slots:
   void useOcclusionQuery(bool b);
 
   void usePixelBuffer(bool b);
-  
+
   void setFPSDisplay(bool b);
 
   void showMessage(const QString message, int timeout = 0);
@@ -449,12 +461,12 @@ class VIEW_API ViewDoubleToolButton : public QToolButton {
 public :
 
   ViewDoubleToolButton
-			( const QPixmap & pm,
-			  const QPixmap & pm2,
-			  const QString & textLabel, 
-			  QObject * receiver, 
-			  const char * slot, 
-			  QToolBar * parent);
+            ( const QPixmap & pm,
+              const QPixmap & pm2,
+              const QString & textLabel,
+              QObject * receiver,
+              const char * slot,
+              QToolBar * parent);
 
 public slots:
 

@@ -1,11 +1,11 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
+.DS_Store
 
 options.py
 src/cpp/plantgl/userconfig.h
-src/plantgl/config.py
-src/openalea
+src/openalea/plantgl/config.py
 
 # C extensions
 build-scons
@@ -23,6 +23,7 @@ build-scons_qt5
 .Python
 env/
 build/
+build-cmake/
 develop-eggs/
 dist/
 downloads/
@@ -82,3 +83,9 @@ src/cpp/plantgl/doxygenFile
 # temporary dirs for Mac OS X
 .DS_Store
 
+.qglviewer.xml
+_pgl*.dylib
+.ipynb_checkpoints
+
+.vscode
+test/geomprinteroutput.geom

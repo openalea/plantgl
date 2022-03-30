@@ -1,39 +1,49 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Plant Graphic Library
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2003 UMR Cirad/Inria/Inra Dap - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): C. Nouguier & F. Boudon (frederic.boudon@cirad.fr) nouguier
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
 
 
 
+
 /*! \file util_array.h
     \brief Definition of the container class Array1 and RealArray.
-*/
+ */
 
 
 #ifndef __util_array_h__
@@ -52,36 +62,36 @@
 
 /* ----------------------------------------------------------------------- */
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
 template<class Iterator>
 std::ostream& print_array( Iterator beg, Iterator end,
-						   std::ostream& stream,
-						   char delimiter = ',',
-						   char beg_sign = '[',
+                           std::ostream& stream,
+                           char delimiter = ',',
+                           char beg_sign = '[',
                            char end_sign = ']' ) {
-    stream << beg_sign;
-    if (beg != end) {
-        stream << *beg;
-        for (Iterator _i = beg+1; _i != end; _i++)
-            stream << delimiter << *_i;
-    }
-    return stream << end_sign;
+        stream << beg_sign;
+        if (beg != end) {
+                stream << *beg;
+                for (Iterator _i = beg+1; _i != end; _i++)
+                        stream << delimiter << *_i;
+        }
+        return stream << end_sign;
 }
 
-  /// Returns whether \e self contain unique elements.
+/// Returns whether \e self contain unique elements.
 template<class Iterator>
 bool isUnique(Iterator beg, Iterator end ) {
-    if (distance(beg,end) == 0) return true;
-    Iterator _first = beg;
-    Iterator _last  = end - 1;
-    while (_first != _last) {
-      if (std::find(_first + 1,end,*_first) != end) return false;
-      _first++;
-    };
-    return true;
+        if (distance(beg,end) == 0) return true;
+        Iterator _first = beg;
+        Iterator _last  = end - 1;
+        while (_first != _last) {
+                if (std::find(_first + 1,end,*_first) != end) return false;
+                _first++;
+        };
+        return true;
 }
 
 /* ----------------------------------------------------------------------- */
@@ -89,240 +99,292 @@ bool isUnique(Iterator beg, Iterator end ) {
 /**
    \class Array1
    \brief A mono dimensional array of non fixed size.
-*/
+ */
 
 
 /* ----------------------------------------------------------------------- */
 
 template <class T>
-class PglVector 
+class PglVector
 {
 
 public:
 
-  /// The element type.
-  typedef T element_type;
+/// The element type.
+typedef T element_type;
 
-  /// A const iterator used to iterate through an Array1.
-  typedef typename std::vector<element_type>::const_reverse_iterator const_reverse_iterator ;
+/// A const iterator used to iterate through an Array1.
+typedef typename std::vector<element_type>::const_reverse_iterator const_reverse_iterator;
 
-  /// An iterator used to iterate through an Array1.
-  typedef typename std::vector<element_type>::reverse_iterator reverse_iterator ;
+/// An iterator used to iterate through an Array1.
+typedef typename std::vector<element_type>::reverse_iterator reverse_iterator;
 
-  /// A const iterator used to iterate through an Array1.
-  typedef typename std::vector<element_type>::const_iterator const_iterator;
+/// A const iterator used to iterate through an Array1.
+typedef typename std::vector<element_type>::const_iterator const_iterator;
 
-  /// An iterator used to iterate through an Array1.
-  typedef typename std::vector<element_type>::iterator iterator;
+/// An iterator used to iterate through an Array1.
+typedef typename std::vector<element_type>::iterator iterator;
 
 //   /// The element type.
 //   typedef T element_type;
 
-  /// Constructs an Array1 of size \e size
-  PglVector( size_t size = 0 ) :
-    __A(size) {
- }
+/// Constructs an Array1 of size \e size
+PglVector( size_t size = 0 ) :
+        __A(size) {
+}
 
-  /// Constructs an Array1 with \e size copies of \e t.
-  PglVector( size_t size, const T& t ) :
-    __A(size,t) {
-  }
-
-
-  /// Constructs an Array1 with the range [\e begin, \e end).
-  template <class InIterator>
-  PglVector( InIterator begin, InIterator end ) :
-    __A(begin,end) {
-  }
-
-  /// Destructor
-  virtual ~PglVector( ) {
-  }
-
-  /// Returns whether \e self contains \e t.
-  inline bool contains( const T& t ) const {
-    return std::find(__A.begin(),__A.end(),t) != __A.end();
-  }
-
-  /** Returns the \e i-th element of \e self
-      \pre
-      - \e i must be strictly less than the size of \e self. */
-  inline const T& getAt( uint_t i ) const {
-    GEOM_ASSERT(i < __A.size());
-    return __A[i];
-  }
-
-  /** Returns the \e i-th element of \e self
-      \pre
-      - \e i must be strictly less than the size of \e self. */
-  inline T& getAt( uint_t i ) {
-    GEOM_ASSERT(i < __A.size());
-    return __A[i];
-  }
-
-  inline const T& operator[]( uint_t i ) const { return getAt(i); }
-  inline T& operator[]( uint_t i ) { return getAt(i); }
-
-  /// Returns a const iterator at the beginning of \e self.
-  inline const_iterator begin( ) const { return __A.begin(); }
-
-  /// Returns an iterator at the beginning of \e self.
-  inline iterator begin( ) { return __A.begin(); }
-
-  /// Returns a const iterator at the end of \e self.
-  inline const_iterator end( ) const { return __A.end(); }
-
-  /// Returns a const iterator at the end of \e self.
-  inline iterator end( ) { return __A.end(); }
-
-  /// Returns a const iterator at the beginning of \e self.
-  inline const_reverse_iterator rbegin( ) const { return __A.rbegin(); }
-
-  /// Returns an iterator at the beginning of \e self.
-  inline reverse_iterator rbegin( ) { return __A.rbegin(); }
-
-  /// Returns a const iterator at the end of \e self.
-  inline const_reverse_iterator rend( ) const { return __A.rend(); }
-
-  /// Returns a const iterator at the end of \e self.
-  inline reverse_iterator rend( ) { return __A.rend(); }
-
-  /// Returns the size of \e self.
-  inline uint_t size( ) const { return __A.size(); }
-
-  /// Clear \e self.
-  inline void clear( ) { __A.clear();  }
-
-  /// Inserts \e t into \e self before the position pointed by \e it.
-  iterator insert( iterator it, const T& t ) {
-    return __A.insert(it,t);
-  }
+/// Constructs an Array1 with \e size copies of \e t.
+PglVector( size_t size, const T& t ) :
+        __A(size,t) {
+}
 
 
-  /// Inserts the range [first, last) before pos.
-  template <class InputIterator>
-  void insert(iterator pos, InputIterator f, InputIterator l){
-      __A.insert(pos,f,l);
-  }
+/// Constructs an Array1 with the range [\e begin, \e end).
+template <class InIterator>
+PglVector( InIterator begin, InIterator end ) :
+        __A(begin,end) {
+}
 
-  /// Inserts \e t into \e self before the position pointed by \e it.
-  PglVector& operator+=( const PglVector& t ) {
-    __A.insert(__A.end(),t.begin(),t.end());
-	return *this;
-  }
+/// Destructor
+virtual ~PglVector( ) {
+}
 
-  bool operator==( const PglVector& t ) const {
-    if (__A.size() != t.size()) 
-      return false;
-    const_iterator _it= t.begin();
-    for (const_iterator _i = __A.begin() ; _i != __A.end(); _i++){
-	  if(*_i != *_it) return false;
-	  _it++;
-	}
-	return true;
-  }
+/// Returns whether \e self contains \e t.
+inline bool contains( const T& t ) const {
+        return std::find(__A.begin(),__A.end(),t) != __A.end();
+}
 
-  bool operator!=( const PglVector& t ) const {
-    if (__A.size() != t.size()) return true;
-    const_iterator _it = t.begin();
-    for (const_iterator _i = __A.begin() ; _i != __A.end(); _i++){
-	  if(*_i != *_it) return true;
-	  _it++;
-	}
-	return false;
-  }
+/** Returns the \e i-th element of \e self
+    \pre
+    - \e i must be strictly less than the size of \e self. */
+inline const T& getAt( uint_t i ) const {
+        GEOM_ASSERT(i < __A.size());
+        return __A[i];
+}
 
-  /// Returns whether \e self is empty.
-  inline bool empty( ) const { return __A.empty(); }
+/** Returns the \e i-th element of \e self
+    \pre
+    - \e i must be strictly less than the size of \e self. */
+inline T& getAt( uint_t i ) {
+        GEOM_ASSERT(i < __A.size());
+        return __A[i];
+}
 
-  /// Returns whether \e self contain unique elements.
-  bool isUnique( ) const {
-	  return TOOLS::isUnique(__A.begin(),__A.end());
-  }
+inline const T& operator[]( uint_t i ) const {
+        return getAt(i);
+}
+inline T& operator[]( uint_t i ) {
+        return getAt(i);
+}
 
-  /// Prints \e self to the output stream \e stream.
-  std::ostream& print( std::ostream& stream,
-                  char delimiter = ',',
-                  char beg_sign = '[',
-                  char end_sign = ']' ) const {
-		return print_array(begin(),end(),stream,delimiter,beg_sign,end_sign);
-  }
+/// Returns a const iterator at the beginning of \e self.
+inline const_iterator begin( ) const {
+        return __A.begin();
+}
 
-  /// Prints \e self to the output stream \e stream.
-  friend std::ostream& operator<<(std::ostream& stream, const PglVector<T>& a){
-      return a.print(stream);
-  }
+/// Returns an iterator at the beginning of \e self.
+inline iterator begin( ) {
+        return __A.begin();
+}
+
+/// Returns a const iterator at the end of \e self.
+inline const_iterator end( ) const {
+        return __A.end();
+}
+
+/// Returns a const iterator at the end of \e self.
+inline iterator end( ) {
+        return __A.end();
+}
+
+/// Returns a const iterator at the beginning of \e self.
+inline const_reverse_iterator rbegin( ) const {
+        return __A.rbegin();
+}
+
+/// Returns an iterator at the beginning of \e self.
+inline reverse_iterator rbegin( ) {
+        return __A.rbegin();
+}
+
+/// Returns a const iterator at the end of \e self.
+inline const_reverse_iterator rend( ) const {
+        return __A.rend();
+}
+
+/// Returns a const iterator at the end of \e self.
+inline reverse_iterator rend( ) {
+        return __A.rend();
+}
+
+/// Returns the size of \e self.
+inline uint_t size( ) const {
+        return __A.size();
+}
+
+/// Clear \e self.
+inline void clear( ) {
+        __A.clear();
+}
+
+/// Inserts \e t into \e self before the position pointed by \e it.
+iterator insert( iterator it, const T& t ) {
+        return __A.insert(it,t);
+}
 
 
-  /** Sets the \e i-th element of \e self to \e t.
-      \pre
-      - \e i must be strictly less than the size of \e self. */
-  void setAt( uint_t i, const T& t ) {
-    GEOM_ASSERT(i < __A.size());
-    __A[i] = t;
-  }
+/// Inserts the range [first, last) before pos.
+template <class InputIterator>
+void insert(iterator pos, InputIterator f, InputIterator l){
+        __A.insert(pos,f,l);
+}
 
-  /** push back \e t to \e self. */
-  void push_back( const T& t ) { __A.push_back(t); }
+/// Inserts \e t into \e self before the position pointed by \e it.
+PglVector& operator+=( const PglVector& t ) {
+        __A.insert(__A.end(),t.begin(),t.end());
+        return *this;
+}
 
-  template <class InputIterator>
-  void push_back( InputIterator first, InputIterator last  ) { __A.push_back(first, last); }
+bool operator==( const PglVector& t ) const {
+        if (__A.size() != t.size())
+                return false;
+        const_iterator _it= t.begin();
+        for (const_iterator _i = __A.begin(); _i != __A.end(); _i++) {
+                if(*_i != *_it) return false;
+                _it++;
+        }
+        return true;
+}
 
-  /** increase \e self capacity to size.
-      */
-  void reserve( uint_t size ) {
-    __A.reserve(size);
-  }
+bool operator!=( const PglVector& t ) const {
+        if (__A.size() != t.size()) return true;
+        const_iterator _it = t.begin();
+        for (const_iterator _i = __A.begin(); _i != __A.end(); _i++) {
+                if(*_i != *_it) return true;
+                _it++;
+        }
+        return false;
+}
+
+/// Returns whether \e self is empty.
+inline bool empty( ) const {
+        return __A.empty();
+}
+
+/// Returns whether \e self contain unique elements.
+bool isUnique( ) const {
+        return PGL(isUnique)(__A.begin(),__A.end());
+}
+
+/// Prints \e self to the output stream \e stream.
+std::ostream& print( std::ostream& stream,
+                     char delimiter = ',',
+                     char beg_sign = '[',
+                     char end_sign = ']' ) const {
+        return print_array(begin(),end(),stream,delimiter,beg_sign,end_sign);
+}
+
+/// Prints \e self to the output stream \e stream.
+friend std::ostream& operator<<(std::ostream& stream, const PglVector<T>& a){
+        return a.print(stream);
+}
 
 
-  /** erase \e pos to \e self and return the next element. */
-  iterator erase(iterator pos) { return __A.erase(pos); }
+/** Sets the \e i-th element of \e self to \e t.
+    \pre
+    - \e i must be strictly less than the size of \e self. */
+void setAt( uint_t i, const T& t ) {
+        GEOM_ASSERT(i < __A.size());
+        __A[i] = t;
+}
 
-  /** erase elements range \e [first,last)  of \e self and return the next element. */
-  iterator erase(iterator first,iterator last) { return __A.erase(first,last); }
+/** push back \e t to \e self. */
+void push_back( const T& t ) {
+        __A.push_back(t);
+}
 
-  T * data() const {
-	if(__A.empty())return NULL;
-	T * res = new T[__A.size()];
-	size_t _j = 0;
-	for (const_iterator _i = __A.begin(); _i != __A.end(); _i++)
-	  { res[_j] = *_i; _j++; }
-	return res;
-  }
-  void reverse( ) {
-      std::reverse(__A.begin(),__A.end());
-  }
+template <class InputIterator>
+void push_back( InputIterator first, InputIterator last  ) {
+        __A.push_back(first, last);
+}
+
+/** increase \e self capacity to size.
+ */
+void reserve( uint_t size ) {
+        __A.reserve(size);
+}
+
+
+/** erase \e pos to \e self and return the next element. */
+iterator erase(iterator pos) {
+        return __A.erase(pos);
+}
+
+/** erase elements range \e [first,last)  of \e self and return the next element. */
+iterator erase(iterator first,iterator last) {
+        return __A.erase(first,last);
+}
+
+T * data() const {
+        if(__A.empty()) return NULL;
+        T * res = new T[__A.size()];
+        size_t _j = 0;
+        for (const_iterator _i = __A.begin(); _i != __A.end(); _i++)
+        { res[_j] = *_i; _j++; }
+        return res;
+}
+void reverse( ) {
+        std::reverse(__A.begin(),__A.end());
+}
 
 #ifndef PGL_NO_DEPRECATED
-  /// Returns a const iterator at the beginning of \e self.
-  inline attribute_deprecated const_iterator getBegin( ) const { return begin(); }
+/// Returns a const iterator at the beginning of \e self.
+inline attribute_deprecated const_iterator getBegin( ) const {
+        return begin();
+}
 
-  /// Returns an iterator at the beginning of \e self.
-  inline attribute_deprecated iterator getBegin( ) { return begin(); }
+/// Returns an iterator at the beginning of \e self.
+inline attribute_deprecated iterator getBegin( ) {
+        return begin();
+}
 
-  /// Returns a const iterator at the end of \e self.
-  inline attribute_deprecated const_iterator getEnd( ) const { return end(); }
+/// Returns a const iterator at the end of \e self.
+inline attribute_deprecated const_iterator getEnd( ) const {
+        return end();
+}
 
-  /// Returns an iterator at the end of \e self.
-  inline attribute_deprecated iterator getEnd( ) { return end(); }
+/// Returns an iterator at the end of \e self.
+inline attribute_deprecated iterator getEnd( ) {
+        return end();
+}
 
-  /// Return size of this
-  inline attribute_deprecated uint_t getSize() const { return size(); }
+/// Return size of this
+inline attribute_deprecated uint_t getSize() const {
+        return size();
+}
 
-  inline attribute_deprecated bool isEmpty() const { return empty(); }
+inline attribute_deprecated bool isEmpty() const {
+        return empty();
+}
 
-  inline attribute_deprecated void pushBack( const T& t ) { push_back(t); }
+inline attribute_deprecated void pushBack( const T& t ) {
+        push_back(t);
+}
 
-  inline attribute_deprecated iterator Erase(iterator pos) { return erase(pos); }
+inline attribute_deprecated iterator Erase(iterator pos) {
+        return erase(pos);
+}
 
-  inline attribute_deprecated iterator Erase(iterator first,iterator last) { return erase(first,last); }
+inline attribute_deprecated iterator Erase(iterator first,iterator last) {
+        return erase(first,last);
+}
 
 #endif
 
 protected:
 
-  /// The elements contained by \e self.
-  std::vector<T> __A;
+/// The elements contained by \e self.
+std::vector<T> __A;
 
 };
 
@@ -332,209 +394,210 @@ template <class T>
 class Array1 : public RefCountObject, public PglVector<T>
 {
 public:
-  /// Constructs an Array1 of size \e size
-  Array1( size_t size = 0 ) :
-    RefCountObject(),
-    PglVector<T>(size) {
- }
+/// Constructs an Array1 of size \e size
+Array1( size_t size = 0 ) :
+        RefCountObject(),
+        PglVector<T>(size) {
+}
 
-  /// Constructs an Array1 with \e size copies of \e t.
-  Array1( size_t size, const T& t ) :
-    RefCountObject(),
-    PglVector<T>(size,t) {
-  }
+/// Constructs an Array1 with \e size copies of \e t.
+Array1( size_t size, const T& t ) :
+        RefCountObject(),
+        PglVector<T>(size,t) {
+}
 
 
-  /// Constructs an Array1 with the range [\e begin, \e end).
-  template <class InIterator>
-  Array1( InIterator begin, InIterator end ) :
-    RefCountObject(),
-    PglVector<T>(begin,end) {
-  }
+/// Constructs an Array1 with the range [\e begin, \e end).
+template <class InIterator>
+Array1( InIterator begin, InIterator end ) :
+        RefCountObject(),
+        PglVector<T>(begin,end) {
+}
 
-  /// Inserts \e t into \e self before the position pointed by \e it.
-  Array1& operator+=( const Array1& t ) {
-    PglVector<T>::__A.insert(PglVector<T>::end(),t.begin(),t.end());
-	return *this;
-  }
+/// Inserts \e t into \e self before the position pointed by \e it.
+Array1& operator+=( const Array1& t ) {
+        PglVector<T>::__A.insert(PglVector<T>::end(),t.begin(),t.end());
+        return *this;
+}
 };
 
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 #include <math.h>
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 template <class T>
 class NumericArray1 : public Array1<T>
 {
 
 public:
-  typedef typename Array1<T>::const_iterator const_iterator;
+typedef typename Array1<T>::const_iterator const_iterator;
 
-  /// Constructs an NumericArray1 
-  NumericArray1( size_t size = 0 ) :
-      Array1<T>( size )
-      {
-     }
+/// Constructs an NumericArray1
+NumericArray1( size_t size = 0 ) :
+        Array1<T>( size )
+{
+}
 
-  /// Constructs an NumericArray1 with \e size copies of \e t.
-  NumericArray1( size_t size, const T& t ) :
-    Array1<T>( size, t )
-      {
-       }
+/// Constructs an NumericArray1 with \e size copies of \e t.
+NumericArray1( size_t size, const T& t ) :
+        Array1<T>( size, t )
+{
+}
 
-  /// Constructs an NumericArray1 with the range [\e begin, \e end).
-  template <class InIterator>
-  NumericArray1( InIterator begin, InIterator end) :
-    Array1<T>(begin,end)
-      {
-   }
+/// Constructs an NumericArray1 with the range [\e begin, \e end).
+template <class InIterator>
+NumericArray1( InIterator begin, InIterator end) :
+        Array1<T>(begin,end)
+{
+}
 
-  /// Destructor
-  virtual ~NumericArray1( ) {
-  }
+/// Destructor
+virtual ~NumericArray1( ) {
+}
 
-  /// Returns an iterator at the maximum value of \e self.
-  inline const_iterator getMax( ) const {
-      return std::max_element(this->__A.begin(),this->__A.end());
-  }
+/// Returns an iterator at the maximum value of \e self.
+inline const_iterator getMax( ) const {
+        return std::max_element(this->__A.begin(),this->__A.end());
+}
 
-  /// Returns an iterator at the minimum value of \e self.
-  inline const_iterator getMin( ) const {
-    return std::min_element(this->__A.begin(),this->__A.end());
-  }
+/// Returns an iterator at the minimum value of \e self.
+inline const_iterator getMin( ) const {
+        return std::min_element(this->__A.begin(),this->__A.end());
+}
 
-  /** Returns an iterator first at the minimum value, second at the
-      maximum value of \e self. */
- inline std::pair<const_iterator,const_iterator> getMinAndMax(bool filterinf = false) const {
-    const_iterator _min = this->__A.begin();
-    if (filterinf) while (!pglfinite(*_min) && _min != this->__A.end()) ++_min;
-    const_iterator _max = _min;
-    for (const_iterator _i = _min + 1; _i != this->__A.end(); _i++)
-      if ((*_i < *_min) && (!filterinf || pglfinite(*_i))) _min = _i;
-      else if ((*_i > *_max) && (!filterinf || pglfinite(*_i))) _max = _i;
-    return std::pair<const_iterator,const_iterator>(_min,_max);
-  }
+/** Returns an iterator first at the minimum value, second at the
+    maximum value of \e self. */
+inline std::pair<const_iterator,const_iterator> getMinAndMax(bool filterinf = false) const {
+        const_iterator _min = this->__A.begin();
+        if (filterinf) while (!pglfinite(*_min) && _min != this->__A.end()) ++_min;
+        const_iterator _max = _min;
+        for (const_iterator _i = _min + 1; _i != this->__A.end(); _i++)
+                if ((*_i < *_min) && (!filterinf || pglfinite(*_i))) _min = _i;
+                else if ((*_i > *_max) && (!filterinf || pglfinite(*_i))) _max = _i;
+        return std::pair<const_iterator,const_iterator>(_min,_max);
+}
 
-  /// Addition of the 2 matrix.
-  NumericArray1<T>& operator+=(const NumericArray1<T>&a){
-      GEOM_ASSERT(a.size() == size());
-      typename NumericArray1<T>::const_iterator _i1 = a.begin();
-      for(typename std::vector<T>::iterator  _i2 = this->__A.begin();
-          _i2 != this->__A.end();
-          _i2++){
-          *_i2 += *_i1;
-          _i1++;
-      }
-      return *this;
-  }
+/// Addition of the 2 matrix.
+NumericArray1<T>& operator+=(const NumericArray1<T>&a){
+        GEOM_ASSERT(a.size() == size());
+        typename NumericArray1<T>::const_iterator _i1 = a.begin();
+        for(typename std::vector<T>::iterator _i2 = this->__A.begin();
+            _i2 != this->__A.end();
+            _i2++) {
+                *_i2 += *_i1;
+                _i1++;
+        }
+        return *this;
+}
 
-  /// Addition of the 2 arrays.
-  NumericArray1<T> operator+( const NumericArray1<T>& m ) const {
-      NumericArray1<T> sum(*this);
-      return sum+=m;
-  }
+/// Addition of the 2 arrays.
+NumericArray1<T> operator+( const NumericArray1<T>& m ) const {
+        NumericArray1<T> sum(*this);
+        return sum+=m;
+}
 
-  /// Minus operation of 2 arrays.
-  NumericArray1<T>& operator-=(const NumericArray1<T>& a){
-      GEOM_ASSERT(a.size() == getSize());
-      typename NumericArray1<T>::const_iterator _i1 = a.begin();
-      for(typename std::vector<T>::iterator  _i2 = this->__A.begin();
-          _i2 != this->__A.end(); _i2++){
-          *_i2 -= *_i1;
-          _i1++;
-      }
-      return *this;
-  }
+/// Minus operation of 2 arrays.
+NumericArray1<T>& operator-=(const NumericArray1<T>& a){
+        GEOM_ASSERT(a.size() == getSize());
+        typename NumericArray1<T>::const_iterator _i1 = a.begin();
+        for(typename std::vector<T>::iterator _i2 = this->__A.begin();
+            _i2 != this->__A.end(); _i2++) {
+                *_i2 -= *_i1;
+                _i1++;
+        }
+        return *this;
+}
 
-  /// Subtraction of 2 arrays.
-  NumericArray1<T> operator-(const NumericArray1<T>& m) const {
-      NumericArray1<T> sum(*this);
-      return sum-=m;
-  }
+/// Subtraction of 2 arrays.
+NumericArray1<T> operator-(const NumericArray1<T>& m) const {
+        NumericArray1<T> sum(*this);
+        return sum-=m;
+}
 
-  /// Addition of an array and a value.
-  NumericArray1<T>& operator+=(T val){
-      for(typename std::vector<T>::iterator  _i2 = this->__A.begin();
-          _i2 != this->__A.end(); _i2++){
-          *_i2 += val;
-      }
-      return *this;
-  }
+/// Addition of an array and a value.
+NumericArray1<T>& operator+=(T val){
+        for(typename std::vector<T>::iterator _i2 = this->__A.begin();
+            _i2 != this->__A.end(); _i2++) {
+                *_i2 += val;
+        }
+        return *this;
+}
 
 
-  /// Addition of an array and a value.
-  NumericArray1<T>operator+( T val ) const {
-      NumericArray1<T> sum(*this);
-      return sum+=val;
-  }
-  /// Subtraction of an array and a value.
-  NumericArray1<T>& operator -= ( T val ){
-      for(typename std::vector<T>::iterator  _i2 = this->__A.begin();
-          _i2 != this->__A.end(); _i2++){
-          *_i2 -= val;
-      }
-      return *this;
-  }
+/// Addition of an array and a value.
+NumericArray1<T>operator+( T val ) const {
+        NumericArray1<T> sum(*this);
+        return sum+=val;
+}
+/// Subtraction of an array and a value.
+NumericArray1<T>& operator -= ( T val ){
+        for(typename std::vector<T>::iterator _i2 = this->__A.begin();
+            _i2 != this->__A.end(); _i2++) {
+                *_i2 -= val;
+        }
+        return *this;
+}
 
-  /// Subtraction of an array and a value.
-  NumericArray1<T>operator - ( T val ) const {
-      NumericArray1<T> sum(*this);
-      return sum-=val;
-  }
+/// Subtraction of an array and a value.
+NumericArray1<T>operator - ( T val ) const {
+        NumericArray1<T> sum(*this);
+        return sum-=val;
+}
 
-  /// Multiplication of an array and a value.
-  NumericArray1<T>& operator *= (T val){
-      for(typename std::vector<T>::iterator  _i2 = this->__A.begin();
-          _i2 != this->__A.end(); _i2++){
-          *_i2 *= val;
-      }
-      return *this;
-  }
+/// Multiplication of an array and a value.
+NumericArray1<T>& operator *= (T val){
+        for(typename std::vector<T>::iterator _i2 = this->__A.begin();
+            _i2 != this->__A.end(); _i2++) {
+                *_i2 *= val;
+        }
+        return *this;
+}
 
-  /// Multiplication of an array and a value.
-  NumericArray1<T>operator * ( T val ) const {
-      NumericArray1<T> sum(*this);
-      return sum*=val;
-  }
+/// Multiplication of an array and a value.
+NumericArray1<T>operator * ( T val ) const {
+        NumericArray1<T> sum(*this);
+        return sum*=val;
+}
 
-  /// Division of an array and a value.
-  NumericArray1<T>& operator /= (T val){
-      for(typename std::vector<T>::iterator  _i2 = this->__A.begin();
-          _i2 != this->__A.end(); _i2++){
-          *_i2 /= val;
-      }
-      return *this;
-  }
+/// Division of an array and a value.
+NumericArray1<T>& operator /= (T val){
+        for(typename std::vector<T>::iterator _i2 = this->__A.begin();
+            _i2 != this->__A.end(); _i2++) {
+                *_i2 /= val;
+        }
+        return *this;
+}
 
-  /// Division of an array and a value.
-  NumericArray1<T>operator /( T val ) const {
-      NumericArray1<T> sum(*this);
-      return sum/=val;
-  }
+/// Division of an array and a value.
+NumericArray1<T>operator /( T val ) const {
+        NumericArray1<T> sum(*this);
+        return sum/=val;
+}
 
 };
 
 /// Constructs an Array1 with \e size copies of \e t.
 template<class U, class T = typename U::element_type>
 struct range {
-    const T& firstvalue;
-    const T& increment;
-    size_t size;
+        const T& firstvalue;
+        const T& increment;
+        size_t size;
 
-    range(size_t _size, const T& _firstvalue,  const T& _increment) :
-        size(_size),
-        firstvalue(_firstvalue),
-        increment(_increment) {}
+        range(size_t _size, const T& _firstvalue,  const T& _increment) :
+                size(_size),
+                firstvalue(_firstvalue),
+                increment(_increment) {
+        }
 
-    operator U () const {
-        U result(size,firstvalue);
-        T value = firstvalue + increment;
-        for (size_t i = 1; i < size; ++i, value += increment)
-            result[i] = value;
-        return result;
-    }
+        operator U () const {
+                U result(size,firstvalue);
+                T value = firstvalue + increment;
+                for (size_t i = 1; i < size; ++i, value += increment)
+                        result[i] = value;
+                return result;
+        }
 };
 
 
@@ -600,148 +663,148 @@ typedef RCPtr<RealArray> RealArrayPtr;
 /**
    \class RealArray
    \brief A mono dimensional array of real of non fixed size.
-*/
+ */
 class TOOLS_API RealArray : public NumericArray1<real_t>
 {
 
 public:
 
-  /// Constructs an Array1 of size \e size
-  RealArray( uint_t size = 0 ) ;
+/// Constructs an Array1 of size \e size
+RealArray( uint_t size = 0 );
 
-  /// Constructs an Array1 with \e size copies of \e t.
-  RealArray(uint_t size, const real_t& t  ) ;
+/// Constructs an Array1 with \e size copies of \e t.
+RealArray(uint_t size, const real_t& t  );
 
-  /// Constructs an Array1 with the range [\e begin, \e end).
-  template <class InIterator>
-  RealArray(InIterator begin, InIterator end ) :
-    NumericArray1<real_t>( begin, end ) {
-  }
+/// Constructs an Array1 with the range [\e begin, \e end).
+template <class InIterator>
+RealArray(InIterator begin, InIterator end ) :
+        NumericArray1<real_t>( begin, end ) {
+}
 
-  /// Destructor
-  virtual ~RealArray( ); 
+/// Destructor
+virtual ~RealArray( );
 
-  RealArrayPtr log() const { 
-      RealArrayPtr result(new RealArray(*this));
-      for(iterator it = result->begin(); it != result->end(); ++it) *it = ::log(*it);
-      return result;
-  }
+RealArrayPtr log() const {
+        RealArrayPtr result(new RealArray(*this));
+        for(iterator it = result->begin(); it != result->end(); ++it) *it = ::log(*it);
+        return result;
+}
 
-  RealArrayPtr log(real_t base ) const { 
-      RealArrayPtr result(new RealArray(*this));
-      float logbase = ::log(base);
-      for(iterator it = result->begin(); it != result->end(); ++it) *it = ::log(*it) / logbase;
-      return result;
-  }
+RealArrayPtr log(real_t base ) const {
+        RealArrayPtr result(new RealArray(*this));
+        float logbase = ::log(base);
+        for(iterator it = result->begin(); it != result->end(); ++it) *it = ::log(*it) / logbase;
+        return result;
+}
 
-  RealArrayPtr pow(real_t exponent) const { 
-      RealArrayPtr result(new RealArray(*this));
-      for(iterator it = result->begin(); it != result->end(); ++it) *it = ::pow(*it,exponent);
-      return result;
-  }
+RealArrayPtr pow(real_t exponent) const {
+        RealArrayPtr result(new RealArray(*this));
+        for(iterator it = result->begin(); it != result->end(); ++it) *it = ::pow(*it,exponent);
+        return result;
+}
 
-  RealArrayPtr exp() const { 
-      RealArrayPtr result(new RealArray(*this));
-      for(iterator it = result->begin(); it != result->end(); ++it) *it = ::exp(*it);
-      return result;
-  }
+RealArrayPtr exp() const {
+        RealArrayPtr result(new RealArray(*this));
+        for(iterator it = result->begin(); it != result->end(); ++it) *it = ::exp(*it);
+        return result;
+}
 
-  RealArrayPtr sqrt() const { 
-      RealArrayPtr result(new RealArray(*this));
-      for(iterator it = result->begin(); it != result->end(); ++it) *it = ::sqrt(*it);
-      return result;
-  }
+RealArrayPtr sqrt() const {
+        RealArrayPtr result(new RealArray(*this));
+        for(iterator it = result->begin(); it != result->end(); ++it) *it = ::sqrt(*it);
+        return result;
+}
 
-  /// Addition of the 2 matrix.
-  RealArray& operator+=(const RealArray&a){
-      GEOM_ASSERT(a.size() == getSize());
-      RealArray::const_iterator _i1 = a.begin();
-      for(iterator  _i2 = __A.begin();  _i2 != __A.end();  _i2++){
-          *_i2 += *_i1;
-          _i1++;
-      }
-      return *this;
-  }
+/// Addition of the 2 matrix.
+RealArray& operator+=(const RealArray&a){
+        GEOM_ASSERT(a.size() == getSize());
+        RealArray::const_iterator _i1 = a.begin();
+        for(iterator _i2 = __A.begin(); _i2 != __A.end(); _i2++) {
+                *_i2 += *_i1;
+                _i1++;
+        }
+        return *this;
+}
 
-  /// Addition of the 2 arrays.
-  RealArray operator+( const RealArray& m ) const {
-      RealArray sum(*this);
-      return sum+=m;
-  }
+/// Addition of the 2 arrays.
+RealArray operator+( const RealArray& m ) const {
+        RealArray sum(*this);
+        return sum+=m;
+}
 
-  /// Minus operation of 2 arrays.
-  RealArray& operator-=(const RealArray& a){
-      GEOM_ASSERT(a.size() == size());
+/// Minus operation of 2 arrays.
+RealArray& operator-=(const RealArray& a){
+        GEOM_ASSERT(a.size() == size());
 
-      const_iterator _i1 = a.begin();
-      for(iterator  _i2 = __A.begin(); _i2 != __A.end(); _i2++){
-          *_i2 -= *_i1;
-          _i1++;
-      }
-      return *this;
-  }
+        const_iterator _i1 = a.begin();
+        for(iterator _i2 = __A.begin(); _i2 != __A.end(); _i2++) {
+                *_i2 -= *_i1;
+                _i1++;
+        }
+        return *this;
+}
 
-  /// Subtraction of 2 arrays.
-  RealArray operator-(const RealArray& m) const {
-      RealArray sum(*this);
-      return sum-=m;
-  }
+/// Subtraction of 2 arrays.
+RealArray operator-(const RealArray& m) const {
+        RealArray sum(*this);
+        return sum-=m;
+}
 
-  /// Addition of an array and a value.
-  RealArray& operator+=(real_t val){
-      for(iterator  _i2 = __A.begin();  _i2 != __A.end(); _i2++){
-          *_i2 += val;
-      }
-      return *this;
-  }
+/// Addition of an array and a value.
+RealArray& operator+=(real_t val){
+        for(iterator _i2 = __A.begin(); _i2 != __A.end(); _i2++) {
+                *_i2 += val;
+        }
+        return *this;
+}
 
 
-  /// Addition of an array and a value.
-  RealArray operator+(real_t val ) const {
-      RealArray sum(*this);
-      return sum+=val;
-  }
-  /// Subtraction of an array and a value.
-  RealArray& operator -= (real_t val ){
-      for(iterator  _i2 = __A.begin();  _i2 != __A.end(); _i2++){
-          *_i2 -= val;
-      }
-      return *this;
-  }
+/// Addition of an array and a value.
+RealArray operator+(real_t val ) const {
+        RealArray sum(*this);
+        return sum+=val;
+}
+/// Subtraction of an array and a value.
+RealArray& operator -= (real_t val ){
+        for(iterator _i2 = __A.begin(); _i2 != __A.end(); _i2++) {
+                *_i2 -= val;
+        }
+        return *this;
+}
 
-  /// Subtraction of an array and a value.
-  RealArray operator - (real_t val ) const {
-      RealArray sum(*this);
-      return sum-=val;
-  }
+/// Subtraction of an array and a value.
+RealArray operator - (real_t val ) const {
+        RealArray sum(*this);
+        return sum-=val;
+}
 
-  /// Multiplication of an array and a value.
-  RealArray& operator *= (real_t val){
-      for(iterator  _i2 = __A.begin();  _i2 != __A.end(); _i2++){
-          *_i2 *= val;
-      }
-      return *this;
-  }
+/// Multiplication of an array and a value.
+RealArray& operator *= (real_t val){
+        for(iterator _i2 = __A.begin(); _i2 != __A.end(); _i2++) {
+                *_i2 *= val;
+        }
+        return *this;
+}
 
-  /// Multiplication of an array and a value.
-  RealArray operator * (real_t val ) const {
-      RealArray sum(*this);
-      return sum*=val;
-  }
+/// Multiplication of an array and a value.
+RealArray operator * (real_t val ) const {
+        RealArray sum(*this);
+        return sum*=val;
+}
 
-  /// Division of an array and a value.
-  RealArray& operator /= (real_t val){
-      for(iterator  _i2 =__A.begin(); _i2 != __A.end(); _i2++){
-          *_i2 /= val;
-      }
-      return *this;
-  }
+/// Division of an array and a value.
+RealArray& operator /= (real_t val){
+        for(iterator _i2 =__A.begin(); _i2 != __A.end(); _i2++) {
+                *_i2 /= val;
+        }
+        return *this;
+}
 
-  /// Division of an array and a value.
-  RealArray operator /(real_t val ) const {
-      RealArray sum(*this);
-      return sum/=val;
-  }
+/// Division of an array and a value.
+RealArray operator /(real_t val ) const {
+        RealArray sum(*this);
+        return sum/=val;
+}
 };
 
 /// Real Array Pointer
@@ -749,24 +812,24 @@ typedef RCPtr<RealArray> RealArrayPtr;
 TOOLS_DECLARE_TYPE(RealArray)
 
 template<class NumericArray>
-Uint32Array1Ptr histogram(RCPtr<NumericArray> values, uint32_t nbbins, 
-                          typename NumericArray::element_type& minvalue, 
-                          typename NumericArray::element_type& maxvalue, 
+Uint32Array1Ptr histogram(RCPtr<NumericArray> values, uint32_t nbbins,
+                          typename NumericArray::element_type& minvalue,
+                          typename NumericArray::element_type& maxvalue,
                           real_t& binrange)
 {
-    typedef typename NumericArray::element_type ValueType;
-    typedef typename NumericArray::const_iterator ValueConstIterator;
-    Uint32Array1Ptr result(new Uint32Array1(nbbins,0));
-    std::pair<ValueConstIterator,ValueConstIterator> minmax = values->getMinAndMax();
-    minvalue = *minmax.first;
-    maxvalue = *minmax.second;
-    binrange = (*minmax.second - minvalue) / real_t(nbbins);
-    for(ValueConstIterator itVal = values->begin(); itVal != values->end(); ++itVal)
-    {
-        uint32_t binid = std::min(nbbins-1,uint32_t((*itVal-minvalue)/binrange));
-        result->setAt(binid,result->getAt(binid)+1);
-    }
-    return result;
+        typedef typename NumericArray::element_type ValueType;
+        typedef typename NumericArray::const_iterator ValueConstIterator;
+        Uint32Array1Ptr result(new Uint32Array1(nbbins,0));
+        std::pair<ValueConstIterator,ValueConstIterator> minmax = values->getMinAndMax();
+        minvalue = *minmax.first;
+        maxvalue = *minmax.second;
+        binrange = (*minmax.second - minvalue) / real_t(nbbins);
+        for(ValueConstIterator itVal = values->begin(); itVal != values->end(); ++itVal)
+        {
+                uint32_t binid = std::min(nbbins-1,uint32_t((*itVal-minvalue)/binrange));
+                result->setAt(binid,result->getAt(binid)+1);
+        }
+        return result;
 
 
 }
@@ -777,14 +840,13 @@ Uint32Array1Ptr histogram(RCPtr<NumericArray> values, uint32_t nbbins,
 // __util_array_h__
 /* ----------------------------------------------------------------------- */
 
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /// Write Array \b a in \b stream.
-  template <class T>
-  std::ostream& operator<<(std::ostream& stream, const TOOLS(Array1<T>)& a){
-      return a.print(stream);
-  }
+template <class T>
+std::ostream& operator<<(std::ostream& stream, const TOOLS(Array1<T>)& a){
+        return a.print(stream);
+}
 
 /* ----------------------------------------------------------------------- */
 #endif
-

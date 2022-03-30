@@ -1,0 +1,30 @@
+name: plantgl-devel
+channels:
+    - conda-forge
+    - fredboudon
+    - msys2
+    - defaults
+dependencies:
+    - python
+    - setuptools
+    - cmake
+    - numpy
+    - boost <=1.72
+    - qt
+    - pyqt
+    - libpng
+    - zlib
+    - qhull
+    - cgal-cpp
+    - gmp 
+    - mpfr 
+    - eigen
+    - ann
+    - ipython
+    - pyopengl
+    - pyqglviewer
+    - pytest
+    - m2-bison
+    - m2-flex 
+    - scipy
+    - matplotlib-base

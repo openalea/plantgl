@@ -1,33 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Plant Graphic Library
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2003 UMR Cirad/Inria/Inra Dap - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 #include "intersection.h"
 #include "tesselator.h"
@@ -37,9 +47,8 @@
 #include <plantgl/scenegraph/geometry/pointset.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
 
 #include <CGAL/Exact_predicates_exact_constructions_kernel.h>
 #include <CGAL/Boolean_set_operations_2.h>
@@ -89,7 +98,7 @@ std::pair<Point2ArrayPtr, IndexArrayPtr> internal_polygon2ds_intersection(Polygo
 
 std::pair<Point2ArrayPtr, IndexArrayPtr> PGL(polygon2ds_intersection)(Point2ArrayPtr polygon1, Point2ArrayPtr polygon2)
 {
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
   // Construct the two input polygons.
   Polygon_2 P;
   for(Point2Array::const_iterator it = polygon1->begin(); it != polygon1->end(); ++it)
@@ -107,7 +116,7 @@ std::pair<Point2ArrayPtr, IndexArrayPtr> PGL(polygon2ds_intersection)(Point2Arra
 
 std::pair<Point2ArrayPtr, IndexArrayPtr> PGL(polygon2ds_intersection)(Point2ArrayPtr points, Index polygon1, Index polygon2)
 {
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
   // Construct the two input polygons.
   Polygon_2 P;
   for(Index::const_iterator it = polygon1.begin(); it != polygon1.end(); ++it)
@@ -124,7 +133,7 @@ std::pair<Point2ArrayPtr, IndexArrayPtr> PGL(polygon2ds_intersection)(Point2Arra
 }
 
 /*
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
 #include <CGAL/Gmpz.h>
 #include <CGAL/Extended_homogeneous.h>
 #include <CGAL/Polyhedron_3.h>
@@ -180,10 +189,10 @@ Nef_polyhedron make_nef_cube_3(const Vector3& bbmin, const Vector3& bbmax) {
 
 #endif
 
-std::pair<Point3ArrayPtr, IndexArrayPtr> 
+std::pair<Point3ArrayPtr, IndexArrayPtr>
 PGL(box_triangle_intersection)(const Vector3& bbxmin, const Vector3& bbxmax, const Vector3& p1, const Vector3& p2, const Vector3& p3)
 {
-#ifdef WITH_CGAL
+#ifdef PGL_WITH_CGAL
 
     Nef_polyhedron N1 = make_nef_cube_3(bbxmin,bbxmax);
     printf("cube created\n");
@@ -195,7 +204,7 @@ PGL(box_triangle_intersection)(const Vector3& bbxmin, const Vector3& bbxmax, con
 
     Nef_polyhedron Nresult = N1 * N2;
 
-    
+
     Polyhedron result;
     Nresult.convert_to_polyhedron(result);
 
@@ -210,7 +219,7 @@ PGL(box_triangle_intersection)(const Vector3& bbxmin, const Vector3& bbxmax, con
     // CGAL_forall_facets(f,result){
     for(Polyhedron::Facet_iterator f = result.facets_begin(); f != result.facets_end(); ++f){
         Index face;
-        Polyhedron::Halfedge_around_facet_circulator j = f->facet_begin(); 
+        Polyhedron::Halfedge_around_facet_circulator j = f->facet_begin();
         do{
             face.push_back(std::distance(result.vertices_begin(),j->vertex()));
         } while (++j != f->facet_begin());
@@ -224,19 +233,19 @@ PGL(box_triangle_intersection)(const Vector3& bbxmin, const Vector3& bbxmax, con
 #endif
 }*/
 
-Vector3 PGL(_plane_segment_intersection)(const Plane3& plane, 
+Vector3 PGL(_plane_segment_intersection)(const Plane3& plane,
                                     real_t d1,
-                                    const TOOLS(Vector3)& p1, 
-                                    const TOOLS(Vector3)& p2)
+                                    const Vector3& p1,
+                                    const Vector3& p2)
 {
     Vector3 segdir = p2-p1;
     real_t r = (plane.getD()-d1)/ dot(plane.getNormal(), segdir);
     return p1+segdir*r;
 }
 
-bool PGL(plane_segment_intersection)(const Plane3& plane, 
-                                     const TOOLS(Vector3)& p1, 
-                                     const TOOLS(Vector3)& p2,
+bool PGL(plane_segment_intersection)(const Plane3& plane,
+                                     const Vector3& p1,
+                                     const Vector3& p2,
                                      Vector3& result)
 {
     real_t d1 = dot(plane.getNormal(),p1);
@@ -259,18 +268,18 @@ int tri_tri_intersect_with_isectline(real_t V0[3],real_t V1[3],real_t V2[3],
      vname##a[1] = vname.y(); \
      vname##a[2] = vname.z();
 
-IntersectionType  PGL(triangle_triangle_intersection)(const TOOLS(Vector3)& t11, const TOOLS(Vector3)& t12, const TOOLS(Vector3)& t13, 
-                                          const TOOLS(Vector3)& t21, const TOOLS(Vector3)& t22, const TOOLS(Vector3)& t23, 
-                                          TOOLS(Vector3)& intersectionstart, TOOLS(Vector3)& intersectionend)
+IntersectionType  PGL(triangle_triangle_intersection)(const Vector3& t11, const Vector3& t12, const Vector3& t13,
+                                          const Vector3& t21, const Vector3& t22, const Vector3& t23,
+                                          Vector3& intersectionstart, Vector3& intersectionend)
 {
     int coplanar;
     real_t isectpt1[3];
     real_t isectpt2[3];
 
-    CONVERT(t11); CONVERT(t12); CONVERT(t13); 
-    CONVERT(t21); CONVERT(t22); CONVERT(t23); 
-    
-    int res = tri_tri_intersect_with_isectline(t11a,t12a,t13a,t21a,t22a,t23a, &coplanar,isectpt1, isectpt2);  
+    CONVERT(t11); CONVERT(t12); CONVERT(t13);
+    CONVERT(t21); CONVERT(t22); CONVERT(t23);
+
+    int res = tri_tri_intersect_with_isectline(t11a,t12a,t13a,t21a,t22a,t23a, &coplanar,isectpt1, isectpt2);
     if (res) {
         if (coplanar) return CoPlanar;
         intersectionstart = Vector3(isectpt1[0],isectpt1[1],isectpt1[2]);
@@ -281,16 +290,16 @@ IntersectionType  PGL(triangle_triangle_intersection)(const TOOLS(Vector3)& t11,
     return NoIntersection;
 }
 
-std::pair<std::vector<std::pair<uint32_t,uint32_t> >,GeometryArrayPtr> 
+std::pair<std::vector<std::pair<uint32_t,uint32_t> >,GeometryArrayPtr>
 PGL(auto_intersection)(Point3ArrayPtr points, Index3ArrayPtr triangles)
 {
-#ifdef WITH_ANN
+#ifdef PGL_WITH_ANN
     std::vector<std::pair<uint32_t,uint32_t> > intersectionpair;
     GeometryArrayPtr intersectionresult(new GeometryArray());
     Point3ArrayPtr centroids = centroids_of_groups(points, triangles);
     real_t maxsize = 0;
     Point3Array::const_iterator itorigin = centroids->begin();
-    for(Index3Array::const_iterator it = triangles->begin(); it != triangles->end(); ++it, ++itorigin ) 
+    for(Index3Array::const_iterator it = triangles->begin(); it != triangles->end(); ++it, ++itorigin )
     {
         real_t size = norm(*itorigin-points->getAt(it->getAt(0)));
         if (maxsize < size) maxsize = size;
@@ -326,7 +335,7 @@ PGL(auto_intersection)(Point3ArrayPtr points, Index3ArrayPtr triangles)
                         }
 
                         /// We check here if it is not an edge or a vertex which is in common.
-                        /// We should not  care about such intersection in case of auto intersection 
+                        /// We should not  care about such intersection in case of auto intersection
                         if (common_points.size() == 1 && nbintersection == 1){
                             // We test if it is a common point
                             if (norm(points->getAt(common_points[0]) - intersectionstart) < GEOM_EPSILON)
@@ -341,20 +350,20 @@ PGL(auto_intersection)(Point3ArrayPtr points, Index3ArrayPtr triangles)
                             // We test if it is a common edge
                             if (nbintersection == 2){
                                 if ( norm(intersectionstart-points->getAt(common_points[0])) < GEOM_EPSILON ) {
-                                    if ( norm(intersectionend-points->getAt(common_points[1])) < GEOM_EPSILON ) 
+                                    if ( norm(intersectionend-points->getAt(common_points[1])) < GEOM_EPSILON )
                                         continue;
                                 }
                                 else if ( norm(intersectionstart-points->getAt(common_points[1])) < GEOM_EPSILON ) {
-                                     if ( norm(intersectionend-points->getAt(common_points[0])) < GEOM_EPSILON ) 
+                                     if ( norm(intersectionend-points->getAt(common_points[0])) < GEOM_EPSILON )
                                         continue;
-                                } 
+                                }
                             }
                             // This case should not occur. We test if it is a common point
                             else if (nbintersection == 1){
                                 if ( norm(intersectionstart-points->getAt(common_points[0])) < GEOM_EPSILON ||
                                      norm(intersectionstart-points->getAt(common_points[1])) < GEOM_EPSILON )
                                     continue;
-                            }                             
+                            }
                         }
 
                         intersectionpair.push_back(std::pair<uint32_t,uint32_t>(idtr, *itnbg));

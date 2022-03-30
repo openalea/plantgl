@@ -20,7 +20,7 @@ else:
   def test_triangulation(visual = False):
     p = Polyline2D([(0,0),(1,0),(0.5,0.5),(1,1),(0,2),(-1,1.5),(-0.9,1.4),(-0.85,1.3),(-0.8,1.2),(-0.7,1.3),(0,1.3),(0,0)])
     tr = Skeleton.getDelaunayConstrained2DTriangulation(p)
-    print tr.pointList,tr.indexList
+    print(tr.pointList,tr.indexList)
     if visual:
       p.width = 5
       Viewer.display(Shape(p,Material((255,0,0))))
@@ -30,7 +30,7 @@ else:
     # error with 3rd point as 0.5,0.5 (infinite point for cgal). use 0.4999,0.5 instead
     p = Polyline2D([(0,0),(1,0),(0.5,0.5),(1,1),(0,2),(-1,1.5),(-0.9,1.4),(-0.85,1.3),(-0.8,1.2),(-0.7,1.3),(0,1.3),(0,0)])
     tr = Skeleton.getDelaunayConstrained2DTriangulation(p)
-    print tr.pointList,tr.indexList
+    print(tr.pointList,tr.indexList)
     if visual:
       p.width = 5
       Viewer.display(Shape(p,Material((255,0,0))))
@@ -60,8 +60,8 @@ else:
     if visual:
       Viewer.display(p)
       Viewer.add(Scene([Shape(i,Material((randint(0,255),randint(0,255),randint(0,255)))) for i in skel]))
-    print len(skel)
-    print skel
+    print(len(skel))
+    print(skel)
 
   def test_filter_information(visual = False):
     p = Polyline2D([(0,0),(0.5,0.3),(1,0),(0.7,0.5),(1,1),(0,2),(-1,2),(0,1.75),(-1,1.5),(0,1.3),(0.3,0.5),(0,0)])
@@ -71,7 +71,7 @@ else:
       Viewer.display(p)
       Viewer.add(Scene([Shape(i,Material((randint(0,255),randint(0,255),randint(0,255)))) for i in res[0]]))
       Viewer.add(Scene([Shape(Translated(Vector3(i),Sphere(0.02)),Material((randint(0,255),randint(0,255),randint(0,255)))) for i in res[1]]))
-    print len(res[0])    
+    print(len(res[0]))    
 
   def test_filter(visual = False):
     p = Polyline2D([(0,0),(0.5,0.3),(1,0),(0.7,0.5),(1,1),(0,2),(-1,2),(0,1.75),(-1,1.5),(0,1.3),(0.3,0.5),(0,0)])
@@ -80,8 +80,8 @@ else:
     if visual:
       Viewer.display(p)
       Viewer.add(Scene([Shape(i,Material((randint(0,255),randint(0,255),randint(0,255)))) for i in skel]))
-    print len(skel)
-    print skel
+    print(len(skel))
+    print(skel)
 
     
 if __name__ == '__main__':

@@ -1,35 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2009 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al.
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 #include "spacecolonization.h"
 #include "../base/pointmanipulation.h"
@@ -37,7 +45,6 @@
 #include <plantgl/math/util_math.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -45,11 +52,11 @@ const size_t SpaceColonization::NOID(UINT32_MAX);
 
 /* ----------------------------------------------------------------------- */
 
-SpaceColonization::SpaceColonization(const Point3ArrayPtr _attractors,                           
+SpaceColonization::SpaceColonization(const Point3ArrayPtr _attractors,
                                       real_t _nodelength,
                                       real_t _kill_radius,
                                       real_t _perception_radius,
-                                      const Point3ArrayPtr    initialskeletonnodes, 
+                                      const Point3ArrayPtr    initialskeletonnodes,
                                       const Uint32Array1Ptr  initialskeletonparents,
                                       const Index& _active_nodes,
                                       size_t spacetilingratio):
@@ -62,7 +69,7 @@ SpaceColonization::SpaceColonization(const Point3ArrayPtr _attractors,
     insertion_angle(GEOM_PI/2),
     nb_buds_per_whorl(4),
     min_nb_pt_per_bud(3),
-    skeletonnodes(initialskeletonnodes), 
+    skeletonnodes(initialskeletonnodes),
     skeletonparents(initialskeletonparents),
     active_nodes(_active_nodes),
     nbIteration(0)
@@ -71,7 +78,7 @@ SpaceColonization::SpaceColonization(const Point3ArrayPtr _attractors,
         active_nodes = range<Index>(0,skeletonnodes->size(),1);
 }
 
-SpaceColonization::SpaceColonization(const Point3ArrayPtr _attractors,                           
+SpaceColonization::SpaceColonization(const Point3ArrayPtr _attractors,
                                       real_t _nodelength,
                                       real_t _kill_radius,
                                       real_t _perception_radius,
@@ -86,7 +93,7 @@ SpaceColonization::SpaceColonization(const Point3ArrayPtr _attractors,
     insertion_angle(GEOM_PI/2),
     nb_buds_per_whorl(4),
     min_nb_pt_per_bud(3),
-    skeletonnodes(), 
+    skeletonnodes(),
     skeletonparents(),
     nodeattractors(),
     active_nodes(),
@@ -106,7 +113,7 @@ SpaceColonization::~SpaceColonization()
 
 size_t SpaceColonization::add_node(const Vector3& position, size_t parent, const Index& attractors, bool active) {
     size_t pid = 0;
-    if(is_null_ptr(skeletonnodes)) 
+    if(is_null_ptr(skeletonnodes))
         skeletonnodes = Point3ArrayPtr(new Point3Array(1, position));
     else {
         pid = skeletonnodes->size();
@@ -119,7 +126,7 @@ size_t SpaceColonization::add_node(const Vector3& position, size_t parent, const
         for(size_t i = skeletonparents->size(); i < pid+1; ++i)
             skeletonparents->push_back(NOID);
     }
-    if (parent != NOID) 
+    if (parent != NOID)
         skeletonparents->setAt(pid,parent);
     else skeletonparents->setAt(pid,pid);
 
@@ -128,14 +135,14 @@ size_t SpaceColonization::add_node(const Vector3& position, size_t parent, const
         nodeattractors = IndexArrayPtr(new IndexArray(pid+1));
     else {
         for(size_t i = nodeattractors->size(); i < pid+1; ++i)
-            nodeattractors->push_back(Index());        
+            nodeattractors->push_back(Index());
     }
     nodeattractors->setAt(pid,attractors);
 
 
 
 
-    if (active)  _activate_node(pid);   
+    if (active)  _activate_node(pid);
 
 
     return pid;
@@ -145,7 +152,7 @@ size_t SpaceColonization::add_node(const Vector3& position, size_t parent, const
 
 void SpaceColonization::activate_leaves()
 {
-    uint32_t root; 
+    uint32_t root;
     IndexArrayPtr children = determine_children(skeletonparents,root);
 
     Index previous_active_nodes = active_nodes;
@@ -159,7 +166,7 @@ void SpaceColonization::activate_leaves()
             Index::iterator it = find(previous_active_nodes.begin(),previous_active_nodes.end(), pid);
             if (it == previous_active_nodes.end()) active_nodes.push_back(pid);
         }
-        
+
     }
 
     active_nodes.insert(active_nodes.begin(), previous_active_nodes.begin(), previous_active_nodes.end());
@@ -168,7 +175,7 @@ void SpaceColonization::activate_leaves()
 
 
 /// compute a whorl of 'nb' buds at branching angles.
-std::vector<Vector3> 
+std::vector<Vector3>
 SpaceColonization::lateral_directions(const Vector3& dir, real_t angle, int nb){
     std::vector<Vector3> result;
     Vector3 rotdir = direction(dir.anOrthogonalVector());
@@ -264,7 +271,7 @@ void SpaceColonization::register_attractors(const Vector3& pos, Uint32ArrayPtr a
         real_t dist = norm(pos-attractors->getAt(*it));
         AttractorMap::iterator itmap = attractormap.find(*it);
         std::pair<Uint32ArrayPtr,real_t> info;
-        if (itmap != attractormap.end()){ 
+        if (itmap != attractormap.end()){
             // Competition
             if (dist > itmap->second.second) {
                 info = itmap->second;
@@ -299,7 +306,7 @@ void SpaceColonization::process_bud(const Bud& bud)
         Vector3 mean_dir = pointset_mean_direction(position,attractors, nbg_att);
         Vector3 new_position = position + mean_dir * nodelength;
         new_position = attractors->getAt(findClosestFromSubset(new_position,attractors,nbg_att).first);
-    
+
         // create new node
         add_node(new_position, bud.pid, nbg_att);
 
@@ -308,7 +315,7 @@ void SpaceColonization::process_bud(const Bud& bud)
 
 }
 
-void SpaceColonization::growth() 
+void SpaceColonization::growth()
 {
     if (!budlist.empty()){
         size_t cparent = budlist[0].pid;
@@ -360,17 +367,17 @@ IndexArrayPtr SpaceColonization::get_children() const { uint32_t root; IndexArra
 /* ----------------------------------------------------------------------- */
 
 
-GraphColonization::GraphColonization(const Point3ArrayPtr attractors,                           
+GraphColonization::GraphColonization(const Point3ArrayPtr attractors,
                                                real_t perception_radius,
                                                const IndexArrayPtr _graph,
-                                               uint32_t _root, 
+                                               uint32_t _root,
                                                real_t _powerdistance,
                                                size_t spacetilingratio):
-    SpaceColonization(attractors,                           
+    SpaceColonization(attractors,
                       perception_radius, 0, perception_radius,
-                      Point3ArrayPtr(), 
-                      Uint32ArrayPtr(),  
-                      Index(), 
+                      Point3ArrayPtr(),
+                      Uint32ArrayPtr(),
+                      Index(),
                       spacetilingratio ),
                       graph(_graph), root(_root), use_jonction_points(false), powerdistance(_powerdistance)
 
@@ -402,15 +409,15 @@ void GraphColonization::generate_buds(size_t pid) {
     for(size_t i = 0; i < nbpotentialchild; ++i) {
         const Index& nextcomponents = groups.first->getAt(i);
 
-     /*   if (pid == testedpid) 
+     /*   if (pid == testedpid)
             printf("New group of %i components at level %f (from %f)\n", nextcomponents.size(), groups.second->getAt(i), plevel); */
-        
+
         AttractorList nnextcomponents = attractor_grid->filter_disabled(AttractorList(nextcomponents.begin(),nextcomponents.end()));
         if (nnextcomponents.size() >= min_nb_pt_per_bud) {
             real_t level = groups.second->getAt(i);
             int dist = round((level - plevel) / level_inc);
             // printf("dist %i %f %f %f\n", dist, level, plevel, perception_radius);
-            /* if (pid == testedpid) 
+            /* if (pid == testedpid)
                 printf("Accepted as group of %i components at delay %i\n", nnextcomponents.size(), dist); */
 
             if (dist <= 1) add_bud(pid, nnextcomponents, level);
@@ -421,7 +428,7 @@ void GraphColonization::generate_buds(size_t pid) {
         Vector3 new_position = centroid_of_group(attractors, components);
         uint32_t npid = add_node(new_position, plevel, components, pid, false );
     }
-    
+
 }
 
 void GraphColonization::process_bud(const Bud& bud)
@@ -434,7 +441,7 @@ void GraphColonization::process_bud(const Bud& bud)
         // Vector3 mean_dir = pointset_mean_direction(position,attractors, nbg_att);
         // Vector3 new_position = position + mean_dir * nodelength;
         // new_position = attractors->getAt(findClosestFromSubset(new_position,attractors,nbg_att).first);
-        
+
         Vector3 new_position;
         if (!use_jonction_points) new_position = centroid_of_group(attractors, components);
         else {
@@ -459,11 +466,11 @@ void GraphColonization::process_bud(const Bud& bud)
             attractor_grid->disable_points(bud.attractors->begin(),bud.attractors->end());
         }
 
-      
+
 
 }
 
-size_t GraphColonization::add_node(const TOOLS(Vector3)& position, 
+size_t GraphColonization::add_node(const Vector3& position,
                       real_t level,
                       const Index& components,
                       size_t parent, bool active)
@@ -492,7 +499,7 @@ size_t GraphColonization::add_node(const TOOLS(Vector3)& position,
 }
 
 
-void 
+void
 GraphColonization::init()
 {
     std::pair<Uint32ArrayPtr,RealArrayPtr> parents_and_distances_to_root = points_dijkstra_shortest_path(attractors, graph, root, powerdistance);
@@ -508,7 +515,7 @@ GraphColonization::init()
 }
 
 
-Index 
+Index
 GraphColonization::junction_components(size_t nid1, size_t nid2) const
 {
     Index components1 = node_components(nid1);

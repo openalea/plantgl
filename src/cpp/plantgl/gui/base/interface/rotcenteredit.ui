@@ -47,7 +47,6 @@
       <widget class="QLabel" name="XLabel" >
        <property name="font" >
         <font>
-         <family>adobe-helvetica</family>
          <pointsize>10</pointsize>
          <weight>75</weight>
          <bold>true</bold>
@@ -88,7 +87,6 @@
       <widget class="QLabel" name="YLabel" >
        <property name="font" >
         <font>
-         <family>adobe-helvetica</family>
          <pointsize>10</pointsize>
          <weight>75</weight>
          <bold>true</bold>
@@ -135,7 +133,6 @@
       <widget class="QLabel" name="ZLabel" >
        <property name="font" >
         <font>
-         <family>adobe-helvetica</family>
          <pointsize>10</pointsize>
          <weight>75</weight>
          <bold>true</bold>

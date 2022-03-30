@@ -3,31 +3,41 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon et al.
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 
 /*! \file appe_ImageTexture.h
@@ -62,13 +72,13 @@ class SG_API Texture2DTransformation : public SceneObject {
 public:
 
   /// The default scaling value
-  static const TOOLS(Vector2) DEFAULT_SCALE;
+  static const Vector2 DEFAULT_SCALE;
 
   /// The default translation value
-  static const TOOLS(Vector2) DEFAULT_TRANSLATION;
+  static const Vector2 DEFAULT_TRANSLATION;
 
   /// The default center value
-  static const TOOLS(Vector2) DEFAULT_ROTATIONCENTER;
+  static const Vector2 DEFAULT_ROTATIONCENTER;
 
   /// The default center value
   static const real_t DEFAULT_ROTATIONANGLE;
@@ -77,13 +87,13 @@ public:
   struct SG_API Builder : public SceneObject::Builder {
 
     /// A pointer to the \b Scaling field.
-	TOOLS(Vector2) * Scale;
+    Vector2 * Scale;
 
     /// A pointer to the \b Translation field.
-	TOOLS(Vector2) * Translation;
+    Vector2 * Translation;
 
     /// A pointer to the \b RotationCenter field.
-	TOOLS(Vector2) * RotationCenter;
+    Vector2 * RotationCenter;
 
     /// A pointer to the \b RotationAngle field.
     real_t * RotationAngle;
@@ -102,16 +112,16 @@ public:
 
   };
 
-  Texture2DTransformation(const TOOLS(Vector2)& scaling = DEFAULT_SCALE, 
-						const TOOLS(Vector2)& translation = DEFAULT_TRANSLATION, 
-						const TOOLS(Vector2)& rotationCenter = DEFAULT_ROTATIONCENTER, 
-						real_t rotationAngle = DEFAULT_ROTATIONANGLE);
+  Texture2DTransformation(const Vector2& scaling = DEFAULT_SCALE,
+                        const Vector2& translation = DEFAULT_TRANSLATION,
+                        const Vector2& rotationCenter = DEFAULT_ROTATIONCENTER,
+                        real_t rotationAngle = DEFAULT_ROTATIONANGLE);
 
   Texture2DTransformation(const std::string& name,
-						const TOOLS(Vector2)& scale = DEFAULT_SCALE, 
-						const TOOLS(Vector2)& translation = DEFAULT_TRANSLATION, 
-						const TOOLS(Vector2)& rotationCenter = DEFAULT_ROTATIONCENTER, 
-						real_t rotationAngle = DEFAULT_ROTATIONANGLE);
+                        const Vector2& scale = DEFAULT_SCALE,
+                        const Vector2& translation = DEFAULT_TRANSLATION,
+                        const Vector2& rotationCenter = DEFAULT_ROTATIONCENTER,
+                        real_t rotationAngle = DEFAULT_ROTATIONANGLE);
   /// Destructor.
   virtual ~Texture2DTransformation( ) ;
 
@@ -121,13 +131,13 @@ public:
   virtual bool isValid( ) const;
 
   // The scaling property
-  PGL_OBJECT_PROPERTY_WITH_DEFAULT(Scale,TOOLS(Vector2),DEFAULT_SCALE);
+  PGL_OBJECT_PROPERTY_WITH_DEFAULT(Scale,Vector2,DEFAULT_SCALE);
 
   // The translation property
-  PGL_OBJECT_PROPERTY_WITH_DEFAULT(Translation,TOOLS(Vector2),DEFAULT_TRANSLATION);
+  PGL_OBJECT_PROPERTY_WITH_DEFAULT(Translation,Vector2,DEFAULT_TRANSLATION);
 
   // The rotationCenter property
-  PGL_OBJECT_PROPERTY_WITH_DEFAULT(RotationCenter,TOOLS(Vector2),DEFAULT_ROTATIONCENTER);
+  PGL_OBJECT_PROPERTY_WITH_DEFAULT(RotationCenter,Vector2,DEFAULT_ROTATIONCENTER);
 
   // The rotationAngle property
   PGL_OBJECT_PROPERTY_WITH_DEFAULT(RotationAngle,real_t,DEFAULT_ROTATIONANGLE);
@@ -136,7 +146,7 @@ public:
 
   virtual Point2ArrayPtr transform( const Point2ArrayPtr& points ) const;
 
-  TOOLS(Vector2) transform( const TOOLS(Vector2)& point ) const;
+  Vector2 transform( const Vector2& point ) const;
 
 
 };
@@ -168,10 +178,10 @@ public:
   struct SG_API Builder : public SceneObject::Builder {
 
     /// A pointer to the \b FileName field.
-	std::string * FileName;
+    std::string * FileName;
 
     /// A pointer to the \b Mipmaping field.
-	bool * Mipmaping;
+    bool * Mipmaping;
 
     /// A pointer to the \b RepeatS field.
     bool * RepeatS;
@@ -198,16 +208,16 @@ public:
 
   /// constructor.
   ImageTexture(  const std::string& filename,
-				 bool repeatS = DEFAULT_REPEATS,
-				 bool repeatT = DEFAULT_REPEATT,
-				 bool mipmaping = DEFAULT_MIPMAPING);
+                 bool repeatS = DEFAULT_REPEATS,
+                 bool repeatT = DEFAULT_REPEATT,
+                 bool mipmaping = DEFAULT_MIPMAPING);
 
   /// constructor.
   ImageTexture(  const std::string& name,
-				 const std::string& filename,
-				 bool repeatS = DEFAULT_REPEATS,
-				 bool repeatT = DEFAULT_REPEATT,
-				 bool mipmaping = DEFAULT_MIPMAPING);
+                 const std::string& filename,
+                 bool repeatS = DEFAULT_REPEATS,
+                 bool repeatT = DEFAULT_REPEATT,
+                 bool mipmaping = DEFAULT_MIPMAPING);
 
   /// Destructor.
   virtual ~ImageTexture( ) ;
@@ -244,7 +254,7 @@ typedef RCPtr<ImageTexture> ImageTexturePtr;
 class SG_API Texture2D : public Appearance
 {
 public:
-  
+
   /// The default transformation value
   static const Texture2DTransformationPtr DEFAULT_TRANSFORMATION;
 
@@ -255,10 +265,10 @@ public:
   struct SG_API Builder : public Appearance::Builder {
 
     /// A pointer to the \b Image field.
-	ImageTexturePtr * Image;
+    ImageTexturePtr * Image;
 
     /// A pointer to the \b Transformation field.
-	Texture2DTransformationPtr * Transformation;
+    Texture2DTransformationPtr * Transformation;
 
     /// A pointer to the \b Transparency field.
     Color4 * BaseColor;
@@ -279,13 +289,16 @@ public:
 
   Texture2D();
 
-  Texture2D(const ImageTexturePtr& image, 
-		    const Texture2DTransformationPtr& transformation = DEFAULT_TRANSFORMATION,
+  Texture2D(const ImageTexturePtr& image,
+            const Texture2DTransformationPtr& transformation = DEFAULT_TRANSFORMATION,
             const Color4& basecolor = DEFAULT_BASECOLOR);
 
+  Texture2D(const ImageTexturePtr& image,
+            const Color4& basecolor);
+
   Texture2D(const std::string& name,
-			const ImageTexturePtr& image, 
-			const Texture2DTransformationPtr& transformation = DEFAULT_TRANSFORMATION,
+            const ImageTexturePtr& image,
+            const Texture2DTransformationPtr& transformation = DEFAULT_TRANSFORMATION,
             const Color4& basecolor = DEFAULT_BASECOLOR);
 
   ~Texture2D();
@@ -302,7 +315,7 @@ public:
 
   // The BaseColor property
   PGL_OBJECT_PROPERTY_WITH_DEFAULT(BaseColor,Color4,DEFAULT_BASECOLOR);
-  
+
   /// Returns whether \e self id valid.
   virtual bool isValid( ) const;
 
