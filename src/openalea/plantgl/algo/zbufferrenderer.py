@@ -175,7 +175,7 @@ class PyZBufferRenderer:
         plt.imshow(self.image)
         plt.show()
 
-def PyZBufferRenderer
+# def PyZBufferRenderer
 
 def horizontal_corners(bbx):
     from itertools import product
