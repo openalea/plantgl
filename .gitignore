@@ -80,6 +80,9 @@ target/
 doc/doxygen
 src/cpp/plantgl/doxygenFile
 
+# temporary dirs for Mac OS X
+.DS_Store
+
 .qglviewer.xml
 _pgl*.dylib
 .ipynb_checkpoints
