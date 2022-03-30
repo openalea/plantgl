@@ -1,33 +1,44 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Plant Graphic Library
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR Cirad/Inria/Inra Dap - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
+
 
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/exception.h>
@@ -43,7 +54,6 @@
 using namespace boost::python;
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 DEF_POINTEE( LineicModel )
 DEF_POINTEE( Curve2D )
@@ -74,7 +84,7 @@ U getCurveValue(const T * lm, real_t u){
 
 template <class T, class U, U (T::* func)(real_t) const >
 U getCurveDerivativeValue(const T * lm, real_t u){
-   if (lm->getFirstKnot() - GEOM_EPSILON > u || lm->getLastKnot() + GEOM_EPSILON < u 
+   if (lm->getFirstKnot() - GEOM_EPSILON > u || lm->getLastKnot() + GEOM_EPSILON < u
        || fabs(lm->getLastKnot() - lm->getFirstKnot()) < GEOM_EPSILON )
        throw PythonExc_IndexError();
    return (lm->*func)(u);
@@ -92,7 +102,7 @@ void export_LineicModel()
     .def( "getPointAt", &getCurveValue<LineicModel,Vector3,&LineicModel::getPointAt>, args("u") )
     .def( "getTangentAt", &getCurveDerivativeValue<LineicModel,Vector3,&LineicModel::getTangentAt>, args("u") )
     .def( "getNormalAt", &getCurveDerivativeValue<LineicModel,Vector3,&LineicModel::getNormalAt>, args("u") )
-	.def( "findClosest", &lm_findclosest<LineicModel,Vector3>, args("point"), "findClosest(point) : return closestpoint, u" )
+    .def( "findClosest", &lm_findclosest<LineicModel,Vector3>, args("point"), "findClosest(point) : return closestpoint, u" )
     .def( "getLength", (real_t (LineicModel::*)()const)&LineicModel::getLength )
     .def( "getLength", (real_t (LineicModel::*)(real_t)const)&LineicModel::getLength, args("begin") )
     .def( "getLength", (real_t (LineicModel::*)(real_t,real_t)const)&LineicModel::getLength, args("begin","end"), "getLength([begin,end]) : Return length of the curve from u = begin to u = end." )
@@ -109,7 +119,7 @@ void export_LineicModel()
 
 
 void export_Curve2D()
-{ 
+{
   class_<Curve2D,Curve2DPtr, bases<PlanarModel>, boost::noncopyable>( "Curve2D", "Abstract base class for objects of type of 2D parametric curve.", no_init )
     .add_property( "firstKnot", &Curve2D::getFirstKnot )
     .add_property( "lastKnot", &Curve2D::getLastKnot )
@@ -124,7 +134,7 @@ void export_Curve2D()
     .def( "getLength", (real_t (Curve2D::*)(real_t,real_t) const)&Curve2D::getLength, args("begin","end"), "getLength([begin,end]) : Return length of the curve from u = begin to u = end." )
     .def( "getArcLengthToUMapping", &Curve2D::getArcLengthToUMapping,"getArcLengthToUMapping() : Return a function that gives for each arc length the u parametrization of the curve." )
     .def( "getUToArcLengthMapping", &Curve2D::getUToArcLengthMapping,"getUToArcLengthMapping() : Return a function that gives for each u the arc length parametrization of the curve." )
-	.def( "findClosest", &lm_findclosest<Curve2D,Vector2>, args("point"), "findClosest(point) : return closestpoint, u" )
+    .def( "findClosest", &lm_findclosest<Curve2D,Vector2>, args("point"), "findClosest(point) : return closestpoint, u" )
     ;
 
   implicitly_convertible<Curve2DPtr, PlanarModelPtr>();

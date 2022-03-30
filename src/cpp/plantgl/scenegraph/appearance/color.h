@@ -3,31 +3,41 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon et al.
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 
 /*! \file appe_color.h
@@ -39,6 +49,7 @@
 #define __matl_color_h__
 
 #include <plantgl/tool/util_tuple.h>
+#include <plantgl/math/util_vector.h>
 #include <iostream>
 #include "../sg_config.h"
 
@@ -49,7 +60,7 @@ PGL_BEGIN_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 #ifdef GEOM_DLL
-template class SG_API TOOLS(Tuple3)<uchar_t>;
+template class SG_API Tuple3<uchar_t>;
 #endif
 
 /**
@@ -57,14 +68,33 @@ template class SG_API TOOLS(Tuple3)<uchar_t>;
    \brief A 3 component color expressed in \c red, \c green and \c blue.
 */
 
+#define PACKVALi(value,i) (value << (8 * i))
+#define UNPACKVALi(packedvalues,i) ((packedvalues & (0xff << 8*i)) >> (8*i))
+
+#define CHANNELORDER4(r,g,b,a) (PACKVALi(r,0) + PACKVALi(g,1) + PACKVALi(b,2) + PACKVALi(a,3))
+#define CHANNELORDER3(r,g,b)   (PACKVALi(r,0) + PACKVALi(g,1) + PACKVALi(b,2))
+#define CHANNELPOS3(colorcode, channel) UNPACKVALi(colorcode, (2-channel))
+#define CHANNELPOS4(colorcode, channel) UNPACKVALi(colorcode, (3-channel))
+
+
+
 
 class Color4;
-class SG_API Color3 : public TOOLS(Tuple3)<uchar_t>
+class SG_API Color3 : public Tuple3<uchar_t>
 {
 
   friend class Color4;
 
 public:
+
+  enum eColor3Format {
+    eRGB = CHANNELORDER3(0,1,2),
+    eRBG = CHANNELORDER3(0,2,1),
+    eGRB = CHANNELORDER3(1,0,2),
+    eGBR = CHANNELORDER3(2,0,1),
+    eBGR = CHANNELORDER3(2,1,0),
+    eBRG = CHANNELORDER3(1,2,0)
+  };
 
   /// The black color.
   static const Color3 BLACK;
@@ -145,30 +175,49 @@ public:
   real_t getAverageClamped() const ;
 
   /// Encode the rgb value onto an uint
-  uint_t toUint() const;
+  uint_t toUint(eColor3Format format = eRGB) const;
 
   /// Decode the rgb value from an uint
-  static Color3 fromUint(uint_t);
+  static Color3 fromUint(uint_t value, eColor3Format format = eRGB);
 
-  TOOLS(Tuple3)<uchar_t> toHSV8() const;
-  TOOLS(Tuple3)<real_t> toHSV() const;
+  Tuple3<uchar_t> toHSV8() const;
+  Tuple3<real_t> toHSV() const;
 
-  static Color3 fromHSV(const TOOLS(Tuple3)<uchar_t>& hsv);
-  static Color3 fromHSV(const TOOLS(Tuple3)<real_t>& hsv);
+  Vector3 toClampedValues() const;
+
+  static Color3 fromHSV(const Tuple3<uchar_t>& hsv);
+  static Color3 fromHSV(const Tuple3<real_t>& hsv);
 
   static Color3 interpolate(const Color3& c1, const Color3& c2, real_t t = 0.5);
+  static Color3 interpolate( const Color3& v0 ,  real_t w0, const Color3& v1 ,  real_t w1, const Color3& v2 ,  real_t w2 );
 
- 
+
+  Color3& operator*=(const Color3&);
+  Color3& operator*=(const real_t&);
+
+  Color3 operator*(const Color3&) const ;
+  Color3 operator*(const real_t&) const ;
+
+  Color3& operator+=(const Color3&);
+  Color3 operator+(const Color3&) const ;
+
+  friend SG_API Color3 operator*( const real_t& s, const Color3& v );
+
+
   /// Prints \e v to the output stream \e stream.
 //  friend std::ostream& operator<<( std::ostream& stream, const Color3& c );
 
 }; // Color3
 
 
+SG_API Color3 operator*( const real_t& s, const Color3& v );
+
+
+
 /* ----------------------------------------------------------------------- */
 
 #ifdef GEOM_DLL
-template class SG_API TOOLS(Tuple4)<uchar_t>;
+template class SG_API Tuple4<uchar_t>;
 #endif
 
 /**
@@ -177,9 +226,26 @@ template class SG_API TOOLS(Tuple4)<uchar_t>;
    and \c alpha.
 */
 
-class SG_API Color4 : public TOOLS(Tuple4)<uchar_t>
+class SG_API Color4 : public Tuple4<uchar_t>
 {
 public:
+
+  enum eColor4Format {
+    eARGB = CHANNELORDER4(1,2,3,0),
+    eARBG = CHANNELORDER4(1,3,2,0),
+    eAGRB = CHANNELORDER4(2,1,3,0),
+    eAGBR = CHANNELORDER4(3,1,2,0),
+    eABGR = CHANNELORDER4(3,2,1,0),
+    eABRG = CHANNELORDER4(2,3,1,0),
+
+    eRGBA = CHANNELORDER4(0,1,2,3),
+    eRBGA = CHANNELORDER4(0,2,1,3),
+    eGRBA = CHANNELORDER4(1,0,2,3),
+    eGBRA = CHANNELORDER4(2,0,1,3),
+    eBGRA = CHANNELORDER4(2,1,0,3),
+    eBRGA = CHANNELORDER4(1,2,0,3)
+  };
+
 
   /// The black color.
   static const Color4 BLACK;
@@ -275,23 +341,41 @@ public:
   real_t getAverageClamped() const ;
 
   /// Encode the argb value onto an uint
-  uint_t toUint() const;
+  uint_t toUint(eColor4Format format = eARGB) const;
 
   /// Decode the argb value from an uint
-  static Color4 fromUint(uint_t);
+  static Color4 fromUint(uint_t, eColor4Format format = eARGB);
 
-  TOOLS(Tuple4)<uchar_t> toHSVA8() const;
-  TOOLS(Tuple4)<real_t> toHSVA() const;
+  Tuple4<uchar_t> toHSVA8() const;
+  Tuple4<real_t> toHSVA() const;
 
-  static Color4 fromHSVA(const TOOLS(Tuple4)<uchar_t>& hsv);
-  static Color4 fromHSVA(const TOOLS(Tuple4)<real_t>& hsv);
+  Vector4 toClampedValues() const;
+
+  static Color4 fromHSVA(const Tuple4<uchar_t>& hsv);
+  static Color4 fromHSVA(const Tuple4<real_t>& hsv);
 
   static Color4 interpolate(const Color4& c1, const Color4& c2, real_t t = 0.5);
+  static Color4 interpolate( const Color4& v0 ,  real_t w0, const Color4& v1 , real_t w1, const Color4& v2 ,  real_t w2 );
+
+
+  Color4& operator*=(const Color4&);
+  Color4& operator*=(const real_t&);
+
+  Color4 operator*(const Color4&) const ;
+  Color4 operator*(const real_t&) const ;
+
+  Color4& operator+=(const Color4&);
+  Color4 operator+(const Color4&) const ;
+
+  friend SG_API Color4 operator*( const real_t& s, const Color4& v );
 
   /// Prints \e v to the output stream \e stream.
 //  friend std::ostream& operator<<( std::ostream& stream, const Color4& c ) ;
 
 }; // Color4
+
+
+SG_API Color4 operator*( const real_t& s, const Color4& v );
 
 
 /* ----------------------------------------------------------------------- */

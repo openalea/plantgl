@@ -20,9 +20,9 @@ resdists   = [0.,1.,1.5,2.25,2.5,3.0,3.75,4.5,4.0,5.5]
 def test_dijkstra_shortest_paths():
     from openalea.plantgl.all import     dijkstra_shortest_paths   
     parents, mindists = dijkstra_shortest_paths(topology, 0, distance)
-    print 'dijkstra_shortest_paths'
-    for i in xrange(len(parents)):
-        print i, parents[i], mindists[i]
+    print('dijkstra_shortest_paths')
+    for i in range(len(parents)):
+        print(i, parents[i], mindists[i])
     assert list(parents)  == resparents
     assert list(mindists) == resdists
 
@@ -30,10 +30,10 @@ def test_dijkstra_shortest_paths_in_a_range():
     from openalea.plantgl.all import     dijkstra_shortest_paths_in_a_range   
     results = dijkstra_shortest_paths_in_a_range(topology, 0, distance)
     results.sort(key=lambda x:x[0])
-    print 'dijkstra_shortest_paths_in_a_range'
-    print results
+    print('dijkstra_shortest_paths_in_a_range')
+    print(results)
     for nid, parent, dist in results:
-        print nid, parent, dist
+        print(nid, parent, dist)
     assert [p for i,p,d in results] == resparents
     assert [d for i,p,d in results] == resdists
 
@@ -42,10 +42,10 @@ def test_dijkstra_shortest_paths_in_a_range2():
     maxdist = 4.8
     results = dijkstra_shortest_paths_in_a_range(topology, 0, distance, maxdist)
     results.sort(key=lambda x:x[0])
-    print 'dijkstra_shortest_paths_in_a_range'
-    print results
+    print('dijkstra_shortest_paths_in_a_range')
+    print(results)
     for nid, parent, dist in results:
-        print nid, parent, dist
+        print(nid, parent, dist)
     idx = max([i for i, val in enumerate(resdists) if val <= maxdist])
     assert [p for i,p,d in results] == resparents[:idx+1]
     assert [d for i,p,d in results] == resdists[:idx+1]
@@ -55,10 +55,10 @@ def test_dijkstra_shortest_paths_in_a_range3():
     maxnbelem = 5
     results = dijkstra_shortest_paths_in_a_range(topology, 0, distance, 100, maxnbelements = maxnbelem)
     results.sort(key=lambda x:x[0])
-    print 'dijkstra_shortest_paths_in_a_range'
-    print results
+    print('dijkstra_shortest_paths_in_a_range')
+    print(results)
     for nid, parent, dist in results:
-        print nid, parent, dist
+        print(nid, parent, dist)
     assert [p for i,p,d in results] == resparents[:maxnbelem]
     assert [d for i,p,d in results] == resdists[:maxnbelem]
 

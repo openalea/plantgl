@@ -3,36 +3,46 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon et al.
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
 
+
 #ifndef __geom_vector_h__
 #define __geom_vector_h__
 
-/*! 
+/*!
 	\file util_vector.h
     \brief Definition of Vector2, Vector3, Vector4.
 */
@@ -40,7 +50,7 @@
 #include "math_config.h"
 #include "plantgl/tool/util_tuple.h"
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /*  --------------------------------------------------------------------- */
 
@@ -178,6 +188,12 @@ class PGLMATH_API Vector2 : public Tuple2<real_t>
 
   /// Returns the result of the substraction of \e this and \e v.
   Vector2 operator-( const Vector2& v ) const;
+
+  /// Returns the result of component wise product (hadamard product) of \e this and \e v.
+  Vector2 cwiseProduct( const Vector2& v ) const;
+
+  /// Returns the result of component wise product (hadamard product) of \e this and \e v.
+  Vector2 operator%( const Vector2& v ) const;
 
   /// Normalizes \e self and returns the norm before.
   real_t normalize( ) ;
@@ -485,10 +501,21 @@ class PGLMATH_API Vector3 : public Tuple3<real_t>
   /// Returns the result of the substraction of \e this and \e v.
   Vector3 operator-( const Vector3& v ) const;
 
+  /// Returns the result of component wise product (hadamard product) of \e this and \e v.
+  Vector3 cwiseProduct( const Vector3& v ) const;
+
+  /// Returns the result of component wise product (hadamard product) of \e this and \e v.
+  Vector3 operator%( const Vector3& v ) const;
+
   /** Returns the Vector2 corresponding to the projection of \e self.
       The \c x and \c y  coordinates are divided by the \c z coordinate. */
   Vector2 project( ) const ;
 
+  /** Returns the Vector3 corresponding to the weighting of \e self.
+      The \c x, \c y  coordinates are multiplied by the \c z
+      coordinate. */
+  Vector3 ztoxy( ) const;
+  
   /// Normalizes \e self and returns the norm before.
   real_t normalize( );
 
@@ -506,6 +533,14 @@ class PGLMATH_API Vector3 : public Tuple3<real_t>
 
   /// Return an orthogonal vector. Should be not null
   Vector3 anOrthogonalVector() const;
+
+  /// Return the reflection direction of v.
+  Vector3 reflect(const Vector3& v) const;
+
+  /// Return the refraction direction of v.
+  Vector3 refract(const Vector3& v, real_t eta) const;
+
+
 
   /// Returns the result of the multiplication of \e v by the scalar \e s.
   friend PGLMATH_API Vector3 operator*( const Vector3& v, const real_t& s );
@@ -733,6 +768,12 @@ class PGLMATH_API Vector4 : public Tuple4<real_t>
   /// Returns the result of the substraction of \e this and \e v.
   Vector4 operator-( const Vector4& v ) const;
 
+  /// Returns the result of component wise product (hadamard product) of \e this and \e v.
+  Vector4 cwiseProduct( const Vector4& v ) const;
+
+  /// Returns the result of component wise product (hadamard product) of \e this and \e v.
+  Vector4 operator%( const Vector4& v ) const;
+
   /// Returns the abs value of \e v.
   friend PGLMATH_API Vector4 abs( const Vector4& v );
 
@@ -763,6 +804,11 @@ class PGLMATH_API Vector4 : public Tuple4<real_t>
       The \c x, \c y and \c z  coordinates are divided by the \c w
       coordinate. */
   Vector3 project( ) const;
+
+  /** Returns the Vector3 corresponding to the weighting of \e self.
+      The \c x, \c y and \c z  coordinates are multiplied by the \c w
+      coordinate. */
+  Vector4 wtoxyz( ) const;
 
   /// Returns the result of the multiplication of \e v by the scalar \e s.
   friend PGLMATH_API Vector4 operator*( const Vector4& v, const real_t& s );
@@ -829,17 +875,17 @@ PGLMATH_API bool strictly_inf(const Vector4& v1, const Vector4& v2);
 
 template<class T> class Dimension  {};
 
-template<> class Dimension<TOOLS::Vector2> 
+template<> class Dimension<Vector2>
 { public: static const int Nb = 2; };
 
-template<> class Dimension<TOOLS::Vector3> 
+template<> class Dimension<Vector3>
 { public: static const int Nb = 3; };
 
-template<> class Dimension<TOOLS::Vector4> 
+template<> class Dimension<Vector4>
 { public: static const int Nb = 4; };
 
 /*  --------------------------------------------------------------------- */
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 // __geom_vector_h__
 #endif

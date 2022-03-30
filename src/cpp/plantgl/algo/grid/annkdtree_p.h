@@ -1,35 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2012 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al.
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 
 
@@ -42,7 +50,7 @@
 #include <plantgl/scenegraph/container/pointarray.h>
 #include <plantgl/scenegraph/container/indexarray.h>
 
-#ifdef WITH_ANN
+#ifdef PGL_WITH_ANN
 #include <ANN/ANN.h>
 #endif
 
@@ -52,7 +60,7 @@ PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-#ifdef WITH_ANN
+#ifdef PGL_WITH_ANN
 
 template<class VectorType>
 inline void toANNPoint(const VectorType& v, ANNpoint& point)
@@ -103,7 +111,7 @@ inline IndexArrayPtr k_nearest_neighbors_of_kdtree_points(ANNkd_tree& kdtree, si
     for (size_t pointid = 0; pointid < nbPoints; ++pointid){
         kdtree.annkSearch(pointdata[pointid],kk,nn_idx,dists);
         Index& pointres = res->getAt(pointid);
-        for(uint32_t i = 0; i < kk; ++i) 
+        for(uint32_t i = 0; i < kk; ++i)
             if (nn_idx[i] != pointid)
                 pointres.push_back(nn_idx[i]);
     }
@@ -137,7 +145,7 @@ inline IndexArrayPtr r_nearest_neighbors_of_kdtree_points(ANNkd_tree& kdtree, re
     for (size_t pointid = 0; pointid < nbPoints; ++pointid){
         kdtree.annkFRSearch(pointdata[pointid],sqrRadius,kk,nn_idx,dists);
         Index& pointres = res->getAt(pointid);
-        for(uint32_t i = 0; i < kk; ++i) 
+        for(uint32_t i = 0; i < kk; ++i)
             if (nn_idx[i] != pointid)
                 pointres.push_back(nn_idx[i]);
     }
@@ -150,7 +158,7 @@ inline IndexArrayPtr r_nearest_neighbors_of_kdtree_points(ANNkd_tree& kdtree, re
 }
 
 template<class PointArray>
-IndexArrayPtr k_nearest_neighbors(RCPtr<PointArray> points, size_t k) 
+IndexArrayPtr k_nearest_neighbors(RCPtr<PointArray> points, size_t k)
 {
    typedef typename PointArray::element_type VectorType;
 
@@ -162,31 +170,31 @@ IndexArrayPtr k_nearest_neighbors(RCPtr<PointArray> points, size_t k)
 }
 
 template<class ContainerType>
-class ANNKDTreeInternal  
+class ANNKDTreeInternal
 {
 
     typedef ContainerType PointContainer;
     typedef typename PointContainer::element_type VectorType;
     typedef RCPtr<PointContainer> PointContainerPtr;
 
-    
+
     ANNpointArray __pointdata;
     ANNkd_tree __kdtree;
     size_t __nbpoints;
 
     public:
 
-        ANNKDTreeInternal(const PointContainerPtr points) : 
-            __pointdata(toANNPointArray(points)), 
+        ANNKDTreeInternal(const PointContainerPtr points) :
+            __pointdata(toANNPointArray(points)),
                         __kdtree(__pointdata,points->size(),VectorType::size()),
                         __nbpoints(points->size()){ }
 
-        virtual ~ANNKDTreeInternal() { 
+        virtual ~ANNKDTreeInternal() {
             if (__pointdata) annDeallocPts(__pointdata);
         }
 
 
-        Index k_closest_points(const VectorType& point, size_t k, real_t maxdist = REAL_MAX) 
+        Index k_closest_points(const VectorType& point, size_t k, real_t maxdist = REAL_MAX)
         {
             if (k > __nbpoints) k = __nbpoints;
 
@@ -199,7 +207,7 @@ class ANNKDTreeInternal
             size_t kres = k;
             if (maxdist != REAL_MAX)
                 kres = std::min<size_t>(k,__kdtree.annkFRSearch(queryPoint,maxdist*maxdist,k,nn_idx,dists));
-            else 
+            else
                 __kdtree.annkSearch(queryPoint,k,nn_idx,dists);
 
             Index res;
@@ -213,12 +221,12 @@ class ANNKDTreeInternal
             return res;
         }
 
-        inline IndexArrayPtr k_nearest_neighbors(size_t k) 
+        inline IndexArrayPtr k_nearest_neighbors(size_t k)
         {
             return k_nearest_neighbors_of_kdtree_points(__kdtree,k);
         }
 
-        inline IndexArrayPtr r_nearest_neighbors(real_t radius) 
+        inline IndexArrayPtr r_nearest_neighbors(real_t radius)
         {
             return r_nearest_neighbors_of_kdtree_points(__kdtree,radius);
         }

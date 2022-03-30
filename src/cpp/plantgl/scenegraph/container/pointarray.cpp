@@ -3,37 +3,46 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon et al.
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
 
 
 
+
 #include "pointarray.h"
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 using namespace std;
 
@@ -191,8 +200,8 @@ real_t * Point2Array::data() const {
   real_t * res = new real_t[__A.size()*2];
   size_t _j = 0;
   for (const_iterator _i = __A.begin(); _i != __A.end(); _i++){
-	res[_j] = _i->x(); _j++;
-	res[_j] = _i->y(); _j++;
+    res[_j] = _i->x(); _j++;
+    res[_j] = _i->y(); _j++;
   }
   return res;
 }
@@ -417,9 +426,9 @@ real_t * Point3Array::data() const{
   real_t * res = new real_t[__A.size()*3];
   size_t _j = 0;
   for (const_iterator _i = __A.begin(); _i != __A.end(); _i++){
-	res[_j] = _i->x(); _j++;
-	res[_j] = _i->y(); _j++;
-	res[_j] = _i->z(); _j++;
+    res[_j] = _i->x(); _j++;
+    res[_j] = _i->y(); _j++;
+    res[_j] = _i->z(); _j++;
   }
   return res;
 }
@@ -444,7 +453,7 @@ Point4Array::Point4Array( uint_t size ) :
   GEOM_ASSERT(isValid());
 }
 
-Point4Array::Point4Array( uint_t size, const TOOLS(Vector4)& value):
+Point4Array::Point4Array( uint_t size, const Vector4& value):
   Array1<Vector4>(size, value) {
   // __A.reserve(size);
   GEOM_ASSERT(isValid());
@@ -461,9 +470,9 @@ Point4Array::Point4Array( const Point2Array& a, real_t z, real_t w  ) :
 
 Point4Array::Point4Array( const Point2ArrayPtr& a, real_t z, real_t w  ) :
     Array1<Vector4>(){
-	if (!a) return;
-	__A.reserve(size());
-	__A.resize(size());
+    if (!a) return;
+    __A.reserve(size());
+    __A.resize(size());
     Point4Array::iterator it4 = begin();
     for(Point2Array::const_iterator it2 = a->begin();it2 != a->end();++it2,++it4)
         *it4 = Vector4(*it2,z,w);
@@ -480,9 +489,9 @@ Point4Array::Point4Array( const Point3Array& a, real_t w  ) :
 
 Point4Array::Point4Array( const Point3ArrayPtr& a, real_t w  ) :
     Array1<Vector4>(){
-	if (!a) return;
-	__A.reserve(size());
-	__A.resize(size());
+    if (!a) return;
+    __A.reserve(size());
+    __A.resize(size());
     Point4Array::iterator it4 = begin();
     for(Point3Array::const_iterator it2 = a->begin();it2 != a->end();++it2,++it4)
         *it4 = Vector4(*it2,w);
@@ -693,10 +702,10 @@ real_t * Point4Array::data() const {
   real_t * res = new real_t[__A.size()*4];
   size_t _j = 0;
   for (const_iterator _i = __A.begin(); _i != __A.end(); _i++){
-	res[_j] = _i->x(); _j++;
-	res[_j] = _i->y(); _j++;
-	res[_j] = _i->z(); _j++;
-	res[_j] = _i->w(); _j++;
+    res[_j] = _i->x(); _j++;
+    res[_j] = _i->y(); _j++;
+    res[_j] = _i->z(); _j++;
+    res[_j] = _i->w(); _j++;
   }
   return res;
 }

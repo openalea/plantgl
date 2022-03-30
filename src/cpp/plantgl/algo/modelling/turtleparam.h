@@ -1,33 +1,41 @@
-/* ---------------------------------------------------------------------------
+/* -*-c++-*-
+ *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al.
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *  ----------------------------------------------------------------------------
  *
- # ---------------------------------------------------------------------------
- #
- #                      GNU General Public Licence
- #
- #       This program is free software; you can redistribute it and/or
- #       modify it under the terms of the GNU General Public License as
- #       published by the Free Software Foundation; either version 2 of
- #       the License, or (at your option) any later version.
- #
- #       This program is distributed in the hope that it will be useful,
- #       but WITHOUT ANY WARRANTY; without even the implied warranty of
- #       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- #       GNU General Public License for more details.
- #
- #       You should have received a copy of the GNU General Public
- #       License along with this program; see the file COPYING. If not,
- #       write to the Free Software Foundation, Inc., 59
- #       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- #
- # ---------------------------------------------------------------------------
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
+ *
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
+ *
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
+ *
+ *  ----------------------------------------------------------------------------
  */
 
 #ifndef __PGL_TURTLE_PARAM_H__
@@ -45,77 +53,76 @@
 
 PGL_BEGIN_NAMESPACE
 
-
 class TurtlePath;
 typedef RCPtr<TurtlePath> TurtlePathPtr;
 
 /// Class that contains a path parameter that should be followed by the turtle
-class ALGO_API TurtlePath : public TOOLS(RefCountObject){
+class ALGO_API TurtlePath : public RefCountObject{
 public:
-	TurtlePath(real_t totalLength, real_t actualLength, QuantisedFunctionPtr arclengthParam = QuantisedFunctionPtr()) : __totalLength(totalLength), __actualLength(actualLength), __scale(totalLength/actualLength), __arclengthParam(arclengthParam), __actualT(0)  { }
-	virtual ~TurtlePath();
+    TurtlePath(real_t totalLength, real_t actualLength, QuantisedFunctionPtr arclengthParam = QuantisedFunctionPtr()) : __totalLength(totalLength), __actualLength(actualLength), __scale(totalLength/actualLength), __arclengthParam(arclengthParam), __actualT(0)  { }
+    virtual ~TurtlePath();
 
-	virtual bool is2D() const { return true; }
+    virtual bool is2D() const { return true; }
 
-	virtual TurtlePathPtr copy() const = 0;
+    virtual TurtlePathPtr copy() const = 0;
 
-	virtual void setPosition(real_t t)  = 0;
+    virtual void setPosition(real_t t)  = 0;
 
-	real_t __totalLength;
-	real_t __actualLength;
-	real_t __scale;
-	QuantisedFunctionPtr __arclengthParam;
-	real_t __actualT;
+    real_t __totalLength;
+    real_t __actualLength;
+    real_t __scale;
+    QuantisedFunctionPtr __arclengthParam;
+    real_t __actualT;
 };
 
 /// Class that contains a 2D path parameter that should be followed by the turtle
 class ALGO_API Turtle2DPath : public TurtlePath {
 public:
-	Turtle2DPath(Curve2DPtr curve, real_t totalLength, real_t actualLength, bool orientation = false, bool ccw = false, QuantisedFunctionPtr arclengthParam = QuantisedFunctionPtr());
+    Turtle2DPath(Curve2DPtr curve, real_t totalLength, real_t actualLength, bool orientation = false, bool ccw = false, QuantisedFunctionPtr arclengthParam = QuantisedFunctionPtr());
 
-	virtual TurtlePathPtr copy() const;
-	virtual void setPosition(real_t t) ;
-	
-	// Path to follow
-	Curve2DPtr __path;
-	// Tell whether path is oriented with Y as first heading or X
-	bool __orientation;
-	// Tell whether the resulting structure is in CCW
-	bool __ccw;
+    virtual TurtlePathPtr copy() const;
+    virtual void setPosition(real_t t) ;
 
-	// Position on the curve
-	TOOLS(Vector2) __lastPosition;
-	// Last direction on the curve
-	TOOLS(Vector2) __lastHeading;
+    // Path to follow
+    Curve2DPtr __path;
+    // Tell whether path is oriented with Y as first heading or X
+    bool __orientation;
+    // Tell whether the resulting structure is in CCW
+    bool __ccw;
+
+    // Position on the curve
+    Vector2 __lastPosition;
+    // Last direction on the curve
+    Vector2 __lastHeading;
 };
 
 /// Class that contains a 2D path parameter that should be followed by the turtle
 class ALGO_API Turtle3DPath : public TurtlePath {
 public:
-	Turtle3DPath(LineicModelPtr curve, real_t totalLength, real_t actualLength, QuantisedFunctionPtr arclengthParam = QuantisedFunctionPtr());
+    Turtle3DPath(LineicModelPtr curve, real_t totalLength, real_t actualLength, QuantisedFunctionPtr arclengthParam = QuantisedFunctionPtr());
 
-	virtual TurtlePathPtr copy() const;
-	virtual void setPosition(real_t t) ;
-	
-	virtual bool is2D() const { return false; }
+    virtual TurtlePathPtr copy() const;
+    virtual void setPosition(real_t t) ;
 
-	// 3D Path to follow
-	LineicModelPtr __path;
+    virtual bool is2D() const { return false; }
 
-	// Position on the curve
-	TOOLS(Vector3) __lastPosition;
+    // 3D Path to follow
+    LineicModelPtr __path;
 
-	// Reference frame on the curve
-	TOOLS(Vector3) __lastHeading;
-	TOOLS(Vector3) __lastUp;
-	TOOLS(Vector3) __lastLeft;
+    // Position on the curve
+    Vector3 __lastPosition;
+
+    // Reference frame on the curve
+    Vector3 __lastHeading;
+    Vector3 __lastUp;
+    Vector3 __lastLeft;
 
 };
 
 struct PathInfo {
     real_t length;
     QuantisedFunctionPtr arclengthParam;
-}; 
+};
 
 typedef pgl_hash_map<size_t,PathInfo> PathInfoMap;
 
@@ -131,9 +138,9 @@ public:
   bool crossSectionCCW;
   bool defaultSection;
 
-  TOOLS(Vector2) texCoordScale;
-  TOOLS(Vector2) texCoordTranslation;
-  TOOLS(Vector2) texCoordRotCenter;
+  Vector2 texCoordScale;
+  Vector2 texCoordTranslation;
+  Vector2 texCoordRotCenter;
   real_t texCoordRotAngle;
   Color4 texBaseColor;
 
@@ -143,106 +150,106 @@ public:
 };
 
 /**! Class that contains all the parameters needed by the turtle :
-	 position, orientation [heading,left,up] vectors
+     position, orientation [heading,left,up] vectors
      color id, width, polygon and generalized cylinder flag */
 
 class ALGO_API TurtleParam  : public TurtleDrawParameter {
 
 public:
-	/// Constructor
-	TurtleParam();
+    /// Constructor
+    TurtleParam();
 
     /// Constructor
-	virtual ~TurtleParam();
-    
-	/// reset parameter to initial value
+    virtual ~TurtleParam();
+
+    /// reset parameter to initial value
     void reset();
-    
-	/// make a deep copy of this. usefull for putting a copy of this on a stack 
+
+    /// make a deep copy of this. usefull for putting a copy of this on a stack
     virtual TurtleParam * copy();
-    
-	/// write main parameters values 
+
+    /// write main parameters values
     void dump();
-    
-	/// transform this according to a Matrix3
-    void transform(const TOOLS(Matrix3)&);
-    
+
+    /// transform this according to a Matrix3
+    void transform(const Matrix3&);
+
     /// get Current Orientation on the form of a matrix """
-    TOOLS(Matrix3) getOrientationMatrix() const;
-    
+    Matrix3 getOrientationMatrix() const;
+
     /// get transformtation on the form of a matrix """
-    TOOLS(Matrix4) getTransformationMatrix() const;
-    
+    Matrix4 getTransformationMatrix() const;
+
     /// test validity of . Should be orthonormal and normalized """
     bool isValid() const;
-    
-    /// keep last point for drawing generalized cylinder. usefull for lateral axis 
-    void keepLastPoint();
-    
-	/// clear the points stacks
-    void removePoints();
-    
-	/// test if polygon flag is on
-    bool isPolygonOn() const
-	{  return __polygon; }
 
-    
-	/// test if generalized cylinder flag is on
+    /// keep last point for drawing generalized cylinder. usefull for lateral axis
+    void keepLastPoint();
+
+    /// clear the points stacks
+    void removePoints();
+
+    /// test if polygon flag is on
+    bool isPolygonOn() const
+    {  return __polygon; }
+
+
+    /// test if generalized cylinder flag is on
     bool isGeneralizedCylinderOn() const
-	{ return __generalizedCylinder; }
-    
-	/// test if generalized cylinder flag is on but no drawing has been made
+    { return __generalizedCylinder; }
+
+    /// test if generalized cylinder flag is on but no drawing has been made
     bool isGeneralizedCylinderOnInit() const
-	{ return __generalizedCylinder && pointList->size() <= 1; }
-    
-	/// test if generalized cylinder flag is on but no drawing has been made
+    { return __generalizedCylinder && pointList->size() <= 1; }
+
+    /// test if generalized cylinder flag is on but no drawing has been made
     bool isGCorPolygonOnInit() const
-	{ return (__generalizedCylinder||__polygon) && pointList->size() <= 1; }
-    
-	/// set polygon flag
+    { return (__generalizedCylinder||__polygon) && pointList->size() <= 1; }
+
+    /// set polygon flag
     void polygon(bool);
-    
-	/// set generalized cylinder flag
+
+    /// set generalized cylinder flag
     void generalizedCylinder(bool);
 
-	/// push the current position in the polygon points list
+    /// push the current position in the polygon points list
     void pushPosition();
 
-	/// push the current position in the polygon points list
+    /// push the current position in the polygon points list
     void pushRadius();
-    
-    void setPosition(const TOOLS(Vector3)& pos){
-	  position = pos;
-	}
 
-    const TOOLS(Vector3)& getPosition() const {
-	  return position ;
-	}
+    void setPosition(const Vector3& pos){
+      position = pos;
+    }
+
+    const Vector3& getPosition() const {
+      return position ;
+    }
 
 public:
-  
-  TOOLS(Vector3) position;
-  TOOLS(Vector3) heading;
-  TOOLS(Vector3) left;
-  TOOLS(Vector3) up;
-  TOOLS(Vector3) scale;
-  TOOLS(Vector3) reflection;
 
-  uint_t lastId;
+  Vector3 position;
+  Vector3 heading;
+  Vector3 left;
+  Vector3 up;
+  Vector3 scale;
+  Vector3 reflection;
+
   real_t width;
 
   Point3ArrayPtr pointList;
-  std::vector<TOOLS(Vector3)> leftList;
+  std::vector<Vector3> leftList;
   std::vector<real_t> radiusList;
 
   uint_t customId;
   uint_t customParentId;
+  uint_t lastId;
 
   uint_t sectionResolution;
 
   TurtleDrawParameter initial;
 
-  TOOLS(Vector3) tropism;
+  Vector3 tropism;
   real_t elasticity;
 
   TurtlePathPtr guide;

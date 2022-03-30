@@ -1,35 +1,45 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       GeomPy: Python wrapper for the Plant Graphic Library
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2003 UMR AMAP 
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon
- *
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
- 
+
+
+
 #include <boost/python.hpp>
 #include "export_scenegraph.h"
 #include <plantgl/python/exception_core.h>
@@ -38,15 +48,20 @@
 #include <plantgl/python/pyinterpreter.h>
 #include <plantgl/python/export_list.h>
 #include <iostream>
+#if PGL_WITH_BOOST_NUMPY
+#include <boost/python/numpy.hpp>
+#endif
+
 
 using namespace boost::python;
-TOOLS_USING_NAMESPACE
+
+PGL_USING_NAMESPACE
 
 void py_error_handler(const std::string& msg, const char * fname, int lineno){
-	PythonInterpreterAcquirer py;
-	PyErr_SetString(PyExc_ValueError, msg.c_str() );
-	PyErr_Print();
-	// boost::python::throw_error_already_set();
+    PythonInterpreterAcquirer py;
+    PyErr_SetString(PyExc_ValueError, msg.c_str() );
+    PyErr_Print();
+    // boost::python::throw_error_already_set();
 }
 
 void py_warning_handler(const std::string& msg, const char * fname, int lineno){
@@ -63,33 +78,38 @@ static bool py_error_style = false;
 
 void set_python_error_style(bool value = true)
 {
-	if (py_error_style != value){
-		py_error_style = value;
-		if (value == true) {
-			register_error_handler(&py_error_handler);
-			register_warning_handler(&py_warning_handler);
-			register_debug_handler(&py_debug_handler);
-		}
-		else {
-			reset_error_handler();
-			reset_warning_handler();
-			reset_debug_handler();
-		}
-	}
+    if (py_error_style != value){
+        py_error_style = value;
+        if (value == true) {
+            register_error_handler(&py_error_handler);
+            register_warning_handler(&py_warning_handler);
+            register_debug_handler(&py_debug_handler);
+        }
+        else {
+            reset_error_handler();
+            reset_warning_handler();
+            reset_debug_handler();
+        }
+    }
 }
 bool get_python_error_style() { return py_error_style; }
 
 boost::python::object py_get_pgl_supported_extensions() {
-	return make_list(get_pgl_supported_extensions());
+    return make_list(get_pgl_supported_extensions());
 }
 
 void module_sg()
 {
-	// check lib version.
-	PGL_LIB_VERSION_CHECK
-			
+#if PGL_WITH_BOOST_NUMPY
+    boost::python::numpy::initialize();
+#endif
+    
+    // check lib version.
+    PGL_LIB_VERSION_CHECK
+
     define_stl_exceptions();
     set_python_error_style(true);
+
 
     export_SceneObject();
 
@@ -99,15 +119,16 @@ void module_sg()
     export_Color3();
     export_Color4();
     export_pointarrays();
+    export_Image();
 
 
-	export_BoundingBox();
+    export_BoundingBox();
 
-	export_Appearance();
+    export_Appearance();
     export_Material();
-	export_Texture2D();
+    export_Texture2D();
     export_ImageTexture();
-	export_Texture2DTransformation();
+    export_Texture2DTransformation();
 
     export_Spectrum();
     export_MonoSpectral();
@@ -116,17 +137,17 @@ void module_sg()
     export_Geometry();
     export_Primitive();
 
-	export_Scene();
+    export_Scene();
     export_Shape3D();
     export_Shape();
 
-	export_ExplicitModel();
+    export_ExplicitModel();
     export_LineicModel();
     export_ParametricModel();
 
     export_Mesh();
     export_Hull();
-	export_Patch();
+    export_Patch();
     export_SOR();
     export_PlanarModel();
 
@@ -143,7 +164,7 @@ void module_sg()
     export_Extrusion();
 
     export_AsymmetricHull();
-	export_ExtrudedHull();
+    export_ExtrudedHull();
     export_Swung();
 
     export_SOR2D();
@@ -152,16 +173,16 @@ void module_sg()
     export_BezierPatch();
     export_NurbsPatch();
 
-	export_PointSet();
+    export_PointSet();
     export_PointSet2D();
     export_Polyline();
     export_Polyline2D();
 
-	export_Box();
+    export_Box();
     export_Cone();
     export_Sphere();
     export_Revolution();
-	export_Cylinder();
+    export_Cylinder();
     export_Frustum();
     export_Paraboloid();
 
@@ -176,7 +197,7 @@ void module_sg()
     export_Group();
     export_Transformed();
 
-	export_Transformation();
+    export_Transformation();
     export_Taper();
     export_Scaling();
     export_Translation();
@@ -193,7 +214,7 @@ void module_sg()
     export_AxisRotated();
     export_Oriented();
     export_Tapered();
-	export_ScreenProjected();
+    export_ScreenProjected();
 
     export_SceneCodec();
     export_SceneFactory();
@@ -203,23 +224,24 @@ void module_sg()
 
     export_Plane();
 
-	scope().attr("PGL_VERSION_STR") = getPGLVersionString();
-	scope().attr("PGL_VERSION") = PGL_VERSION;
-	scope().attr("PGL_SVNREVISION") = getPGLSvnRevision();
-	def("get_pgl_version",&getPGLVersion);
-	def("get_pgl_supported_extensions",&py_get_pgl_supported_extensions,"Gives all extensions supported by current version of PlantGL.");
-	def("pgl_support_extension",&pgl_support_extension, args("ext"),"Tell wether PlantGL support a given extension");
-	def("get_pgl_python_error_style",&get_python_error_style);
-	def("set_pgl_python_error_style",&set_python_error_style);
+    export_Progress();
+
+    scope().attr("PGL_VERSION_STR") = getPGLVersionString();
+    scope().attr("PGL_VERSION") = PGL_VERSION;
+    def("get_pgl_version",&getPGLVersion);
+    def("get_pgl_supported_extensions",&py_get_pgl_supported_extensions,"Gives all extensions supported by current version of PlantGL.");
+    def("pgl_support_extension",&pgl_support_extension, args("ext"),"Tell wether PlantGL support a given extension");
+    def("get_pgl_python_error_style",&get_python_error_style);
+    def("set_pgl_python_error_style",&set_python_error_style);
 
     def("get_pgl_qt_version",&getPGLQtVersion, "Get the Qt version to which PlantGL is compiled with");
     def("get_pgl_qt_version_string",&getPGLQtVersionString, "Get the Qt version to which PlantGL is compiled with");
 
 };
 
-void finalize_sg() 
+void finalize_sg()
 {
-	Py_AtExit( &PGL::SceneFactory::finalize );
+    Py_AtExit( &SceneFactory::finalize );
 }
 
 #ifdef PGL_DEBUG

@@ -3,31 +3,41 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon et al.
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 
 /*! \file geom_extrusion.h
@@ -41,6 +51,7 @@
 
 #include "parametricmodel.h"
 #include <plantgl/math/util_vector.h>
+#include <plantgl/math/util_matrix.h>
 
 #ifndef GEOM_FWDEF
 
@@ -53,14 +64,14 @@
 
 /* ----------------------------------------------------------------------- */
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 #ifdef GEOM_FWDEF
 class RealArray;
 typedef RCPtr<RealArray> RealArrayPtr;
 #endif
 
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -92,8 +103,8 @@ class SG_API Extrusion : public ParametricModel
 {
 
   public:
-  
-  static const TOOLS(RealArrayPtr) DEFAULT_ORIENTATION_LIST;
+
+  static const RealArrayPtr DEFAULT_ORIENTATION_LIST;
 
   static const Point2ArrayPtr DEFAULT_SCALE_LIST;
 
@@ -101,95 +112,95 @@ class SG_API Extrusion : public ParametricModel
 
   static const bool DEFAULT_SOLID;
 
-  static const TOOLS(Vector3) DEFAULT_INITIAL_NORMAL;
+  static const Vector3 DEFAULT_INITIAL_NORMAL;
 
     /// A structure which helps to build a Extrusion when parsing.
-    struct SG_API Builder : public ParametricModel::Builder { 
+    struct SG_API Builder : public ParametricModel::Builder {
 
-	    /// A pointee to a curve.
-	    LineicModelPtr *  Axis;
-	    
-	    /// A pointee to a diameter function.
-	    Curve2DPtr * CrossSection;
-	    
-	    /// A pointee to the \b Scaling \b List field.
-	    Point2ArrayPtr * Scale;
-	    
-	    /// A pointee to the \b Orientation \b List field.
-	    TOOLS(RealArrayPtr) * Orientation;
-	    
-	    /// A pointee to the \b KnotsList field.
-	    TOOLS(RealArrayPtr) * KnotList;
-	    
-	    /// A pointee to the \b Solid field.
-	    bool * Solid;
-	    
-	    /// A pointee to the \b CCW field.
-	    bool * CCW;
+        /// A pointee to a curve.
+        LineicModelPtr *  Axis;
 
-	    /// A pointee to the \b InitialNormal field.
-	    TOOLS(Vector3) * InitialNormal;
+        /// A pointee to a diameter function.
+        Curve2DPtr * CrossSection;
 
-	    /// Constructor.
-	    Builder( );
+        /// A pointee to the \b Scaling \b List field.
+        Point2ArrayPtr * Scale;
 
-	    /// Destructor.
-	    ~Builder( );
-	    
-	    virtual SceneObjectPtr build( ) const;
-	    
-	    virtual void destroy( );
-	    
-	    virtual bool isValid( ) const;
-	    
+        /// A pointee to the \b Orientation \b List field.
+        RealArrayPtr * Orientation;
+
+        /// A pointee to the \b KnotsList field.
+        RealArrayPtr * KnotList;
+
+        /// A pointee to the \b Solid field.
+        bool * Solid;
+
+        /// A pointee to the \b CCW field.
+        bool * CCW;
+
+        /// A pointee to the \b InitialNormal field.
+        Vector3 * InitialNormal;
+
+        /// Constructor.
+        Builder( );
+
+        /// Destructor.
+        ~Builder( );
+
+        virtual SceneObjectPtr build( ) const;
+
+        virtual void destroy( );
+
+        virtual bool isValid( ) const;
+
     };
 
   /// Default Constructor. Build object is invalid.
   Extrusion();
-    
+
     /// Constructor
   Extrusion(const LineicModelPtr& _axis,
-	    const Curve2DPtr& _crossSection, 
-	    const bool _solid = DEFAULT_SOLID,
-	    const bool _ccw = DEFAULT_CCW,
-		const TOOLS(Vector3)& initialNormal = DEFAULT_INITIAL_NORMAL);
-    
-  /// Constructor
-  Extrusion(const LineicModelPtr& _axis,
-	    const Curve2DPtr& _crossSection, 
-	    const ProfileTransformationPtr _profile, 
-	    const bool _solid = DEFAULT_SOLID,
-	    const bool _ccw = DEFAULT_CCW,
-		const TOOLS(Vector3)& initialNormal = DEFAULT_INITIAL_NORMAL);
+        const Curve2DPtr& _crossSection,
+        const bool _solid = DEFAULT_SOLID,
+        const bool _ccw = DEFAULT_CCW,
+        const Vector3& initialNormal = DEFAULT_INITIAL_NORMAL);
 
   /// Constructor
   Extrusion(const LineicModelPtr& _axis,
-	    const Curve2DPtr& _crossSection, 
-	    const Point2ArrayPtr& _scale,
-	    const TOOLS(RealArrayPtr)& _orientation = DEFAULT_ORIENTATION_LIST,
-	    const TOOLS(RealArrayPtr)& _knot = TOOLS(RealArrayPtr(0)),
-	    const bool _solid = DEFAULT_SOLID,
-	    const bool _ccw = DEFAULT_CCW,
-		const TOOLS(Vector3)& initialNormal = DEFAULT_INITIAL_NORMAL);
-    
-   /// Constructor
-  Extrusion(const LineicModelPtr& _axis,
-	    const Curve2DPtr& _crossSection, 
-	    const TOOLS(RealArrayPtr)& _knot,
-	    const Point2ArrayPtr& _scale,
-	    const bool _solid = DEFAULT_SOLID,
-	    const bool _ccw = DEFAULT_CCW,
-		const TOOLS(Vector3)& initialNormal = DEFAULT_INITIAL_NORMAL);
-    
+        const Curve2DPtr& _crossSection,
+        const ProfileTransformationPtr _profile,
+        const bool _solid = DEFAULT_SOLID,
+        const bool _ccw = DEFAULT_CCW,
+        const Vector3& initialNormal = DEFAULT_INITIAL_NORMAL);
+
   /// Constructor
   Extrusion(const LineicModelPtr& _axis,
-	    const Curve2DPtr& _crossSection, 
-	    const TOOLS(RealArrayPtr)& _orientation,
-	    const TOOLS(RealArrayPtr)& _knot = TOOLS(RealArrayPtr(0)),
-	    const bool _solid = DEFAULT_SOLID,
-	    const bool _ccw = DEFAULT_CCW,
-		const TOOLS(Vector3)& initialNormal = DEFAULT_INITIAL_NORMAL); 
-    
+        const Curve2DPtr& _crossSection,
+        const Point2ArrayPtr& _scale,
+        const RealArrayPtr& _orientation = DEFAULT_ORIENTATION_LIST,
+        const RealArrayPtr& _knot = TOOLS(RealArrayPtr(0)),
+        const bool _solid = DEFAULT_SOLID,
+        const bool _ccw = DEFAULT_CCW,
+        const Vector3& initialNormal = DEFAULT_INITIAL_NORMAL);
+
+   /// Constructor
+  Extrusion(const LineicModelPtr& _axis,
+        const Curve2DPtr& _crossSection,
+        const RealArrayPtr& _knot,
+        const Point2ArrayPtr& _scale,
+        const bool _solid = DEFAULT_SOLID,
+        const bool _ccw = DEFAULT_CCW,
+        const Vector3& initialNormal = DEFAULT_INITIAL_NORMAL);
+
+  /// Constructor
+  Extrusion(const LineicModelPtr& _axis,
+        const Curve2DPtr& _crossSection,
+        const RealArrayPtr& _orientation,
+        const RealArrayPtr& _knot = TOOLS(RealArrayPtr(0)),
+        const bool _solid = DEFAULT_SOLID,
+        const bool _ccw = DEFAULT_CCW,
+        const Vector3& initialNormal = DEFAULT_INITIAL_NORMAL);
+
   /// Destructor
   virtual ~Extrusion();
 
@@ -209,10 +220,10 @@ class SG_API Extrusion : public ParametricModel
 
   /// Return the profile transformation value of \e self.
   virtual const ProfileTransformationPtr& getProfileTransformation() const ;
-    
+
   /// Return the profile transformation field of \e self.
   ProfileTransformationPtr& getProfileTransformation();
-    
+
   /// Return the Scaling Factor List value.
   const Point2ArrayPtr& getScale() const;
 
@@ -220,58 +231,58 @@ class SG_API Extrusion : public ParametricModel
   Point2ArrayPtr& getScale();
 
   /// Return the Orientation Factor List value.
-  const TOOLS(RealArrayPtr)& getOrientation() const;
+  const RealArrayPtr& getOrientation() const;
 
   /// Return the Orientation Factor List field.
-  TOOLS(RealArrayPtr)& getOrientation();
+  RealArrayPtr& getOrientation();
 
   /// Return the KnotList Factor List value.
-  const TOOLS(RealArrayPtr) getKnotList() const;
+  const RealArrayPtr getKnotList() const;
 
   /// Return the KnotList Factor List field.
-  TOOLS(RealArrayPtr)& getKnotList();
+  RealArrayPtr& getKnotList();
 
   virtual bool isACurve( ) const;
-    
+
   virtual bool isASurface( ) const;
-    
+
   virtual bool isAVolume( ) const;
-    
+
   virtual bool isValid( ) const;
-  
+
   /// return whether Solid is set to its default value.
   virtual bool isSolidToDefault() const;
 
   /// return whether \e self is solid or not.
   virtual const bool getSolid() const ;
-    
+
   /// return solid field.
   virtual bool& getSolid();
-  
+
   /// return whether CCW is set to its default value.
   virtual bool isCCWToDefault() const ;
-  
+
   /// return whether the vertices of the cross-section are listed in CCW order or not.
   virtual const bool getCCW() const;
-  
+
   /// return CCW field.
   virtual bool& getCCW();
-    
+
   /// return whether Scaling Factor List is set to its default value.
   virtual bool isScaleToDefault() const;
-  
+
   /// return whether Orientation Factor List is  set to its default value.
   virtual bool isOrientationToDefault() const;
-  
+
   /// return whether KnotList is set to its default value.
   virtual bool isKnotListToDefault() const;
-  
+
   /// return the initial normal
-  inline const TOOLS(Vector3)& getInitialNormal() const
+  inline const Vector3& getInitialNormal() const
   { return __initialNormal; }
 
   /// return the initial normal
-  inline TOOLS(Vector3)& getInitialNormal()
+  inline Vector3& getInitialNormal()
   { return __initialNormal; }
 
   // return whether initial normal is to default
@@ -279,10 +290,48 @@ class SG_API Extrusion : public ParametricModel
   { return __initialNormal == TOOLS(Vector3()); }
 
   // Get the value of initial normal
-  TOOLS(Vector3) getInitialNormalValue() const ;
+  Vector3 getInitialNormalValue() const ;
+
+  // Get the point value at u,v.
+  Vector3 getPointAt(real_t u, real_t v) const;
+
+  /* Returns the \e Tangent for u = \e u and v = \e v.
+     \pre
+      - \e u, \e v must be in [0,1];*/
+    Vector3 getUTangentAt(real_t u,real_t v) const;
+
+  /* Returns the \e Tangent for u = \e u and v = \e v.
+     \pre
+      - \e u, \e v must be in [0,1];*/
+  Vector3 getVTangentAt(real_t u,real_t v) const;
+
+  /* Returns the principal \e Normal for u,v = \e u, \e v.
+     \pre
+      - \e u, \e v must be in [0,1];*/
+  Vector3 getNormalAt(real_t u,real_t v) const;
+
+  /*! Returns the \e derivative of degree \e d for u = \e u, v = \e v.
+     \pre
+     - \e u, \e v must be in [0,1];*/
+  // Vector3 getDerivativeAt(real_t u, real_t v, int du, int dv) const;
+
+  // Get the matrix frame value at u.
+  Matrix3 getFrameAt(real_t u) const;
+
+  // Get the next matrix frame value at u+du.
+  Matrix3 getNextFrameAt(real_t u, Matrix3 m, real_t du) const;
+
+  // Compute the derivative.
+  Vector3 getSecondDerivativeUUAt(real_t u, real_t v) const;
+
+  // Compute the derivative.
+  Vector3 getSecondDerivativeUVAt(real_t u, real_t v) const;
+
+  // Compute the derivative.
+  Vector3 getSecondDerivativeVVAt(real_t u, real_t v) const;
 
 protected:
-    
+
     /// The axis of the extrusion.
     LineicModelPtr __axis;
 
@@ -298,8 +347,8 @@ protected:
     /// The CCW Field.
     bool __ccw;
 
-	/// The initial normal
-	TOOLS(Vector3) __initialNormal;
+    /// The initial normal
+    Vector3 __initialNormal;
 
 }; // Extrusion
 

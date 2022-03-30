@@ -1,33 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Plant Graphic Library
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2003 UMR Cirad/Inria/Inra Dap - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 
 
@@ -39,6 +49,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
+
+#ifndef PGL_CORE_WITHOUT_QT
+#include <QtCore>
+#endif
+
 
 #ifdef _WIN32
 #include <direct.h>
@@ -61,7 +76,7 @@
 #define STRING2(val) #val
 #define STRING(val) STRING2(val)
 #pragma message("MSVC VERSION: " STRING(_MSC_FULL_VER))
-#ifdef _MSVC_LANG 
+#ifdef _MSVC_LANG
 #pragma message("C++  VERSION: " STRING(_MSVC_LANG))
 #endif
 #ifdef _WIN64
@@ -77,13 +92,13 @@
 
 using namespace std;
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 static string PLANTGL_DIR;
 static string OPENALEA_DIR;
 
-inline const char * pglgetenv(const char * name) { 
-	return getenv(name);
+inline const char * pglgetenv(const char * name) {
+    return getenv(name);
 }
 
 string getHome(){
@@ -98,33 +113,33 @@ string getHome(){
 }
 
 string getOpenAleaDir(){
-		if(!OPENALEA_DIR.empty())return OPENALEA_DIR;
+        if(!OPENALEA_DIR.empty())return OPENALEA_DIR;
         const char * dir = pglgetenv("OPENALEADIR");
         if(!dir)
 #ifdef _WIN32
-			dir = "C:\\openalea";
+            dir = "C:\\openalea";
 #else
-			dir = "/usr/local/openalea";
+            dir = "/usr/local/openalea";
 #endif
-		OPENALEA_DIR = string(dir);
-		return OPENALEA_DIR;
+        OPENALEA_DIR = string(dir);
+        return OPENALEA_DIR;
 }
 
 string getPlantGLDir(){
-	if(!PLANTGL_DIR.empty())return PLANTGL_DIR;
+    if(!PLANTGL_DIR.empty())return PLANTGL_DIR;
     const char * dir = pglgetenv("PLANTGLDIR");
     if(!dir)PLANTGL_DIR = getOpenAleaDir();
-	else PLANTGL_DIR = string(dir);
-	return PLANTGL_DIR;
+    else PLANTGL_DIR = string(dir);
+    return PLANTGL_DIR;
 }
 
 void setPlantGLDir(const std::string& dir){
-	PLANTGL_DIR = dir;
+    PLANTGL_DIR = dir;
 }
 
 string getUserName(){
 #if defined(_WIN32)
-	char lpBuffer[UNLEN];
+    char lpBuffer[UNLEN];
     DWORD nSize(UNLEN);
     if(GetUserNameA(lpBuffer,&nSize)){
          return string(lpBuffer);
@@ -137,7 +152,7 @@ string getUserName(){
 
 #else
 #pragma "message username not defined"
-	return string("");
+    return string("");
 #endif
 }
 
@@ -156,7 +171,7 @@ string getOSFamily(){
         return string("MacOSX");
 #else
   #pragma "message OS Family not defined"
-		return string("");
+        return string("");
 #endif
 }
 
@@ -188,12 +203,12 @@ string getOSName(){
         else sys_name = "Windows";
         return sys_name;
 #elif defined (__GNUC__)
-	struct utsname buf;
+    struct utsname buf;
     uname(&buf);
     return string(buf.sysname);
 #else
 # pragma "message OS Name not defined"
-	return string("");
+    return string("");
 #endif
 
 }
@@ -210,7 +225,7 @@ string getOSVersion(){
     uname(&buf);
     return string(buf.version);
 #else
-	#pragma "message OS Version not defined"
+    #pragma "message OS Version not defined"
     return string("");
 #endif
 }
@@ -235,7 +250,7 @@ string getOSRelease(){
 
 string getMachineName(){
 #ifdef _WIN32
-	char lpBuffer[MAX_COMPUTERNAME_LENGTH+1]; // buffer
+    char lpBuffer[MAX_COMPUTERNAME_LENGTH+1]; // buffer
     DWORD nSize(MAX_COMPUTERNAME_LENGTH+1);
     if(GetComputerNameA(lpBuffer,&nSize))
       return string(lpBuffer);
@@ -304,18 +319,23 @@ string getCompilerVersion(){
 }
 
 string getOSLanguage(){
+#ifdef PGL_CORE_WITHOUT_QT
     string lang = "English";
 #ifdef _WIN32
-	  int cchData = GetLocaleInfoA(LOCALE_USER_DEFAULT,LOCALE_SENGLANGUAGE,NULL,0);
-	  LPSTR lpLCData = new char[cchData];
-	  cchData = GetLocaleInfoA(LOCALE_USER_DEFAULT,LOCALE_SENGLANGUAGE,lpLCData,cchData);
-	  lang = string(lpLCData);
+      int cchData = GetLocaleInfoA(LOCALE_USER_DEFAULT,LOCALE_SENGLANGUAGE,NULL,0);
+      LPSTR lpLCData = new char[cchData];
+      cchData = GetLocaleInfoA(LOCALE_USER_DEFAULT,LOCALE_SENGLANGUAGE,lpLCData,cchData);
+      lang = string(lpLCData);
 #elif __GNUC__
  #pragma message "os language not defined"
 #else
  #pragma message "os language not defined"
 #endif
     return lang;
+#else
+    QString locale_lang = QLocale::languageToString(QLocale::system().language());
+    return string(qPrintable(locale_lang));
+#endif
 }
 
 string getLanguage(){
@@ -326,5 +346,4 @@ string getLanguage(){
 void setLanguage(const string& lang){
 }
 
-TOOLS_END_NAMESPACE
-
+PGL_END_NAMESPACE

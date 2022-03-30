@@ -1,38 +1,43 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       AMAPmod: Exploring and Modeling Plant Architecture
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2000 UMR Cirad/Inra Modelisation des Plantes
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): C. Nouguier & F. Boudon (frederic.boudon@cirad.fr) nouguier
- *
- *       $Source$
- *       $Id$
- *
- *       Forum for AMAPmod developers    : amldevlp@cirad.fr
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
 
 #include "ligfile.h"
 #include "dtafile.h"
@@ -57,7 +62,6 @@
 #include <plantgl/math/util_math.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 using namespace std;
 
@@ -91,9 +95,9 @@ void LigRecord::setValues(const long symbol, const long val1, const long val2,
 }
     
 void LigRecord::setValues(const Vector3 dirp,const Vector3 dirs,
-						  const Vector3 dirt,const Vector3 origin,
-						  const float base_dia, 
-						  const float sommit_dia){
+                          const Vector3 dirt,const Vector3 origin,
+                          const float base_dia, 
+                          const float sommit_dia){
     __matrix[0][0] = dirp.x(); __matrix[0][1] = dirs.x();__matrix[0][2] = dirt.x(); __matrix[0][3] = origin.x();
     __matrix[1][0] = dirp.y(); __matrix[1][1] = dirs.y();__matrix[1][2] = dirt.y(); __matrix[1][3] = origin.y();
     __matrix[2][0] = dirp.z(); __matrix[2][1] = dirs.z();__matrix[2][2] = dirt.z(); __matrix[2][3] = origin.z();
@@ -105,13 +109,13 @@ void LigRecord::setValues(const Vector3 dirp,const Vector3 dirs,
 
 GeometryPtr 
 LigRecord::getTransformed(GeometryPtr primitive) const{
-  	Discretizer dis;
-	return getTransformed(primitive,dis);
+    Discretizer dis;
+    return getTransformed(primitive,dis);
 }
 
 GeometryPtr 
 LigRecord::getTransformed(GeometryPtr primitive, 
-						  Discretizer& dis) const {
+                          Discretizer& dis) const {
   
   Vector3 dirp(__matrix[0][0],__matrix[1][0], __matrix[2][0]);
   Vector3 dirs(__matrix[0][1],__matrix[1][1], __matrix[2][1]);
@@ -124,215 +128,215 @@ LigRecord::getTransformed(GeometryPtr primitive,
   real_t sommit_dia = __sommit_dia; // 2;
 
   if(!dirs.isOrthogonalTo(dirt)){
-	dirt = cross(dirp,dirs);
-	dirt.normalize();
+    dirt = cross(dirp,dirs);
+    dirt.normalize();
   }
   if(dot(cross(dirs,dirt),dirp) < 0) dirs = - dirs;
   
   if (!primitive) {
 
-	 base_dia /= 2;
+     base_dia /= 2;
      sommit_dia /= 2;
-	
+    
   /*
   The geometry of the component was not defined : a default 
   geometry will be used: a frustum from the geom library
-	*/
-	bool open = false; // false for open cylinder
-	real_t ratio;
-	if (base_dia > REAL_EPSILON) ratio = sommit_dia/base_dia;
-	else ratio = REAL_MAX;
-	
-	GeometryPtr shape;
-	
-	// if the radius is non-zero, define a "default" geometric object:
-	//		if(fabs(base_dia) > REAL_EPSILON){
-	
-	if(length > REAL_EPSILON){
-	  if(!(fabs(s1) > GEOM_EPSILON && fabs(s2) > GEOM_EPSILON)){
-		Point3ArrayPtr pts = Point3ArrayPtr(new Point3Array(2,origin));
-		pts->setAt(1,origin+dirp*length);
-		return GeometryPtr(new Polyline(pts));
-	  }
-	  else if(fabs(sommit_dia) < GEOM_EPSILON){
-		if(fabs(base_dia) > GEOM_EPSILON){
-		  if(s1!=s2 || fabs(base_dia*s1) > GEOM_EPSILON)
-			shape = GeometryPtr(new Cone(base_dia*(s1==s2?s1:1),
-			length, open, 6));
-		  else {
-			Point3ArrayPtr pts = Point3ArrayPtr(new Point3Array(2,origin));
-			pts->setAt(1,origin+dirp*length);
-			return GeometryPtr(new Polyline(pts));
-		  }
-		}
-		else {
-		  Point3ArrayPtr pts = Point3ArrayPtr(new Point3Array(2,origin));
-		  pts->setAt(1,origin+dirp*length);
-		  return GeometryPtr(new Polyline(pts));
-		}
-	  }
-	  else if(fabs(base_dia) < GEOM_EPSILON){
-		if(s1!=s2 || fabs(sommit_dia*s1) > GEOM_EPSILON)
-		  shape = GeometryPtr(
-		  new Translated(Vector3(0,0,length),GeometryPtr(
-		  new AxisRotated(Vector3::OY,GEOM_PI,GeometryPtr(
-		  new Cone(sommit_dia*(s1==s2?s1:1),
-		  length, open, 6))))));
-		else {
-		  Point3ArrayPtr pts = Point3ArrayPtr(new Point3Array(2,origin));
-		  pts->setAt(1,origin+dirp*length);
-		  return GeometryPtr(new Polyline(pts));
-		}
-	  }
-	  else if(fabs( ratio - 1 ) > GEOM_EPSILON)
-		shape = GeometryPtr(new Frustum(base_dia*(s1==s2 && s1 > GEOM_EPSILON?s1:1),
-		length, ratio, open, 6));
-	  else
-		shape = GeometryPtr(new Cylinder(base_dia*(s1==s2 && s1 > GEOM_EPSILON?s1:1),
-		length, open, 6));// six faces
-	}
-	else {
-	  if(!(fabs(s1) > GEOM_EPSILON && fabs(s2) > GEOM_EPSILON)){
-		return GeometryPtr(new PointSet(Point3ArrayPtr(new Point3Array(1,origin))));
-	  }
-	  if(fabs(base_dia) > GEOM_EPSILON){
-		if(s1!=s2 || fabs(base_dia*s1) > GEOM_EPSILON)
-		  shape = GeometryPtr(new Disc(base_dia*(s1==s2?s1:1),6));
-		else return GeometryPtr(new PointSet(Point3ArrayPtr(new Point3Array(1,origin))));
-	  }
-	  else if(fabs(sommit_dia) > GEOM_EPSILON) {
-		if(s1!=s2 || fabs(sommit_dia*s1) > GEOM_EPSILON)
-		  shape = GeometryPtr(new Disc(sommit_dia*(s1==s2?s1:1),6));
-		else return GeometryPtr(new PointSet(Point3ArrayPtr(new Point3Array(1,origin))));
-	  }
-	  else return GeometryPtr(new PointSet(Point3ArrayPtr(new Point3Array(1,origin))));
-	}
-	
-	if(s1 != s2)shape = GeometryPtr(new Scaled(Vector3(s1,s2,1),shape));
-	
-	if((dirt != Vector3::ORIGIN)&&
-	  (dirs != Vector3::ORIGIN)&&
-	  (dirs != Oriented::DEFAULT_PRIMARY|| 
-	  dirt != Oriented::DEFAULT_SECONDARY)){
-	  shape = GeometryPtr(new Oriented(dirs,dirt,shape)); // see comment below
-	}
-	
-	if(fabs(origin.x()) > GEOM_EPSILON || 
-	  fabs(origin.y()) > GEOM_EPSILON || 
-	  fabs(origin.z()) > GEOM_EPSILON)
-	  return GeometryPtr(new Translated(origin,shape));
-	else return shape;
-	
+    */
+    bool open = false; // false for open cylinder
+    real_t ratio;
+    if (base_dia > REAL_EPSILON) ratio = sommit_dia/base_dia;
+    else ratio = REAL_MAX;
+    
+    GeometryPtr shape;
+    
+    // if the radius is non-zero, define a "default" geometric object:
+    //      if(fabs(base_dia) > REAL_EPSILON){
+    
+    if(length > REAL_EPSILON){
+      if(!(fabs(s1) > GEOM_EPSILON && fabs(s2) > GEOM_EPSILON)){
+        Point3ArrayPtr pts = Point3ArrayPtr(new Point3Array(2,origin));
+        pts->setAt(1,origin+dirp*length);
+        return GeometryPtr(new Polyline(pts));
+      }
+      else if(fabs(sommit_dia) < GEOM_EPSILON){
+        if(fabs(base_dia) > GEOM_EPSILON){
+          if(s1!=s2 || fabs(base_dia*s1) > GEOM_EPSILON)
+            shape = GeometryPtr(new Cone(base_dia*(s1==s2?s1:1),
+            length, open, 6));
+          else {
+            Point3ArrayPtr pts = Point3ArrayPtr(new Point3Array(2,origin));
+            pts->setAt(1,origin+dirp*length);
+            return GeometryPtr(new Polyline(pts));
+          }
+        }
+        else {
+          Point3ArrayPtr pts = Point3ArrayPtr(new Point3Array(2,origin));
+          pts->setAt(1,origin+dirp*length);
+          return GeometryPtr(new Polyline(pts));
+        }
+      }
+      else if(fabs(base_dia) < GEOM_EPSILON){
+        if(s1!=s2 || fabs(sommit_dia*s1) > GEOM_EPSILON)
+          shape = GeometryPtr(
+          new Translated(Vector3(0,0,length),GeometryPtr(
+          new AxisRotated(Vector3::OY,GEOM_PI,GeometryPtr(
+          new Cone(sommit_dia*(s1==s2?s1:1),
+          length, open, 6))))));
+        else {
+          Point3ArrayPtr pts = Point3ArrayPtr(new Point3Array(2,origin));
+          pts->setAt(1,origin+dirp*length);
+          return GeometryPtr(new Polyline(pts));
+        }
+      }
+      else if(fabs( ratio - 1 ) > GEOM_EPSILON)
+        shape = GeometryPtr(new Frustum(base_dia*(s1==s2 && s1 > GEOM_EPSILON?s1:1),
+        length, ratio, open, 6));
+      else
+        shape = GeometryPtr(new Cylinder(base_dia*(s1==s2 && s1 > GEOM_EPSILON?s1:1),
+        length, open, 6));// six faces
+    }
+    else {
+      if(!(fabs(s1) > GEOM_EPSILON && fabs(s2) > GEOM_EPSILON)){
+        return GeometryPtr(new PointSet(Point3ArrayPtr(new Point3Array(1,origin))));
+      }
+      if(fabs(base_dia) > GEOM_EPSILON){
+        if(s1!=s2 || fabs(base_dia*s1) > GEOM_EPSILON)
+          shape = GeometryPtr(new Disc(base_dia*(s1==s2?s1:1),6));
+        else return GeometryPtr(new PointSet(Point3ArrayPtr(new Point3Array(1,origin))));
+      }
+      else if(fabs(sommit_dia) > GEOM_EPSILON) {
+        if(s1!=s2 || fabs(sommit_dia*s1) > GEOM_EPSILON)
+          shape = GeometryPtr(new Disc(sommit_dia*(s1==s2?s1:1),6));
+        else return GeometryPtr(new PointSet(Point3ArrayPtr(new Point3Array(1,origin))));
+      }
+      else return GeometryPtr(new PointSet(Point3ArrayPtr(new Point3Array(1,origin))));
+    }
+    
+    if(s1 != s2)shape = GeometryPtr(new Scaled(Vector3(s1,s2,1),shape));
+    
+    if((dirt != Vector3::ORIGIN)&&
+      (dirs != Vector3::ORIGIN)&&
+      (dirs != Oriented::DEFAULT_PRIMARY|| 
+      dirt != Oriented::DEFAULT_SECONDARY)){
+      shape = GeometryPtr(new Oriented(dirs,dirt,shape)); // see comment below
+    }
+    
+    if(fabs(origin.x()) > GEOM_EPSILON || 
+      fabs(origin.y()) > GEOM_EPSILON || 
+      fabs(origin.z()) > GEOM_EPSILON)
+      return GeometryPtr(new Translated(origin,shape));
+    else return shape;
+    
   }
   
   if(!(fabs(base_dia) > GEOM_EPSILON &&
-	fabs(s1) > GEOM_EPSILON &&
-	fabs(s2) > GEOM_EPSILON &&
-	fabs(length) > GEOM_EPSILON ))return GeometryPtr();
-		
+    fabs(s1) > GEOM_EPSILON &&
+    fabs(s2) > GEOM_EPSILON &&
+    fabs(length) > GEOM_EPSILON ))return GeometryPtr();
+        
   
   PrimitivePtr _primitive  = dynamic_pointer_cast<Primitive>(primitive);
   
   if(!_primitive){
-	
-	if (fabs(base_dia - sommit_dia) > GEOM_EPSILON) {
-	  GeometryPtr psmb;
-	  if (!(fabs(length - 1.0) > GEOM_EPSILON || 
-		fabs(s1 - 1.0) > GEOM_EPSILON || 
-		fabs(s2 - 1.0) > GEOM_EPSILON || 
-		fabs(base_dia  - 1.0) > GEOM_EPSILON )) {
-		psmb = GeometryPtr(_primitive);
-	  }
-	  else {
-		psmb = GeometryPtr(
-		  (new Scaled
-		  (Vector3(base_dia * s1,
-		  base_dia * s2,
-		  length),
-		  primitive)));
-	  }
-	  
-	  if((dirt != Vector3::ORIGIN)&&
-		(dirs != Vector3::ORIGIN)&&
-		(dirs != Oriented::DEFAULT_PRIMARY|| 
-		dirt != Oriented::DEFAULT_SECONDARY)){
-		psmb =  GeometryPtr(new Oriented(dirs,dirt,psmb)); // see comment below
-	  }
-	  
-	  if(fabs(origin.x()) > GEOM_EPSILON || 
-		fabs(origin.y()) > GEOM_EPSILON || 
-		fabs(origin.z()) > GEOM_EPSILON)
-		psmb = GeometryPtr(new Translated(origin, psmb));
-	  return psmb;
-	}
-	else if(primitive->apply(dis)){
-	  _primitive = dis.getDiscretization();
-	  if(primitive->isNamed()) 
-		_primitive->setName(primitive->getName());
-	}
+    
+    if (fabs(base_dia - sommit_dia) > GEOM_EPSILON) {
+      GeometryPtr psmb;
+      if (!(fabs(length - 1.0) > GEOM_EPSILON || 
+        fabs(s1 - 1.0) > GEOM_EPSILON || 
+        fabs(s2 - 1.0) > GEOM_EPSILON || 
+        fabs(base_dia  - 1.0) > GEOM_EPSILON )) {
+        psmb = GeometryPtr(_primitive);
+      }
+      else {
+        psmb = GeometryPtr(
+          (new Scaled
+          (Vector3(base_dia * s1,
+          base_dia * s2,
+          length),
+          primitive)));
+      }
+      
+      if((dirt != Vector3::ORIGIN)&&
+        (dirs != Vector3::ORIGIN)&&
+        (dirs != Oriented::DEFAULT_PRIMARY|| 
+        dirt != Oriented::DEFAULT_SECONDARY)){
+        psmb =  GeometryPtr(new Oriented(dirs,dirt,psmb)); // see comment below
+      }
+      
+      if(fabs(origin.x()) > GEOM_EPSILON || 
+        fabs(origin.y()) > GEOM_EPSILON || 
+        fabs(origin.z()) > GEOM_EPSILON)
+        psmb = GeometryPtr(new Translated(origin, psmb));
+      return psmb;
+    }
+    else if(primitive->apply(dis)){
+      _primitive = dis.getDiscretization();
+      if(primitive->isNamed()) 
+        _primitive->setName(primitive->getName());
+    }
   }
   
   if (primitive) {
-	GeometryPtr psmb;
-	
-	// Creates a tapered geometry
-	// The geometric model is defined in a reference system Rl = (x,y,z)
-	// AMAPmod defines the coordinates of a reference system R = (P,S,T)
-	// with respect to a global reference system R0
-	// Since z is the primary direction P, x is the secundary direction S
-	// and y is the ternary direction, the passage matrix M(R/RL) from RL 
-	// to R is: [[0,1,0]t, [0,0,1]t, [1,0,0]t]
-	// We then need to express how to pass from Rl to R0 :
-	// X/R0 = M(R/R0) . M(R/RL) . X/Rl
-	//      = [P,S,T] . [[0,1,0]t, [0,0,1]t, [1,0,0]t] . X/Rl
-	//      = [S,T,P] . X/Rl
-	
-	
-	// Creates a tapered geometry
-	if (!(fabs(base_dia - sommit_dia) > GEOM_EPSILON)) {
-	  
-	  if( fabs(base_dia - 1) > GEOM_EPSILON ||
-		fabs(s1 - 1) > GEOM_EPSILON ||
-		fabs(s2 - 1) > GEOM_EPSILON ||
-		fabs(length-1) > GEOM_EPSILON ){
-		
-		psmb = GeometryPtr(
-		  (new Scaled
-		  (Vector3( base_dia * s1 , base_dia * s2 , length ),
-		  primitive)));
-	  }
-	  else {
-		psmb = GeometryPtr(primitive);
-	  }
-	}
-	else  {
-	  
-	  psmb = GeometryPtr
-		(new Tapered
-		(base_dia, 
-		sommit_dia,
-		_primitive));
-	  
-	  if(fabs(s1 - 1) > GEOM_EPSILON  ||
-		fabs(s2 - 1) > GEOM_EPSILON ||
-		fabs(length-1) > GEOM_EPSILON )
-		
-		psmb = GeometryPtr
-		(new Scaled(Vector3(s1,s2,length),psmb));
-	}
-	
-	if((dirt != Vector3::ORIGIN) &&
-	  (dirs != Vector3::ORIGIN) &&
-	  (dirs != Oriented::DEFAULT_PRIMARY|| 
-	  dirt != Oriented::DEFAULT_SECONDARY))
-	  psmb =  GeometryPtr(new Oriented(dirs,dirt,psmb)); // see comment above
-	
-	if(fabs(origin.x()) > GEOM_EPSILON || 
-	  fabs(origin.y()) > GEOM_EPSILON || 
-	  fabs(origin.z()) > GEOM_EPSILON)
-	  psmb = GeometryPtr(new Translated(origin, psmb));
-	
-	return psmb;
+    GeometryPtr psmb;
+    
+    // Creates a tapered geometry
+    // The geometric model is defined in a reference system Rl = (x,y,z)
+    // AMAPmod defines the coordinates of a reference system R = (P,S,T)
+    // with respect to a global reference system R0
+    // Since z is the primary direction P, x is the secundary direction S
+    // and y is the ternary direction, the passage matrix M(R/RL) from RL 
+    // to R is: [[0,1,0]t, [0,0,1]t, [1,0,0]t]
+    // We then need to express how to pass from Rl to R0 :
+    // X/R0 = M(R/R0) . M(R/RL) . X/Rl
+    //      = [P,S,T] . [[0,1,0]t, [0,0,1]t, [1,0,0]t] . X/Rl
+    //      = [S,T,P] . X/Rl
+    
+    
+    // Creates a tapered geometry
+    if (!(fabs(base_dia - sommit_dia) > GEOM_EPSILON)) {
+      
+      if( fabs(base_dia - 1) > GEOM_EPSILON ||
+        fabs(s1 - 1) > GEOM_EPSILON ||
+        fabs(s2 - 1) > GEOM_EPSILON ||
+        fabs(length-1) > GEOM_EPSILON ){
+        
+        psmb = GeometryPtr(
+          (new Scaled
+          (Vector3( base_dia * s1 , base_dia * s2 , length ),
+          primitive)));
+      }
+      else {
+        psmb = GeometryPtr(primitive);
+      }
+    }
+    else  {
+      
+      psmb = GeometryPtr
+        (new Tapered
+        (base_dia, 
+        sommit_dia,
+        _primitive));
+      
+      if(fabs(s1 - 1) > GEOM_EPSILON  ||
+        fabs(s2 - 1) > GEOM_EPSILON ||
+        fabs(length-1) > GEOM_EPSILON )
+        
+        psmb = GeometryPtr
+        (new Scaled(Vector3(s1,s2,length),psmb));
+    }
+    
+    if((dirt != Vector3::ORIGIN) &&
+      (dirs != Vector3::ORIGIN) &&
+      (dirs != Oriented::DEFAULT_PRIMARY|| 
+      dirt != Oriented::DEFAULT_SECONDARY))
+      psmb =  GeometryPtr(new Oriented(dirs,dirt,psmb)); // see comment above
+    
+    if(fabs(origin.x()) > GEOM_EPSILON || 
+      fabs(origin.y()) > GEOM_EPSILON || 
+      fabs(origin.z()) > GEOM_EPSILON)
+      psmb = GeometryPtr(new Translated(origin, psmb));
+    
+    return psmb;
   }
   return GeometryPtr(); // the geometric symbol was not defined: default is used
 }
@@ -389,8 +393,8 @@ Ligfile::Ligfile( const string& fileName, bool bigendian):
     _fileName(fileName),
     recordTable(0){
     bifstream  * stream;
-	if(bigendian) stream = new beifstream(_fileName.c_str());
-	else stream = new leifstream(_fileName.c_str());
+    if(bigendian) stream = new beifstream(_fileName.c_str());
+    else stream = new leifstream(_fileName.c_str());
     if(*stream){
         char protection[81];
         stream->read(protection,80);
@@ -401,7 +405,7 @@ Ligfile::Ligfile( const string& fileName, bool bigendian):
                  recordTable->push_back(a);
         }
     }
-	delete stream;
+    delete stream;
 
 }
 
@@ -453,32 +457,32 @@ bool Ligfile::isValid( ) const {
 /* ----------------------------------------------------------------------- */
 
 bool Ligfile::isBigEndian( const std::string& fileName ){
-	beifstream stream(fileName.c_str());
+    beifstream stream(fileName.c_str());
     if(stream){
         char protection[81];
         stream.read(protection,80);
         if(!stream.eof()){
             LigRecord a;
             if(a.read(stream)){
-				if (a.getSymbolNumber() >= 0x1000) return false;
-			}
-		}
-	}
-	return true;
+                if (a.getSymbolNumber() >= 0x1000) return false;
+            }
+        }
+    }
+    return true;
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 ScenePtr PGL(readLineTree)(string ligFile, 
-							string dtaFile, 
-							string smbpath,
-							bool bigendian,
-							ostream& output){
+                            string dtaFile, 
+                            string smbpath,
+                            bool bigendian,
+                            ostream& output){
 
     string p = get_cwd();
     ScenePtr result;
-	PglErrorStream::Binder psb(output);
+    PglErrorStream::Binder psb(output);
     // (*SceneObject::commentStream) << "Read Line Tree on " << ligFile << " , " << dtaFile << " and on " << smbpath << endl;
     Dtafile d(dtaFile,smbpath);
     if(d.isValid()){
@@ -486,7 +490,7 @@ ScenePtr PGL(readLineTree)(string ligFile,
       Ligfile l(ligFile,bigendian);
       // (*SceneObject::commentStream) << "Lig File read (" << l.size() << ") - " << (l.isValid()?"Valid":"Invalid") << endl;
       if(!l.isValid()){
-		   pglError("Error : Invalid Lig File !");
+           pglError("Error : Invalid Lig File !");
            result = d.getScene();
           }
       else result =l.computeScene(d);

@@ -1,0 +1,12 @@
+{
+    "menu_name": "OpenAlea",
+    "menu_items":
+    [
+        {
+            "name": "PlantGL Viewer",
+            "script": "${PREFIX}/bin/pglviewer.exe",
+            "workdir": "${PREFIX}",
+            "desktop": true 
+        }
+    ]
+}
