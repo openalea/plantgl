@@ -20,7 +20,7 @@ requirements:
   host:
       - python {{PY_VER}}
       - setuptools
-      - numpy =1.20
+      - numpy=1.20|>=1.21.5
       - qt
       - pyqt
       - libpng
