@@ -17,9 +17,10 @@ install:
   - git clone https://github.com/OpenAlea/appveyor-ci.git appveyor-ci
   - cd appveyor-ci
   - call install.bat
-  - conda config --prepend channels msys2
+  # - conda config --prepend channels msys2
   - conda config --prepend channels conda-forge
-  - conda config --prepend channels fredboudon
+  # - conda config --prepend channels fredboudon
+  - conda config --prepend channels openalea3
 
 before_build:
   - call before_build.bat
