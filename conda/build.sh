@@ -8,7 +8,7 @@ cd build
 
 if [ `uname` = "Darwin" ]; then
     SYSTEM_DEPENDENT_ARGS=(
-        "-DCMAKE_OSX_SYSROOT=${CONDA_BUILD_SYSROOT}"
+        "-DCMAKE_OSX_SYSROOT=${CONDA_BUILD_SYSROOT} -DQHULL_LIBRARY=${CONDA_PREFIX}/lib/libqhull_r${SHLIB_EXT}"
    )
     export LDFLAGS="-undefined dynamic_lookup ${LDFLAGS}"
 
@@ -86,7 +86,6 @@ cmake -DCMAKE_INSTALL_PREFIX=${PREFIX} \
       -DCMAKE_PREFIX_PATH=${PREFIX} \
       -DCMAKE_BUILD_TYPE=Release  \
       -DPython3_EXECUTABLE=${PYTHON} \
-      -DQHULL_LIBRARY=${CONDA_PREFIX}/lib/libqhull_r${SHLIB_EXT} \
        ${SYSTEM_DEPENDENT_ARGS[@]} \
       -LAH .. 
 
