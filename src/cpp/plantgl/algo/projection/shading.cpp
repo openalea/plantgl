@@ -44,34 +44,35 @@
 
 #include "shading.h"
 #include "zbufferengine.h"
+
 /* ----------------------------------------------------------------------- */
 
 PGL_USING_NAMESPACE
 
 
-
-
 Color4 PGL(phong)(const Vector3& v, const Vector3& n, 
              const Vector3& cameraPosition, 
-             const Vector3& lightPosition, 
-             const Color3& lightAmbient, const Color3& lightDiffuse, const Color3& lightSpecular, 
+             const LightPtr& light, 
              MaterialPtr material)
 {
-        Vector3 l = (lightPosition - v).normed();
-        Vector3 vd = (cameraPosition - v).normed();
-        Vector3 reflection = n.reflect(l); 
+        Color3 result = material->getAmbient();
+        if (light->isEnabled()) {
+            Vector3 l = (light->position() - v).normed();
+            Vector3 vd = (cameraPosition - v).normed();
+            Vector3 reflection = n.reflect(l); 
 
-        real_t diffusecoef = pglMax(0.0, dot(n, l));
-        real_t shininess = material->getShininess();
-        real_t specularcoef = pow(pglMax(0.0, dot(vd, reflection)), shininess);
+            real_t diffusecoef = pglMax(0.0, dot(n, l));
+            real_t shininess = material->getShininess();
+            real_t specularcoef = pow(pglMax(0.0, dot(vd, reflection)), shininess);
 
-        Color3 ambient = material->getAmbient()      * lightAmbient;
-        Color3 diffuse = material->getDiffuseColor() * lightDiffuse;
-        Color3 specular = material->getSpecular()    * lightSpecular;
+            Color3 ambient = material->getAmbient()      * light->ambient();
+            Color3 diffuse = material->getDiffuseColor() * light->diffuse();
+            Color3 specular = material->getSpecular()    * light->specular();
 
-        // printf("%i %i %i\n", lightAmbient.getRed(), lightAmbient.getGreen(), lightAmbient.getBlue());
-        // printf("%i %i %i\n", ambient.getRed(), ambient.getGreen(), ambient.getBlue());
-        Color3 result = ambient + diffuse * diffusecoef +  specular * specularcoef; 
+            // printf("%i %i %i\n", lightAmbient.getRed(), lightAmbient.getGreen(), lightAmbient.getBlue());
+            // printf("%i %i %i\n", ambient.getRed(), ambient.getGreen(), ambient.getBlue());
+            result = ambient + diffuse * diffusecoef +  specular * specularcoef; 
+        }
 
         return Color4(result, material->getTransparency());
 }
@@ -82,14 +83,15 @@ Shader::Shader(ZBufferEngine * engine) : RefCountObject(), __engine(engine), __c
 Shader::~Shader() {}
 
 
-void Shader::initEnv(const ProjectionCameraPtr& camera) { __camera = camera; }
+void Shader::initEnv(const ProjectionCameraPtr& camera, const LightPtr& light) { __camera = camera; __light = light; }
 
 
 const TOOLS(Vector3)& Shader::cameraPosition() const { return __camera->position(); }  
-const TOOLS(Vector3)& Shader::lightPosition() const { return __engine->__lightPosition; }  
-const Color3& Shader::lightAmbient() const { return __engine->__lightAmbient; }  
-const Color3& Shader::lightDiffuse() const { return __engine->__lightDiffuse; }  
-const Color3& Shader::lightSpecular() const { return __engine->__lightSpecular; }  
+bool Shader::lightEnabled() const { return __light->isEnabled(); }  
+const TOOLS(Vector3)& Shader::lightPosition() const { return __light->position(); }  
+const Color3& Shader::lightAmbient() const { return __light->ambient(); }  
+const Color3& Shader::lightDiffuse() const { return __light->diffuse(); }  
+const Color3& Shader::lightSpecular() const { return __light->specular(); }  
 
 TriangleShader::TriangleShader(ZBufferEngine * engine) : Shader(engine) {}
 TriangleShader::~TriangleShader() {}
@@ -101,13 +103,10 @@ IdBasedShader::IdBasedShader(ZBufferEngine * engine, uint32_t _defaultid, Color4
     Color4 defcol = Color4::fromUint(_defaultid, conversionformat);
     engine->__frameBuffer = new PglFrameBufferManager(engine->__imageWidth, engine->__imageHeight, 4, defcol);
 
-    // if(engine->getImage()->nbChannels() != 4){
-    //     engine->getImage()->setNbChannels(4);
-    //}
 }
 IdBasedShader::~IdBasedShader() {}
 
-void IdBasedShader::init(AppearancePtr appearance, TriangleSetPtr triangles, uint32_t trid, uint32_t _shapeid, const ProjectionCameraPtr& camera) 
+void IdBasedShader::init(AppearancePtr appearance, TriangleSetPtr triangles, uint32_t trid, uint32_t _shapeid, const ProjectionCameraPtr& camera, const LightPtr& light) 
 { shapeid = _shapeid;}
 
 TriangleShader *  IdBasedShader::copy(bool deep) const
@@ -124,8 +123,10 @@ void IdBasedShader::process(int32_t x, int32_t y, int32_t z, float w0, float w1,
 TextureShader::TextureShader(ZBufferEngine * engine) : TriangleShader(engine) {}
 TextureShader::~TextureShader() {}
 
-void TextureShader::init(AppearancePtr appearance, TriangleSetPtr triangles, uint32_t trid, uint32_t shapeid, const ProjectionCameraPtr& camera)
+void TextureShader::init(AppearancePtr appearance, TriangleSetPtr triangles, uint32_t trid, uint32_t shapeid, const ProjectionCameraPtr& camera, const LightPtr& light)
 {
+    initEnv(camera, light);
+
     Texture2DPtr texture = dynamic_pointer_cast<Texture2D>(appearance);
     if (is_valid_ptr(texture) && is_valid_ptr(texture->getImage())){
         image = __engine->getTexture(texture->getImage());
@@ -158,8 +159,10 @@ void TextureShader::process(int32_t x, int32_t y, int32_t z, float w0, float w1,
 ColorBasedShader::ColorBasedShader(ZBufferEngine * engine): TriangleShader(engine) {}
 ColorBasedShader::~ColorBasedShader() {}
 
-void ColorBasedShader::init(AppearancePtr appearance, TriangleSetPtr triangles, uint32_t trid, uint32_t shapeid, const ProjectionCameraPtr& camera)
+void ColorBasedShader::init(AppearancePtr appearance, TriangleSetPtr triangles, uint32_t trid, uint32_t shapeid, const ProjectionCameraPtr& camera, const LightPtr& light)
 { 
+    initEnv(camera, light);
+    
     if (triangles->hasColorList()) {
         c0 =  triangles->getFaceColorAt(trid,0);
         c1 =  triangles->getFaceColorAt(trid,1);
@@ -195,8 +198,10 @@ void ColorBasedShader::process(int32_t x, int32_t y, int32_t z, float w0, float 
 GouraudInterpolation::GouraudInterpolation(ZBufferEngine * engine) : TriangleShader(engine) {}
 GouraudInterpolation::~GouraudInterpolation() {}
 
-void GouraudInterpolation::init(AppearancePtr appearance, TriangleSetPtr triangles, uint32_t trid, uint32_t shapeid, const ProjectionCameraPtr& camera)
+void GouraudInterpolation::init(AppearancePtr appearance, TriangleSetPtr triangles, uint32_t trid, uint32_t shapeid, const ProjectionCameraPtr& camera, const LightPtr& light)
 { 
+    initEnv(camera, light);
+    
     MaterialPtr material = dynamic_pointer_cast<Material>(appearance);
 
     if (material){
@@ -208,9 +213,9 @@ void GouraudInterpolation::init(AppearancePtr appearance, TriangleSetPtr triangl
         const Vector3& n1 = triangles->getFaceNormalAt(trid,1);
         const Vector3& n2 = triangles->getFaceNormalAt(trid,2);
 
-        c0 =  phong(v0, n0,  camera->position(), lightPosition(), lightAmbient(), lightDiffuse(), lightSpecular(), material);
-        c1 =  phong(v1, n1,  camera->position(), lightPosition(), lightAmbient(), lightDiffuse(), lightSpecular(), material);
-        c2 =  phong(v2, n2,  camera->position(), lightPosition(), lightAmbient(), lightDiffuse(), lightSpecular(), material);
+        c0 =  phong(v0, n0,  camera->position(), __light, material);
+        c1 =  phong(v1, n1,  camera->position(), __light, material);
+        c2 =  phong(v2, n2,  camera->position(), __light, material);
     }
 }
 
@@ -222,7 +227,7 @@ TriangleShader *  GouraudInterpolation::copy(bool deep) const
 
 void GouraudInterpolation::process(int32_t x, int32_t y, int32_t z, float w0, float w1, float w2)
 {
-    Color4 rasterColor = c0 * w0  + c1 * w1  + c2 * w2 ;
+    Color4 rasterColor = Color4::interpolate(c0, w0, c1 ,w1, c2, w2) ;
     __engine->setFrameBufferAt(x,y,rasterColor);
 
 }
@@ -231,8 +236,10 @@ void GouraudInterpolation::process(int32_t x, int32_t y, int32_t z, float w0, fl
 PhongInterpolation::PhongInterpolation(ZBufferEngine * engine) : TriangleShader(engine) {}
 PhongInterpolation::~PhongInterpolation() {}
 
-void PhongInterpolation::init(AppearancePtr appearance, TriangleSetPtr triangles, uint32_t trid, uint32_t shapeid, const ProjectionCameraPtr& camera)
+void PhongInterpolation::init(AppearancePtr appearance, TriangleSetPtr triangles, uint32_t trid, uint32_t shapeid, const ProjectionCameraPtr& camera, const LightPtr& light)
 {
+    initEnv(camera, light);
+
     material = dynamic_pointer_cast<Material>(appearance);
 
     n0 = triangles->getFaceNormalAt(trid,0);
@@ -249,7 +256,7 @@ void PhongInterpolation::process(int32_t x, int32_t y, int32_t z, float w0, floa
 {
     Vector3 v = __engine->rasterToWorld(Vector3(x,y,z));
     Vector3 normal = n0 * w0 + n1 * w1 + n2 * w2;
-    Color4 rasterColor =  phong(v, normal,  cameraPosition(), lightPosition(), lightAmbient(), lightDiffuse(), lightSpecular(), material);
+    Color4 rasterColor =  phong(v, normal,  cameraPosition(), __light, material);
     __engine->setFrameBufferAt(x,y,rasterColor);
 }
 
@@ -267,12 +274,13 @@ void TriangleShaderSelector::registerShader(eShadingStyle style, TriangleShaderP
     __shadermap[style] = shader;    
 }
 
-void TriangleShaderSelector::init(AppearancePtr appearance, TriangleSetPtr triangles, uint32_t trid, uint32_t shapeid, const ProjectionCameraPtr& camera)
+void TriangleShaderSelector::init(AppearancePtr appearance, TriangleSetPtr triangles, uint32_t trid, uint32_t shapeid, const ProjectionCameraPtr& camera, const LightPtr& light)
 {
+    initEnv(camera, light);
     if (triangles->hasColorList()) __current = __shadermap[eColorListBased];
     else if (is_valid_ptr(dynamic_pointer_cast<Texture2D>(appearance))) __current = __shadermap[eTextureBased];
     else __current = __shadermap[eMaterialBased];
-    __current->init(appearance, triangles, trid, shapeid, camera);
+    __current->init(appearance, triangles, trid, shapeid, camera, light);
 }
 
 void TriangleShaderSelector::process(int32_t x, int32_t y, int32_t z, float w0, float w1, float w2) 

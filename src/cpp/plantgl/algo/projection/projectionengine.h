@@ -79,8 +79,8 @@ public :
 
       virtual ~ProjectionEngine();
 
-      inline void setPerspectiveCamera(real_t angleOfView, real_t aspectRatio, real_t near, real_t far)
-      { __camera = ProjectionCamera::perspectiveCamera(angleOfView, aspectRatio, near, far); }
+      inline void setPerspectiveCamera(real_t verticalAngleOfView, real_t aspectRatio, real_t near, real_t far)
+      { __camera = ProjectionCamera::perspectiveCamera(verticalAngleOfView, aspectRatio, near, far); }
 
       inline void setFrustumCamera(real_t left, real_t right, real_t bottom, real_t top, real_t near, real_t far)
       { __camera = ProjectionCamera::frustumCamera(left, right, bottom, top, near, far); }

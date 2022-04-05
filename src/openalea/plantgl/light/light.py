@@ -3,26 +3,57 @@ import openalea.plantgl.all as pgl
 
 from math import radians, sin, pi, ceil
 
+# Light Fractalysis module: Computation of direct light in a scene
+#
+# The light fractalysis module (written by D. DaSilva during his PhD thesis) contains 3 mains functions.
 
-def diffuseInterception(scene):
-  return  directionalInterception(scene, directions = sd.skyTurtle())
+# 1. directionalInterception computes the weighed cumulated direct light intercepted by each geometrical object (shape)
+# in a 3D scene, given as an argument in a set of specified directions (typically representing the course of sun in
+# space during a period of time)
+# use:
+# directionalInterception(lscene,[(azimuth,elev,weight), (azimuth,elev,weight), ...])
+# where:
+# * lscene is the lscene corresponding to the L-system geometric interpretation of the current lstring
+# * azimuth and elev are angles in the LPy global reference system (x towards us, y to the right, z upwards)
+# (note that elev angle is counted with reference to the plane (x,y) where it is 0.
+# * weight is a set of weighting coefficients
+#
+# the value returned is a dictionary that associates each id in the lscene with its cumulated value of intercepted light
+# (for all the considered directions)
 
-def directInterception(scene, lat=43.36, long=3.52, jj=221, start=7, stop=19, stp=30, dsun = 1, dGMT = 0):
-  direct = sd.getDirectLight( latitude=lat , longitude=int, jourJul=jj, startH=start, stopH=stop, step=stp, decalSun = dsun, decalGMT = dGMT)
-  return  directionalInterception(scene, directions = direct)
 
-def totalInterception(scene, lat=43.36, long=3.52, jj=221, start=7, stop=19, stp=30, dsun = 1, dGMT = 0):
+# 2. diffuseInterception(lscene) calls directionalInterception, with a predefined set of directions,
+# representing a sampling of the sky dome, and specific weighing coefs for these directions
+
+
+# 3. A last function "directInterception" calls directionalInterception with a predefined set of directions,
+# representing the path of the sun at a given latitude and longitudes, at a specific day date.
+#
+# directionalInterception(lscene, latitude, longitude, julian_day, starting_hour, ending_hour, step, dGMT)
+# (see also ...)
+#
+# Note: In all these algorithms the plant projection to compute the intercepted surfaces is orthographic
+# and based on a viewport whose resolution is 600x600
+
+def diffuseInterception(scene, screenresolution = None):
+  return  directionalInterception(scene, directions = sd.skyTurtle(), screenresolution = screenresolution)
+
+def directInterception(scene, latitude=43.36, longitude=3.52, jj=221, start=7, stop=19, stp=30, dsun = 1, dGMT = 0, screenresolution = None):
+  direct = sd.getDirectLight( latitude=latitude , longitude=longitude, jourJul=jj, startH=start, stopH=stop, step=stp, decalSun = dsun, decalGMT = dGMT)
+  return  directionalInterception(scene, directions = direct, screenresolution = screenresolution)
+
+def totalInterception(scene, latitude=43.36, longitude=3.52, jj=221, start=7, stop=19, stp=30, dsun = 1, dGMT = 0, screenresolution = None):
   diffu = sd.skyTurtle()
-  direct =  sd.getDirectLight( latitude=lat , longitude=int, jourJul=jj, startH=start, stopH=stop, step=stp, decalSun = dsun, decalGMT = dGMT)
+  direct =  sd.getDirectLight( latitude=latitude , longitude=longitude, jourJul=jj, startH=start, stopH=stop, step=stp, decalSun = dsun, decalGMT = dGMT)
   all = direct + diffu
-  return directionalInterception(scene, directions = all)
+  return directionalInterception(scene, directions = all, screenresolution = screenresolution)
 
 
-# converter for azimuth elevation 
-# az,el are expected in degrees, in the North-clocwise convention
-# In the scene, positive rotations are counter-clockwise
-#north is the angle (degrees, positive counter_clockwise) between X+ and North
 def azel2vect(az, el, north=0):
+  """ converter for azimuth elevation 
+      az,el are expected in degrees, in the North-clocwise convention
+      In the scene, positive rotations are counter-clockwise
+      north is the angle (degrees, positive counter_clockwise) between X+ and North """
   azimuth = radians(north - az)
   zenith = radians(90 - el)
   v = -pgl.Vector3(pgl.Vector3.Spherical( 1., azimuth, zenith ) )
@@ -100,11 +131,13 @@ def projectedBBox(bbx, direction, up):
 
 
 
-def directionalInterception(scene, directions, north = 0, horizontal = False, screenresolution = 1, verbose = False, multithreaded = True):
+def directionalInterception(scene, directions, north = 0, horizontal = False, screenresolution = None, verbose = False, multithreaded = False):
 
   bbox=pgl.BoundingBox( scene )
   d_factor = max(bbox.getXRange() , bbox.getYRange() , bbox.getZRange())
   shapeLight = {}
+  if screenresolution is None:
+    screenresolution = d_factor/100
   pixsize = screenresolution*screenresolution
 
   for az, el, wg in directions:
@@ -140,7 +173,7 @@ def directionalInterception(scene, directions, north = 0, horizontal = False, sc
   return shapeLight
 
 
-def scene_irradiance(scene, directions, north = 0, horizontal = False, scene_unit = 'm', screenresolution = 1, verbose = False):
+def scene_irradiance(scene, directions, north = 0, horizontal = False, scene_unit = 'm', screenresolution = None, verbose = False):
     """
     Compute the irradiance received by all the shapes of a given scene.
    :Parameters:

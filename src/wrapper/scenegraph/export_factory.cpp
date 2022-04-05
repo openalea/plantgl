@@ -88,6 +88,10 @@ public:
      SceneCodec(name,mode), bp::wrapper<SceneCodec>()
       {  }
 
+    PySceneCodec(const SceneCodec& other) :
+     SceneCodec(other), bp::wrapper<SceneCodec>()
+      {  }
+
     virtual SceneFormatList formats() const
     {
         PythonInterpreterAcquirer py;
@@ -247,6 +251,17 @@ SceneFormatList sf_formats( SceneFactory * f) {
     return f->formats();
 }
 
+boost::python::list sf_codecs( SceneFactory * f) {
+    boost::python::list result;
+    for(SceneFactory::CodecList::const_iterator it = f->begin(); it != f->end(); ++it){
+        PySceneCodecPtr pyit = dynamic_pointer_cast<PySceneCodec>(*it);
+        if (is_valid_ptr(pyit)) result.append(bp::object(pyit));
+        else result.append(bp::object(PySceneCodecPtr(new PySceneCodec(**it))));
+    }
+    return result;
+}
+
+
 void export_SceneFactory()
 {
 
@@ -255,6 +270,7 @@ void export_SceneFactory()
       .staticmethod("get")
       .def("formats", &SceneFactory::formats)
       .def("formats", &sf_formats)
+      .def("codecs", &sf_codecs)
       .def("registerCodec", &SceneFactory::registerCodec)
       .def("unregisterCodec", &SceneFactory::unregisterCodec)
       .def("isReadable", &SceneFactory::isReadable)

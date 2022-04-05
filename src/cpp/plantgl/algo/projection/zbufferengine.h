@@ -57,6 +57,7 @@
 #include <plantgl/scenegraph/container/indexarray.h>
 #include "../algo_config.h"
 #include "shading.h"
+#include "light.h"
 #include "projectionengine.h"
 #include "framebuffermanager.h"
 #include "imagemutex.h"
@@ -128,9 +129,10 @@ public :
     friend class IdBasedShader;
 
     enum eRenderingStyle {
-        eColorBased,
-        eIdBased,
-        eDepthOnly
+        eDepthOnly  = 0,
+        eColorBased = 1,
+        eIdBased    = 2,
+        eIdAndColorBased = 3
     } ;
 
 
@@ -160,7 +162,8 @@ public :
   
   void setLight(const Vector3& lightPosition, const Color3& lightColor = Color3(255,255,255));
   void setLight(const Vector3& lightPosition, const Color3& lightAmbient = Color3(255,255,255), const Color3& lightDiffuse = Color3(255,255,255), const Color3& lightSpecular = Color3(255,255,255));
-  void enableLight(bool enabled);
+  void setLightEnabled(bool enabled) { __light->setEnabled(enabled); }
+  bool isLightEnabled() const { return __light->isEnabled() ; }
   
   void iprocess(TriangleSetPtr triangles, AppearancePtr appearance, uint32_t id, ProjectionCameraPtr camera = ProjectionCameraPtr(), uint32_t threadid = 0);
   void iprocess(PolylinePtr polyline, MaterialPtr material, uint32_t id, ProjectionCameraPtr camera = ProjectionCameraPtr(), uint32_t threadid = 0);
@@ -173,13 +176,6 @@ public :
   void renderPoint(const TOOLS(Vector3)& v, const Color4& c0, const uint32_t width = 1, ProjectionCameraPtr camera = ProjectionCameraPtr());
   void renderSegment(const TOOLS(Vector3)& v0, const TOOLS(Vector3)& v1, const Color4& c0, const Color4& c1, const uint32_t width = 1, ProjectionCameraPtr camera = ProjectionCameraPtr());
 
-  /*
-  Vector3 worldToCamera(const Vector3& vertexWorld) const;
-  Vector3 cameraToNDC(const Vector3& vertexCamera) const;
-  Vector3 ndcToRaster(const Vector3& vertexNDC) const;
-  Vector3 cameraToRaster(const Vector3& vertexCamera) const;
-  Vector3 cameraToWorld(const Vector3& vertexCamera) const;
-  */
 
   Vector3 worldToRaster(const Vector3& vertexWorld) const 
   { return __camera->worldToRaster(vertexWorld, __imageWidth, __imageHeight); }
@@ -227,7 +223,7 @@ public :
 
   virtual void process(ScenePtr scene);
 
-  std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)> grabZBufferPoints(real_t jitter = 0, int raywidth = 0) const;
+  std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)> grabZBufferPoints(real_t jitter = 0, real_t raywidth = 0) const;
   
 protected :
 
@@ -247,11 +243,7 @@ protected :
   void unlock(uint_t x, uint_t y);
   bool tryLock(uint_t x, uint_t y);
 
-  bool __lightEnabled;
-  Vector3 __lightPosition;
-  Color3 __lightAmbient;
-  Color3 __lightDiffuse;
-  Color3 __lightSpecular;
+  LightPtr __light;
 
   RealArray2Ptr __depthBuffer;
   FrameBufferManagerPtr __frameBuffer;

@@ -42,7 +42,7 @@ requirements:
       - python {{PY_VER}}                 
       - binutils_impl_linux-64            # [linux]
       - {{ compiler('cxx') }}
-      - bison                             # [unix]
+      - bison =3.4                             # [unix]
       - flex                              # [unix]
       - m2-bison                          # [win]
       - m2-flex                           # [win]

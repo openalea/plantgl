@@ -153,7 +153,7 @@ public:
    real_t far;
    eProjectionType type;
 
-   static ProjectionCameraPtr perspectiveCamera(real_t angleOfView, real_t aspectRatio, real_t near, real_t far);
+   static ProjectionCameraPtr perspectiveCamera(real_t verticalAngleOfView, real_t aspectRatio, real_t near, real_t far);
    static ProjectionCameraPtr frustumCamera(real_t left, real_t right, real_t bottom, real_t top, real_t near, real_t far);
    static ProjectionCameraPtr orthographicCamera(real_t left, real_t right, real_t bottom, real_t top, real_t near, real_t far);
 

@@ -37,19 +37,39 @@
  *
  *  ----------------------------------------------------------------------------
  */
+             
+
+#include "light.h"
+
+/* ----------------------------------------------------------------------- */
+
+PGL_USING_NAMESPACE
 
 
-/*! \file version.h
-    \brief File where PGL version is defined.
-*/
+Light::Light(const Vector3& position, const Color3& ambient, const Color3& diffuse , const Color3& specular):
+    RefCountObject(), __enabled(true), __position(position), __ambient(ambient), __diffuse(diffuse), __specular(specular) 
+    {}
+
+Light::~Light()
+{}
+
+void Light::set(const Vector3& position, const Color3& color )
+{
+    __position = position;
+    __ambient = color;
+    __diffuse = color;
+    __specular = color;
+}
+
+void Light::set(const Vector3& position, const Color3& ambient, const Color3& diffuse, const Color3& specular)
+{
+    __position = position;
+    __ambient = ambient;
+    __diffuse = diffuse;
+    __specular = specular;
+}
 
 
-#ifndef __plantgl_version_h__
-#define __plantgl_version_h__
-
-/// PGL Version macro
-#define PGL_VERSION 0x030D00
-
-#endif
+/* ----------------------------------------------------------------------- */
 
 

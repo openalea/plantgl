@@ -95,27 +95,47 @@ class CSpline:
         der = (q-p)/(2*d0)+(r-q)/(2*d1)
         return der
 
-    def bezier_cp(self):
+    def bezier_cp(self, degree = 3):
         """
         Compute bezier control points from the input points.
         """
-        a = 1./3
+        if degree == 1:
+            self.ctrl_pts = self.points
+        elif degree == 2:
+            a = 1./2
 
-        n = len(self)
-        self.ctrl_pts = [0]*(3*n-2)
-        for i in range(0,n-1):
-            p, q = self.points[i:i+2]
-            dp, dq = self.der[i:i+2]
-            self.ctrl_pts[i*3]   = p
-            self.ctrl_pts[i*3+1] = p+dp*a
-            self.ctrl_pts[i*3+2] = q-dq*a
-        # last point
-        self.ctrl_pts[-1]=self.points[-1]
-        if self.is_closed:
-            self.ctrl_pts[1] = self.ctrl_pts[2]
-            self.ctrl_pts[-2] = self.ctrl_pts[-3]
+            n = len(self)
+            self.ctrl_pts = [0]*(3*n-2)
+            for i in range(0,n-1):
+                p, q = self.points[i:i+2]
+                dp, dq = self.der[i:i+2]
+                self.ctrl_pts[i*3]   = p
+                self.ctrl_pts[i*3+1] = p+dp*a
+                self.ctrl_pts[i*3+2] = q-dq*a
+            # last point
+            self.ctrl_pts[-1]=self.points[-1]
+            if self.is_closed:
+                self.ctrl_pts[1] = self.ctrl_pts[2]
+                self.ctrl_pts[-2] = self.ctrl_pts[-3]
 
-    def bezier_kv(self, is_linear=False):
+        elif degree == 3:
+            a = 1./3
+
+            n = len(self)
+            self.ctrl_pts = [0]*(3*n-2)
+            for i in range(0,n-1):
+                p, q = self.points[i:i+2]
+                dp, dq = self.der[i:i+2]
+                self.ctrl_pts[i*3]   = p
+                self.ctrl_pts[i*3+1] = p+dp*a
+                self.ctrl_pts[i*3+2] = q-dq*a
+            # last point
+            self.ctrl_pts[-1]=self.points[-1]
+            if self.is_closed:
+                self.ctrl_pts[1] = self.ctrl_pts[2]
+                self.ctrl_pts[-2] = self.ctrl_pts[-3]
+
+    def bezier_kv(self, is_linear=False, degree = 3):
         """
         Compute a nurbs knot vector from Bezier control points.
         bezier_kv(linear=False) -> knot_vector
@@ -125,7 +145,6 @@ class CSpline:
         """
         nb_pts = len(self.ctrl_pts )
         nb_arc = len(self)-1
-        degree = 3
         assert nb_arc == (nb_pts-1) / degree
 
         nb_knots = degree + nb_pts
@@ -168,7 +187,7 @@ class CSpline:
         # TODO: Compute incrementally the curve.
         self.nurbs = None
 
-    def curve(self, is_linear= False, stride_factor=10, distances=None):
+    def curve(self, is_linear= False, degree = 3, stride_factor=10, distances=None):
         """
         Return the equivalent PlantGL nurbs curve which interpol the points.
         :param: stride_factor is the number of points to draw an arc of the curve.
@@ -180,7 +199,7 @@ class CSpline:
                 self.dist = distances
             self.derivatives()
             self.bezier_cp()
-            self.bezier_kv(is_linear)
+            self.bezier_kv(is_linear, degree)
 
         pts = self.points
         kv = pgl.RealArray(self.kv)
@@ -200,11 +219,50 @@ class CSpline:
 ###############################################################################
 
 # factory function
-def cspline(pts, is_closed=False,is_linear=False,distances=None):
+def cspline(pts, is_closed=False,is_linear=False,distances=None, degree = 3):
     """
     Build a nurbs curve by interpolate (C1) the points pts.
     The resulting curve can be closed.
     """
     spline = CSpline(pts,is_closed)
-    return spline.curve(is_linear, distances=distances)
+    return spline.curve(is_linear, degree=degree, distances=distances)
+
+
+###############################################################################
+
+class NurbsSwung:
+    def __init__(self, profileList, angleList, degree = 3, ccw = True, slices = 30, stride = 30):
+        assert degree in [1,3]
+        self.profileList = profileList
+        self.angleList = angleList
+        self.degree = degree
+        self.ccw = ccw
+        self.slices = slices
+        self.stride = stride
+
+        self.build_interpolator()
+
+    def build_interpolator(self):
+        from openalea.plantgl.scenegraph.cspline import CSpline, cspline
+        if self.degree > 1:
+            #cpoints = [discretize(NurbsCurve([Vector4(p.x,p.y,a,p.z) for p in s.ctrlPointList])).pointList for s,a in zip(self.profileList, self.angleList)]
+            cpoints = [[Vector3(p.x,p.y,a) for p in s.ctrlPointList] for s,a in zip(self.profileList, self.angleList)]
+            self.cnurbs = [cspline([cpoints[i][j] for i in range(len(cpoints))],degree=self.degree) for j in range(len(cpoints[0]))]
+            cpoints = [list(n.ctrlPointList) for n in self.cnurbs]
+        else:
+            cpoints = [[Vector4(p.x,p.y,a,p.z) for p in s.ctrlPointList] for s,a in zip(self.profileList, self.angleList)]
+        knots =  None #[self.angleList[0] for i in range(degree)]+self.angleList+[self.angleList[-1] for i in range(degree)]
+        print( cpoints)
+        for l in cpoints: print(len(l))
+        self.profileInterpolator = NurbsPatch(cpoints, ccw=self.ccw, vstride=self.stride, ustride=self.slices, vknotList=self.cnurbs[0].knotList if self.degree > 1 else None, udegree=self.degree)
+        print(self.profileInterpolator.vknotList)
+
+    def getPointAt(self, u, v):
+        result = self.profileInterpolator.getPointAt(u,v)
+        return Vector3(result.x*cos(v), result.x*sin(v), result.y)
+    def discretize(self):
+        #return self.profileInterpolator
+        mesh = discretize(self.profileInterpolator)
+        mesh.pointList = [Vector3(p.x*cos(p.z),p.x*sin(p.z), p.y) for p in mesh.pointList]
+        return mesh
 

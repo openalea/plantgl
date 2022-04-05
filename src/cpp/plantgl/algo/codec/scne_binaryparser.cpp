@@ -1643,8 +1643,7 @@ bool BinaryParser::readGroup() {
       }
 
 
-    uint_t _sizej;
-    *stream >> _sizej;
+    uint32_t _sizej = readUint32();
     obj->getGeometryList()= GeometryArrayPtr(new GeometryArray(_sizej));
     uint_t err = 0;
     GeometryArray::iterator _it = obj->getGeometryList()->begin();
@@ -1685,42 +1684,43 @@ bool BinaryParser::readIFS() {
     IF_GEOM_NOTDEFAULT(_default,0)
         GEOM_READ_FIELD(obj,Depth,Uchar);
 
-    uint_t size;
-    *stream >> size;
+    uint32_t size = readUint32();
     obj->getTransfoList()= Transform4ArrayPtr(new Transform4Array(size));
+
+#ifdef GEOM_DEBUG
+  cerr << "must find " << size << " Transform4" << endl;
+#endif
 
     uint_t err= 0;
     Transform4Array::iterator _ti= obj->getTransfoList()->begin();
     Transform4Array::iterator _tend= obj->getTransfoList()->end();
     for( uint_t num = 0;
          num < size && _ti != _tend && !stream->eof();
-         num++ )
-      {
-      Vector4 col[4];
-      for( uchar_t i= 0; i < 4; i++ )
-        *stream >> col[i];
-      Matrix4 m(col[0],col[1],col[2],col[3]);
-      if( m.isValid() )
-        {
-        (*_ti)= Transform4Ptr( new Transform4( m ));
-        _ti++;
+         num++ ) {
+        Matrix4 m = readMatrix4();
+#ifdef GEOM_DEBUG
+        cerr << "find Matrix4" << m << endl;
+#endif
+        if( m.isValid() ) {
+            (*_ti)= Transform4Ptr( new Transform4( m ));
+            _ti++;
         }
-      else
-        {
-        err++;
-        __outputStream << "*** PARSER: <IFS : " << (_name.empty() ? "(unamed)" : _name ) << "> A Transfo component is not valid." << endl;
+        else {
+            err++;
+            __outputStream << "*** PARSER: <IFS : " << (_name.empty() ? "(unamed)" : _name ) << "> A Transfo component is not valid." << endl;
         }
-      }
+    }
 
     if(readNext())
         obj->getGeometry() = dynamic_pointer_cast<Geometry>(__result);
 
-    if( err >= size-1 || (!obj->getGeometry()) )
-      {
+    if( (err > 0 && err >= size-1) || (!obj->getGeometry()) )
+    {
       obj->getDepth()= IFS::DEFAULT_DEPTH;
       obj->getTransfoList()= Transform4ArrayPtr();
       GEOM_DEL_OBJ(obj,38) ;
-      }
+      return false;
+    }
 
     GEOM_PARSER_SETNAME(_name,_ident,obj,IFS);
     return true;
@@ -2419,7 +2419,7 @@ bool BinaryParser::readText() {
     GEOM_INIT_OBJ(obj, 40, Text);
 
     GEOM_READ_FIELD(obj,String,String);
-    std::cerr << "String :\"" << obj->getString() << '"' << std::endl;
+    // std::cerr << "String :\"" << obj->getString() << '"' << std::endl;
 
     IF_GEOM_NOTDEFAULT(_default,0){
       if(readNext()){

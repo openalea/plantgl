@@ -85,3 +85,4 @@ _pgl*.dylib
 .ipynb_checkpoints
 
 .vscode
+test/geomprinteroutput.geom

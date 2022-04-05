@@ -80,7 +80,15 @@ void export_Extrusion()
     .DEC_PTR_PROPERTY_WDV(scaleList,Extrusion,Scale,Point2ArrayPtr,DEFAULT_SCALE_LIST)
     .DEC_PTR_PROPERTY_WDV(orientationList,Extrusion,Orientation,RealArrayPtr,DEFAULT_ORIENTATION_LIST)
     .DEC_PTR_NR_PROPERTY(knotList,Extrusion,KnotList,RealArrayPtr)
-    .def("getInitialNormalValue",&Extrusion::getInitialNormalValue);
+    .def("getInitialNormalValue",&Extrusion::getInitialNormalValue)
+    .def("getPointAt",&Extrusion::getPointAt)
+    .def("getFrameAt",&Extrusion::getFrameAt)
+    .def("getUTangentAt",&Extrusion::getUTangentAt)
+    .def("getVTangentAt",&Extrusion::getVTangentAt)
+    .def("getNormalAt",&Extrusion::getNormalAt)
+    .def("getSecondDerivativeUUAt",&Extrusion::getSecondDerivativeUUAt)
+    .def("getSecondDerivativeVVAt",&Extrusion::getSecondDerivativeVVAt)
+    .def("getSecondDerivativeUVAt",&Extrusion::getSecondDerivativeUVAt)
     ;
   implicitly_convertible<ExtrusionPtr, ParametricModelPtr>();
 }

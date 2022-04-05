@@ -136,7 +136,7 @@ bool NurbsPatch::Builder::isValid( ) const {
     uint_t _vsize = (*CtrlPointMatrix)->getRowSize();
 
     if (_usize < 2 ) {
-        pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Patch","CtrlPointMatrix","Size of Columnsmust be greater than 1.");
+        pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Patch","CtrlPointMatrix","Size of Columns must be greater than 1.");
         return false;
     }
 
@@ -425,21 +425,20 @@ Point4MatrixPtr  NurbsPatch::deriveAtH(real_t u, real_t v, int d, int uspan, int
     int dv = ( d < (int)__vdegree ? d : __vdegree);
 
     Point4MatrixPtr patchders(new Point4Matrix(d+1,d+1, Vector4::ORIGIN));
-    Point4Array temp(__vdegree+1, Vector4::ORIGIN) ;
     RealArray2Ptr UderF = derivatesBasisFunctions(du,u,uspan,__udegree,__uKnotList);
     RealArray2Ptr VderF = derivatesBasisFunctions(dv,v,vspan,__vdegree,__vKnotList);
 
     for(int k=0;k<=du;++k){
+        Point4Array temp(__vdegree+1, Vector4::ORIGIN) ;
         for(int s=0;s<=__vdegree;++s){
             for(int r=0;r<=__udegree;++r){
-                temp[s] +=  UderF->getAt(k,r)*__ctrlPointMatrix->getAt(uspan-__udegree+r,vspan-__vdegree+s) ;
+                temp[s] +=  UderF->getAt(k,r)*__ctrlPointMatrix->getAt(uspan-__udegree+r,vspan-__vdegree+s).wtoxyz() ;
             }
         }
         int dd = ( (d-k) < dv ? (d-k) : dv); //min(d-k,dv) ;
         for(int r=0;r<=dd;++r){
-            // patchders->setAt(k,r, Vector4::ORIGIN) ;
             for(int s=0;s<=__vdegree;++s){
-                patchders->getAt(k,r) += VderF->getAt(r,s)*temp[s] ;    //
+                patchders->getAt(k,r) += VderF->getAt(r,s)*temp[s] ;  
             }
         }
     }
@@ -451,7 +450,6 @@ RealArray2 binomialCoef(int d) {
 
     // Setup the first line
     Bin.setAt( 0, 0, 1.0) ;
-    // for( int l = d ; l > 0 ; --l ) Bin.setAt( 0 , l , 0.0 ) ;
 
     // Setup the other lines
     for( int n = 0 ; n < d ; n++ ){
@@ -459,8 +457,6 @@ RealArray2 binomialCoef(int d) {
         for( int l = 1 ; l < d+1 ; l++ )
             if( n+1 >= l )
                 Bin.setAt( n+1 , l , Bin.getAt( n , l ) + Bin.getAt( n , l-1 ) ) ;
-            //else
-            //    Bin.setAt( n , l , 0.0 ) ;
     }
     return Bin;    
 }
@@ -474,7 +470,8 @@ Point3MatrixPtr NurbsPatch::deriveAt(real_t  u, real_t  v, int d, int uspan, int
     RealArray2 Bin = binomialCoef(d);
 
     for( int k = 0 ; k <= d ; k++ ){
-        for( int l = 0 ; l <= d-k ; l++){
+        // for( int l = 0 ; l <= d-k ; l++){
+        for( int l = 0 ; l <= d ; l++){
             vec.x() = dersW->getAt(k,l).x() ;
             vec.y() = dersW->getAt(k,l).y() ;
             vec.z() = dersW->getAt(k,l).z() ;
