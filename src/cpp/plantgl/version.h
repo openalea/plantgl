@@ -48,7 +48,7 @@
 #define __plantgl_version_h__
 
 /// PGL Version macro
-#define PGL_VERSION 0x030D00
+#define PGL_VERSION 0x030E00
 
 #endif
 
