@@ -46,6 +46,7 @@
 #include <plantgl/scenegraph/geometry/profile.h>
 #include <plantgl/scenegraph/geometry/swung.h>
 #include <plantgl/scenegraph/geometry/curve.h>
+#include <plantgl/scenegraph/geometry/polyline.h>
 #include <plantgl/scenegraph/geometry/profile.h>
 #include <plantgl/scenegraph/container/geometryarray2.h>
 
