@@ -175,8 +175,6 @@ class PyZBufferRenderer:
         plt.imshow(self.image)
         plt.show()
 
-def PyZBufferRenderer
-
 def horizontal_corners(bbx):
     from itertools import product
     from openalea.plantgl.math import Vector3
@@ -250,7 +248,7 @@ def scan_infos(scene,  scan_positions, debug = True):
     return scan_positions, scan_horizontal_angles, scan_vertical_angles, znears, zfars, centers, bbx
 
 def from_bbox(bbox, azimut = 0, elevation = 0, zoom = 1, imagesize = (400,400), vertical_view_angle = 30 ):
-    direction = Vector3.
+    #direction = Vector3.
     center = bbx.getCenter()
     corners = bbx.corners()
     lateral = Vector3(bbx.getSize().x,bbx.getSize().y,0)
