@@ -9,6 +9,7 @@ cd build
 if [ `uname` = "Darwin" ]; then
     SYSTEM_DEPENDENT_ARGS=(
         "-DCMAKE_OSX_SYSROOT=${CONDA_BUILD_SYSROOT}"
+        # -DQHULL_LIBRARY=${CONDA_PREFIX}/lib/libqhull_r${SHLIB_EXT}"
    )
     export LDFLAGS="-undefined dynamic_lookup ${LDFLAGS}"
 

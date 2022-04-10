@@ -98,6 +98,7 @@ find_package(ANN)
 find_package(BISON)
 find_package(Eigen)
 find_package(FLEX)
+find_library(QHULL_LIBRARY NAMES "libqhullstatic.a" PATHS $ENV{CONDA_PREFIX}/lib)
 find_package(Qhull)
 
 #if (USE_CONDA_BUILD)
