@@ -3,12 +3,8 @@
 
 Distribution based on Python 2:
 
-.. image:: https://travis-ci.org/openalea/plantgl.svg?branch=master 
-    :target: https://travis-ci.org/openalea/plantgl
-
 .. image:: https://ci.appveyor.com/api/projects/status/pbfi5p0bfslqij3s/branch/master?svg=true
     :target: https://ci.appveyor.com/project/fredboudon/plantgl
-
 
 .. image:: https://anaconda.org/openalea/openalea.plantgl/badges/version.svg
     :target: https://anaconda.org/openalea/openalea.plantgl
@@ -24,20 +20,17 @@ Distribution based on Python 2:
 
 Distribution based on Python 3:
 
-.. image:: https://travis-ci.org/fredboudon/plantgl.svg?branch=master
-    :target: https://travis-ci.org/fredboudon/plantgl
-
 .. image:: https://ci.appveyor.com/api/projects/status/5a4xss61gm8v88yo/branch/master?svg=true
     :target: https://ci.appveyor.com/project/fredboudon/plantgl-7p8p4
 
-.. image:: https://anaconda.org/fredboudon/openalea.plantgl/badges/version.svg
-    :target: https://anaconda.org/fredboudon/openalea.plantgl
+.. image:: https://anaconda.org/openalea3/openalea.plantgl/badges/version.svg
+    :target: https://anaconda.org/openalea3/openalea.plantgl
 
-.. image:: https://anaconda.org/fredboudon/openalea.plantgl/badges/platforms.svg
-    :target: https://anaconda.org/fredboudon/openalea.plantgl
+.. image:: https://anaconda.org/openalea3/openalea.plantgl/badges/platforms.svg
+    :target: https://anaconda.org/openalea3/openalea.plantgl
 
-.. image:: https://anaconda.org/fredboudon/openalea.plantgl/badges/latest_release_date.svg
-    :target: https://anaconda.org/fredboudon/openalea.plantgl
+.. image:: https://anaconda.org/openalea3/openalea.plantgl/badges/latest_release_date.svg
+    :target: https://anaconda.org/openalea3/openalea.plantgl
 
 .. image:: https://readthedocs.org/projects/plantgl-fb/badge/?version=latest
     :target: https://plantgl-fb.readthedocs.io/en/latest
@@ -101,6 +94,7 @@ Or use the PlantGL modules in Python
 
 .. code-block:: python
 
+        >>> %gui qt
         >>> from openalea.plantgl.all import *
         >>> Viewer.display(Sphere())
 
@@ -152,8 +146,6 @@ Documentation
 =============
 
 Documentation is available at `<https://plantgl-fb.readthedocs.io/en/latest>`_
-
-A previous documentation is available at `<http://openalea.gforge.inria.fr/dokuwiki/doku.php?id=packages:visualization:plantgl:plantgl>`_
 
 Help and Support
 ----------------
