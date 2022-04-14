@@ -26,7 +26,7 @@ currentdir = os.path.dirname(__file__)
 build_prefix= "build-cmake"
 
 if 'CONDA_PREFIX' in os.environ or 'PREFIX' in os.environ :
-    deploy_args = {}
+    deploy_args = dict(namespace_packages = [namespace])
 else:
     deploy_args = dict(
         # Specific options of openalea.deploy
