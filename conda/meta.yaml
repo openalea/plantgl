@@ -40,7 +40,7 @@ requirements:
           
   build:
       - python {{PY_VER}}
-      - numpy {{NPY_VER}}}                 
+      - numpy {{NPY_VER}}                 
       - binutils_impl_linux-64            # [linux]
       - {{ compiler('cxx') }}
       - bison =3.4                             # [unix]
