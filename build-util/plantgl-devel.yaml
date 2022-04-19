@@ -1,7 +1,7 @@
 name: plantgl-devel
 channels:
     - conda-forge
-    - fredboudon
+    - openalea3
     - defaults
 dependencies:
     - python
