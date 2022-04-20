@@ -16,8 +16,8 @@ globals().update(getMetaInfo())
 namepace = 'openalea'
 
 # Setup script
-#version = '3.0.1'
 version = HexVersion.from_cpp_define('PGL_VERSION',pj('src','cpp','plantgl','version.h')).to_string()
+version = '3.13.1'
 #print(pkg_name + ' : version = ' + version)
 
 currentdir = os.path.dirname(__file__)
@@ -26,7 +26,7 @@ currentdir = os.path.dirname(__file__)
 build_prefix= "build-cmake"
 
 if 'CONDA_PREFIX' in os.environ or 'PREFIX' in os.environ :
-    deploy_args = dict(namespace_packages = [namespace])
+    deploy_args = dict() # Do not declare namespace_package : see https://github.com/conda/conda-build/issues/649
 else:
     deploy_args = dict(
         # Specific options of openalea.deploy
