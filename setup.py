@@ -17,7 +17,7 @@ namepace = 'openalea'
 
 # Setup script
 version = HexVersion.from_cpp_define('PGL_VERSION',pj('src','cpp','plantgl','version.h')).to_string()
-version = '3.13.1'
+# version = '3.13.1'
 #print(pkg_name + ' : version = ' + version)
 
 currentdir = os.path.dirname(__file__)
