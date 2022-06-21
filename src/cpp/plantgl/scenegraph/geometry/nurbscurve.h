@@ -202,17 +202,17 @@ public:
     \brief Computes the derivative of the curve at the parameter \a u
     \author Philippe Lavoie
   */
-  Point4ArrayPtr deriveAt(real_t  u, int d, int span  ) const;
+  Point3ArrayPtr deriveAt(real_t  u, int d, int span  ) const;
 
   /*! Returns the \e derivative of degree \e d for u = \e u.
      \pre
      - \e u must be in [0,1];*/
-  virtual Vector4 getDerivativeAt(real_t u, int d) const;
+  virtual Vector3 getDerivativeAt(real_t u, int d) const;
 
   /*! Returns the \e derivative of degree \e d for u = \e u.
      \pre
      - \e u must be in [0,1];*/
-  virtual Point4ArrayPtr getDerivativesAt(real_t u) const;
+  virtual Point3ArrayPtr getDerivativesAt(real_t u) const;
 
 
   Vector3 projectTo(const Vector3& p,
@@ -389,17 +389,17 @@ public:
     \brief Computes the derivative of the curve at the parameter \a u
     \author Philippe Lavoie
   */
-  Point3ArrayPtr deriveAt(real_t  u, int d, int span  ) const;
+  Point2ArrayPtr deriveAt(real_t  u, int d, int span  ) const;
 
   /*! Returns the \e derivative of degree \e d for u = \e u.
      \pre
      - \e u must be in [0,1];*/
-  virtual Vector3 getDerivativeAt(real_t u, int d) const;
+  virtual Vector2 getDerivativeAt(real_t u, int d) const;
 
   /*! Returns the \e derivative of degree \e d for u = \e u.
      \pre
      - \e u must be in [0,1];*/
-  virtual Point3ArrayPtr getDerivativesAt(real_t u) const;
+  virtual Point2ArrayPtr getDerivativesAt(real_t u) const;
 
   /*!
      Compute point on the NURBS for u = \b u

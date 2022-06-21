@@ -125,7 +125,7 @@ void export_Texture2DTransformation()
   class_< Texture2DTransformation, Texture2DTransformationPtr, bases<  SceneObject >, boost::noncopyable >
     ( "Texture2DTransformation", "The transformation of a texture 2D.",
     init< boost::python::optional<std::string,Vector2,Vector2,Vector2,real_t> >
-        ((bp::arg("name"),
+        ((bp::arg("name")="",
           bp::arg("scale")=Texture2DTransformation::DEFAULT_SCALE,
           bp::arg("translation")=Texture2DTransformation::DEFAULT_TRANSLATION,
           bp::arg("rotationCenter")=Texture2DTransformation::DEFAULT_ROTATIONCENTER,
@@ -168,11 +168,21 @@ void export_Texture2D()
   class_< Texture2D, Texture2DPtr, bases<  Appearance >, boost::noncopyable >
     ( "Texture2D", "The material of a textured object.",
        init< ImageTexturePtr, boost::python::optional<Texture2DTransformationPtr, Color4> >
-         (args("image","transformation","baseColor"),
+         ((bp::arg("image"),
+           bp::arg("transformation"),
+           bp::arg("baseColor")=Texture2D::DEFAULT_BASECOLOR),
           "Texture2D(image [,transformation, baseColor])"))
+
        .def(init< string, ImageTexturePtr, boost::python::optional<Texture2DTransformationPtr, Color4> >
-         (args("name","image","transformation","baseColor"),
+         ((bp::arg("name"),
+           bp::arg("image"),
+           bp::arg("transformation"),
+           bp::arg("baseColor")=Texture2D::DEFAULT_BASECOLOR),
           "Texture2D(name, image [,transformation, baseColor])"))
+       .def(init< ImageTexturePtr, Color4 >
+         ((bp::arg("image"),
+           bp::arg("baseColor")=Texture2D::DEFAULT_BASECOLOR),
+          "Texture2D(name, image, baseColor])"))
     .DEC_PTR_PROPERTY(image,Texture2D,Image,ImageTexturePtr )
     .DEC_PTR_PROPERTY_WDV(transformation,Texture2D, Transformation, Texture2DTransformationPtr,DEFAULT_TRANSFORMATION)
     .DEC_BT_PROPERTY_WDV(baseColor,Texture2D, BaseColor, Color4, DEFAULT_BASECOLOR)

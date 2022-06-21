@@ -75,6 +75,7 @@ PGL_USING_NAMESPACE
 
 #define FABS(a) (a < 0 ? -(a) : a)
 
+
 /*----------------------------------------------------------*/
 
 Turtle::error_msg_handler_func ERROR_FUNC = NULL;
@@ -100,6 +101,9 @@ void Turtle::warning(const std::string& msg){
   }
 }
 
+
+
+PushPopHandler::~PushPopHandler() {}
 
 /*----------------------------------------------------------*/
 /*
@@ -390,6 +394,11 @@ Turtle::Turtle(TurtleParam * params):
 
 Turtle::~Turtle() { }
 
+void Turtle::registerPushPopHandler(PushPopHandlerPtr handler)
+{
+    __pushpophandlerlist.push_back(handler);
+}
+
 string
 Turtle::str() const {
     stringstream ss;
@@ -469,6 +478,9 @@ void Turtle::stop(){
         __params->customId = getId();
         parentId = getId();
     }
+    for (PushPopHandlerList::iterator it = __pushpophandlerlist.begin(); it != __pushpophandlerlist.end(); ++it)
+        (*it)->pushEvent();
+    // pushEvent();
   }
 
   void Turtle::pop(){
@@ -490,6 +502,9 @@ void Turtle::stop(){
     else {
       error("Empty Turtle Stack: Cannot pop");
     }
+    for (PushPopHandlerList::iterator it = __pushpophandlerlist.begin(); it != __pushpophandlerlist.end(); ++it)
+        (*it)->popEvent();
+    // popEvent();
   }
 
   void Turtle::f(real_t length){

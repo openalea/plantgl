@@ -40,6 +40,38 @@ def random_material():
     r, g, b = randint(0,255), randint(0,255), randint(0,255)
     return sg.Material(sg.Color3(r, g, b))
 
+def retrieveext(fname):
+    return os.path.splitext(os.path.basename(fname))[1][1:]
+
+def changeext(fname, ext):
+    return os.path.splitext(os.path.basename(fname))[0]+'.'+ext
+
+def renameimg(fname, ext, outdir = None):
+    if retrieveext(fname) == ext or not os.path.exists(fname) :
+        return fname
+    if outdir is None:
+        outdir = os.path.dirname(fname)
+    outfname = os.path.join(outdir,changeext(fname, ext))
+    try:
+        import PIL.Image as Image
+        Image.open(fname).save(outfname)
+    except ImportError:
+        from PyQt4.QtGui import QImage
+        img = QImage(fname)
+        assert img.save(outfname,ext)
+    return outfname
+
+def relocateimg(fname, outdir, basedir):
+    import shutil
+    if not os.path.isabs(fname):
+        fname = os.path.realpath(os.path.join(basedir, fname))
+    if outdir == os.path.dirname(fname):
+        return fname
+    outfname = os.path.join(outdir,os.path.basename(fname))
+    shutil.copy(fname, outfname)
+    return outfname
+
+
 class Group(object):
     def __init__(self, name):
         self.name = name
@@ -126,14 +158,19 @@ class Group(object):
         return len(self.vindex) 
 
 class Faces(object):
-    def __init__(self, name, offset, mesh, appearancename):
+    def __init__(self, name, voffset, toffset, noffset, mesh, appearancename):
         """ Create a temporary object to ease the writing of OBJ files.
         offset has to be greater than 1.
         """
-        self.offset = offset
-        self.vindex = mesh.indexList if mesh.ccw else [list(reversed(idx)) for idx in mesh.indexList]
-        self.nindex = mesh.normalIndexList if mesh.normalPerVertex and mesh.normalIndexList else []
-        self.tindex = mesh.texCoordIndexList if mesh.texCoordIndexList else []
+        def sort_indices(indexlist):
+            if mesh.ccw: return indexlist
+            else : return [list(reversed(idx)) for idx in indexlist]
+        self.voffset = voffset
+        self.toffset = toffset
+        self.noffset = noffset
+        self.vindex = sort_indices(mesh.indexList)
+        self.nindex = sort_indices(mesh.normalIndexList) if mesh.normalPerVertex and mesh.normalIndexList else (self.vindex if mesh.normalList else [])
+        self.tindex = sort_indices(mesh.texCoordIndexList) if mesh.texCoordIndexList else (self.vindex if mesh.texCoordList else [])
         self.name = name
         self.appearancename = appearancename
 
@@ -146,18 +183,94 @@ class Faces(object):
     def obj(self, output):
         """ Write the faces in an obj format. """
         gen = zip_longest(self.vindex, self.tindex,self.nindex, fillvalue=None)
-        offset = self.offset
-        output.write('g %s \n'%self.name)
         output.write('usemtl %s \n' % self.appearancename)
+        output.write('o %s \n'%self.name)
         for index, texture, normal in gen:
-            s = ' '.join('/'.join((str(index[i]+offset),
-                                   str(texture[i]+offset) if texture else '', 
-                                   str(normal[i]+offset) if normal else '')).strip('/') for i in range(len(index)))
+            s = ' '.join('/'.join((str(index[i]+self.voffset),
+                                   str(texture[i]+self.toffset) if texture else '', 
+                                   str(normal[i]+self.noffset) if normal else '')).strip('/') for i in range(len(index)))
             line = 'f ' + s + '\n'
             output.write(line)
 
 
+class ObjMat:
+    def __init__(self, name = None):
+        self.name = name
+        self.Ka = [0.1, 0.1, 0.1]
+        self.Kd = [0.3, 0.3, 0.3]
+        self.Ks = [0.0, 0.0, 0.0]
+        self.Tr = 0
+    def topgl(self):
+        if not hasattr(self, 'map_Kd'):
+            diffuseCoef = sum(self.Kd)/sum(self.Ka)
+            ambient = sg.Color3(*[int(v*255) for v in self.Ka])
+            specular = sg.Color3(*[int(v*255) for v in self.Ks])
+            return sg.Material(self.name, ambient = ambient, diffuse = diffuseCoef, specular = specular, transparency = self.Tr)
+        else:
+            base = sg.Color4(*[int(v*255) for v in self.Ka+[self.Tr]])
+            fname = self.map_Kd
+            if retrieveext(fname) == 'tga':
+                fname = renameimg(fname, 'png')
+            texture = sg.Texture2D(sg.ImageTexture(fname))
+            texture.baseColor = base
+            return texture
         
+def read_mtl(fname):
+    current = None
+    result = {}
+    cwd = os.path.dirname(fname)
+
+    def finalizemat():
+        nonlocal current, result
+        if current:
+            if current.name in result:
+                warnings.warn("Material "+current.name+" in file '"+fname+"' defined several times")
+            result[current.name] = current.topgl()
+        current = None
+
+    def newmat(name):
+        nonlocal current
+        finalizemat()
+        current = ObjMat(name[0])
+
+    def set_value(varname, value):
+        nonlocal current
+        setattr(current, varname, value)
+
+    def read_numvalue(varname, value):
+        set_value(varname, eval(value[0]))
+
+    def read_tuple_numvalue(varname, value):
+        set_value(varname, list(map(eval,value)))
+
+    def comment(value):
+        pass
+
+    parser = {}
+    parser['#'] = parser[''] = comment
+    parser['newmtl'] = newmat
+    parser['Ka'] = lambda v : read_tuple_numvalue('Ka', v)
+    parser['Kd'] = lambda v : read_tuple_numvalue('Kd', v)
+    parser['Ks'] = lambda v : read_tuple_numvalue('Ks', v)
+    parser['Tr'] = lambda v : read_numvalue('Tr', v)
+    parser['map_Kd'] = lambda v : set_value('map_Kd', os.path.join(cwd,v[0]))
+    parser['illum'] = lambda v : read_numvalue('illum', v)
+
+    with open(fname,"r") as f:
+        line = 1
+        for l in f:
+            l = l.strip()
+            fields = l.split()
+            if not fields or len(fields)<2:
+                continue
+            key = fields[0]
+            if key in parser:
+                parser[key](fields[1:])
+            else:
+                warnings.warn("Type "+key+" in file '"+fname+"' is not take into account")
+            line += 1
+    finalizemat()
+    return result
 
 
 class ObjCodec (sg.SceneCodec):
@@ -226,7 +339,11 @@ class ObjCodec (sg.SceneCodec):
         self.current_group = self.groups[0]
         self.current_material = random_material()
         self.line = 0
+        self.materiallist = {}
 
+        self.cwd = os.path.dirname(fname)
+        if self.cwd == '':
+            self.cwd = os.path.getcwd()
 
         # read the obj file
         with open(fname,"r") as f:
@@ -261,7 +378,7 @@ class ObjCodec (sg.SceneCodec):
         """ Read mtl format, and convert it into PlantGL materials.
 
         """
-        pass
+        self.materiallist =read_mtl(os.path.join(self.cwd,fname))
 
     # Parser functions
     def _comment(self, args):
@@ -336,7 +453,10 @@ class ObjCodec (sg.SceneCodec):
         self.read_material(args[0])
 
     def _object_name(self, args):
-        pass
+        name = args[0]
+        self.current_group = Group(name)
+        self.current_group.material = self.current_material
+        self.groups.append(self.current_group) 
 
     def _group_name(self, args):
         name = args[0]
@@ -346,9 +466,12 @@ class ObjCodec (sg.SceneCodec):
 
     def _material_name(self, args):
         name = args[0]
-        self.current_material = random_material()
-        self.current_material.name = name
-        self.current_group.material = self.current_material
+        if name in self.materiallist:
+            self.current_material = self.materiallist[name]
+        else:   
+            self.current_material = random_material()
+            self.current_material.name = name
+        #self.current_group.material = self.current_material
 
 
     #############################################################################
@@ -358,11 +481,13 @@ class ObjCodec (sg.SceneCodec):
         """ Write an OBJ file from a plantGL scene graph.
 
         This method will convert a PlantGL scene graph into an OBJ file.
-        It does not manage  materials correctly yet.
 
         :Examples:
             import openalea.plantgl.scenegraph as sg
-            scene = sg.Scene()"""
+            scene = sg.Scene()
+            scene.write('scene.obj')
+
+        """
         print("Write "+fname)
         d = alg.Discretizer()
         f = open(fname,'w')
@@ -379,13 +504,25 @@ class ObjCodec (sg.SceneCodec):
         texcoords= [] # List of texture List
         faces = [] # list  of tuple (offset,index List)
 
-        counter = 0
-        for i in scene:
-            if i.apply(d):
+        vcounter = 1
+        tcounter = 1
+        ncounter = 1
+        for sh in scene:
+            if sh.appearance and not sh.appearance.isNamed():
+                sh.appearance.name = 'APP_{}'.format(sh.appearance.getObjectId())
+            hasTexture = (sh.appearance and sh.appearance.isTexture())
+            d.texCoord = hasTexture
+            if sh.apply(d):                
                 p = d.discretization
                 pts = p.pointList
+                if p.normalList is None:
+                    p.computeNormalList()
                 ns = p.normalList
                 ts = p.texCoordList
+                if hasTexture:
+                    if sh.appearance.transformation:
+                        ts = sh.appearance.transformation.transform(ts)
+                        p.texCoordList = ts
                 indices = p.indexList
                 n = len(p.pointList)
                 if n > 0:
@@ -394,8 +531,12 @@ class ObjCodec (sg.SceneCodec):
                         normals.append(ns)
                     if ts:
                         texcoords.append(ts)
-                    faces.append(Faces(i.name, counter+1, p, i.appearance.name))
-                counter += n
+                    faces.append(Faces(sh.name, vcounter, tcounter, ncounter, p, sh.appearance.name))
+                vcounter += n
+                if hasTexture:
+                    tcounter += len(ts)
+                if ns:
+                    ncounter += len(ns)
 
         for pts in vertices:
             for x, y, z in pts:
@@ -420,45 +561,36 @@ class ObjCodec (sg.SceneCodec):
         line = '# File generated by PlantGL'
         normalizedcolor = lambda c : (c.red/255., c.green/255., c.blue/255.)
         outdir = os.path.dirname(fname)
-        def tgafname(fname):
-            return os.path.splitext(os.path.basename(fname))[0]+'.tga'
-        def renameimg(fname):
-            outfname = os.path.join(outdir,tgafname(fname))
-            try:
-                import PIL.Image as Image
-                Image.open(fname).save(outfname)
-            except ImportError:
-                from PyQt4.QtGui import QImage
-                img = QImage(fname)
-                assert img.save(outfname,'TGA')
-            return outfname
+        if outdir == '':
+            outdir = os.getcwd()
 
         imgstoconvert = set([])
+        appset = set()
         for sh in scene:
             app = sh.appearance
-            if not app.isNamed():
-                app.name = 'APP_{}'.format(app.getId())
-            if isinstance(app, sg.Material):
-                fmat.write("newmtl "+app.name+"\n") 
-                fmat.write("\tKa {} {} {}\n".format(*normalizedcolor(app.ambient))) 
-                fmat.write("\tKd {} {} {}\n".format(*normalizedcolor(app.diffuseColor()))) 
-                fmat.write("\tKs {} {} {}\n".format(*normalizedcolor(app.specular))) 
-                fmat.write("\tTr {} \n".format(app.transparency)) 
-                fmat.write("\tillum 2\n")
-            elif isinstance(app, sg.Texture2D):
-                fmat.write("newmtl "+app.name+"\n") 
-                fmat.write("\tKa {} {} {}\n".format(*normalizedcolor(app.baseColor))) 
-                fmat.write("\tKd {} {} {}\n".format(*normalizedcolor(app.baseColor))) 
-                fmat.write("\tKs {} {} {}\n".format(*normalizedcolor(app.baseColor))) 
-                fmat.write("\tTr {} \n".format(app.baseColor.alpha/255.))
-                imgstoconvert.add(app.image.filename) 
-                fmat.write("\tmap_Ka {} \n".format(tgafname(app.image.filename)))
-                fmat.write("\tillum 2\n")
+            if not app.getObjectId() in appset:
+                appset.add(app.getObjectId())
+                if isinstance(app, sg.Material):
+                    fmat.write("newmtl "+app.name+"\n") 
+                    fmat.write("\tKa {} {} {}\n".format(*normalizedcolor(app.ambient))) 
+                    fmat.write("\tKd {} {} {}\n".format(*normalizedcolor(app.diffuseColor()))) 
+                    fmat.write("\tKs {} {} {}\n".format(*normalizedcolor(app.specular))) 
+                    fmat.write("\tTr {} \n".format(app.transparency)) 
+                    fmat.write("\tillum 2\n")
+                elif isinstance(app, sg.Texture2D):
+                    fmat.write("newmtl "+app.name+"\n") 
+                    fmat.write("\tKa {} {} {}\n".format(*normalizedcolor(app.baseColor))) 
+                    fmat.write("\tKd {} {} {}\n".format(*normalizedcolor(app.baseColor))) 
+                    fmat.write("\tKs {} {} {}\n".format(*normalizedcolor(app.baseColor))) 
+                    fmat.write("\tTr {} \n".format(app.baseColor.alpha/255.))
+                    imgstoconvert.add(app.image.filename) 
+                    fmat.write("\tmap_Kd {} \n".format(os.path.basename(app.image.filename)))
+                    fmat.write("\tillum 2\n")
         fmat.close()
         print("Write "+mtl_file)
 
         for img in imgstoconvert:
-            tgaimg = renameimg(img)
+            tgaimg = relocateimg(img, outdir, outdir )
             print("Write "+tgaimg)
     
 

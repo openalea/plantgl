@@ -38,6 +38,7 @@
  *  ----------------------------------------------------------------------------
  */
 
+#define GL_SILENCE_DEPRECATION
 
 #ifndef __util_gl_h__
 #define __util_gl_h__
@@ -49,8 +50,6 @@
 /* ----------------------------------------------------------------------- */
 
 #include "../algo_config.h"
-
-# define GL_SILENCE_DEPRECATION
 
 #ifndef PGL_WITHOUT_QT
 

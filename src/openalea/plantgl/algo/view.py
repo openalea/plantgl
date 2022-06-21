@@ -4,7 +4,7 @@ from openalea.plantgl.scenegraph import BoundingBox, Scene
 from ._pglalgo import ZBufferEngine, eColorBased
 import numpy
 
-def orthoimage(scene : Scene, imgsize : tuple = (800,800) , zoom : float = 1, azimuth : float = 0 , elevation : float = 0 ) -> numpy.ndarray:
+def orthoimage(scene : Scene, imgsize : tuple = (800,800), zoom : float = 1, azimuth : float = 0, elevation : float = 0 ) -> numpy.ndarray:
     """
     Compute an orthographic view of a scene.
     :param scene: The scene to render

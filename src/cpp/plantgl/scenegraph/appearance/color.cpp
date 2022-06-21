@@ -5,22 +5,22 @@
  *
  *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al.
  *
  *  ----------------------------------------------------------------------------
  *
  *   This software is governed by the CeCILL-C license under French law and
- *   abiding by the rules of distribution of free software.  You can  use, 
+ *   abiding by the rules of distribution of free software.  You can  use,
  *   modify and/ or redistribute the software under the terms of the CeCILL-C
  *   license as circulated by CEA, CNRS and INRIA at the following URL
- *   "http://www.cecill.info". 
+ *   "http://www.cecill.info".
  *
  *   As a counterpart to the access to the source code and  rights to copy,
  *   modify and redistribute granted by the license, users are provided only
  *   with a limited warranty  and the software's author,  the holder of the
  *   economic rights,  and the successive licensors  have only  limited
- *   liability. 
- *       
+ *   liability.
+ *
  *   In this respect, the user's attention is drawn to the risks associated
  *   with loading,  using,  modifying and/or developing or reproducing the
  *   software by the user in light of its specific status of free software,
@@ -28,9 +28,9 @@
  *   therefore means  that it is reserved for developers  and  experienced
  *   professionals having in-depth computer knowledge. Users are therefore
  *   encouraged to load and test the software's suitability as regards their
- *   requirements in conditions enabling the security of their systems and/or 
- *   data to be ensured and,  more generally, to use and operate it in the 
- *   same conditions as regards security. 
+ *   requirements in conditions enabling the security of their systems and/or
+ *   data to be ensured and,  more generally, to use and operate it in the
+ *   same conditions as regards security.
  *
  *   The fact that you are presently reading this means that you have had
  *   knowledge of the CeCILL-C license and that you accept its terms.
@@ -353,6 +353,21 @@ Color3 Color3::interpolate(const Color3& c1, const Color3& c2, real_t t)
 
 }
 
+Color3 Color3::interpolate( const Color3& v0 ,  real_t w0, const Color3& v1 ,  real_t w1, const Color3& v2 ,  real_t w2 )
+{
+    real_t sumw = w0+w1+w2;
+    w0 /= sumw;
+    w1 /= sumw;
+    w2 /= sumw;
+
+    real_t r = v0.getRed() * w0 + v1.getRed() * w1 + v2.getRed() * w2 ;
+    real_t g = v0.getGreen() * w0 + v1.getGreen() * w1 + v2.getGreen() * w2  ;
+    real_t b = v0.getBlue() * w0 + v1.getBlue() * w1 + v2.getBlue() * w2  ;
+    return Color4(uchar_t(pglMin(round(r),real_t(255.))), 
+                  uchar_t(pglMin(round(g),real_t(255.))),
+                  uchar_t(pglMin(round(b),real_t(255.))));
+}
+
 
 Color3& Color3::operator*=(const Color3& c)
 {
@@ -370,9 +385,9 @@ Color3& Color3::operator*=(const real_t& v){
     real_t g = getGreenClamped() * v;
     real_t b = getBlueClamped() * v;
     r *= 255; g *= 255; b *= 255;
-    __RED = uchar_t(pglMin(r,255.));
-    __GREEN = uchar_t(pglMin(g,255.));
-    __BLUE = uchar_t(pglMin(b,255.));
+    __RED = uchar_t(pglMin(r,real_t(255.)));
+    __GREEN = uchar_t(pglMin(g,real_t(255.)));
+    __BLUE = uchar_t(pglMin(b,real_t(255.)));
     return *this;
 }
 
@@ -566,7 +581,7 @@ Color4 Color4::fromHSVA(const Tuple4<uchar_t>& hsva)
 Color4 Color4::fromHSVA(const Tuple4<real_t>& hsva)
 {
     Color3 c = Color3::fromHSV(Tuple3<real_t>(hsva[0],hsva[1],hsva[2]));
-    return Color4(c.getRed(),c.getGreen(),c.getBlue(),hsva[3]*255.);
+    return Color4(c.getRed(),c.getGreen(),c.getBlue(),hsva[3]*real_t(255.));
 }
 
 Color4 Color4::interpolate(const Color4& c1, const Color4& c2, real_t t)
@@ -580,6 +595,23 @@ Color4 Color4::interpolate(const Color4& c1, const Color4& c2, real_t t)
     Tuple4<real_t> hsvai(hsva1[0]*oneminust+hsva2[0]*t,hsva1[1]*oneminust+hsva2[1]*t,hsva1[2]*oneminust+hsva2[2]*t,hsva1[3]*oneminust+hsva2[3]*t);
     return Color4::fromHSVA(hsvai);
 
+}
+
+
+Color4 Color4::interpolate( const Color4& v0 ,  real_t w0, const Color4& v1 ,  real_t w1, const Color4& v2 ,  real_t w2 )
+{
+    real_t sumw = w0+w1+w2;
+    w0 /= sumw;
+    w1 /= sumw;
+    w2 /= sumw;
+    real_t r = v0.getRed() * w0 + v1.getRed() * w1 + v2.getRed() * w2 ;
+    real_t g = v0.getGreen() * w0 + v1.getGreen() * w1 + v2.getGreen() * w2  ;
+    real_t b = v0.getBlue() * w0 + v1.getBlue() * w1 + v2.getBlue() * w2  ;
+    real_t a = v0.getAlpha() * w0 + v1.getAlpha() * w1 + v2.getAlpha() * w2  ;
+    return Color4(uchar_t(pglMin(round(r),real_t(255.))), 
+                  uchar_t(pglMin(round(g),real_t(255.))),
+                  uchar_t(pglMin(round(b),real_t(255.))),
+                  uchar_t(pglMin(round(a),real_t(255.))));
 }
 
 
@@ -609,10 +641,10 @@ Color4& Color4::operator*=(const real_t& v){
     real_t b = getBlueClamped() * v;
     real_t a = getAlphaClamped() * v;
     r *= 255; g *= 255; b *= 255; a *= 255;
-    __RED = uchar_t(pglMin(r,255.));
-    __GREEN = uchar_t(pglMin(g,255.));
-    __BLUE = uchar_t(pglMin(b,255.));
-    __ALPHA = uchar_t(pglMin(a,255.));
+    __RED = uchar_t(pglMin(r,real_t(255.)));
+    __GREEN = uchar_t(pglMin(g,real_t(255.)));
+    __BLUE = uchar_t(pglMin(b,real_t(255.)));
+    __ALPHA = uchar_t(pglMin(a,real_t(255.)));
     return *this;
 }
 
@@ -657,3 +689,4 @@ Color4 Color4::operator+(const Color4& c) const
 Color4 PGL(operator*)( const real_t& s, const Color4& v ) {
     return v * s ;
 }
+

@@ -3,6 +3,9 @@ from ._pglsg import *
 
 from . import cspline
 from . import bezier_nurbs
+from .nurbspatch_nd import NurbsPatch3D
+from .nurbsshape import *
+
 import warnings
 from .colormap import *
 
@@ -18,6 +21,7 @@ def deprecated(func):
         warnings.warn("Call to deprecated function %s." % func.__name__,
                       category=DeprecationWarning)
         return func(*args, **kwargs)
+    newFunc.__deprecated__ = True
     newFunc.__name__ = func.__name__
     newFunc.__doc__ = func.__doc__
     newFunc.__dict__.update(func.__dict__)
@@ -31,7 +35,7 @@ def __extrusion_get_scale(extrusion):
 def __extrusion_set_scale(extrusion,value):
     extrusion.scaleList = value
 
-Extrusion.scale = property(__extrusion_get_scale,__extrusion_set_scale)
+Extrusion.scale = property(__extrusion_get_scale,__extrusion_set_scale, doc='DEPRECATED')
 
 @deprecated
 def __extrusion_get_orientation(extrusion):
@@ -41,60 +45,83 @@ def __extrusion_get_orientation(extrusion):
 def __extrusion_set_orientation(extrusion,value):
     extrusion.orientationList = value
 
-Extrusion.orientation = property(__extrusion_get_orientation,__extrusion_set_orientation)
+Extrusion.orientation = property(__extrusion_get_orientation,__extrusion_set_orientation, doc='DEPRECATED')
 
-
-""" Copy functions for Curve2D types """
-def __nbc2D_copy__(self):
-    res = NurbsCurve2D(self.ctrlPointList,self.degree, self.knotList, self.stride,self.width)
+def __extsn_copy__(self):
+    res = Extrusion(self.axis,self.crossSection, self.scaleList, self.orientationList, self.knotList, self.solid, self.ccw, self.initialNormal)
     if self.isNamed() : res.name = self.name
     return res
 
-NurbsCurve2D.__copy__ = __nbc2D_copy__
-del __nbc2D_copy__
+Extrusion.__copy__ = __extsn_copy__
+del __extsn_copy__
 
-def __nbc2D_deepcopy__(self,memo):
+def __extsn_deepcopy__(self,memo):
     from copy import deepcopy
-    res = NurbsCurve2D(deepcopy(self.ctrlPointList,memo),self.degree, deepcopy(self.knotList,memo), self.stride,self.width)
+    res = Extrusion(deepcopy(self.axis),deepcopy(self.crossSection), deepcopy(self.scaleList), deepcopy(self.orientationList), deepcopy(self.knotList), self.solid, self.ccw, self.initialNormal)
     if self.isNamed() : res.name = self.name
     return res
 
-NurbsCurve2D.__deepcopy__ = __nbc2D_deepcopy__
-del __nbc2D_deepcopy__
+Extrusion.__deepcopy__ = __extsn_deepcopy__
+del __extsn_deepcopy__
 
-def __bez2D_copy__(self):
-    res = BezierCurve2D(self.ctrlPointList, self.stride,self.width)
+
+""" Copy functions for Curve and Curve2D types """
+def __nbc_copy__(self):
+    res = type(self)(self.ctrlPointList,self.degree, self.knotList, self.stride,self.width)
     if self.isNamed() : res.name = self.name
     return res
 
-BezierCurve2D.__copy__ = __bez2D_copy__
-del __bez2D_copy__
+NurbsCurve2D.__copy__ = __nbc_copy__
+NurbsCurve.__copy__ = __nbc_copy__
+del __nbc_copy__
 
-def __bez2D_deepcopy__(self, memo):
+def __nbc_deepcopy__(self,memo):
     from copy import deepcopy
-    res = BezierCurve2D(deepcopy(self.ctrlPointList,memo), self.stride,self.width)
+    res = type(self)(deepcopy(self.ctrlPointList,memo),self.degree, deepcopy(self.knotList,memo), self.stride,self.width)
     if self.isNamed() : res.name = self.name
     return res
 
-BezierCurve2D.__deepcopy__ = __bez2D_deepcopy__
-del __bez2D_deepcopy__
+NurbsCurve2D.__deepcopy__ = __nbc_deepcopy__
+NurbsCurve.__deepcopy__ = __nbc_deepcopy__
+del __nbc_deepcopy__
 
-def __pol2D_copy__(self):
-    res = Polyline2D(self.pointList, self.width)
+def __bez_copy__(self):
+    res = type(self)(self.ctrlPointList, self.stride,self.width)
     if self.isNamed() : res.name = self.name
     return res
 
-Polyline2D.__copy__ = __pol2D_copy__
-del __pol2D_copy__
+BezierCurve2D.__copy__ = __bez_copy__
+BezierCurve.__copy__ = __bez_copy__
+del __bez_copy__
 
-def __pol2D_deepcopy__(self,memo):
+def __bez_deepcopy__(self, memo):
     from copy import deepcopy
-    res = Polyline2D(deepcopy(self.pointList,memo), self.width)
+    res = type(self)(deepcopy(self.ctrlPointList,memo), self.stride,self.width)
     if self.isNamed() : res.name = self.name
     return res
 
-Polyline2D.__deepcopy__ = __pol2D_deepcopy__
-del __pol2D_deepcopy__
+BezierCurve2D.__deepcopy__ = __bez_deepcopy__
+BezierCurve.__deepcopy__ = __bez_deepcopy__
+del __bez_deepcopy__
+
+def __pol_copy__(self):
+    res = type(self)(self.pointList, self.width)
+    if self.isNamed() : res.name = self.name
+    return res
+
+Polyline2D.__copy__ = __pol_copy__
+Polyline.__copy__ = __pol_copy__
+del __pol_copy__
+
+def __pol_deepcopy__(self,memo):
+    from copy import deepcopy
+    res = type(self)(deepcopy(self.pointList,memo), self.width)
+    if self.isNamed() : res.name = self.name
+    return res
+
+Polyline2D.__deepcopy__ = __pol_deepcopy__
+Polyline.__deepcopy__ = __pol_deepcopy__
+del __pol_deepcopy__
 
 """ Copy functions for Patch types """
 def __bzpth_copy__(self):
@@ -198,6 +225,32 @@ def _img_plot(self):
 Image.plot = _img_plot
 del _img_plot
 
+def _col3iter(col):
+    for v in (col.red, col.green, col.blue):
+        yield v
+
+Color3.__iter__ = _col3iter
+del _col3iter
+
+def _col4titer(col):
+    for v in (col.red, col.green, col.blue, col.alpha):
+        yield v
+
+Color4.__iter__ = _col4titer
+del _col4titer
+
 from .editablequantisedfunction import *
 
+def bbx_corners(bbx):
+    from itertools import product
+    from openalea.plantgl.math import Vector3
+    
+    lc = bbx.lowerLeftCorner
+    uc = bbx.upperRightCorner
+    return list(map(Vector3,product(*[(lc[i],uc[i]) for i in range(3)] )))
+
+BoundingBox.corners = bbx_corners
+del bbx_corners
+
 from . import __docufy
+

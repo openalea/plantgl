@@ -271,12 +271,12 @@ static uint_t count_name(0);
 const SceneObjectPtr BinaryParser::NULLPTR;
 
 /* ----------------------------------------------------------------------- */
-BinaryParser::BinaryParser(ostream& output,int max_errors) :
+BinaryParser::BinaryParser(ostream& output,int max_errors, fistream * _stream) :
     __scene(new Scene()),
     __roots(0),
     __referencetable(),
     __outputStream(output),
-    stream(0),
+    stream(_stream),
     __tokens(NULL),
     __max_errors(max_errors),
     __errors_count(0),
@@ -486,7 +486,8 @@ SceneObject * BinaryParser::getNext(uint_t _class){
 /* ----------------------------------------------------------------------- */
 
 bool BinaryParser::isAGeomBinaryFile(const string& filename){
-    leifstream stream(filename.c_str());
+    bifstream stream(filename.c_str());
+    stream.setByteOrder(PglLittleEndian);
     if(!stream)return false;
     char tokBegin[7];
     stream.read(tokBegin,6);
@@ -624,7 +625,9 @@ bool BinaryParser::readSceneHeader(){
 /* ----------------------------------------------------------------------- */
 bool BinaryParser::open(const std::string& filename)
 {
-    stream = new leifstream(filename.c_str());
+    stream = new bifstream(filename.c_str());
+    stream->setByteOrder(PglLittleEndian);
+
     if(!*stream){
         pglErrorEx(PGLERRORMSG(C_FILE_OPEN_ERR_s),filename.c_str());
         delete stream;
@@ -656,11 +659,17 @@ bool BinaryParser::eof()
 /// The parsing function.
 bool BinaryParser::parse(const string& filename){
     if(!open(filename)) return false;
+    string p = get_cwd();
+    chg_dir(get_dirname(filename));
+    bool res = parse();
+    chg_dir(p);
+    return res;
+}
+
+bool BinaryParser::parse(){
     if(!readHeader())return false;
     if(!readSceneHeader())return false;
     PglErrorStream::Binder psb(__outputStream);
-    string p = get_cwd();
-    chg_dir(get_dirname(filename));
     Timer t;
     __errors_count=0;
     shape_nb=0;
@@ -677,8 +686,21 @@ bool BinaryParser::parse(const string& filename){
     }
 #endif
     close();
-    chg_dir(p);
     return true;
+}
+
+#include <sstream>
+
+ScenePtr BinaryParser::frombinarystring(const std::string& content)
+{
+    std::ostringstream ostream;
+    std::istringstream sstream(content);
+    fistream * stream = new fistream(sstream);
+    stream->setByteOrder(PglLittleEndian);
+    BinaryParser parser(ostream, 5, stream);
+    parser.parse();
+    return parser.getScene();
+
 }
 
 /* ----------------------------------------------------------------------- */
@@ -1621,8 +1643,7 @@ bool BinaryParser::readGroup() {
       }
 
 
-    uint_t _sizej;
-    *stream >> _sizej;
+    uint32_t _sizej = readUint32();
     obj->getGeometryList()= GeometryArrayPtr(new GeometryArray(_sizej));
     uint_t err = 0;
     GeometryArray::iterator _it = obj->getGeometryList()->begin();
@@ -1663,42 +1684,43 @@ bool BinaryParser::readIFS() {
     IF_GEOM_NOTDEFAULT(_default,0)
         GEOM_READ_FIELD(obj,Depth,Uchar);
 
-    uint_t size;
-    *stream >> size;
+    uint32_t size = readUint32();
     obj->getTransfoList()= Transform4ArrayPtr(new Transform4Array(size));
+
+#ifdef GEOM_DEBUG
+  cerr << "must find " << size << " Transform4" << endl;
+#endif
 
     uint_t err= 0;
     Transform4Array::iterator _ti= obj->getTransfoList()->begin();
     Transform4Array::iterator _tend= obj->getTransfoList()->end();
     for( uint_t num = 0;
          num < size && _ti != _tend && !stream->eof();
-         num++ )
-      {
-      Vector4 col[4];
-      for( uchar_t i= 0; i < 4; i++ )
-        *stream >> col[i];
-      Matrix4 m(col[0],col[1],col[2],col[3]);
-      if( m.isValid() )
-        {
-        (*_ti)= Transform4Ptr( new Transform4( m ));
-        _ti++;
+         num++ ) {
+        Matrix4 m = readMatrix4();
+#ifdef GEOM_DEBUG
+        cerr << "find Matrix4" << m << endl;
+#endif
+        if( m.isValid() ) {
+            (*_ti)= Transform4Ptr( new Transform4( m ));
+            _ti++;
         }
-      else
-        {
-        err++;
-        __outputStream << "*** PARSER: <IFS : " << (_name.empty() ? "(unamed)" : _name ) << "> A Transfo component is not valid." << endl;
+        else {
+            err++;
+            __outputStream << "*** PARSER: <IFS : " << (_name.empty() ? "(unamed)" : _name ) << "> A Transfo component is not valid." << endl;
         }
-      }
+    }
 
     if(readNext())
         obj->getGeometry() = dynamic_pointer_cast<Geometry>(__result);
 
-    if( err >= size-1 || (!obj->getGeometry()) )
-      {
+    if( (err > 0 && err >= size-1) || (!obj->getGeometry()) )
+    {
       obj->getDepth()= IFS::DEFAULT_DEPTH;
       obj->getTransfoList()= Transform4ArrayPtr();
       GEOM_DEL_OBJ(obj,38) ;
-      }
+      return false;
+    }
 
     GEOM_PARSER_SETNAME(_name,_ident,obj,IFS);
     return true;
@@ -2397,7 +2419,7 @@ bool BinaryParser::readText() {
     GEOM_INIT_OBJ(obj, 40, Text);
 
     GEOM_READ_FIELD(obj,String,String);
-    std::cerr << "String :\"" << obj->getString() << '"' << std::endl;
+    // std::cerr << "String :\"" << obj->getString() << '"' << std::endl;
 
     IF_GEOM_NOTDEFAULT(_default,0){
       if(readNext()){

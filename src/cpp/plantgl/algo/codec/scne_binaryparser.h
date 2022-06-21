@@ -66,7 +66,7 @@
 /* ----------------------------------------------------------------------- */
 
 PGL_BEGIN_NAMESPACE
-class leifstream;
+class fistream;
 PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
@@ -116,13 +116,18 @@ class CODEC_API BinaryParser
 public:
 
   /** Constructs a Printer with the output streams \e outputStream. */
-  BinaryParser(std::ostream& output,int max_errors=5);
+  BinaryParser(std::ostream& output, int max_errors=5, fistream * stream = NULL);
 
   /// Destructor
   virtual ~BinaryParser( );
 
   /// The parsing function.
   virtual bool parse(const std::string& filename);
+
+  /// The parsing function.
+  virtual bool parse();
+
+  static ScenePtr frombinarystring(const std::string& content);
 
   /// open the file.
   bool open(const std::string& filename);
@@ -420,7 +425,7 @@ public:
   std::ostream& __outputStream;
 
   /// Input binary stream.
-  leifstream * stream;
+  fistream * stream;
 
   /// The tokens codes.
   TokenCode * __tokens;

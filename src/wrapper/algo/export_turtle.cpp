@@ -60,6 +60,26 @@ void py_warning_handler(const std::string& msg){
 void setDefaultCrossSection1(Turtle * t, size_t slices) { t->setDefaultCrossSection(slices); }
 void setDefaultCrossSection0(Turtle * t) { t->setDefaultCrossSection(); }
 
+class PyPushPopHandler : public PushPopHandler {
+public:
+    PyPushPopHandler(boost::python::object _push, boost::python::object _pop) : 
+        PushPopHandler(),
+        push(_push), pop(_pop) { }
+
+    virtual ~PyPushPopHandler() {}
+
+    virtual void pushEvent() { push(); }
+
+    virtual void popEvent() { pop();}
+
+protected:
+    boost::python::object push;
+    boost::python::object pop;
+};
+
+void py_register_pushpop(Turtle * t, boost::python::object push, boost::python::object pop) {
+    t->registerPushPopHandler(PushPopHandlerPtr(new PyPushPopHandler(push, pop)));
+}
 
 void export_Turtle()
 {
@@ -67,7 +87,7 @@ void export_Turtle()
     Turtle::register_warning_handler(&py_warning_handler);
 
 
-  class_< Turtle >("Turtle", init< optional<TurtleParam * > >("Turtle([TurtleParam]) -> Create Turtle"))
+  class_< Turtle , boost::noncopyable>("Turtle", init< optional<TurtleParam * > >("Turtle([TurtleParam]) -> Create Turtle"))
 
     .def("f", (void (Turtle::*) ())         &Turtle::f, return_self<>() )
     .def("f", (void (Turtle::*) (real_t))     &Turtle::f, return_self<>() )
@@ -241,6 +261,8 @@ void export_Turtle()
 
     .def_readwrite("warn_on_error",&Turtle::warn_on_error)
     .def_readwrite("path_info_cache_enabled",&Turtle::path_info_cache_enabled)
+
+    .def("_register_pushpop",&py_register_pushpop)
 
 /*    .def("_frustum",&Turtle::_frustum )
     .def("_cylinder",&Turtle::_cylinder )

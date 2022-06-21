@@ -56,14 +56,13 @@ PGL_USING_NAMESPACE
 ProjectionEngine::ProjectionEngine():
     __camera(0)
 {
-    setOrthographicCamera(-1, 1, -1, 1, -1, 1);
+    setOrthographicCamera(-1, 1, -1, 1, 0, 2);
     lookAt(Vector3(0,1,0),Vector3(0,0,0),Vector3(0,0,1));
 
 }
 
 ProjectionEngine::~ProjectionEngine()
 {
-
 }
 
 void ProjectionEngine::process(ScenePtr scene)
@@ -74,4 +73,16 @@ void ProjectionEngine::process(ScenePtr scene)
     beginProcess();
     scene->apply(r);
     endProcess();
+}
+
+ImageProjectionEngine::ImageProjectionEngine(uint16_t imageWidth, 
+                                   uint16_t imageHeight):
+    ProjectionEngine(),
+    __imageWidth(imageWidth), 
+    __imageHeight(imageHeight)
+{
+}
+
+ImageProjectionEngine::~ImageProjectionEngine()
+{
 }

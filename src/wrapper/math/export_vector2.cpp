@@ -222,8 +222,8 @@ object pgl_py_dir(object obj){
         object lobj;
         try {  lobj = boost::python::object(boost::python::handle<PyObject>(PyIter_Next(iter_obj.ptr()))); }
         catch( error_already_set ){ PyErr_Clear(); break; }
-        lobj = lobj / f;
-        l.append(lobj);
+        real_t fobj = extract<real_t>(lobj) / f;
+        l.append(fobj);
    }
    return l;
 }

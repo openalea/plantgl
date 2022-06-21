@@ -325,7 +325,7 @@ void array2_reshape( T * array, size_t nbrow, size_t nbcol)
 template<class T>
 bool save(T * a, std::string fname)
 {
-    leofstream stream(fname.c_str());
+    std::ofstream stream(fname.c_str(), std::ios::out | std::ios::binary);
     if(!stream)return false;
     else {
         std::string cwd = get_cwd();
@@ -526,7 +526,7 @@ std::string PREFIX##_str(ARRAY * a) { return array2_str<ARRAY>(a, #ARRAY); }
 
 
 #define EXPORT_CLASS_ARRAY( PREFIX, ARRAY )\
-    class_< ARRAY, ARRAY##Ptr, boost::noncopyable>( #ARRAY , init<size_t,size_t>( #ARRAY "(int rows, int cols)", args("rows","cols")) ) \
+    class_< ARRAY, ARRAY##Ptr, bases<RefCountObject>, boost::noncopyable>( #ARRAY , init<size_t,size_t>( #ARRAY "(int rows, int cols)", args("rows","cols")) ) \
     .def( "__init__", make_constructor( &extract_array2_from_list<ARRAY> ), #ARRAY "([[a,b,c],[d,e,f]])" ) \
 
 #define EXPORT_ARRAY_FUNC_COMMON( ARRAY, PREFIX ) \

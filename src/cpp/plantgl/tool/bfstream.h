@@ -119,14 +119,18 @@ inline void flipBytes( const char * src, char * dest, size_t n )
         };
 }
 
+enum PglByteOrder {
+    PglBigEndian,
+    PglLittleEndian
+} ;
 
 /* ----------------------------------------------------------------------- */
 
-/** \class bofstream
-    \brief bofstream specializes the \c ofstream class to store variables
-    in binary format. */
+/** \class fostream
+    \brief fostream specializes the \c ofstream class to store variables
+    big endian or little endian format. */
 
-class TOOLS_API bofstream
+class TOOLS_API fostream
 {
 
 public:
@@ -134,17 +138,27 @@ public:
 /// @name Constructor
 //@{
 
-/// Constructs a writable binary file stream \e file_name.
-bofstream( const char * file_name ) :
-        __stream(file_name,std::ios::out | std::ios::binary)
+// /// Constructs a writable binary file stream \e file_name.
+// bostream( const char * file_name, PglByteOrder byteorder = PglBigEndian) :
+//         __stream(file_name,std::ios::out | std::ios::binary),
+//         __order(byteorder)
+// {
+// }
+
+// /// Constructs a writable binary file stream \e file_name.
+// bostream( const std::string& file_name, PglByteOrder byteorder = PglBigEndian ) :
+//         __stream(file_name.c_str(),std::ios::out | std::ios::binary),
+//         __order(byteorder)
+// {
+// }
+
+// Constructs a writable stream with given byte order.
+fostream( std::ostream& stream, PglByteOrder byteorder = PglBigEndian) :
+        __stream(stream),
+        __order(byteorder)
 {
 }
 
-/// Constructs a writable binary file stream \e file_name.
-bofstream( const std::string& file_name ) :
-        __stream(file_name.c_str(),std::ios::out | std::ios::binary)
-{
-}
 
 //@}
 
@@ -152,7 +166,7 @@ bofstream( const std::string& file_name ) :
 //@{
 
 /// Destructor.
-virtual ~bofstream();
+virtual ~fostream();
 
 //@}
 
@@ -161,80 +175,80 @@ virtual ~bofstream();
 //@{
 
 /// Binary write of a \b bool.
-bofstream& operator<<( bool b )
+fostream& operator<<( bool b )
 {
         return _writeBytes((char *)&b,sizeof(b));
 }
 
 /// Binary write of a \b char.
-bofstream& operator<<( char c )
+fostream& operator<<( char c )
 {
         return _writeBytes((char *)&c,sizeof(c));
 }
 
 /// Binary write of a \b double.
-bofstream& operator<<( double d )
+fostream& operator<<( double d )
 {
         return _writeBytes((char *)&d,sizeof(d));
 }
 
 /// Binary write of a \b float.
-bofstream& operator<<( float f )
+fostream& operator<<( float f )
 {
         return _writeBytes((char *)&f,sizeof(f));
 }
 
 /// Binary write of a \b int.
-bofstream& operator<<( int i )
+fostream& operator<<( int i )
 {
         return _writeBytes((char *)&i,sizeof(i));
 }
 
 /// Binary write of a \b long.
-bofstream& operator<<( long l )
+fostream& operator<<( long l )
 {
         return _writeBytes((char *)&l,sizeof(l));
 }
 
 /// Binary write of a \b short.
-bofstream& operator<<( short s )
+fostream& operator<<( short s )
 {
         return _writeBytes((char *)&s,sizeof(s));
 }
 
 /// Binary write of an \b unsigned \b char.
-bofstream& operator<<( unsigned char uc )
+fostream& operator<<( unsigned char uc )
 {
         return _writeBytes((char *)&uc,sizeof(uc));
 }
 
 /// Binary write of an \b unsigned \b int.
-bofstream& operator<<( unsigned int ui )
+fostream& operator<<( unsigned int ui )
 {
         return _writeBytes((char *)&ui,sizeof(ui));
 }
 
 /// Binary write of an \b unsigned \b long.
-bofstream& operator<<( unsigned long ul )
+fostream& operator<<( unsigned long ul )
 {
         return _writeBytes((char *)&ul,sizeof(ul));
 }
 
 /// Binary write of an \b unsigned \b short.
-bofstream& operator<<( unsigned short us )
+fostream& operator<<( unsigned short us )
 {
         return _writeBytes((char *)&us,sizeof(us));
 }
 
 /// Binary write of a \b string.
-bofstream& operator<<( const char * s )
+fostream& operator<<( const char * s )
 {
         __stream << s;
         return *this;
 }
 
 /// Binary write of a \b string.
-bofstream& operator<<( std::string s )
+fostream& operator<<( std::string s )
 {
         __stream << s;
         return *this;
@@ -242,21 +256,21 @@ bofstream& operator<<( std::string s )
 
 /// Binary write of a \b Tuple2.
 template<class T>
-bofstream& operator<<( const Tuple2<T>& t )
+fostream& operator<<( const Tuple2<T>& t )
 {
         return (operator<<(t.getAt(0))).operator<<(t.getAt(1));
 }
 
 /// Binary write of a \b Tuple3.
 template<class T>
-bofstream& operator<<( const Tuple3<T>& t )
+fostream& operator<<( const Tuple3<T>& t )
 {
         return ((operator<<(t.getAt(0))).operator<<(t.getAt(1))).operator<<(t.getAt(2));
 }
 
 /// Binary write of a \b Tuple4.
 template<class T>
-bofstream& operator<<( const Tuple4<T>& t )
+fostream& operator<<( const Tuple4<T>& t )
 {
         return (((operator<<(t.getAt(0))).operator<<(t.getAt(1))).operator<<(t.getAt(2))).operator<<(t.getAt(3));
 }
@@ -273,12 +287,12 @@ void write( const char * data, size_t size )
 //@{
 
 /// Return the current stream.
-std::ofstream& getStream() {
+std::ostream& getStream() {
         return __stream;
 }
 
 /// Return the current stream.
-const std::ofstream& getStream() const {
+const std::ostream& getStream() const {
         return __stream;
 }
 
@@ -297,30 +311,82 @@ bool eof( ) const {
 
 //@}
 
+void setByteOrder(PglByteOrder order) {
+    __order = order;
+}
+
+bool getByteOrder() const {
+    return __order;
+}
 
 
 private:
 
-virtual bofstream& _writeBytes( const char * data, size_t size )
+virtual fostream& _writeBytes( const char * data, size_t size )
 {
+#if __BYTE_ORDER == __BIG_ENDIAN
+    if (__order == PglLittleEndian)
+#else
+    if (__order == PglBigEndian)        
+#endif
+    {
+        char flipped_data[8];
+        flipBytes(data,flipped_data,size);
+        __stream.write(flipped_data,size);
+    }
+    else {
         __stream.write(data,size);
-        return *this;
+    }
+    return *this;
 }
 
 protected:
 
-std::ofstream __stream;
+std::ostream& __stream;
+
+PglByteOrder __order;
+
+};
+
+
+class TOOLS_API bofstream : public fostream
+{
+
+public:
+
+/// @name Constructors
+//@{
+
+/** Constructs a writable little endian byte ordered binary file stream
+    \e file_name. */
+bofstream( const char * file_name, PglByteOrder byteorder = PglBigEndian ) :
+        __fstream(file_name,std::ios::out | std::ios::binary),
+        fostream(__fstream)
+
+{
+}
+
+bofstream( const std::string& file_name, PglByteOrder byteorder = PglBigEndian ) :
+        __fstream(file_name,std::ios::out | std::ios::binary),
+        fostream(__fstream)
+{
+}
+
+virtual ~bofstream();
+
+protected:
+   std::ofstream __fstream;
 
 };
 
 
 /* ----------------------------------------------------------------------- */
 
-/** \class bifstream
-    \brief bifstream specializes the \c ifstream class to restore variables
+/** \class fistream
+    \brief fistream specializes the \c istream class to restore variables
     in binary format. */
 
-class TOOLS_API bifstream
+class TOOLS_API fistream
 {
 
 public:
@@ -329,24 +395,31 @@ public:
 //@{
 
 /// Constructs a readable binary file stream \e file_name.
-bifstream( const char * file_name ) :
+/*fistream( const char * file_name ) :
         __stream(file_name,std::ios::in | std::ios::binary)
 {
 }
 
 /// Constructs a readable binary file stream \e file_name.
-bifstream( const std::string& file_name ) :
+fistream( const std::string& file_name ) :
         __stream(file_name.c_str(),std::ios::in | std::ios::binary)
 {
 }
+*/
 
+
+fistream( std::istream& stream, PglByteOrder byteorder = PglBigEndian) :
+        __stream(stream),
+        __order(byteorder)
+{
+}
 //@}
 
 /// @name Destructor
 //@{
 
 /// Destructor.
-virtual ~bifstream();
+virtual ~fistream();
 
 //@}
 
@@ -355,88 +428,88 @@ virtual ~bifstream();
 //@{
 
 /// Binary read of a \b bool.
-bifstream& operator>>( bool& b )
+fistream& operator>>( bool& b )
 {
         return _readBytes((char *)&b,sizeof(b));
 }
 
 /// Binary read of a \b char.
-bifstream& operator>>( char& c )
+fistream& operator>>( char& c )
 {
         return _readBytes((char *)&c,sizeof(c));
 }
 
 /// Binary read of a \b double.
-bifstream& operator>>( double& d )
+fistream& operator>>( double& d )
 {
         return _readBytes((char *)&d,sizeof(d));
 }
 
 /// Binary read of a \b float.
-bifstream& operator>>( float& f )
+fistream& operator>>( float& f )
 {
         return _readBytes((char *)&f,sizeof(f));
 }
 
 /// Binary read of an \b int.
-bifstream& operator>>( int& i )
+fistream& operator>>( int& i )
 {
         return _readBytes((char *)&i,sizeof(i));
 }
 
 /// Binary read of a \b long.
-bifstream& operator>>( long& l )
+fistream& operator>>( long& l )
 {
         return _readBytes((char *)&l,sizeof(l));
 }
 
 /// Binary read of a \b short.
-bifstream& operator>>( short& s )
+fistream& operator>>( short& s )
 {
         return _readBytes((char *)&s,sizeof(s));
 }
 
 /// Binary read of an \b unsigned \b char.
-bifstream& operator>>( unsigned char& uc )
+fistream& operator>>( unsigned char& uc )
 {
         return _readBytes((char *)&uc,sizeof(uc));
 }
 
 /// Binary read of an \b unsigned \b int.
-bifstream& operator>>( unsigned int& ui )
+fistream& operator>>( unsigned int& ui )
 {
         return _readBytes((char *)&ui,sizeof(ui));
 }
 
 /// Binary read of an \b unsigned \b long.
-bifstream& operator>>( unsigned long& ul )
+fistream& operator>>( unsigned long& ul )
 {
         return _readBytes((char *)&ul,sizeof(ul));
 }
 
 /// Binary read of an \b unsigned \b short.
-bifstream& operator>>( unsigned short& us )
+fistream& operator>>( unsigned short& us )
 {
         return _readBytes((char *)&us,sizeof(us));
 }
 
 /// Binary read of a \b Tuple2.
 template<class T>
-bifstream& operator>>( Tuple2<T>& t )
+fistream& operator>>( Tuple2<T>& t )
 {
         return (operator>>(t.getAt(0))).operator>>(t.getAt(1));
 }
 
 /// Binary read of a \b Tuple3.
 template<class T>
-bifstream& operator>>( Tuple3<T>& t )
+fistream& operator>>( Tuple3<T>& t )
 {
         return ((operator>>(t.getAt(0))).operator>>(t.getAt(1))).operator>>(t.getAt(2));
 }
 
 /// Binary read of a \b Tuple4.
 template<class T>
-bifstream& operator>>( Tuple4<T>& t )
+fistream& operator>>( Tuple4<T>& t )
 {
         return (((operator>>(t.getAt(0))).operator>>(t.getAt(1))).operator>>(t.getAt(2))).operator>>(t.getAt(3));
 }
@@ -454,12 +527,12 @@ void read( char * data, size_t size )
 //@{
 
 /// Return the current stream.
-std::ifstream& getStream() {
+std::istream& getStream() {
         return __stream;
 }
 
 /// Return the current stream.
-const std::ifstream& getStream() const {
+const std::istream& getStream() const {
         return __stream;
 }
 
@@ -478,25 +551,159 @@ bool eof( ) const {
 
 //@}
 
+void setByteOrder(PglByteOrder order) {
+    __order = order;
+}
+
+bool getByteOrder() const {
+    return __order;
+}
+
+
 
 private:
 
-virtual bifstream& _readBytes( char * data, size_t size )
+virtual fistream& _readBytes( char * data, size_t size )
 {
-        __stream.read(data,size);
-        return *this;
+#if __BYTE_ORDER == __BIG_ENDIAN
+    if (__order == PglLittleEndian)
+#else
+    if (__order == PglBigEndian)        
+#endif
+    {
+        char flipped_data[8];
+        __stream.read(flipped_data,size);
+        flipBytes(flipped_data,data,size);
+    }
+    else {
+            __stream.read(data,size);
+    }
+    return *this;
 }
 
 protected:
 
-std::ifstream __stream;
+    std::istream& __stream;
+
+    PglByteOrder __order;
+
+};
+
+
+class TOOLS_API bifstream : public fistream
+{
+
+public:
+
+/// @name Constructors
+//@{
+
+/** Constructs a writable little endian byte ordered binary file stream
+    \e file_name. */
+bifstream( const char * file_name, PglByteOrder byteorder = PglBigEndian ) :
+        __fstream(file_name,std::ios::in | std::ios::binary),
+        fistream(__fstream)
+
+{
+}
+
+bifstream( const std::string& file_name, PglByteOrder byteorder = PglBigEndian ) :
+        __fstream(file_name,std::ios::in | std::ios::binary),
+        fistream(__fstream)
+{
+}
+
+virtual ~bifstream();
+
+protected:
+   std::ifstream __fstream;
+
+};
+
+class TOOLS_API leifstream : public bifstream
+{
+
+public:
+
+/// @name Constructors
+//@{
+
+/** Constructs a writable little endian byte ordered binary file stream
+    \e file_name. */
+    leifstream( const char * file_name) :
+        bifstream(file_name, PglLittleEndian) {}    
+
+    leifstream( const std::string& file_name) :
+        bifstream(file_name, PglLittleEndian) {}    
+
+    ~leifstream();
+
+};
+
+class TOOLS_API beifstream : public bifstream
+{
+
+public:
+
+/// @name Constructors
+//@{
+
+/** Constructs a writable big endian byte ordered binary file stream
+    \e file_name. */
+    beifstream( const char * file_name) :
+        bifstream(file_name, PglBigEndian) {}    
+
+    beifstream( const std::string& file_name) :
+        bifstream(file_name, PglBigEndian) {}    
+
+    ~beifstream();
+
 };
 
 
 /* ----------------------------------------------------------------------- */
 
+// class TOOLS_API bofstream : public bostream
+// {
+
+// public:
+
+// /// @name Constructors
+// //@{
+
+// /** Constructs a writable little endian byte ordered binary file stream
+//     \e file_name. */
+// leofstream( const char * file_name ) :
+//         bostream(file_name)
+// {
+// }
+
+// leofstream( const std::string& file_name ) :
+//         bostream(file_name.c_str())
+// {
+// }
+
+// virtual ~leofstream();
+
+// //@}
+
+// private:
+
+// #if __BYTE_ORDER == __BIG_ENDIAN
+// virtual bostream& _writeBytes( const char * data, size_t size )
+// {
+//         char flipped_data[8];
+//         flipBytes(data,flipped_data,size);
+//         __stream.write(flipped_data,size);
+//         return *this;
+// }
+// #endif
+
+// };
+
+
 /** \class leofstream
-    \brief leofstream specializes the \c bofstream class to store variables
+    \brief leofstream specializes the \c bostream class to store variables
     in little endian format. */
 
 class TOOLS_API leofstream : public bofstream
@@ -510,84 +717,70 @@ public:
 /** Constructs a writable little endian byte ordered binary file stream
     \e file_name. */
 leofstream( const char * file_name ) :
-        bofstream(file_name)
+        bofstream(file_name, PglLittleEndian)
 {
 }
 
 leofstream( const std::string& file_name ) :
-        bofstream(file_name.c_str())
+        bofstream(file_name.c_str(), PglLittleEndian)
 {
 }
 
 virtual ~leofstream();
 
-//@}
-
-private:
-
-#if __BYTE_ORDER == __BIG_ENDIAN
-virtual bofstream& _writeBytes( const char * data, size_t size )
-{
-        char flipped_data[8];
-        flipBytes(data,flipped_data,size);
-        __stream.write(flipped_data,size);
-        return *this;
-}
-#endif
-
 };
 
 
-/* ----------------------------------------------------------------------- */
+// /* ----------------------------------------------------------------------- */
 
-/** \class leifstream
-    \brief bifstream specializes the \c bifstream class to restore variables
-    in little endian format. */
+// /** \class leifstream
+//     \brief bifstream specializes the \c bifstream class to restore variables
+//     in little endian format. */
 
-class TOOLS_API leifstream : public bifstream
-{
+// class TOOLS_API leifstream : public bifstream
+// {
 
-public:
+// public:
 
-/// @name Constructors
-//@{
+// /// @name Constructors
+// //@{
 
-/** Constructs a readable little endian byte ordered binary file stream
-   \e file_name. */
-leifstream( const char * file_name ) :
-        bifstream(file_name)
-{
-}
+// /** Constructs a readable little endian byte ordered binary file stream
+//    \e file_name. */
+// leifstream( const char * file_name ) :
+//         bifstream(file_name)
+// {
+// }
 
-leifstream( const std::string& file_name ) :
-        bifstream(file_name.c_str())
-{
-}
+// leifstream( const std::string& file_name ) :
+//         bifstream(file_name.c_str())
+// {
+// }
 
-virtual ~leifstream();
+// virtual ~leifstream();
 
-//@}
+// //@}
 
-private:
+// private:
 
-#if __BYTE_ORDER == __BIG_ENDIAN
-virtual bifstream& _readBytes( char * data, size_t size )
-{
-        char flipped_data[8];
-        __stream.read(flipped_data,size);
-        flipBytes(flipped_data,data,size);
-        return *this;
-}
-#endif
+// #if __BYTE_ORDER == __BIG_ENDIAN
+// virtual bifstream& _readBytes( char * data, size_t size )
+// {
+//         char flipped_data[8];
+//         __stream.read(flipped_data,size);
+//         flipBytes(flipped_data,data,size);
+//         return *this;
+// }
+// #endif
 
-};
+// };
 
 
-/* ----------------------------------------------------------------------- */
+// /* ----------------------------------------------------------------------- */
 
-/** \class beofstream
-    \brief beofstream specializes the \c bofstream class to store variables
-    in big endian format. */
+// /** \class beofstream
+//     \brief beofstream specializes the \c bostream class to store variables
+//     in big endian format. */
 
 class TOOLS_API beofstream : public bofstream
 {
@@ -600,78 +793,66 @@ public:
 /** Constructs a writable big endian byte ordered binary file stream
     \e file_name. */
 beofstream( const char * file_name ) :
-        bofstream(file_name)
+        bofstream(file_name, PglBigEndian)
 {
 }
 
 /** Constructs a writable big endian byte ordered binary file stream
     \e file_name. */
 beofstream( const std::string& file_name ) :
-        bofstream(file_name.c_str())
+        bofstream(file_name.c_str(), PglBigEndian)
 {
 }
 
 virtual ~beofstream();
 
-//@}
-private:
-
-#if __BYTE_ORDER == __LITTLE_ENDIAN
-virtual bofstream& _writeBytes( const char * data, size_t size )
-{
-        char flipped_data[8];
-        flipBytes(data,flipped_data,size);
-        __stream.write(flipped_data,size);
-        return *this;
-}
-#endif
 
 };
 
 
-/* ----------------------------------------------------------------------- */
+// /* ----------------------------------------------------------------------- */
 
-/** \class beifstream
-    \brief beifstream specializes the \c bifstream class to restore variables
-    in big endian format. */
+// /** \class beifstream
+//     \brief beifstream specializes the \c bifstream class to restore variables
+//     in big endian format. */
 
-class TOOLS_API beifstream : public bifstream
-{
+// class TOOLS_API beifstream : public bifstream
+// {
 
-public:
+// public:
 
-/// @name Constructors
-//@{
+// /// @name Constructors
+// //@{
 
-/** Constructs a readable big endian byte ordered binary file stream
-    \e file_name. */
-beifstream( const char * file_name ) :
-        bifstream(file_name)
-{
-}
+// /** Constructs a readable big endian byte ordered binary file stream
+//     \e file_name. */
+// beifstream( const char * file_name ) :
+//         bifstream(file_name)
+// {
+// }
 
-beifstream( const std::string& file_name ) :
-        bifstream(file_name.c_str())
-{
-}
+// beifstream( const std::string& file_name ) :
+//         bifstream(file_name.c_str())
+// {
+// }
 
-virtual ~beifstream();
+// virtual ~beifstream();
 
-//@}
+// //@}
 
-private:
+// private:
 
-#if __BYTE_ORDER == __LITTLE_ENDIAN
-virtual bifstream& _readBytes( char * data, size_t size )
-{
-        char flipped_data[8];
-        __stream.read(flipped_data,size);
-        flipBytes(flipped_data,data,size);
-        return *this;
-}
-#endif
+// #if __BYTE_ORDER == __LITTLE_ENDIAN
+// virtual bifstream& _readBytes( char * data, size_t size )
+// {
+//         char flipped_data[8];
+//         __stream.read(flipped_data,size);
+//         flipBytes(flipped_data,data,size);
+//         return *this;
+// }
+// #endif
 
-};
+// };
 
 
 /* ----------------------------------------------------------------------- */

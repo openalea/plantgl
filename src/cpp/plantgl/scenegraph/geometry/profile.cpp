@@ -554,9 +554,9 @@ real_t ProfileInterpolation::getUMax() const
 
 const Point2ArrayPtr& ProfileInterpolation::getSection2DAt(real_t u) const
 {
-// #ifdef DEBUG
+#ifdef DEBUG
   cout<<"-> getSectionAt "<< u << endl;
-// #endif
+#endif
 
   if( !__fctList2D )
     return __evalPt2D;

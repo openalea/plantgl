@@ -443,6 +443,14 @@ Texture2D::Texture2D(const ImageTexturePtr& image,
     __BaseColor(basecolor) {
 }
 
+Texture2D::Texture2D(const ImageTexturePtr& image,
+                     const Color4& basecolor):
+    Appearance(),
+    __Image(image),
+    __Transformation(DEFAULT_TRANSFORMATION),
+    __BaseColor(basecolor) {
+}
+
 
 Texture2D::Texture2D(const std::string& name,
                      const ImageTexturePtr& image,

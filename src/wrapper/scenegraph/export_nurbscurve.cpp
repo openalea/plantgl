@@ -41,6 +41,7 @@
 
 
 #include <plantgl/scenegraph/geometry/nurbscurve.h>
+#include <plantgl/scenegraph/geometry/interpol.h>
 #include <plantgl/tool/util_array2.h>
 #include <plantgl/algo/fitting/fit.h>
 
@@ -89,6 +90,11 @@ object nurbs_fit1(Point3ArrayPtr pts, int degree, int nbctrlpoints){
     }
 }
 
+NurbsCurvePtr nurbs_interpol(Point3ArrayPtr pts, const RealArrayPtr&  parametrization, int degree, bool closed = false){
+    Interpol itp (pts, parametrization, degree, closed);
+    return itp.get3DCurve();
+}
+
 void export_NurbsCurve()
 {
   class_<NurbsCurve, NurbsCurvePtr, bases<BezierCurve>, boost::noncopyable>
@@ -110,8 +116,10 @@ void export_NurbsCurve()
      .DEC_PTR_PROPERTY_WD(knotList,NurbsCurve,KnotList,RealArrayPtr)
      .def("setKnotListToDefault",&NurbsCurve::setKnotListToDefault)
      .def( "__repr__", nc_repr )
-     .def( "fit", nurbs_fit1, "fit(points [, int degree, int nbctrlpoints])", (bp::arg("points")=Point3ArrayPtr(),bp::arg("degree")=3,bp::arg("nbctrlpoints")=4) )
+     .def( "fit", nurbs_fit1, "fit(points [, int degree, int nbctrlpoints])", (bp::arg("points"),bp::arg("degree")=3,bp::arg("nbctrlpoints")=4) )
      .staticmethod("fit")
+     .def( "interpol", nurbs_interpol, "interpol(points [, parametrization, int degree, bool closed])", (bp::arg("points"),bp::arg("parametrization"),bp::arg("degree")=3,bp::arg("closed")=false) )
+     .staticmethod("interpol")
      .def( "getDerivativeAt", &NurbsCurve::getDerivativeAt, args("u","d") )
      .def( "getDerivativesAt", &NurbsCurve::getDerivativesAt, args("u") )
      .def( "findSpan", &findSpan, args("u","degree","knotList"),
@@ -223,6 +231,12 @@ object nurbs2_fit4(Polyline2D * pts,int degree, int nbCtrlPoint){
     return nurbs2_fit2(pts->getPointList(),degree,nbCtrlPoint);
 }
 
+NurbsCurve2DPtr nurbs2_interpol(Point2ArrayPtr pts, const RealArrayPtr&  parametrization, int degree, bool closed = false){
+    
+    Interpol itp (Point3ArrayPtr(new Point3Array(pts,0)), parametrization, degree,closed);
+    return itp.get2DCurve();
+}
+
 void export_NurbsCurve2D()
 {
    class_<NurbsCurve2D, NurbsCurve2DPtr, bases<BezierCurve2D>, boost::noncopyable>
@@ -242,6 +256,8 @@ void export_NurbsCurve2D()
      .def( "fit", nurbs2_fit3, args("points") )
      .def( "fit", nurbs2_fit4, args("points","degree","nbctrlpoints") )
      .staticmethod("fit")
+     .def( "interpol", nurbs2_interpol, "interpol(points, parametrization [, int degree, bool closed])", (bp::arg("points"),bp::arg("parametrization"),bp::arg("degree")=3,bp::arg("closed")=false) )
+     .staticmethod("interpol")
      .DEC_BT_NR_PROPERTY_WD(degree,NurbsCurve2D,Degree,uint_t)
      .DEC_PTR_PROPERTY_WD(knotList,NurbsCurve2D,KnotList,RealArrayPtr)
      .def("setKnotListToDefault",&NurbsCurve2D::setKnotListToDefault)

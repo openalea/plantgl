@@ -166,6 +166,9 @@ public:
 
   typedef bool (* DialogAborter)();
   inline void setAborter(DialogAborter aborter) { __aborter = aborter; }
+      
+  inline void setStandAlone(bool v) { __standalone = v;  }
+  inline bool isStandAlone() const { return __standalone; }
 
 signals:
   void closing();
@@ -307,6 +310,8 @@ private:
   ViewerDaemon * __service;
 
   bool __focusAtRefresh;
+
+  bool __standalone;
 
   DialogAborter __aborter;
 

@@ -511,6 +511,11 @@ class PGLMATH_API Vector3 : public Tuple3<real_t>
       The \c x and \c y  coordinates are divided by the \c z coordinate. */
   Vector2 project( ) const ;
 
+  /** Returns the Vector3 corresponding to the weighting of \e self.
+      The \c x, \c y  coordinates are multiplied by the \c z
+      coordinate. */
+  Vector3 ztoxy( ) const;
+  
   /// Normalizes \e self and returns the norm before.
   real_t normalize( );
 
@@ -534,6 +539,8 @@ class PGLMATH_API Vector3 : public Tuple3<real_t>
 
   /// Return the refraction direction of v.
   Vector3 refract(const Vector3& v, real_t eta) const;
+
+
 
   /// Returns the result of the multiplication of \e v by the scalar \e s.
   friend PGLMATH_API Vector3 operator*( const Vector3& v, const real_t& s );
@@ -797,6 +804,11 @@ class PGLMATH_API Vector4 : public Tuple4<real_t>
       The \c x, \c y and \c z  coordinates are divided by the \c w
       coordinate. */
   Vector3 project( ) const;
+
+  /** Returns the Vector3 corresponding to the weighting of \e self.
+      The \c x, \c y and \c z  coordinates are multiplied by the \c w
+      coordinate. */
+  Vector4 wtoxyz( ) const;
 
   /// Returns the result of the multiplication of \e v by the scalar \e s.
   friend PGLMATH_API Vector4 operator*( const Vector4& v, const real_t& s );

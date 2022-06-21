@@ -57,13 +57,8 @@ PGL_USING_NAMESPACE
 #define DEFAULT_MULTITHREAD true
 
 ZBufferEngine::ZBufferEngine(uint16_t imageWidth, uint16_t imageHeight, const Color3& backGroundColor, eRenderingStyle style):
-    ProjectionEngine(),
-    __imageWidth(imageWidth), 
-    __imageHeight(imageHeight), 
-    __lightPosition(0,0,1),  
-    __lightAmbient(255,255,255),
-    __lightDiffuse(255,255,255),
-    __lightSpecular(255,255,255),
+    ImageProjectionEngine(imageWidth,imageHeight),
+    __light(new Light()),  
     __alphathreshold(0.99),
     __depthBuffer(new RealArray2(uint_t(imageWidth), uint_t(imageHeight), REAL_MAX)),
     __frameBuffer(style != eDepthOnly ? new PglFrameBufferManager(imageWidth, imageHeight, style == eIdBased ? 4 : 3, backGroundColor) : NULL),
@@ -80,13 +75,8 @@ ZBufferEngine::ZBufferEngine(uint16_t imageWidth, uint16_t imageHeight, const Co
 
 
 ZBufferEngine::ZBufferEngine(uint16_t imageWidth, uint16_t imageHeight, const Color4& backGroundColor, eRenderingStyle style):
-    ProjectionEngine(),
-    __imageWidth(imageWidth), 
-    __imageHeight(imageHeight), 
-    __lightPosition(0,0,1),  
-    __lightAmbient(255,255,255),
-    __lightDiffuse(255,255,255),
-    __lightSpecular(255,255,255),
+    ImageProjectionEngine(imageWidth,imageHeight),
+    __light(new Light()),  
     __alphathreshold(0.99),
     __depthBuffer(new RealArray2(uint_t(imageWidth), uint_t(imageHeight), REAL_MAX)),
     __frameBuffer(style == eColorBased ? new PglFrameBufferManager(imageWidth, imageHeight, 3, backGroundColor) : NULL),
@@ -102,13 +92,8 @@ ZBufferEngine::ZBufferEngine(uint16_t imageWidth, uint16_t imageHeight, const Co
 }    
     
 ZBufferEngine::ZBufferEngine(uint16_t imageWidth, uint16_t imageHeight,uint32_t defaultid, Color4::eColor4Format conversionformat):
-    ProjectionEngine(),
-    __imageWidth(imageWidth), 
-    __imageHeight(imageHeight), 
-    __lightPosition(0,0,1),  
-    __lightAmbient(255,255,255),
-    __lightDiffuse(255,255,255),
-    __lightSpecular(255,255,255),
+    ImageProjectionEngine(imageWidth,imageHeight),
+    __light(new Light()),  
     __alphathreshold(0.99),
     __depthBuffer(new RealArray2(uint_t(imageWidth), uint_t(imageHeight), REAL_MAX)),
     __frameBuffer(), // will be initialized into IdBasedShader constructor
@@ -120,13 +105,8 @@ ZBufferEngine::ZBufferEngine(uint16_t imageWidth, uint16_t imageHeight,uint32_t 
 }    
 
 ZBufferEngine::ZBufferEngine(uint16_t imageWidth, uint16_t imageHeight) :
-	ProjectionEngine(),
-	__imageWidth(imageWidth),
-	__imageHeight(imageHeight),
-	__lightPosition(0, 0, 1),
-	__lightAmbient(255, 255, 255),
-	__lightDiffuse(255, 255, 255),
-	__lightSpecular(255, 255, 255),
+    ImageProjectionEngine(imageWidth,imageHeight),
+    __light(new Light()),  
 	__alphathreshold(0.99),
 	__depthBuffer(new RealArray2(uint_t(imageWidth), uint_t(imageHeight), REAL_MAX)),
 	__frameBuffer(),
@@ -189,7 +169,7 @@ bool ZBufferEngine::isTotallyTransparent(const real_t alpha) const
 }
 
 
-Color3 ZBufferEngine::getFrameBufferAt(uint32_t x, uint32_t y)
+Color3 ZBufferEngine::getFrameBufferAt(uint32_t x, uint32_t y) const
 {
     if(__frameBuffer) return __frameBuffer->getPixelAt(x,y);
     return Color3(0,0,0);
@@ -244,20 +224,12 @@ bool ZBufferEngine::renderRaster(uint32_t x, uint32_t y, real_t z, const Color4&
 
 void ZBufferEngine::setLight(const Vector3& lightPosition, const Color3& lightColor)
 {
-    // printf("Set Light Color : %u %u %u\n", lightColor.getRed(), lightColor.getGreen(), lightColor.getBlue());
-    __lightPosition = lightPosition;
-    __lightAmbient = lightColor;
-    __lightDiffuse = lightColor;
-    __lightSpecular = lightColor;
+    __light->set(lightPosition, lightColor);
 }
 
 void ZBufferEngine::setLight(const Vector3& lightPosition, const Color3& lightAmbient, const Color3& lightDiffuse, const Color3& lightSpecular)
 {
-    // printf("Set Light Ambient : %u %u %u\n", lightAmbient.getRed(), lightAmbient.getGreen(), lightAmbient.getBlue());
-    __lightPosition = lightPosition;
-    __lightAmbient = lightAmbient;
-    __lightDiffuse = lightDiffuse;
-    __lightSpecular = lightSpecular;
+    __light->set(lightPosition, lightAmbient, lightDiffuse, lightSpecular);
 }
 
 
@@ -293,10 +265,10 @@ void ZBufferEngine::iprocess(TriangleSetPtr triangles, AppearancePtr appearance,
         const Vector3& v2 = triangles->getFacePointAt(itidx,2);
 
         if(is_valid_ptr(shader)){
-            shader->init(appearance, triangles, itidx, id, _camera);
+            shader->init(appearance, triangles, itidx, id, _camera, __light);
         }
       
-        shader->initEnv(_camera);
+        // shader->initEnv(_camera, __light);
         renderShadedTriangle(v0, v1, v2, ccw, shader, _camera);
 
     }
@@ -395,6 +367,13 @@ void ZBufferEngine::rasterizeMT(const Index4& rect,
             }  \
         }
 
+void findorder(real_t * zs, int& firstpoint, int& secpoint, int& thirdpoint){
+    firstpoint = 0; secpoint = 1; thirdpoint = 2;
+    if (zs[firstpoint] < zs[secpoint]) std::swap(firstpoint, secpoint);
+    if (zs[secpoint] < zs[thirdpoint]) std::swap(thirdpoint, secpoint);
+    if (zs[firstpoint] < zs[secpoint]) std::swap(firstpoint, secpoint);
+}
+
 void ZBufferEngine::rasterize(int32_t x0, int32_t x1, int32_t y0, int32_t y1,
                               TOOLS(Vector3) v0Raster, TOOLS(Vector3) v1Raster, TOOLS(Vector3) v2Raster, bool ccw, 
                               const TriangleShaderPtr& shader, const ProjectionCameraPtr& camera)
@@ -422,15 +401,13 @@ void ZBufferEngine::rasterize(int32_t x0, int32_t x1, int32_t y0, int32_t y1,
         real_t w0 = 1/3.;
         PROCESS_FRAGMENT(x0, y0, z, w0, w0, w0)
     }
-    else if (x0 == x1){
+   /* else if (x0 == x1){
         real_t zs[3];
         zs[0] = z0; zs[1] = z1; zs[2] = z2; 
         uint32_t ys[3];
         ys[0] = v0Raster.y(); ys[1] = v1Raster.y(); ys[2] = v2Raster.y(); 
-
-        int firstpoint = (z0 >= z1? (z0 >= z2?0:2) : (z1 >= z2?1:2) );
-        int secpoint   = (z0 >= z1? (z0 >= z2?2:0) : (z1 >= z2?2:1) );
-        int thirdpoint = (z0 < z1? (z0 >= z2?2:0)  : (z1 >= z2?2:1) );
+        int firstpoint, secpoint, thirdpoint;
+        findorder(zs, firstpoint, secpoint, thirdpoint);
 
         real_t ws[3];
         ws[0] = 0; ws[1] = 0; ws[2] = 0;
@@ -477,9 +454,8 @@ void ZBufferEngine::rasterize(int32_t x0, int32_t x1, int32_t y0, int32_t y1,
         real_t xs[3];
         xs[0] = v0Raster.x(); xs[1] = v1Raster.x(); xs[2] = v2Raster.x(); 
 
-        int firstpoint = (z0 >= z1? (z0 >= z2?0:2) : (z1 >= z2?1:2) );
-        int secpoint   = (z0 >= z1? (z0 >= z2?2:0) : (z1 >= z2?2:1) );
-        int thirdpoint = (z0 < z1? (z0 >= z2?2:0)  : (z1 >= z2?2:1) );
+        int firstpoint, secpoint, thirdpoint;
+        findorder(zs, firstpoint, secpoint, thirdpoint);
 
         real_t ws[3];
         ws[0] = 0; ws[1] = 0; ws[2] = 0;
@@ -518,7 +494,7 @@ void ZBufferEngine::rasterize(int32_t x0, int32_t x1, int32_t y0, int32_t y1,
             }
         }
 
-    }
+    }*/
     else {
         for (int32_t y = y0; y <= y1; ++y) {
             for (int32_t x = x0; x <= x1; ++x) {
@@ -896,3 +872,75 @@ ImageMutexPtr ZBufferEngine::getImageMutex(uint16_t imageWidth, uint16_t imageHe
     }
    return IMAGEMUTEX;
 }
+
+
+real_t pixweigth(const Vector2& a, const Vector2& b, real_t raywidth) {
+    if (raywidth < 0.5) {
+        if (norm(a-b) < GEOM_EPSILON) {
+            return 1;
+        }
+        else return 0;
+    }
+    Vector2 c = abs(b-a);
+    Vector2 d(*c.getMax(),*c.getMin());
+    Vector2 dir(d);
+    real_t n = dir.normalize();
+    if (n <= GEOM_EPSILON) { return 1; }
+    real_t n2 = norm(Vector2(0.5,dir.y()*0.5/dir.x()));
+    if ((n+n2)<=raywidth) { return 1; }
+    else if ((n-n2)>=raywidth) { return 0; }
+    else {
+        return (raywidth-(n-n2))/(2*n2);
+    }
+}
+
+  std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)> ZBufferEngine::grabZBufferPoints(real_t jitter, real_t raywidth) const
+  {
+   uint32_t width = __imageWidth;
+   uint32_t height = __imageHeight;
+   raywidth = fabs(raywidth);
+   uint32_t raynbpix = ceil(raywidth);
+   
+   PGL(Point3ArrayPtr) points(new Point3Array());
+   PGL(Color4ArrayPtr) colors(new Color4Array());
+   Vector3 origin = __camera->position();
+   for (int32_t i = 0 ; i < width ; i++) {
+        for (int32_t j = 0 ; j < height ; j++) {
+            real_t cz = 0;
+            real_t count = 0;
+            for (int ii = pglMax<int32_t>(0,i-raynbpix); ii <= pglMin<int32_t>(width-1,i+raynbpix); ++ii){
+                for (int jj = pglMax<int32_t>(0,j-raynbpix); jj <= pglMin<int32_t>(height-1,j+raynbpix); ++jj){
+                    real_t lcz = __depthBuffer->getAt(ii,jj);
+                    if (__camera->isInZRange(lcz)) {
+                        real_t w = pixweigth(Vector2(i,j),Vector2(ii,jj),raywidth);
+                        if (w > GEOM_EPSILON) {
+                            count += w;
+                            cz += (lcz*w);
+                        }
+                    }
+                }
+            }
+            if (count > GEOM_EPSILON) {
+                cz /= count;
+                Vector3 point = __camera->rasterToWorld(Vector3(i,j,cz), width, height);
+                if (jitter > 0) {
+                    Vector3 nml = point-origin;
+                    real_t n = norm(nml);
+                    if(n > GEOM_EPSILON){
+                        nml /= n;
+                        point += nml*jitter*(-1+2.*(rand()/double(RAND_MAX)));
+                    }
+                }
+                if (point.isValid()) {
+                    points->push_back(point);
+                    colors->push_back(Color4(getFrameBufferAt(i,j),0));
+                }
+                else {
+                    printf("invalid points\n");
+                }
+            }
+        }
+    }
+
+    return  std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)> (points, colors);
+  }

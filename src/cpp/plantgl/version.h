@@ -40,7 +40,7 @@
 
 
 /*! \file version.h
-    \brief File for accessing to PGL version.
+    \brief File where PGL version is defined.
 */
 
 
@@ -48,9 +48,7 @@
 #define __plantgl_version_h__
 
 /// PGL Version macro
-#define PGL_VERSION 0x030200
-
-#define PGL_SVNREVISION "$Revision$"
+#define PGL_VERSION 0x030E01
 
 #endif
 

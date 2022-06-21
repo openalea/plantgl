@@ -189,6 +189,7 @@ public:
   static Color3 fromHSV(const Tuple3<real_t>& hsv);
 
   static Color3 interpolate(const Color3& c1, const Color3& c2, real_t t = 0.5);
+  static Color3 interpolate( const Color3& v0 ,  real_t w0, const Color3& v1 ,  real_t w1, const Color3& v2 ,  real_t w2 );
 
 
   Color3& operator*=(const Color3&);
@@ -210,6 +211,8 @@ public:
 
 
 SG_API Color3 operator*( const real_t& s, const Color3& v );
+
+
 
 /* ----------------------------------------------------------------------- */
 
@@ -352,6 +355,7 @@ public:
   static Color4 fromHSVA(const Tuple4<real_t>& hsv);
 
   static Color4 interpolate(const Color4& c1, const Color4& c2, real_t t = 0.5);
+  static Color4 interpolate( const Color4& v0 ,  real_t w0, const Color4& v1 , real_t w1, const Color4& v2 ,  real_t w2 );
 
 
   Color4& operator*=(const Color4&);
@@ -372,6 +376,7 @@ public:
 
 
 SG_API Color4 operator*( const real_t& s, const Color4& v );
+
 
 /* ----------------------------------------------------------------------- */
 

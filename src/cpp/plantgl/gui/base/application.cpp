@@ -68,13 +68,7 @@ using namespace std;
 
 #endif
 
-static bool MODE =
-#ifndef GEOM_DEBUG
-true
-#else
-false
-#endif
-;
+static bool MODE = false;
 
 
 static ViewerAppliInternal * VIEWER_APPLI = NULL;
@@ -239,11 +233,11 @@ ViewerApplication::grabZBufferPoints(){
 }
 
 std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)>
-ViewerApplication::grabZBufferPointsWithJitter(float jitter, int raywidth){
+ViewerApplication::grabZBufferPointsWithJitter(float jitter, int raywidth, bool mixcolor){
 
   initViewerAppli();
   if(VIEWER_APPLI)
-    return VIEWER_APPLI->grabZBufferPointsWithJitter(jitter,raywidth);
+    return VIEWER_APPLI->grabZBufferPointsWithJitter(jitter,raywidth, mixcolor);
   return std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)>();
 }
 

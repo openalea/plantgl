@@ -1,29 +1,30 @@
 name: plantgl-devel
 channels:
-    - local
-    - defaults
     - conda-forge
-    - openalea
+    - fredboudon
+    - msys2
+    - defaults
 dependencies:
     - python
-    - boost
-    - qt =5
+    - setuptools
+    - cmake
+    - numpy
+    - boost <=1.72
+    - qt
     - pyqt
-    - ipython
-    - qtconsole
-    - pyopengl
-    - pyqglviewer
-    - nose
-    - m2-bison [win]
-    - m2-flex [win]
+    - libpng
+    - zlib
     - qhull
+    - cgal-cpp
+    - gmp 
+    - mpfr 
     - eigen
     - ann
-    - menuinst
-    - patch
-    - setuptools
-    - openalea.deploy
-    - cmake >=3.12.0
-    - menuinst [win]
+    - ipython
+    - pyopengl
+    - pyqglviewer
+    - pytest
+    - m2-bison
+    - m2-flex 
     - scipy
-    - matplotlib
+    - matplotlib-base

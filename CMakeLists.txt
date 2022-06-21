@@ -80,13 +80,13 @@ set(Boost_USE_MULTITHREAD ON)
 set(Boost_USE_STATIC_LIBS OFF)
 set(BUILD_SHARED_LIBS ON)
 
-if (USE_CONDA)
-    set(boost_python python)
-    set(boost_numpy numpy)
-else()
-    set(boost_python python${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR})
-    set(boost_numpy numpy${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR})
-endif()
+# if (USE_CONDA)
+#    set(boost_python python)
+#    set(boost_numpy numpy)
+#else()
+set(boost_python python${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR})
+set(boost_numpy numpy${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR})
+#endif()
 
 find_package(ZLIB REQUIRED)
 find_package(OpenGL REQUIRED)
@@ -98,7 +98,17 @@ find_package(ANN)
 find_package(BISON)
 find_package(Eigen)
 find_package(FLEX)
+find_library(QHULL_LIBRARY NAMES "libqhullstatic.a" PATHS $ENV{CONDA_PREFIX}/lib)
 find_package(Qhull)
+
+#if (USE_CONDA_BUILD)
+#if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+#      find_library(LIBSELINUX_LIBRARY "selinux" PATHS $ENV{BUILD_PREFIX}/x86_64-conda-linux-gnu/sysroot/lib64 $ENV{BUILD_PREFIX}/x86_64-conda_cos6-linux-gnu/sysroot/lib64  REQUIRED)
+#      message(STATUS "Found libselinux: ${LIBSELINUX_LIBRARY}")
+#endif()
+#endif()
+
+
 
 find_package(Boost COMPONENTS thread system chrono ${boost_python} ${boost_numpy})
 

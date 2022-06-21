@@ -64,6 +64,7 @@ void module_algo()
     export_SurfComputer();
     export_AmapTranslator();
     export_MatrixComputer();
+    export_WireComputer();
 
     // custom algo
     export_Merge();

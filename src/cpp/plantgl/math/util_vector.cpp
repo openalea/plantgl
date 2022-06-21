@@ -640,6 +640,11 @@ Vector3::project( ) const {
   return Vector2(__X / __Z,__Y / __Z);
 }
 
+Vector3 Vector3::ztoxy( ) const {
+  return Vector3(__X * __Z, __Y * __Z, __Z);
+
+}
+
 int
 Vector3::getMaxAbsCoord() const
 {
@@ -1033,6 +1038,11 @@ Vector4 Vector4::normed( ) const {
 Vector3 Vector4::project( ) const {
   GEOM_ASSERT(fabs(__W) > GEOM_TOLERANCE);
   return Vector3(__X / __W, __Y / __W, __Z / __W);
+}
+
+Vector4 Vector4::wtoxyz( ) const {
+  return Vector4(__X * __W, __Y * __W, __Z * __W,  __W);
+
 }
 
 /*  --------------------------------------------------------------------- */

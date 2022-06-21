@@ -38,7 +38,7 @@
  *  ----------------------------------------------------------------------------
  */
 
-// #define GL_SILENCE_DEPRECATION
+#define GL_SILENCE_DEPRECATION
 
 #include <iomanip>
 
@@ -227,6 +227,9 @@ ViewGLFrame::ViewGLFrame( QWidget* parent, const char* name, ViewRendererGL * r)
   __fpscounter(0)
 {
     if(name)setObjectName(name);
+
+  setAttribute(Qt::WA_DeleteOnClose, false);
+
   /// Creation
   __camera = new ViewCameraGL(this,"Camera");
   __light = new ViewLightGL(__camera,this,"Light");
@@ -1126,7 +1129,7 @@ ViewGLFrame::grabZBufferPoints( )
 }
 
 std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)>
-ViewGLFrame::grabZBufferPointsWithJitter(float jitter, int raywidth )
+ViewGLFrame::grabZBufferPointsWithJitter(float jitter, int raywidth, bool mixcolor )
 {
     bool pbufactivation = true;
     if(!isRedrawEnabled()){
@@ -1140,7 +1143,7 @@ ViewGLFrame::grabZBufferPointsWithJitter(float jitter, int raywidth )
         }
         else update();
     }
-    std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)> res = ViewZBuffer::importglZBufferPointsWithJitter(jitter,raywidth);
+    std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)> res = ViewZBuffer::importglZBufferPointsWithJitter(jitter,raywidth, true, mixcolor);
     if(!pbufactivation) activatePBuffer(false);
     return res;
 }
@@ -1265,10 +1268,8 @@ ViewGLFrame::getProjectionPixelPerColor(double* pixelwidth)
         uchar_t green = *cvaluesiter; ++cvaluesiter;
         uchar_t blue =  *cvaluesiter; ++cvaluesiter;
         uchar_t alpha = 255-(*cvaluesiter); ++cvaluesiter;
-        uint_t id = (uint_t(alpha) << 24)+
-                    (uint_t(red) << 16)+
-                    (uint_t(green) << 8)+
-                     uint_t(blue);
+
+        uint_t id = Color4(red,green,blue,alpha).toUint();
         if(id != UINT32_MAX){
             pcount[id] += 1;
         }

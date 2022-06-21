@@ -51,6 +51,7 @@
 
 #include "printer.h"
 #include <plantgl/tool/rcobject.h>
+#include <plantgl/tool/bfstream.h>
 
 #include <plantgl/tool/util_hashmap.h>
 #include <plantgl/tool/util_types.h>
@@ -62,14 +63,16 @@
 PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
-class leifstream;
-class leofstream;
+class fistream;
+class fostream;
 
 
 class StatisticComputer;
 class Scene;
 typedef RCPtr<Scene> ScenePtr;
 
+class Transform4;
+typedef RCPtr<Transform4> Transform4Ptr;
 
 /* ----------------------------------------------------------------------- */
 
@@ -95,19 +98,19 @@ public:
   bool setStatistic(const StatisticComputer& a);
 
   /// print the token \e token  on \e stream. ex :  printToken(stream,Token(Reference));.
-  leofstream& printCurrentToken(leofstream& stream,std::string token);
+  fostream& printCurrentToken(fostream& stream,std::string token);
 
   /// read \e stream and return current token.
-  std::string readCurrentToken(leifstream& stream);
+  std::string readCurrentToken(fistream& stream);
 
   /// print all the token on \e stream.
-  leofstream& printAll(leofstream& stream);
+  fostream& printAll(fostream& stream);
 
   /// read token on \e stream. return if it works.
-  bool initTokens(leifstream& stream,std::ostream & output);
+  bool initTokens(fistream& stream,std::ostream & output);
 
   /// print the local Token.
-  friend CODEC_API leofstream& operator<<( leofstream& stream, TokenCode& c );
+  friend CODEC_API fostream& operator<<( fostream& stream, TokenCode& c );
 
   /// get the number of element of each class.
   std::vector<uint_t> getCounts();
@@ -124,7 +127,7 @@ public:
 
 };
 
-CODEC_API leofstream& operator<<( leofstream& stream, TokenCode& c );
+CODEC_API fostream& operator<<( fostream& stream, TokenCode& c );
 
 
 
@@ -146,7 +149,7 @@ public:
   static const float BINARY_FORMAT_VERSION;
 
   /** Constructs a Printer with the output streams \e outputStream. */
-  BinaryPrinter( leofstream& outputStream );
+  BinaryPrinter( std::ostream& outputStream, bool double_precision = true);
 
   /// Destructor
   virtual ~BinaryPrinter( );
@@ -284,6 +287,8 @@ public:
   /// Print the scene \e scene in the file \e filename in binary format.
   static bool print(ScenePtr scene,std::string filename,const char * comment = NULL);
 
+  static std::string tobinarystring(ScenePtr scene, bool double_precision = true, const char * comment = NULL);
+
 //private :
 
 
@@ -315,6 +320,18 @@ public:
   /// write a string value from stream
   void writeString(const std::string& var);
   inline void write(const std::string& var) { writeString(var); }
+
+  /// write a string value from stream
+  void writeGeometry(const GeometryPtr& var) { var->apply(*this); }
+  inline void write(const GeometryPtr& var) { writeGeometry(var); }
+
+  /// write a string value from stream
+  void writeCurve2D(const Curve2DPtr& var) { var->apply(*this); }
+  inline void write(const Curve2DPtr& var) { writeCurve2D(var); }
+
+  /// write a string value from stream
+  void writeTransform4(const Transform4Ptr& var) ;
+  inline void write(const Transform4Ptr& var) { writeTransform4(var); }
 
   /// write a file name value from stream
   void writeFile(const std::string& var);
@@ -369,11 +386,12 @@ protected:
   void printType(const std::string& _string);
 
   /// Binary output stream.
-  leofstream& __outputStream;
+  fostream __outputStream;
 
   /// The tokens codes.
   TokenCode __tokens;
 
+  bool __double_precision;
 };
 
 
