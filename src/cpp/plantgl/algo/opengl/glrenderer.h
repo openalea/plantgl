@@ -55,7 +55,7 @@
 
 /* ----------------------------------------------------------------------- */
 
-class QGLWidget;
+class QOpenGLWidget;
 
 /* ----------------------------------------------------------------------- */
 
@@ -83,7 +83,7 @@ public:
   /** Constructs a GLRenderer with the Discretizer \e discretizer. */
   GLRenderer( Discretizer& discretizer
 #ifndef PGL_WITHOUT_QT
-    , QGLWidget * glframe = NULL
+    , QOpenGLWidget * glframe = NULL
 #endif
     );
 
@@ -152,10 +152,10 @@ public:
 
 #ifndef PGL_WITHOUT_QT
   /// Set the gl frame in which the scene must be rendered
-  void setGLFrame(QGLWidget * frame) { __glframe = frame; }
+  void setGLFrame(QOpenGLWidget * frame) { __glframe = frame; }
 
   /// Get the gl frame in which the scene must be rendered
-  QGLWidget * getGLFrame() const { return __glframe; }
+  QOpenGLWidget * getGLFrame() const { return __glframe; }
 
   /// Set the gl frame in which the scene must be rendered
   bool setGLFrameFromId(WId);
@@ -316,7 +316,7 @@ protected:
   int __compil;
 
 #ifndef PGL_WITHOUT_QT
-  QGLWidget * __glframe;
+  QOpenGLWidget * __glframe;
 #endif
 
 private:

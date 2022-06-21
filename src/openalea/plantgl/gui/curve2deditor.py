@@ -6,7 +6,7 @@ from math import pow,log
 from openalea.plantgl.gui.qt import QtCore, QtGui, QtOpenGL
 from openalea.plantgl.gui.qt.QtCore import QEvent, QObject, QPoint, Qt, pyqtSignal, qWarning
 from openalea.plantgl.gui.qt.QtGui import QColor, QImage
-from openalea.plantgl.gui.qt.QtOpenGL import QGLWidget
+from openalea.plantgl.gui.qt.QtOpenGL import QOpenGLWidget
 from openalea.plantgl.gui.qt.QtWidgets import QFileDialog, QApplication
 
 class Curve2DConstraint:
@@ -290,7 +290,7 @@ class Curve2DEditor (QGLViewer):
             #qWarning("Image size set to " + str(newWidth) + "x" + str(newHeight) + " pixels")
             img = img.copy(0, 0, newWidth, newHeight)
 
-        glImg = QImage(QGLWidget.convertToGLFormat(img)) # flipped 32bit RGBA
+        glImg = QImage(QOpenGLWidget.convertToGLFormat(img)) # flipped 32bit RGBA
 
         # Bind the img texture...
         glTexImage2D(GL_TEXTURE_2D, 0, 4, glImg.width(), glImg.height(), 0,

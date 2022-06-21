@@ -91,7 +91,7 @@ public:
 
   /// Constructor.
   ViewRotCenterGL(ViewCameraGL *camera,
-          QGLWidget * parent=0,
+          QOpenGLWidget * parent=0,
           const char * name=0);
 
   /// Destructor.

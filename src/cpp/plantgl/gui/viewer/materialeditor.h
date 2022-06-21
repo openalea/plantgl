@@ -53,31 +53,26 @@
 #include "moduleeditor.h"
 
 #include <QtCore/qvariant.h>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
+#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
+  #include <QtWidgets>
+#else
     #include <QtWidgets/qwidget.h>
     #include <QtWidgets/qpushbutton.h>
     #include <QtWidgets/qslider.h>
-#else
-    #include <QtGui/qwidget.h>
-    #include <QtGui/qpushbutton.h>
-    #include <QtGui/qslider.h>
 #endif
-#include <QtOpenGL/qgl.h>
-class QVBoxLayout;
-class QHBoxLayout;
-class QGridLayout;
-class QLabel;
-class QLineEdit;
+#include <QtOpenGL>
+#include <QOpenGLWidget>
+#include <QWidget>
 
 /*----------------------------------------------------------------------------*/
 
-class VIEW_API ViewColorGL : public QGLWidget
+class VIEW_API ViewColorGL : public QOpenGLWidget
 {
     Q_OBJECT
 
 public:
 
-  ViewColorGL( QWidget * parent=0, const char * name=0, const QGLWidget * shareWidget = 0, Qt::WindowFlags f=0 );
+  ViewColorGL( QWidget * parent=0, const char * name=0, Qt::WindowFlags f=Qt::Widget );
   virtual ~ViewColorGL();
   void setAppearance(const PGL(AppearancePtr)& mat);
 
@@ -175,7 +170,7 @@ class VIEW_API MaterialEditor : public GeomModuleEditor
     Q_OBJECT
 
 public:
-    MaterialEditor( QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0 );
+    MaterialEditor( QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = Qt::Widget );
     ~MaterialEditor();
 
   /// Add a menu to the main menu bar when show.

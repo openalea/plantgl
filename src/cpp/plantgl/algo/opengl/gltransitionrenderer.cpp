@@ -69,7 +69,7 @@ PGL_USING_NAMESPACE
 
 GLTransitionRenderer::GLTransitionRenderer( Discretizer& discretizer,
 #ifndef PGL_CORE_WITHOUT_QT
-                                            QGLWidget * widget,
+                                            QOpenGLWidget * widget,
 #endif
                                             uint_t step ) :
   GLRenderer( discretizer

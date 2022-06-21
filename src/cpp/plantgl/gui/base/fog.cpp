@@ -55,7 +55,7 @@
     #include <QtGui/qlineedit.h>
     #include <QtGui/qcolordialog.h>
 #endif
-#include <QtOpenGL/qgl.h>
+#include <QOpenGLWidget>
 #include <plantgl/algo/opengl/util_appegl.h>
 #include "fog.h"
 #include "icons.h"
@@ -67,7 +67,7 @@
 /* ----------------------------------------------------------------------- */
 
 
-ViewFogGL::ViewFogGL(ViewCameraGL *camera,QGLWidget * parent, const char * name):
+ViewFogGL::ViewFogGL(ViewCameraGL *camera,QOpenGLWidget * parent, const char * name):
   ViewRelativeObjectGL(camera,parent,name),
   __enable(false),
   __mode(0),

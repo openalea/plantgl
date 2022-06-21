@@ -4,7 +4,7 @@ set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(BIN_DIR ${CMAKE_CURRENT_BINARY_DIR})
 
 if (BISON_FOUND AND FLEX_FOUND)
-    set(GENERATE_PARSER OM)
+    set(GENERATE_PARSER ON)
 endif()
 
 if (GENERATE_PARSER)
@@ -59,8 +59,8 @@ endif()
 
 target_link_libraries(pglalgo pgltool pglmath pglsg)
 
-if (QT5_FOUND)
-    target_link_libraries(pglalgo Qt5::Core Qt5::Widgets Qt5::OpenGL)
+if (Qt6_FOUND)
+    target_link_libraries(pglalgo Qt6::Core Qt6::Widgets Qt6::OpenGL Qt6::OpenGLWidgets)
 endif()
 
 if (CGAL_FOUND)

@@ -8,8 +8,8 @@ add_library(_pglgui SHARED ${SRC_FILES})
 
 target_link_libraries(_pglgui pglmath pglgui pglsg pgltool)
 
-if (QT5_FOUND)
-    target_link_libraries(_pglgui Qt5::Core Qt5::Widgets Qt5::OpenGL Qt5::Network)
+if (Qt6_FOUND)
+    target_link_libraries(_pglgui Qt6::Core Qt6::Widgets Qt6::OpenGL Qt6::Network)
 endif()
 
 pglwrapper_link_boost(_pglgui)

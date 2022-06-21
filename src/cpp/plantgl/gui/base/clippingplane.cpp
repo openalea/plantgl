@@ -50,7 +50,7 @@
     #include <QtGui/qlineedit.h>
     #include <QtGui/qpushbutton.h>
 #endif
-#include <QtOpenGL/qgl.h>
+#include <QOpenGLWidget>
 
 #include "clippingplane.h"
 #include "event.h"
@@ -67,7 +67,7 @@ static double DEFAULT_B[6] = { 0, 0, -1, 1, 0, 0 };
 static double DEFAULT_C[6] = { 0, 0, 0, 0, -1, 1 };
 static double DEFAULT_D[6] = { 0, 0, 0, 0, 0, 0 };
 
-ViewClippingPlaneGL::ViewClippingPlaneGL(QGLWidget * parent, const char * name):
+ViewClippingPlaneGL::ViewClippingPlaneGL(QOpenGLWidget * parent, const char * name):
   ViewObjectGL(parent,name)
 {
     memcpy(__enable,DEFAULT_PLANE_ACTIVATION,sizeof(__enable));

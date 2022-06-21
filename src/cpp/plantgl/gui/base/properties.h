@@ -90,7 +90,7 @@ public:
         bool config = false,
         const char* name = 0,
         bool modal = false,
-        Qt::WindowFlags fl = 0 );
+        Qt::WindowFlags fl = Qt::Widget );
 
   ~ViewProperties();
 

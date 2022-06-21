@@ -48,7 +48,8 @@
 
 #ifdef QT_THREAD_SUPPORT
 
-#include <QtCore/qmutex.h>
+#include <QMutex>
+#include <QMutexLocker>
 
 template <class T>
 class ThreadedData {
@@ -58,8 +59,6 @@ public:
   typedef T data_type;
 
   typedef QMutex Lock;
-  typedef QMutexLocker ReadLocker;
-  typedef QMutexLocker WriteLocker;
 
   ThreadedData(data_type * val):
       __val(val){
@@ -67,7 +66,7 @@ public:
 
   inline void deleteData()
   {
-    WriteLocker l(&lock);
+    QMutexLocker l(&lock);
     if (__val != NULL) delete __val;
     __val = NULL;
   }
@@ -78,27 +77,27 @@ public:
   }
 
   inline void set(data_type * val) {
-    ReadLocker l(&lock);
+    QMutexLocker l(&lock);
     __val = val;
   }
 
   inline operator const data_type * () { return getConst(); }
 
   inline data_type * get( ) {
-    ReadLocker l(&lock);
+    QMutexLocker l(&lock);
     data_type * val = __val;
     return val;
   }
 
   inline const data_type * getConst( ) {
-    ReadLocker l(&lock);
+    QMutexLocker l(&lock);
     data_type * val = __val;
     return val;
   }
 
 private:
     ThreadedData(ThreadedData<T>& copy): __val(copy.get()){};
-    ThreadedData<T>& operator=(ThreadedData<T>& copy){ WriteLocker l(&lock); __val = copy.get(); }
+    ThreadedData<T>& operator=(ThreadedData<T>& copy){ QMutexLocker l(&lock); __val = copy.get(); }
 
   data_type * __val;
   Lock lock;

@@ -7,13 +7,13 @@ import os
 from openalea.plantgl.gui.qt.QtCore import QObject, QPoint, QTimer, Qt, pyqtSignal
 from openalea.plantgl.gui.qt.QtGui import QCursor, QImageReader, QPixmap, QGuiApplication
 from openalea.plantgl.gui.qt.QtWidgets import QApplication, QDialog, QDockWidget, QFileDialog, QMenu, QMessageBox, QScrollArea, QSplashScreen, QVBoxLayout, QWidget
-from openalea.plantgl.gui.qt.QtOpenGL import QGLWidget 
+from openalea.plantgl.gui.qt.QtOpenGL import QOpenGLWidget 
 
-class MaterialPanelView (QGLWidget):
+class MaterialPanelView (QOpenGLWidget):
     valueChanged = pyqtSignal()
 
     def __init__(self,parent):
-        QGLWidget.__init__(self,parent)
+        QOpenGLWidget.__init__(self,parent)
         self.unitsize = 30
         self.sphere = None
         self.spherelist = None
@@ -386,11 +386,11 @@ class MaterialPanelView (QGLWidget):
                 self.preview.hide()
             if self.previewtrigger.isActive():
                 self.previewtrigger.stop()
-        QGLWidget.leaveEvent(self,event)
+        QOpenGLWidget.leaveEvent(self,event)
     def enterEvent(self,event):
         self.mousepos = None
         self.setMouseTracking(True)
-        QGLWidget.enterEvent(self,event)
+        QOpenGLWidget.enterEvent(self,event)
     def showMessage(self,msg,timeout):
         if hasattr(self,'statusBar'):
             self.statusBar.showMessage(msg,timeout)

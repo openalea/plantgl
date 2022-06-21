@@ -6,8 +6,8 @@ add_library(pgltool SHARED ${SRC_FILES})
 
 # --- Linked Libraries
 
-if (QT5_FOUND)
-    target_link_libraries(pgltool Qt5::Core)
+if (Qt6_FOUND)
+    target_link_libraries(pgltool Qt6::Core)
 endif()
 
 if (NOT MSVC)

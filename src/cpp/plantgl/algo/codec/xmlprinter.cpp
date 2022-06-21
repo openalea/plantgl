@@ -42,9 +42,9 @@
 
 
 #include "xmlprinter.h"
-#ifndef PGL_CORE_WITHOUT_QT
-#include <QtCore/qtextstream.h>
-#endif
+//#ifndef PGL_CORE_WITHOUT_QT
+//#include <QtCore/qtextstream.h>
+//#endif
 
 #include <plantgl/pgl_scene.h>
 #include <plantgl/pgl_appearance.h>
@@ -81,7 +81,7 @@ using namespace std;
   __stream << val.c_str(); \
 
 #define GEOM_XMLPRINT_GEOMETRY(val,finish) \
-  __stream << endl << __indent; val->apply(*this); \
+  __stream << Qt::endl << __indent; val->apply(*this); \
 
 
 #define GEOM_XMLPRINT_INT(val) \
@@ -103,14 +103,14 @@ using namespace std;
   __stream << val.x() << ' ' << val.y() << ' ' << val.z() << ' ' << val.w(); \
 
 #define GEOM_XMLPRINT_FIELD(name,val,type) { \
-    __stream << endl << __indent << name << "=\""; \
+    __stream << Qt::endl << __indent << name << "=\""; \
     GEOM_XMLPRINT_##type(val); \
     __stream << "\" "; \
   };
 
 #define GEOM_XMLPRINT_FIELD_GEOMETRY(name,val,type,finish) { \
         if(!finish)GEOM_XMLPRINT_FINISHOBJ(finish); \
-    __stream << endl << __indent << "<" << name << " >"; \
+    __stream << Qt::endl << __indent << "<" << name << " >"; \
         GEOM_XMLPRINT_INCREMENT_INDENT; \
     GEOM_XMLPRINT_GEOMETRY(val); \
         GEOM_XMLPRINT_DECREMENT_INDENT; \
@@ -118,7 +118,7 @@ using namespace std;
   };
 
 #define GEOM_XMLPRINT_FIELD_ARRAY(name,val,type) { \
-    __stream << endl << __indent << name << "=\""; \
+    __stream << Qt::endl << __indent << name << "=\""; \
     GEOM_XMLPRINT_ARRAY(val,type); \
     __stream << "\" "; \
   };
@@ -138,7 +138,7 @@ using namespace std;
    } \
  };
 
-//      if(_i != 0 && _i % 3 == 0 )__stream << endl << __indent;
+//      if(_i != 0 && _i % 3 == 0 )__stream << Qt::endl << __indent;
 
 
 #define GEOM_XMLPRINT_INDEX3(val) \
@@ -156,7 +156,7 @@ using namespace std;
   GEOM_ASSERT( obj ); \
   if (obj->isNamed()) { \
     if (! __cache.insert(obj->getObjectId()).second) { \
-      __stream  <<  __indent << "<" << type << " Name=\"" << obj->getName().c_str() << "\" > " << endl; \
+      __stream  <<  __indent << "<" << type << " Name=\"" << obj->getName().c_str() << "\" > " << Qt::endl; \
       return true; \
     } \
     else { \
@@ -167,7 +167,7 @@ using namespace std;
   bool finish = false; \
 
 #define GEOM_XMLPRINT_FINISHOBJ(finish) \
-        __stream << " />" << endl; \
+        __stream << " />" << Qt::endl; \
         finish = true; \
 
 
@@ -176,7 +176,7 @@ using namespace std;
         if(!finish){ \
                 GEOM_XMLPRINT_FINISHOBJ(finish); \
         } \
-        else { __stream  << endl << __indent << "</" << type << ">" << endl ;} \
+        else { __stream  << Qt::endl << __indent << "</" << type << ">" << Qt::endl ;} \
 
 /* ----------------------------------------------------------------------- */
 
@@ -192,10 +192,10 @@ XMLPrinter::~XMLPrinter()
 
 
 bool XMLPrinter::header(const char * comment){
-  __stream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << endl;
-  __stream << "<!-- File create with GEOM.-->" << endl;
-  if(comment)__stream << "<!--" << comment << "-->" << endl;
-  __stream << endl;
+  __stream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << Qt::endl;
+  __stream << "<!-- File create with GEOM.-->" << Qt::endl;
+  if(comment)__stream << "<!--" << comment << "-->" << Qt::endl;
+  __stream << Qt::endl;
   return true;
 }
 
@@ -261,17 +261,17 @@ XMLPrinter::process( Material * material )
 /*
   if (material->isNamed()) {
     if (! __cache.insert(material->getObjectId()).second) {
-      __stream  <<  __indent << "<Appearance USE " << material->getName().c_str() << " > " << endl;
+      __stream  <<  __indent << "<Appearance USE " << material->getName().c_str() << " > " << Qt::endl;
       return true;
     }
     else {
-      __stream  <<  __indent << "<Appearance DEF " << material->getName().c_str() << " >  " << endl;
+      __stream  <<  __indent << "<Appearance DEF " << material->getName().c_str() << " >  " << Qt::endl;
       GEOM_XMLPRINT_INCREMENT_INDENT;
-      __stream  <<  __indent << "<material>" << endl;
+      __stream  <<  __indent << "<material>" << Qt::endl;
       GEOM_XMLPRINT_INCREMENT_INDENT;
     }
   }
-  __stream  <<  __indent << "<Material " << endl;
+  __stream  <<  __indent << "<Material " << Qt::endl;
   GEOM_XMLPRINT_INCREMENT_INDENT;
   GEOM_XMLPRINT_BEG
 
@@ -280,25 +280,25 @@ XMLPrinter::process( Material * material )
            uchar(material->getDiffuse()*material->getAmbient().getBlue()));
   __stream  <<__indent;
   GEOM_XMLPRINT_FIELD("diffuseColor",a,COLOR3);
-  __stream  << endl << __indent;
+  __stream  << Qt::endl << __indent;
   real_t b = 0.0;
   if(fabs(material->getDiffuse())>GEOM_EPSILON) b = (real_t)1.0 / (real_t)material->getDiffuse();
   GEOM_XMLPRINT_FIELD("ambientIntensity",b,REAL);
-  __stream  << endl << __indent;
+  __stream  << Qt::endl << __indent;
   GEOM_XMLPRINT_FIELD("specularColor",material->getSpecular(),COLOR3);
-  __stream  << endl << __indent;
+  __stream  << Qt::endl << __indent;
   GEOM_XMLPRINT_FIELD("emissiveColor",material->getEmission(),COLOR3);
-  __stream  << endl << __indent;
+  __stream  << Qt::endl << __indent;
   GEOM_XMLPRINT_FIELD("shininess",material->getShininess(),REAL);
-  __stream  << endl << __indent;
+  __stream  << Qt::endl << __indent;
   GEOM_XMLPRINT_FIELD("transparency",material->getTransparency(),REAL);
-  __stream  << "/>" << endl;
+  __stream  << "/>" << Qt::endl;
   GEOM_XMLPRINT_DECREMENT_INDENT;
   if (material->isNamed()) {
     GEOM_XMLPRINT_DECREMENT_INDENT;
-    __stream << __indent << "</material>" << endl;
+    __stream << __indent << "</material>" << Qt::endl;
     GEOM_XMLPRINT_DECREMENT_INDENT;
-    __stream << __indent << "</Appearance>  " << endl;
+    __stream << __indent << "</Appearance>  " << Qt::endl;
   }
   return true;*/
 }

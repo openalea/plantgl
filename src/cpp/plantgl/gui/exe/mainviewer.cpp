@@ -47,7 +47,7 @@
 #else
     #include <QtGui/qapplication.h>
 #endif
-#include <QtOpenGL/qgl.h>
+#include <QOpenGLWidget>
 #include <QtGui/qpixmap.h>
 
 #include "../viewer/pglviewer.h"
@@ -57,10 +57,10 @@ int main( int argc, char **argv )
 {
 
   QApplication a( argc, argv );
-  if ( !QGLFormat::hasOpenGL() ) {
-    qWarning( "This system has no OpenGL support. Exiting." );
-    return -1;
-  }
+  //if ( !QGLFormat::hasOpenGL() ) {
+  //  qWarning( "This system has no OpenGL support. Exiting." );
+  //  return -1;
+  //}
 
   // if(!ViewClientObj().request(argc, argv)){
     PGLViewer m_viewer(argc, argv) ;

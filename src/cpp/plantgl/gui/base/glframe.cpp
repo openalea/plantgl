@@ -58,7 +58,13 @@
 #include <QtGui/qcursor.h>
 
 #include <QtGlobal>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
+#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
+#include <QOpenGLContext>
+#include <QSurfaceFormat>
+#include <QtWidgets>
+#include <QOpenGLFramebufferObject>
+
+#else
     #include <QtWidgets/qmenu.h>
     #include <QtWidgets/qcolordialog.h>
     #include <QtWidgets/qslider.h>
@@ -80,28 +86,9 @@
     #include <QtPrintSupport/qprintdialog.h>
 
     #include <QtCore/QMimeData>
-#else
-    #include <QtGui/qcolordialog.h>
-    #include <QtGui/qslider.h>
-    #include <QtGui/qmessagebox.h>
-    #include <QtGui/qtoolbutton.h>
-    #include <QtGui/qtoolbar.h>
-    #include <QtGui/qmenu.h>
-    #include <QtGui/qapplication.h>
-    #include <QtGui/qstatusbar.h>
-    #include <QtGui/qprogressbar.h>
-    #include <QtGui/qlabel.h>
-    #include <QtGui/qprintdialog.h>
-    #include <QtGui/qwhatsthis.h>
-    #include <QtGui/qbuttongroup.h>
-    #include <QtGui/qradiobutton.h>
-    #include <QtGui/qtabwidget.h>
-    #include <QtGui/qmainwindow.h>
-
-    #include <QtGui/qprinter.h>
 #endif
 
-#include <QtOpenGL/QGLPixelBuffer>
+#include <QtOpenGL>
 
 #include "glframe.h"
 #include "icons.h"
@@ -179,7 +166,7 @@ static PFNGLBEGINQUERYARBPROC          glBeginQueryARB = NULL;
 static PFNGLENDQUERYARBPROC            glEndQueryARB = NULL;
 static PFNGLGETQUERYOBJECTIVARBPROC    glGetQueryObjectivARB = NULL;
 
-bool hasGLExtension(char * extname){
+bool hasGLExtension(const QString& extname){
    QString extensions = (char *)glGetString(GL_EXTENSIONS);
    return extensions.contains(extname);
 }
@@ -193,15 +180,15 @@ bool glInitOcclusionQuery(){
         hasOcclusionQuery = hasGLExtension("GL_ARB_occlusion_query")  ;
         if(!hasOcclusionQuery)printf("OcclusionQuery not supported\n");
         else{
-            glGenQueriesARB = (PFNGLGENQUERIESARBPROC)QGLContext::currentContext()->getProcAddress("glGenQueriesARB");
+            glGenQueriesARB = (PFNGLGENQUERIESARBPROC)QOpenGLContext::currentContext()->getProcAddress("glGenQueriesARB");
             assert(glGenQueriesARB);
-            glDeleteQueriesARB = (PFNGLDELETEQUERIESARBPROC)QGLContext::currentContext()->getProcAddress("glDeleteQueriesARB");
+            glDeleteQueriesARB = (PFNGLDELETEQUERIESARBPROC)QOpenGLContext::currentContext()->getProcAddress("glDeleteQueriesARB");
             assert(glDeleteQueriesARB);
-            glBeginQueryARB = (PFNGLBEGINQUERYARBPROC)QGLContext::currentContext()->getProcAddress("glBeginQueryARB");
+            glBeginQueryARB = (PFNGLBEGINQUERYARBPROC)QOpenGLContext::currentContext()->getProcAddress("glBeginQueryARB");
             assert(glBeginQueryARB);
-            glEndQueryARB = (PFNGLENDQUERYARBPROC)QGLContext::currentContext()->getProcAddress("glEndQueryARB");
+            glEndQueryARB = (PFNGLENDQUERYARBPROC)QOpenGLContext::currentContext()->getProcAddress("glEndQueryARB");
             assert(glEndQueryARB);
-            glGetQueryObjectivARB = (PFNGLGETQUERYOBJECTIVARBPROC)QGLContext::currentContext()->getProcAddress("glGetQueryObjectivARB");
+            glGetQueryObjectivARB = (PFNGLGETQUERYOBJECTIVARBPROC)QOpenGLContext::currentContext()->getProcAddress("glGetQueryObjectivARB");
             assert(glGetQueryObjectivARB);
         }
 #endif
@@ -214,8 +201,8 @@ bool glInitOcclusionQuery(){
 /*  ------------------------------------------------------------------------ */
 
 /// Create a ViewGLFrame widget
-ViewGLFrame::ViewGLFrame( QWidget* parent, const char* name, ViewRendererGL * r, const QGLWidget * shareWidget) :
-  QGLWidget(  QGLFormat( QGL::AlphaChannel ), parent, shareWidget ),
+ViewGLFrame::ViewGLFrame( QWidget* parent, const char* name, ViewRendererGL * r) :
+  QOpenGLWidget(parent),
   __camera(0),
   __light(0),
   __grid(0),
@@ -288,8 +275,8 @@ ViewGLFrame::ViewGLFrame( QWidget* parent, const char* name, ViewRendererGL * r,
 /// Release allocated resources
 ViewGLFrame::~ViewGLFrame() {
 
-  if(__scene)delete __scene;
-  if(__pixelbuffer) delete __pixelbuffer;
+  delete __scene;
+  delete __pixelbuffer;
 
 #ifdef  PGL_DEBUG
     cout << "GL Frame deleted" << endl;
@@ -376,7 +363,7 @@ ViewGLFrame::setSceneRenderer(ViewRendererGL * s)
   emit rendererChanged();
 }
 
-QGLPixelBuffer * ViewGLFrame::getPBuffer() { return __pixelbuffer; }
+QOpenGLFramebufferObject * ViewGLFrame::getPBuffer() { return __pixelbuffer; }
 
 void
 ViewGLFrame::rendererStatus() {
@@ -481,8 +468,8 @@ ViewGLFrame::setBackground()
   if(m.isValid()){
     __BgColor=m;
   __fog->setColor(m);
-    qglClearColor( __BgColor );
-    updateGL();
+  glClearColor(__BgColor.redF(), __BgColor.greenF(), __BgColor.blueF(), __BgColor.alphaF());
+    update();
   }
 }
 
@@ -492,7 +479,7 @@ ViewGLFrame::setBackGroundColor(const QColor& color)
   __BgColor=color;
   __fog->setColor(color);
   if(isVisible()){
-      qglClearColor(__BgColor);
+        glClearColor(__BgColor.redF(), __BgColor.greenF(), __BgColor.blueF(), __BgColor.alphaF());
       redrawGL();
       status(QString(tr("Set Background Color to")+" (%1,%2,%3)").arg(color.red()).arg(color.green()).arg(color.blue()),2000);
   }
@@ -607,15 +594,15 @@ ViewGLFrame::clearSelection()
 }
 
 void ViewGLFrame::activatePBuffer(bool b){
-    static bool PBufferSupport = QGLPixelBuffer::hasOpenGLPbuffers();
+    static bool PBufferSupport = true; // QGLPixelBuffer::hasOpenGLPbuffers();
     if(PBufferSupport && __usePBuffer) __pBufferActivated = b;
     // printf("activated pixel buffer : %i\n",__pBufferActivated);
     if(__pBufferActivated) {
       if (!__pixelbuffer || __pixelbuffer->size() != size()){
           if(__pixelbuffer) delete __pixelbuffer;
-          __pixelbuffer = new QGLPixelBuffer(size(),format(),this);
+          __pixelbuffer = new QOpenGLFramebufferObject(size()); // ,format()); //TOCHECK which format ?
       }
-      __pixelbuffer->makeCurrent();
+      //__pixelbuffer->makeCurrent(); ?? TOCHECK ->bind() ?? 
       reinitializeGL();
    }
 }
@@ -627,13 +614,14 @@ void ViewGLFrame::activateRedraw(bool b) { __redrawEnabled = b; }
 
 void ViewGLFrame::makeItCurrent()
 {
-    if(__pBufferActivated)__pixelbuffer->makeCurrent();
-    else makeCurrent();
+    //if(__pBufferActivated)__pixelbuffer->makeCurrent(); //TO CHECK
+    //else 
+    makeCurrent();
 }
 
 void ViewGLFrame::redrawGL()
 {
-    if (__redrawEnabled) updateGL();
+    if (__redrawEnabled) update();
 }
 
 void ViewGLFrame::paintPixelBuffer(){
@@ -662,7 +650,8 @@ void ViewGLFrame::initializeGL(){
 void ViewGLFrame::reinitializeGL()
 {
   // clears the current GL context
-  qglClearColor( __BgColor );
+  glClearColor(__BgColor.redF(), __BgColor.greenF(), __BgColor.blueF(), __BgColor.alphaF());
+
 
   /*
     Light settings
@@ -724,15 +713,15 @@ void ViewGLFrame::paintGL()
 #ifndef Q_OS_MAC
   if (width() == 0 || height() == 0) { return; }
 #endif
-  if(__pBufferActivated) {
+  /*if(__pBufferActivated) {
       if (!__pixelbuffer || __pixelbuffer->size() != size()){
           if(__pixelbuffer) delete __pixelbuffer;
-          __pixelbuffer = new QGLPixelBuffer(size(),format(),this);
+          __pixelbuffer = new QOpenGLFramebufferObject(size(),format(),this);
         __pixelbuffer->makeCurrent();
         reinitializeGL();
       }
   }
-
+*/
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   GL_SIMPLECHECK_ERROR;
   __camera->paintGL();
@@ -791,7 +780,7 @@ void ViewGLFrame::paintGL()
           QStringList msglines = __message.split('\n');
           int nblines = 0;
           for(QStringList::const_iterator itline = msglines.begin(); itline != msglines.end(); ++itline){
-              int size = fm.width(*itline);
+              int size = fm.horizontalAdvance(*itline);
               nblines += 1+(size/deltaw);
           }
           int fmheigth = fm.height();
@@ -818,22 +807,32 @@ void ViewGLFrame::paintGL()
           int hmargin = (maxh-minh-htext)/2;
           int currenth = maxh - hmargin - fm.ascent();
           for(QStringList::const_iterator itline = msglines.begin(); itline != msglines.end(); ++itline){
-              int size = fm.width(*itline);
+              int size = fm.horizontalAdvance(*itline);
               int cw = 0;
               int nbsubline = 1 + size/deltaw;
               int len = itline->size();
               if (nbsubline == 1){
-                renderText(w * 0.55, currenth,1, *itline);
+                QPainter painter(this);
+                painter.setPen(Qt::black);
+                painter.setFont(font());
+                painter.drawText( int(w * 0.55), currenth, *itline);
+                painter.end();
                 currenth -= fmheigth;
               }
               else {
+                  QPainter painter(this);
+                  painter.setPen(Qt::black);
+                  painter.setFont(font());
                   for (int subline = 0; subline < nbsubline; ++subline){
                       int lastw = cw + deltaw / avgWidth;
                       if (lastw > len) lastw = len;
-                      renderText(w * 0.55, currenth,1, QString( itline->begin()+cw, lastw-cw));
+                      painter.drawText( int(w * 0.55), currenth, QString( itline->begin()+cw, lastw-cw));
+                      //renderText(w * 0.55, currenth,1, QString( itline->begin()+cw, lastw-cw));
                       currenth -= fmheigth;
                       cw = lastw;
                   }
+                  painter.end();
+
               }
           }
           __light->switchOn();
@@ -850,11 +849,14 @@ void ViewGLFrame::paintGL()
           }
           if (__fps > 0) {
               __light->switchOff();
-              qglColor(QColor(0,0,0));
               QString text("FPS : %1");
               if (__fps > 10 ) text = text.arg(int(__fps));
               else text = text.arg(double(__fps),0,'f',2);
-              renderText(20, 20, text);
+              QPainter painter(this);
+              painter.setPen(QColor(0,0,0));
+              painter.setFont(font());
+              painter.drawText( 20, 20, text);
+              painter.end();
               __light->switchOn();
           }
       }
@@ -1089,7 +1091,7 @@ ViewGLFrame::grabZBuffer( bool all_values  )
             }
             else  makeItCurrent();
         }
-        else updateGL();
+        else update();
     }
     ViewZBuffer * res = ViewZBuffer::importglZBuffer(all_values);
     if(!pbufactivation) activatePBuffer(false);
@@ -1116,7 +1118,7 @@ ViewGLFrame::grabZBufferPoints( )
             }
             else  makeItCurrent();
         }
-        else updateGL();
+        else update();
     }
     std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)> res = ViewZBuffer::importglZBufferPoints();
     if(!pbufactivation) activatePBuffer(false);
@@ -1136,7 +1138,7 @@ ViewGLFrame::grabZBufferPointsWithJitter(float jitter, int raywidth )
             }
             else  makeItCurrent();
         }
-        else updateGL();
+        else update();
     }
     std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)> res = ViewZBuffer::importglZBufferPointsWithJitter(jitter,raywidth);
     if(!pbufactivation) activatePBuffer(false);
@@ -1164,7 +1166,7 @@ int ViewGLFrame::getProjectionPixel(){
     __grid->setState(0);
     bool mode = __camera->getProjectionMode();
     if(mode)__camera->setOrthographicMode();
-    // else if(gridstate != 0)updateGL();
+    // else if(gridstate != 0)update();
 #ifdef WITH_OCCLUSION_QUERY
     if(__useOcclusionQuery && glInitOcclusionQuery()){
         makeItCurrent();
@@ -1200,7 +1202,7 @@ int ViewGLFrame::getProjectionPixel(){
 #endif
     __grid->setState(gridstate);
     if(mode)__camera->setProjectionMode(mode);
-    // else if(gridstate != 0)updateGL();
+    // else if(gridstate != 0)update();
     return projpix;
 }
 
@@ -1332,7 +1334,7 @@ void ViewGLFrame::mousePressEvent( QMouseEvent* event)
               QBitmap mask= QBitmap::fromData(QSize(32,32),ViewerIcon::ROTATE_MASK,QImage::Format_MonoLSB);
               setCursor(QCursor(bm,mask));
           }
-          else if (event->button()==Qt::MidButton)
+          else if (event->button()==Qt::MiddleButton)
           {
               QBitmap bm= QBitmap::fromData(QSize(32,32),ViewerIcon::ZOOM_BITS,QImage::Format_MonoLSB);
               QBitmap mask= QBitmap::fromData(QSize(32,32),ViewerIcon::ZOOM_MASK,QImage::Format_MonoLSB);
@@ -1344,7 +1346,7 @@ void ViewGLFrame::mousePressEvent( QMouseEvent* event)
           }
       }
   }
-  updateGL();
+  update();
 }
 
 void ViewGLFrame::mouseReleaseEvent( QMouseEvent* event)
@@ -1363,7 +1365,7 @@ void ViewGLFrame::mouseReleaseEvent( QMouseEvent* event)
   }
   else setCursor(Qt::ArrowCursor);
 
-  updateGL();
+  update();
 }
 
 void ViewGLFrame::mouseMoveEvent( QMouseEvent* event)
@@ -1395,13 +1397,13 @@ void ViewGLFrame::mouseMoveEvent( QMouseEvent* event)
           {
             __scene->move(__mouse-mouse);
           }
-        else if(event->buttons() & Qt::MidButton)
+        else if(event->buttons() & Qt::MiddleButton)
           {
             __scene->zoom(__mouse-mouse);
           }
       }
       __mouse = mouse;
-      updateGL();
+      update();
     }
   else if(event->modifiers() & Qt::AltModifier)
     {
@@ -1413,12 +1415,12 @@ void ViewGLFrame::mouseMoveEvent( QMouseEvent* event)
         {
           __light->move(__mouse-mouse);
         }
-      else if(event->buttons() & Qt::MidButton)
+      else if(event->buttons() & Qt::MiddleButton)
     {
       __light->zoom(__mouse-mouse);
     }
     __mouse = mouse;
-    updateGL();
+    update();
     }
   else if(event->modifiers() & Qt::ControlModifier)
   {
@@ -1430,12 +1432,12 @@ void ViewGLFrame::mouseMoveEvent( QMouseEvent* event)
       {
         __camera->zoom(__mouse-mouse);
       }
-      else if(event->buttons() & Qt::MidButton)
+      else if(event->buttons() & Qt::MiddleButton)
       {
         __camera->zoom(__mouse-mouse);
       }
       __mouse = mouse;
-      updateGL();
+      update();
   }
   else {
       if(event->buttons() & Qt::LeftButton)
@@ -1446,12 +1448,12 @@ void ViewGLFrame::mouseMoveEvent( QMouseEvent* event)
       {
         __camera->move(__mouse-mouse);
     }
-    else if(event->buttons() & Qt::MidButton)
+    else if(event->buttons() & Qt::MiddleButton)
       {
         __camera->zoom(__mouse-mouse);
       }
     __mouse = mouse;
-    updateGL();
+    update();
   }
 }
 
@@ -1487,21 +1489,21 @@ void ViewGLFrame::dropEvent(QDropEvent* myevent){
 void
 ViewGLFrame::wheelEvent ( QWheelEvent * e){
   if(__mode == Selection || e->modifiers() & Qt::ShiftModifier){
-      __scene->zooming(0,e->delta()/WHEEL_DELTA);
+      __scene->zooming(0,e->angleDelta().y()/WHEEL_DELTA);
       // __scene->rotating(0,e->delta()*20/WHEEL_DELTA);
       e->accept();
   }
   else if(e->modifiers() & Qt::AltModifier){
-      __light->zooming(0,e->delta()/WHEEL_DELTA);
+      __light->zooming(0,e->angleDelta().y()/WHEEL_DELTA);
       // __light->rotating(0,e->delta()*20/WHEEL_DELTA);
       e->accept();
   }
   else {
-      __camera->zooming(0,e->delta()/WHEEL_DELTA);
+      __camera->zooming(0,e->angleDelta().y()/WHEEL_DELTA);
       // __camera->rotating(0,e->delta()*20/WHEEL_DELTA);
       e->accept();
   }
-  updateGL();
+  update();
 }
 
 void
@@ -1511,22 +1513,22 @@ ViewGLFrame::keyPressEvent ( QKeyEvent * e)
     if( e->key() == Qt::Key_Up){
       __scene->rotating(0,2);
       e->accept();
-      updateGL();
+      update();
     }
     else if( e->key() == Qt::Key_Down){
       __scene->rotating(0,-2);
       e->accept();
-      updateGL();
+      update();
     }
     else if( e->key() == Qt::Key_Left){
       __scene->rotating(2,0);
       e->accept();
-      updateGL();
+      update();
     }
     else if( e->key() == Qt::Key_Right){
       __scene->rotating(-2,0);
       e->accept();
-      updateGL();
+      update();
     }
     else {
       setSelectionMode();
@@ -1555,38 +1557,38 @@ ViewGLFrame::keyPressEvent ( QKeyEvent * e)
      QBitmap mask = QBitmap::fromData(QSize(32,32),ViewerIcon::LIGHT_MASK,QImage::Format_MonoLSB);
      setCursor(QCursor(bm,mask));*/
     }
-    updateGL();
+    update();
     e->accept();
   }
   else {
     if( e->key() == Qt::Key_Up){
       __camera->zooming(0,1);
-      updateGL();
+      update();
       e->accept();
     }
     else if( e->key() == Qt::Key_Down){
       __camera->zooming(0,-1);
-      updateGL();
+      update();
       e->accept();
     }
     else if( e->key() == Qt::Key_Left){
       __camera->rotating(4,0);
-      updateGL();
+      update();
       e->accept();
     }
     else if( e->key() == Qt::Key_Right){
       __camera->rotating(-4,0);
-      updateGL();
+      update();
       e->accept();
     }
     else if( e->key() == Qt::Key_PageUp){
       __camera->rotating(0,-4);
-      updateGL();
+      update();
       e->accept();
     }
     else if( e->key() == Qt::Key_PageDown){
       __camera->rotating(0,4);
-      updateGL();
+      update();
       e->accept();
     }
     else if( e->key() == Qt::Key_Home)
@@ -1632,7 +1634,7 @@ bool ViewGLFrame::event(QEvent *e){
         printf("** gl ** receive pgl event\n");
     // else printf("** gl ** receive event\n");
 #endif
-    return QGLWidget::event(e);
+    return QOpenGLWidget::event(e);
 }
 
 void ViewGLFrame::customEvent(QEvent *e)
@@ -1678,15 +1680,15 @@ void ViewGLFrame::saveImage(QString _filename,const char * _format, bool withAlp
         }
     }
     if(!done) {
-        updateGL();
-        grabFrameBuffer(withAlpha).save(_filename,_format);
+        update();
+        grabFramebuffer().save(_filename,_format);
     }
     status(tr("Save screenshot with format")+" \""+QString(_format)+"\" "+tr("in")+" \""+_filename+'"',10000);
 }
 
 void ViewGLFrame::copyImageToClipboard(){
     if(QApplication::clipboard()){
-        QImage img = grabFrameBuffer(false);
+        QImage img = grabFramebuffer();
         QApplication::clipboard()->setImage(img);
         status(tr("Copy screenshot to clipboard"),10000);
     }
@@ -1695,7 +1697,7 @@ void ViewGLFrame::copyImageToClipboard(){
 
 void ViewGLFrame::copyImageToClipboardWithAlpha(){
     if(QApplication::clipboard()){
-        QImage img = grabFrameBuffer(true);
+        QImage img = grabFramebuffer();
         QApplication::clipboard()->setImage(img);
         status(tr("Copy screenshot to clipboard with alpha channel"),10000);
     }
@@ -1703,6 +1705,9 @@ void ViewGLFrame::copyImageToClipboardWithAlpha(){
 }
 
 void ViewGLFrame::printImage(){
+  //TOCHECK in printSupport module ..
+  qWarning() << Q_FUNC_INFO << "Not implemented";
+  /*
   QPrinter printer;
   QPrintDialog dialog(&printer, this);
   if (dialog.exec()){
@@ -1710,7 +1715,7 @@ void ViewGLFrame::printImage(){
     if(!paint.begin(&printer))return;
     QPoint origin(0,0);
     QRect r = printer.pageRect();
-    QImage img = grabFrameBuffer(false);
+    QImage img = grabFramebuffer();
     QSize r2 = img.size();
     double x = min((double)r.width()/(double)r2.width(),
                    (double)r.height()/(double)r2.height());
@@ -1724,6 +1729,7 @@ void ViewGLFrame::printImage(){
     paint.drawRect(QRect(QPoint(0,0),r2));
     paint.end();
   }
+  */
 }
 
 
@@ -2010,7 +2016,7 @@ void ViewGLFrame::showMessage(const QString message, int timeout)
     __timer.stop();
     __msg_transparency = 1.0;
     __message = message;
-    updateGL();
+    update();
     if(timeout > 0){
         __msg_transparency_step = min(1.0,200. / timeout);
         __timer.start();
@@ -2021,7 +2027,7 @@ void ViewGLFrame::updateMessage()
 {
     __msg_transparency -= __msg_transparency_step;
     if (__msg_transparency > 0){
-        updateGL();
+        update();
     }
     else cleanMessage();
 }
@@ -2030,7 +2036,7 @@ void ViewGLFrame::cleanMessage()
 {
     __timer.stop();
     __message.clear();
-    updateGL();
+    update();
 }
 
 

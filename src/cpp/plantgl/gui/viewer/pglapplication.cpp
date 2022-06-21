@@ -75,12 +75,12 @@ PGLViewerApplication::add(const GeometryPtr& g){
 
 void
 PGLViewerApplication::display(const ScenePtr& s){
-  ViewerApplication::_sendAnEvent(new GeomSceneChangeEvent(s,QString::null,QString::null,false));
+  ViewerApplication::_sendAnEvent(new GeomSceneChangeEvent(s,QString(),QString(),false));
 }
 
 void
 PGLViewerApplication::add(const ScenePtr& s){
-  ViewerApplication::_sendAnEvent(new GeomSceneChangeEvent(s,QString::null,QString::null,true));
+  ViewerApplication::_sendAnEvent(new GeomSceneChangeEvent(s,QString(),QString(),true));
 }
 
 ScenePtr PGLViewerApplication::getCurrentScene()

@@ -8,8 +8,8 @@ add_library(pglsg SHARED ${SRC_FILES})
 
 target_link_libraries(pglsg pgltool pglmath)
 
-if (QT5_FOUND)
-    target_link_libraries(pglsg Qt5::Core)
+if (Qt6_FOUND)
+    target_link_libraries(pglsg Qt6::Core)
 endif()
 
 target_link_libraries(pglsg PNG::PNG JPEG::JPEG)

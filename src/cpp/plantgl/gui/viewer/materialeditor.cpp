@@ -48,7 +48,7 @@
 
 #include <QtGui/qfont.h>
 #include <QtGui/qevent.h>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
     #include <QtWidgets/qmenu.h>
     #include <QtWidgets/qlabel.h>
     #include <QtWidgets/qlineedit.h>
@@ -58,15 +58,6 @@
     #include <QtWidgets/qtooltip.h>
     #include <QtWidgets/qwhatsthis.h>
     #include <QtWidgets/qcolordialog.h>
-#else
-    #include <QtGui/qlabel.h>
-    #include <QtGui/qlineedit.h>
-    #include <QtGui/qslider.h>
-    #include <QtGui/qtoolbutton.h>
-    #include <QtGui/qlayout.h>
-    #include <QtGui/qtooltip.h>
-    #include <QtGui/qwhatsthis.h>
-    #include <QtGui/qcolordialog.h>
 #endif
 
 #include <plantgl/scenegraph/geometry/sphere.h>
@@ -77,8 +68,8 @@ PGL_USING_NAMESPACE
 using namespace std;
 
 /*----------------------------------------------------------------------------*/
-ViewColorGL::ViewColorGL( QWidget * parent, const char * name, const QGLWidget * shareWidget, Qt::WindowFlags f ):
- QGLWidget(parent,shareWidget,f),
+ViewColorGL::ViewColorGL( QWidget * parent, const char * name, Qt::WindowFlags f ):
+ QOpenGLWidget(parent,f),
  __sphereobject(NULL),
  __r(__d){
     if(name) setObjectName(name);
@@ -105,7 +96,7 @@ ViewColorGL::~ViewColorGL(){
 
 void ViewColorGL::setAppearance(const AppearancePtr& mat){
     __M = mat;
-    updateGL();
+    update();
   }
 
 // -------------------- Rendering --------------------
@@ -581,7 +572,7 @@ void MaterialEditor::setGeomName(const QString& name ){
 }
 
 void MaterialEditor::update(){
-  FrameGL->updateGL();
+  FrameGL->update();
 }
 
 void MaterialEditor::ambientChangedEvent(){

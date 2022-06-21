@@ -355,7 +355,7 @@ ViewGeomSceneGL::openGeomViewFile()
 void
 ViewGeomSceneGL::openLinetree()
 {
-  openLinetree(QString::null);
+  openLinetree(QString());
 }
 
 
@@ -814,7 +814,7 @@ ViewGeomSceneGL::saveNotSelection()
 bool
 ViewGeomSceneGL::saveAsGeom(const QString& filename)
 {
-  return saveScene(filename,QString::null,QString::null,__scene);
+  return saveScene(filename,QString(),QString(),__scene);
 }
 
 bool
@@ -852,7 +852,7 @@ ViewGeomSceneGL::saveAs(const QString& filename){
 class GeomDialog : public QFileDialog {
 public :
   GeomDialog( const QString & initial,
-              const QString & filter = QString::null,
+              const QString & filter = QString(),
               QWidget * parent=0,
               const char * name = 0,
               bool modal = true ) :
@@ -862,7 +862,7 @@ public :
     QGroupBox * box = new QGroupBox(qApp->translate("ViewGeomSceneGL","Separated File for"),this);
     __geometry = new QRadioButton(qApp->translate("ViewGeomSceneGL","Geometry"),box);
     __appearance = new QRadioButton(qApp->translate("ViewGeomSceneGL","Appearance"),box);
-    setExtension(box);
+    //setextension(box);
   }
 
   bool geometrySeparated() const {return __geometry->isChecked();}
@@ -877,7 +877,7 @@ protected:
 bool
 ViewGeomSceneGL::getGeomFilenames(QString& shape,QString& geom, QString& mat)
 {
-  shape = QString::null;
+  shape = QString();
   QString initial = getFilename();
   QString extension=getFilename().right(getFilename().length()-getFilename().lastIndexOf('.')-1);
   extension= extension.toUpper();
@@ -1086,7 +1086,7 @@ ViewGeomSceneGL::saveAsPovRay(const QString& filename)
                                                     col.green(),
                                                     col.blue()));
     _stream << "*/\n\n";
-    const QGLContext * c =__frame->context();
+    const QOpenGLContext * c =__frame->context();
     if(c){
       // QColor bg = c->overlayTransparentColor();
       // if(bg.isValid())_printer.setBackGround(Color3(bg.red(),bg.green(),bg.blue()));
@@ -1205,18 +1205,18 @@ ViewGeomSceneGL::saveAsVrml()
     const QColor& col2 = __light->getAmbient();
     _printer.setLight(__light->getPosition(),Color3(col2.red(),col2.green(),col2.blue()),
                       Color3(col.red(),col.green(),col.blue()),4*norm(__light->getPosition()));
-    const QGLContext * c =__frame->context();
-    if(c){
-      QColor bg = c->overlayTransparentColor();
-      if(bg.isValid())_printer.setBackGround(Color3(bg.red(),bg.green(),bg.blue()));
-      else {
-        ViewGLFrame * f = dynamic_cast<ViewGLFrame *>(__frame);
-        if(f != NULL){
-            bg = f->getBackGroundColor();
-            _printer.setBackGround(Color3(bg.red(),bg.green(),bg.blue()));
-        }
-      }
-    }
+    const QOpenGLContext * c =__frame->context();
+    //if(c){
+      //QColor bg = c->overlayTransparentColor();
+      //if(bg.isValid())_printer.setBackGround(Color3(bg.red(),bg.green(),bg.blue()));
+      //else {
+      //  ViewGLFrame * f = dynamic_cast<ViewGLFrame *>(__frame);
+      //  if(f != NULL){
+      //      bg = f->getBackGroundColor();
+      //      _printer.setBackGround(Color3(bg.red(),bg.green(),bg.blue()));
+      //  }
+    //  }
+    //}
     __scene->apply(_printer);
   }
 }
@@ -1308,7 +1308,7 @@ bool
 ViewMultiGeomSceneGL::addOpenEntries(QMenu * menu)
 {
   QPixmap openIcon( ViewerIcon::getPixmap(ViewerIcon::fileopen) );
-  menu->addAction( openIcon, tr("Open &Geom File"),  this,SLOT(openGeomFile()),Qt::CTRL+Qt::Key_G);
+  menu->addAction( openIcon, tr("Open &Geom File"),  this,SLOT(openGeomFile()),Qt::CTRL | Qt::Key_G);
   menu->addAction( openIcon, tr("&Add Geom File"),   this,SLOT(addGeomFile()));
   menu->addAction( openIcon, tr("Open &2 Geom File"),this,SLOT(openGeomFiles()));
   return true;

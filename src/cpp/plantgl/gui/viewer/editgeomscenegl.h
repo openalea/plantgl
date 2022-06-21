@@ -63,7 +63,7 @@ public :
   ViewEditMatDialog(QWidget * parent=0,
                     const char * name=0,
                     bool modal=false,
-                    Qt::WindowFlags f=0);
+                    Qt::WindowFlags f = Qt::Widget);
   ~ViewEditMatDialog(){};
 
   void setMaterial(PGL(MaterialPtr) appe);
@@ -118,7 +118,7 @@ class VIEW_API  ViewEditGeomSceneGL : public ViewMultiGeomSceneGL
   /// Constructor.
   ViewEditGeomSceneGL(ViewCameraGL * camera=0,
                ViewLightGL * light=0,
-               QGLWidget * parent=0,
+               QOpenGLWidget * parent=0,
                const char * name=0);
 
   /// Destructor.
@@ -165,7 +165,7 @@ class VIEW_API  ViewMultiscaleEditGeomSceneGL : public ViewEditGeomSceneGL
   /// Constructor.
   ViewMultiscaleEditGeomSceneGL(ViewCameraGL * camera=0,
                ViewLightGL * light=0,
-               QGLWidget * parent=0,
+               QOpenGLWidget * parent=0,
                const char * name=0);
 
   /// Destructor.

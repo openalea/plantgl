@@ -48,7 +48,6 @@
 #else
     #include <QtGui/qmessagebox.h>
 #endif
-#include <QtOpenGL/qgl.h>
 
 #include <plantgl/algo/opengl/util_gl.h>
 #include <plantgl/algo/opengl/util_glu.h>
@@ -67,7 +66,7 @@ ViewObjectGL::ViewObjectGL(QObject * parent, const char * name) :
     if(name) setObjectName(name);
 }
 
-ViewObjectGL::ViewObjectGL(QGLWidget * parent, const char * name) :
+ViewObjectGL::ViewObjectGL(QOpenGLWidget * parent, const char * name) :
   QObject(parent),
   __frame(parent)
 {
@@ -149,7 +148,7 @@ ViewObjectGL::connectTo(ViewStatusBar * s)
 }
 
 void
-ViewObjectGL::connectTo(QGLWidget *g)
+ViewObjectGL::connectTo(QOpenGLWidget *g)
 {
   if(g){
     QObject::connect (this,SIGNAL(valueChanged()),
@@ -264,7 +263,7 @@ ViewRelativeObjectGL::ViewRelativeObjectGL(ViewCameraGL *camera, QObject * paren
   }
 }
 
-ViewRelativeObjectGL::ViewRelativeObjectGL(ViewCameraGL *camera, QGLWidget * parent, const char * name):
+ViewRelativeObjectGL::ViewRelativeObjectGL(ViewCameraGL *camera, QOpenGLWidget * parent, const char * name):
   ViewObjectGL(parent,name),
   __step(1){
   if(camera){
@@ -287,7 +286,7 @@ ViewRelativeObjectGL::connectTo(ViewStatusBar * s)
 }
 
 void
-ViewRelativeObjectGL::connectTo(QGLWidget *g)
+ViewRelativeObjectGL::connectTo(QOpenGLWidget *g)
 {
   ViewObjectGL::connectTo(g);
 }

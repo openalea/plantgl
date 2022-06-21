@@ -72,7 +72,7 @@ message(STATUS "Python lib : " ${Python3_LIBRARIES})
 # --- Libraries
 
 find_package(Threads REQUIRED)
-find_package(Qt)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Network OpenGL OpenGLWidgets PrintSupport Test)
 
 
 set(Boost_NO_SYSTEM_PATHS ON)
@@ -93,7 +93,7 @@ find_package(OpenGL REQUIRED)
 find_package(PNG REQUIRED)
 find_package(JPEG REQUIRED)
 
-find_package(CGAL)
+#find_package(CGAL)
 find_package(ANN)
 find_package(BISON)
 find_package(Eigen)

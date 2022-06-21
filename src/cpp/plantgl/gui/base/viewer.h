@@ -110,7 +110,7 @@ public:
   Viewer(  QWidget * parent = 0,
            const char * name = 0,
            ViewRendererGL * r = 0 ,
-           Qt::WindowFlags f = 0 );
+           Qt::WindowFlags f = Qt::Widget );
 
   /// Constructor.
   Viewer( int argc, char ** argv, ViewRendererGL * r = 0 );
@@ -137,9 +137,9 @@ public:
   void send(QEvent * e) ;
 
   void question(const QString& caption, const QString& text,
-                const QString& but0txt = QString::null,
-                const QString& but1txt = QString::null,
-                const QString& but2txt = QString::null,
+                const QString& but0txt = QString(),
+                const QString& but1txt = QString(),
+                const QString& but2txt = QString(),
                 int * result = NULL);
 
   void itemSelection(const QString& caption, const QString& text,

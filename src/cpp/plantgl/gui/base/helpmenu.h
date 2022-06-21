@@ -59,7 +59,7 @@
 #endif
 #include <QtCore/qtimer.h>
 #include <vector>
-class QGLWidget;
+class QOpenGLWidget;
 class ViewAboutDialog;
 class QLabel;
 
@@ -83,7 +83,7 @@ class VIEW_API ViewHelpMenu : public QMenu
 
   /// Constructor
   ViewHelpMenu(QWidget * parent=0,
-       QGLWidget * glwidget = 0,
+       QOpenGLWidget * glwidget = 0,
        const char * name=0);
 
   /// Destructor
@@ -93,7 +93,7 @@ class VIEW_API ViewHelpMenu : public QMenu
   int getStyleId(const QString& name) const;
   QString getStyleName() const;
 
-  void setGLWidget(QGLWidget * glwidget);
+  void setGLWidget(QOpenGLWidget * glwidget);
 
 public slots:
 
@@ -136,7 +136,7 @@ protected :
   QMenu * __style;
   std::vector<QAction *>  __ids;
 
-  QGLWidget * __glwidget;
+  QOpenGLWidget * __glwidget;
   ViewAboutDialog * __about;
 
 };

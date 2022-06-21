@@ -61,7 +61,7 @@
 /* ----------------------------------------------------------------------- */
 
 ViewGridGL::ViewGridGL(ViewCameraGL *camera,
-               QGLWidget * parent,
+               QOpenGLWidget * parent,
                const char * name):
   ViewRelativeObjectGL(camera,parent,name),
   __gridUnit(1),

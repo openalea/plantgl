@@ -350,6 +350,8 @@ void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuild
 
 %}
 
+//%code requires { #include "scne_scanner.h" }
+
 %pure-parser        /* asks for a reentrant parser: don't remove ! */
 // %define api.pure full
 // %locations
