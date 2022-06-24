@@ -13,6 +13,8 @@ project(plantgl CXX)
 
 # --- Build setup
 
+set(CMAKE_INCLUDE_PATH "$ENV{CONDA_PREFIX}/include" ${CMAKE_INCLUDE_PATH})
+set(CMAKE_LIBRARY_PATH "$ENV{CONDA_PREFIX}/lib" ${CMAKE_LIBRARY_PATH})
 set(CMAKE_SKIP_BUILD_RPATH FALSE)
 set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
@@ -110,7 +112,7 @@ find_package(Qhull)
 
 
 
-find_package(Boost COMPONENTS thread system chrono ${boost_python} ${boost_numpy})
+find_package(Boost 1.69 COMPONENTS thread system chrono ${boost_python} ${boost_numpy})
 
 if (Boost_FOUND)
     # Build with Boost
