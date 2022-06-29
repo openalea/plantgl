@@ -38,9 +38,16 @@ PYQT4_API = [
 #: names of the expected PySide api
 PYSIDE_API = ['pyside']
 PYSIDE2_API = ['pyside2']
+PYSIDE6_API = ['pyside6']
 
+if PGL_QT_VERSION == 6:
+    try: 
+        import PySide6
+        os.environ[QT_API] = PYSIDE6_API[0]
+    except ImportError as ie:
+        print("cannot import PySide6  FIX IT !!")
 
-if PGL_QT_VERSION == 4:
+elif PGL_QT_VERSION == 4:
         try :
             import PySide
             os.environ[QT_API] = PYSIDE_API[0]

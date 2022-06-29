@@ -1,4 +1,4 @@
-from openalea.plantgl.gui.qt import QT_API, PYQT5_API, PYQT4_API, PYSIDE_API, PYSIDE2_API
+from openalea.plantgl.gui.qt import QT_API, PYQT5_API, PYQT4_API, PYSIDE_API, PYSIDE2_API, PYSIDE6_API
 from openalea.plantgl.gui.qt.uic import compileUi, compile_args
 
 import os
@@ -26,7 +26,9 @@ def compile_rc (rcfname) :
     """ compile a Ressource file """
     pyfname = get_rcfnames_from(rcfname)
     def def_exe(suffix = ''):
-        if os.environ[QT_API] in PYQT5_API:
+        if os.environ[QT_API] in PYSIDE6_API:
+            exe = 'pyside6-rcc'
+        elif os.environ[QT_API] in PYQT5_API:
             exe = 'pyrcc5'+suffix
         else:
             exe = 'pyrcc4'+suffix
@@ -46,7 +48,7 @@ def compile_rc (rcfname) :
     os.system(cmd)
 
 def detect_file_api(fname):
-    patternapi = {'PyQt5':PYQT5_API, 'PyQt4':PYQT4_API, 'PySide':PYSIDE_API} 
+    patternapi = {'PyQt5':PYQT5_API, 'PyQt4':PYQT4_API, 'PySide':PYSIDE_API, 'PySide6':PYSIDE6_API} 
     txt = file(fname,'r').read()
     for pattern,api in list(patternapi.items()):
         if pattern in txt: return api

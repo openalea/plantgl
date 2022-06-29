@@ -76,6 +76,9 @@ message(STATUS "Python lib : " ${Python3_LIBRARIES})
 find_package(Threads REQUIRED)
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Network OpenGL OpenGLWidgets PrintSupport Test)
 
+define_cpp_macro(PGL_QT_VERSION 6)
+define_py_macro(PGL_WITHOUT_QT "False")
+define_py_macro(PGL_QT_VERSION 6)
 
 set(Boost_NO_SYSTEM_PATHS ON)
 set(Boost_USE_MULTITHREAD ON)
