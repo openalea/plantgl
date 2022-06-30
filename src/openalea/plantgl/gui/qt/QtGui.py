@@ -12,6 +12,7 @@ if os.environ[QT_API] in PYSIDE6_API:
     from PySide6.QtWidgets import *
     from PySide6.QtGui import *
     from PySide6.QtOpenGLWidgets import *
+    from PySide6.QtPrintSupport import *
     _tab_position = {
         0: QTabWidget.TabPosition.North,
         1: QTabWidget.TabPosition.South,
