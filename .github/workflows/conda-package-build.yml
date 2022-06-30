@@ -21,8 +21,8 @@ jobs:
             CONDA_NPY: "116"
           - CONDA_PY: "39" 
             CONDA_NPY: "119"
-          - CONDA_PY: "310" 
-            CONDA_NPY: "121"
+          #- CONDA_PY: "310" 
+          #  CONDA_NPY: "121"
 
     environment: anaconda_build
 
