@@ -62,6 +62,8 @@ PGL_USING_NAMESPACE
 #endif
 
 #include "scne_parser.h"
+#include "scne_scanner.h"
+#include <plantgl/tool/gscanner_imp.h>
 
 #ifdef PGL_BISON_HPP
 #include "scne_parser.hpp"
@@ -73,8 +75,6 @@ PGL_USING_NAMESPACE
 #define YY_NO_UNISTD_H
 #endif
 
-#include "scne_scanner.h"
-#include <plantgl/tool/gscanner_imp.h>
 #include <plantgl/tool/util_string.h>
 #include <plantgl/tool/util_hashmap.h>
 

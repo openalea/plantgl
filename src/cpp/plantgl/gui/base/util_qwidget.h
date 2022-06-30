@@ -132,7 +132,7 @@ public:
   ViewDialog( QWidget * parent=0,
           const char * name=0,
           bool modal=false,
-          Qt::WindowFlags f=0 );
+          Qt::WindowFlags f=Qt::WindowFlags() );
 
   /// Destructor.
   ~ViewDialog();
@@ -166,7 +166,7 @@ public:
   ViewMainDialog( QWidget * parent=0,
                   const char * name=0,
                   bool modal=false,
-                  Qt::WindowFlags f=0 );
+                  Qt::WindowFlags f=Qt::WindowFlags() );
 
   /// Destructor.
   ~ViewMainDialog();

@@ -100,6 +100,7 @@ boost::python::object py_get_pgl_supported_extensions() {
 
 void module_sg()
 {
+    Py_Initialize();
 #if PGL_WITH_BOOST_NUMPY
     boost::python::numpy::initialize();
 #endif

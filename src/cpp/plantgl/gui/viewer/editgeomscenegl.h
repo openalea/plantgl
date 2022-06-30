@@ -63,7 +63,7 @@ public :
   ViewEditMatDialog(QWidget * parent=0,
                     const char * name=0,
                     bool modal=false,
-                    Qt::WindowFlags f=0);
+                    Qt::WindowFlags f=Qt::WindowFlags());
   ~ViewEditMatDialog(){};
 
   void setMaterial(PGL(MaterialPtr) appe);
