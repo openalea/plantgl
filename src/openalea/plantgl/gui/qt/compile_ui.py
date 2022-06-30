@@ -18,9 +18,12 @@ def get_rcfnames_from(fname):
 def compile_ui(uifname):
     """ compile a Ui """
     pyfname = get_uifnames_from(uifname)
-    fstream = file(pyfname,'w')
-    compileUi(uifname, fstream, **compile_args)
-    fstream.close()
+    if os.environ[QT_API] in PYSIDE6_API:
+        compileUi(uifname, pyfname)
+    else:    
+        fstream = file(pyfname,'w')
+        compileUi(uifname, fstream, **compile_args)
+        fstream.close()
 
 def compile_rc (rcfname) :
     """ compile a Ressource file """

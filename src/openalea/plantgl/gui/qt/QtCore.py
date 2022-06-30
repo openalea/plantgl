@@ -29,6 +29,9 @@ elif os.environ[QT_API] in PYQT4_API:
     from PyQt4.QtGui import QSortFilterProxyModel
     # use a common __version__
     from PyQt4.QtCore import QT_VERSION_STR as __version__
+    import sip
+    assert sip.getapi('QString') == 2
+
 elif os.environ[QT_API] in PYSIDE_API:
     from PySide.QtCore import *
     from PySide.QtGui import QSortFilterProxyModel
@@ -42,7 +45,3 @@ elif os.environ[QT_API] in PYSIDE2_API:
     # use a common __version__
     import PySide2.QtCore
     __version__ = PySide2.QtCore.__version__
-
-if QT_VERSION == 4:
-    import sip
-    assert sip.getapi('QString') == 2

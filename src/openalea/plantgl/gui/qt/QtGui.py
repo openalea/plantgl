@@ -10,6 +10,8 @@ from openalea.plantgl.gui.qt import QT_API, PYQT5_API, PYQT4_API, PYSIDE_API, PY
 
 if os.environ[QT_API] in PYSIDE6_API:
     from PySide6.QtWidgets import *
+    from PySide6.QtGui import *
+    from PySide6.QtOpenGLWidgets import *
     _tab_position = {
         0: QTabWidget.TabPosition.North,
         1: QTabWidget.TabPosition.South,

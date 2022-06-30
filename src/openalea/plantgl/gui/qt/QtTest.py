@@ -8,7 +8,7 @@ Provides QtTest and functions
 import os
 from openalea.plantgl.gui.qt import QT_API, PYQT5_API, PYQT4_API, PYSIDE_API, PYSIDE2_API, PYSIDE6_API
 
-if os.environ[QT_API] in PYSID6_API:
+if os.environ[QT_API] in PYSIDE6_API:
     import datetime
     from PySide6.QtTest import *
     from PySide6.QtWidgets import QApplication

@@ -7,9 +7,9 @@ from openalea.plantgl.gui.qt import QtCore, QtGui
 from math import pow,log
 
 from openalea.plantgl.gui.qt import QtCore, QtGui, QtOpenGL
-from openalea.plantgl.gui.qt.QtCore import QEvent, QObject, QPoint, Qt, pyqtSignal, qWarning
+from openalea.plantgl.gui.qt.QtCore import QEvent, QObject, QPoint, Qt, Signal, qWarning
 from openalea.plantgl.gui.qt.QtGui import QColor, QImage,QFont
-from openalea.plantgl.gui.qt.QtOpenGL import QGLWidget
+from openalea.plantgl.gui.qt.QtOpenGL import QOpenGLWidget
 from openalea.plantgl.gui.qt.QtWidgets import QFileDialog, QApplication
 
 class CurveConstraint:
@@ -156,7 +156,7 @@ class PolylineAccessor (CurveAccessor):
 class CurveEditor (QGLViewer):
     BLACK_THEME = {'Curve' : (255,255,255), 'BackGround' : (51,51,51), 'Text' : (255,255,255), 'CtrlCurve' : (122,122,0), 'GridStrong' : (102,102,102), 'GridFade' : (51,51,51) , 'Points' : (250,30,30), 'FirstPoint' : (250,30,250), 'SelectedPoint' : (30,250,30), 'DisabledBackGround' : (150,150,150) }
     WHITE_THEME = {'Curve' : (255,0,0), 'BackGround' : (255,255,255), 'Text' : (0,0,0), 'CtrlCurve' : (25,0,25), 'GridStrong' : (102,102,102), 'GridFade' : (153,153,153) , 'Points' : (30,250,30), 'FirstPoint' : (250,30,250), 'SelectedPoint' : (30,250,30), 'DisabledBackGround' : (150,150,150)}
-    valueChanged = QtCore.pyqtSignal()
+    valueChanged = QtCore.Signal()
 
     def __init__(self,parent,constraints=CurveConstraint()):
         QGLViewer.__init__(self,parent)
