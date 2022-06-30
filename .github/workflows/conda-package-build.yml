@@ -63,7 +63,7 @@ jobs:
         export PYTHON_VERSION=${CONDA_PY:0:1}.${CONDA_PY:1:2}
         export NUMPY_VERSION=${CONDA_NPY:0:1}.${CONDA_NPY:1:2}
 
-        export BUILD_CMD="sudo conda mambabuild . --python=$PYTHON_VERSION"
+        export BUILD_CMD="sudo conda build . --python=$PYTHON_VERSION --numpy=$NUMPY_VERSION"
         export BUILD_OUTPUT=`$BUILD_CMD --output`
 
         if [[ "$BUILD_OUTPUT" = "" ]]; then
