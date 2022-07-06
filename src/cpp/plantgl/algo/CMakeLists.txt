@@ -73,6 +73,7 @@ target_link_libraries(pglalgo ${ANN_LIBRARIES})
 target_link_libraries(pglalgo ${QHULL_LIBRARIES})
 
 if(APPLE)
+  target_link_libraries(pglalgo "-framework Metal")
   target_link_libraries(pglalgo "-framework AGL")
   target_link_libraries(pglalgo "-framework OpenGL")
 else(APPLE)

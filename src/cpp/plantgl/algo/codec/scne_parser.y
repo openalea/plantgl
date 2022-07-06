@@ -347,18 +347,18 @@ void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuild
   else shape = NULL; \
 
 
+// Hack to avoid error with declaration of scne_yylex
+#define YYLEX_IS_DECLARED
 
 %}
 
-//%code requires { #include "scne_scanner.h" }
-
-%pure-parser        /* asks for a reentrant parser: don't remove ! */
-// %define api.pure full
+// pure-parser        /* asks for a reentrant parser: don't remove ! */
+%define api.pure full
 // %locations
 
 %name-prefix = "scne_yy"
 %parse-param {void * parser}
-%lex-param {GENERIC_LEXER * YYLEX_PARAM }
+%lex-param {GENERIC_LEXER * YYLEX_PARAM}
 
 %defines
 

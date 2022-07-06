@@ -48,6 +48,8 @@ using namespace boost::python;
 
 void module_math()
 {
+  Py_Initialize();
+  
   define_stl_exceptions();
 
   export_Vector2();
