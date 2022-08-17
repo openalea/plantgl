@@ -2,8 +2,11 @@
 
 function(pglwrapper_link_python libwrapname)
     if (Python3_FOUND)
-        message("Linking  python to ${libwrapname}")
-         target_link_libraries(${libwrapname} Python3::Python)
+        if (APPLE)
+             target_link_libraries(${libwrapname} "-undefined dynamic_lookup")
+        else()
+            target_link_libraries(${libwrapname} Python3::Python)
+        endif()
     elseif (Python2_FOUND)
         target_link_libraries(${libwrapname} Python2::Python)
     endif()
