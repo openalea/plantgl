@@ -54,7 +54,6 @@
 
 #ifndef PGL_CORE_WITHOUT_QT
 #include <QtCore>
-//class QTextStream;
 #else
 #include <string>
 #include <fstream>

@@ -59,8 +59,9 @@ endif()
 
 target_link_libraries(pglalgo pgltool pglmath pglsg)
 
+target_link_libraries(pglalgo Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::OpenGL)
 if (Qt6_FOUND)
-    target_link_libraries(pglalgo Qt6::Core Qt6::Widgets Qt6::OpenGL Qt6::OpenGLWidgets)
+    target_link_libraries(pglalgo Qt${QT_VERSION_MAJOR}::OpenGLWidgets)
 endif()
 
 if (CGAL_FOUND)

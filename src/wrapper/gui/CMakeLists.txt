@@ -8,9 +8,9 @@ add_library(_pglgui SHARED ${SRC_FILES})
 
 target_link_libraries(_pglgui pglmath pglgui pglsg pgltool)
 
-if (Qt6_FOUND)
-    target_link_libraries(_pglgui Qt6::Core Qt6::Widgets Qt6::OpenGL Qt6::Network)
-endif()
+#if (Qt6_FOUND)
+    target_link_libraries(_pglgui Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::OpenGL Qt${QT_VERSION_MAJOR}::Network)
+#endif()
 
 pglwrapper_link_boost(_pglgui)
 

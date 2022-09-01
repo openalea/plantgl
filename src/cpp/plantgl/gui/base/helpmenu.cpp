@@ -536,7 +536,11 @@ void
 ViewAboutDialog::mouseMoveEvent ( QMouseEvent * e )
 {
     if (e->button() == Qt::NoButton) changeLogo(e->pos());
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    else move(e->globalPos());
+#else
     else move(e->globalPosition().toPoint());
+#endif
 }
 
 void

@@ -65,8 +65,14 @@ define_cpp_macro(PGL_USE_DOUBLE 1)
 ## ###################################################################
 
 # --- Python
+set(Python3_FIND_VIRTUALENV FIRST)
+if (WIN32)
+  # needed when we run cmake in a conda environment
+  set(Python3_FIND_REGISTRY LAST)
+endif()
 
-find_package (Python3 COMPONENTS Interpreter Development REQUIRED)
+
+find_package (Python3 3.9 EXACT COMPONENTS Interpreter Development NumPy REQUIRED)
 include_directories(${Python3_INCLUDE_DIRS})
 message(STATUS "Python version : " ${Python3_VERSION})
 message(STATUS "Python lib : " ${Python3_LIBRARIES})
@@ -74,32 +80,34 @@ message(STATUS "Python lib : " ${Python3_LIBRARIES})
 # --- Libraries
 
 find_package(Threads REQUIRED)
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Network OpenGL OpenGLWidgets PrintSupport Test)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets Network OpenGL PrintSupport)
+
+if(Qt6_FOUND)
+find_package(Qt6 REQUIRED COMPONENTS Gui OpenGLWidgets Test) 
+endif()
+
 find_library(METAL Metal)
 
-define_cpp_macro(PGL_QT_VERSION 6)
+define_cpp_macro(PGL_QT_VERSION ${QT_VERSION_MAJOR})
 define_py_macro(PGL_WITHOUT_QT "False")
-define_py_macro(PGL_QT_VERSION 6)
+define_py_macro(PGL_QT_VERSION ${QT_VERSION_MAJOR})
+
 
 set(Boost_NO_SYSTEM_PATHS ON)
 set(Boost_USE_MULTITHREAD ON)
 set(Boost_USE_STATIC_LIBS OFF)
 set(BUILD_SHARED_LIBS ON)
 
-if (USE_CONDA)
-    set(boost_python python)
-    set(boost_numpy numpy)
-else()
-    set(boost_python python${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR})
-    set(boost_numpy numpy${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR})
-endif()
+set(boost_python python${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR})
+set(boost_numpy numpy${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR})
 
 find_package(ZLIB REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(PNG REQUIRED)
 find_package(JPEG REQUIRED)
 
-#find_package(CGAL)
+find_package(CGAL)
 find_package(ANN)
 find_package(BISON)
 find_package(Eigen)

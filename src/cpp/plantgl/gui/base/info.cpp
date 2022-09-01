@@ -75,6 +75,17 @@
     #include <QtGui/QTreeWidget>
 #endif
 
+#include <QtGlobal>
+#include <QString>
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+namespace Qt
+{
+    static auto endl = ::endl;
+    static auto SkipEmptyParts = QString::SkipEmptyParts;
+}
+#endif
+
 //#ifdef QT3_SUPPORT
 //#include <Qt3Support/q3listview.h>
 //#endif
@@ -1522,7 +1533,7 @@ ViewSysInfo::saveAsFile(const QString& file) const {
                 while(current != NULL){
                         stream << indent << current->text(0) << '\t' << current->text(1);
 #ifdef _WIN32
-                        stream << char(13) << endl;
+                        stream << char(13) << Qt::endl;
 #else
                         stream << Qt::endl;
 #endif

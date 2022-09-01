@@ -42,9 +42,22 @@
 
 
 #include "xmlprinter.h"
-//#ifndef PGL_CORE_WITHOUT_QT
-//#include <QtCore/qtextstream.h>
-//#endif
+
+#if PGL_QT_VERSION == 5
+#include <QtCore/qtextstream.h>
+
+#include <QtGlobal>
+#include <QString>
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+namespace Qt
+{
+    static auto endl = ::endl;
+    static auto SkipEmptyParts = QString::SkipEmptyParts;
+}
+#endif
+
+#endif
 
 #include <plantgl/pgl_scene.h>
 #include <plantgl/pgl_appearance.h>
