@@ -67,6 +67,7 @@ BOOST_PYTHON_MODULE(_pglmath_d)
 BOOST_PYTHON_MODULE(_pglmath)
 #endif
 {
+  Py_Initialize();
   module_math();
 };
 

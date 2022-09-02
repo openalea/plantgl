@@ -20,7 +20,7 @@ requirements:
   host:
       - python {{PY_VER}}
       - setuptools
-      - numpy =1.20
+      - numpy
       - qt
       - pyqt
       - libpng
@@ -42,7 +42,7 @@ requirements:
       - python {{PY_VER}}                 
       - binutils_impl_linux-64            # [linux]
       - {{ compiler('cxx') }}
-      - bison =3.4                             # [unix]
+      - bison                             # [unix]
       - flex                              # [unix]
       - m2-bison                          # [win]
       - m2-flex                           # [win]

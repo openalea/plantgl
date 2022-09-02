@@ -15,12 +15,14 @@ jobs:
       matrix:
         os: [ macos-latest, ubuntu-latest]
         env:
-          - CONDA_PY: "37"
-            CONDA_NPY: "111" 
+          #- CONDA_PY: "37"
+          #  CONDA_NPY: "111" 
           - CONDA_PY: "38" 
             CONDA_NPY: "116"
           - CONDA_PY: "39" 
             CONDA_NPY: "119"
+          - CONDA_PY: "310" 
+            CONDA_NPY: "121"
 
     environment: anaconda_build
 
@@ -39,9 +41,10 @@ jobs:
         sudo conda config --add channels conda-forge
         sudo conda config --add channels fredboudon
         sudo conda config --set always_yes yes
-        sudo conda config --set remote_read_timeout_secs 600
+        # sudo conda config --set remote_read_timeout_secs 600
         sudo conda config --set auto_update_conda False
         sudo conda install conda-build anaconda-client
+        sudo conda install boa
 
     - name: Build 
       env:
@@ -57,10 +60,10 @@ jobs:
           echo "CONDA_NPY is not defined"
           exit -1
         fi
-        export PYTHON_VERSION=${CONDA_PY:0:1}.${CONDA_PY:1:1}
+        export PYTHON_VERSION=${CONDA_PY:0:1}.${CONDA_PY:1:2}
         export NUMPY_VERSION=${CONDA_NPY:0:1}.${CONDA_NPY:1:2}
 
-        export BUILD_CMD="sudo conda build . --python=$PYTHON_VERSION"
+        export BUILD_CMD="sudo conda build . --python=$PYTHON_VERSION --numpy=$NUMPY_VERSION"
         export BUILD_OUTPUT=`$BUILD_CMD --output`
 
         if [[ "$BUILD_OUTPUT" = "" ]]; then

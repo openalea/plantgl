@@ -467,7 +467,7 @@ ViewGLFrame::progress(int p,int t)
 void
 ViewGLFrame::setBackground()
 {
-  QColor m = QColorDialog::getColor(__BgColor,this);
+  QColor m = QColorDialog::getColor(__BgColor,(QWidget *)this->parent(),"Background Color", QColorDialog::DontUseNativeDialog);
   if(m.isValid()){
     __BgColor=m;
   __fog->setColor(m);
