@@ -7,7 +7,6 @@ environment:
       
   matrix:
   # Add here environement variables to control the Travis CI build
-    - CONDA_PY: 37
     - CONDA_PY: 38
       CONDA_NPY: 116
     - CONDA_PY: 39
