@@ -72,7 +72,7 @@ if (WIN32)
 endif()
 
 
-find_package (Python3 3.9 EXACT COMPONENTS Interpreter Development NumPy REQUIRED)
+find_package (Python3 COMPONENTS Interpreter Development NumPy REQUIRED)
 include_directories(${Python3_INCLUDE_DIRS})
 message(STATUS "Python version : " ${Python3_VERSION})
 message(STATUS "Python lib : " ${Python3_LIBRARIES})

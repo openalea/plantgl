@@ -18,11 +18,12 @@ build:
 
 requirements:
   host:
-      - python {{PY_VER}}
+      - python x.x
       - setuptools
-      - numpy
-      - qt>=5.15.4
+      - numpy x.x
+      - qt>=5.15
       - pyqt
+      - sip<6.6
       - libpng
       - zlib
       - eigen
@@ -38,7 +39,7 @@ requirements:
       - xorg-libxfixes                    # [linux]
           
   build:
-      - python {{PY_VER}}                 
+      - python x.x        
       - binutils_impl_linux-64            # [linux]
       - {{ compiler('cxx') }}
       - bison                             # [unix]
@@ -60,7 +61,7 @@ requirements:
       - {{ cdt('expat-devel') }}          # [linux]
 
   run:
-      - python {{PY_VER}}
+      - python x.x
       - setuptools
       - ipython
       - {{ pin_compatible('numpy',    max_pin='x.x') }}
@@ -73,6 +74,7 @@ requirements:
       - {{ pin_compatible('libpng',   max_pin='x.x') }} 
       - {{ pin_compatible('zlib',     max_pin='x.x') }} 
       - pyqt
+      - qt>=5.15
       - pyopengl
       - pyqglviewer=1.3
       - xorg-libxfixes                     # [linux]
