@@ -98,7 +98,7 @@ ViewCameraMenu::ViewCameraMenu(ViewCameraGL * camera,QWidget * parent, const cha
   QPixmap linked(ViewerIcon::getPixmap(ViewerIcon::linked));
   QPixmap eyef(ViewerIcon::getPixmap(ViewerIcon::eyef));
 
-  QAction * action = addAction(home,tr("Home"),      camera,SLOT(home()), Qt::CTRL+Qt::Key_I);
+  QAction * action = addAction(home,tr("Home"),      camera,SLOT(home()), Qt::CTRL | Qt::Key_I);
 
   addAction(tr("&Front View (YZ)"),camera,SLOT(YZView()));
   addAction(tr("&Right View (XZ)"),camera,SLOT(XZView()));
@@ -119,7 +119,7 @@ ViewCameraMenu::ViewCameraMenu(ViewCameraGL * camera,QWidget * parent, const cha
   idPerspective = __projectionMenu->addAction(persp,tr("&Perspective"),  camera,SLOT(setPerspectiveMode()));
   idOrtho       = __projectionMenu->addAction(ortho,tr("Ort&hographic"), camera,SLOT(setOrthographicMode()));
   __projectionMenu->addSeparator();
-  __projectionMenu->addAction(tr("&Change"),       camera,SLOT(changeCameraMode()),Qt::CTRL+Qt::Key_D);
+  __projectionMenu->addAction(tr("&Change"),       camera,SLOT(changeCameraMode()),Qt::CTRL | Qt::Key_D);
   idPerspective->setCheckable(true);
   idOrtho->setCheckable(true);
   __projectionMenu->setTitle(tr("Projection"));
@@ -161,7 +161,7 @@ ViewCameraMenu::setCoordSys(int b)
 /* ----------------------------------------------------------------------- */
 
 
-ViewCameraGL::ViewCameraGL(QGLWidget * parent, const char * name) :
+ViewCameraGL::ViewCameraGL(QOpenGLWidget * parent, const char * name) :
   ViewObjectGL(parent,name),
   __azimuth(0),
   __elevation(0),

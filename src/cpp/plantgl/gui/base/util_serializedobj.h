@@ -45,7 +45,8 @@
 
 #ifdef QT_THREAD_SUPPORT
 
-#include <QtCore/qmutex.h>
+#include <QMutex>
+#include <QMutexLocker>
 
 template <class T>
 class SerializedObject {

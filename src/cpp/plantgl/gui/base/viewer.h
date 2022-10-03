@@ -110,7 +110,7 @@ public:
   Viewer(  QWidget * parent = 0,
            const char * name = 0,
            ViewRendererGL * r = 0 ,
-           Qt::WindowFlags f = Qt::WindowFlags() );
+           Qt::WindowFlags f = Qt::Widget );
 
   /// Constructor.
   Viewer( int argc, char ** argv, ViewRendererGL * r = 0 );

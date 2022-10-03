@@ -59,7 +59,7 @@
 
 ViewModalRendererGL::ViewModalRendererGL(ViewCameraGL * camera,
                      ViewLightGL * light,
-                     QGLWidget * parent,
+                     QOpenGLWidget * parent,
                      const char * name) :
   ViewSceneRendererGL(camera,light,parent,name),
   __renderingMode(1),

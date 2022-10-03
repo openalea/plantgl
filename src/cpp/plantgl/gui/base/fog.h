@@ -81,7 +81,7 @@ class VIEW_API ViewFogGL  : public ViewRelativeObjectGL
 public:
 
   /// Constructor.
-  ViewFogGL(ViewCameraGL *camera,QGLWidget * parent=0, const char * name=0);
+  ViewFogGL(ViewCameraGL *camera,QOpenGLWidget * parent=0, const char * name=0);
 
   /// Destructor.
   virtual ~ViewFogGL();

@@ -1,5 +1,9 @@
 from openalea.plantgl.config import PGL_QT_VERSION
-if PGL_QT_VERSION == 5:
+if PGL_QT_VERSION == 6:
+    from PySide6.QtCore import *
+    from PySide6.QtGui import *
+    from PySide6.QtWidgets import *
+elif PGL_QT_VERSION == 5:
     from PyQt5.QtCore import *
     from PyQt5.QtGui import *
     from PyQt5.QtWidgets import *

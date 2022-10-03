@@ -4,10 +4,8 @@ function(detect_plantgl_version pgldir)
     message(STATUS ${pgldir}/plantgl/version.h)
     file(STRINGS "${pgldir}/plantgl/version.h" PGL_VERSION
       REGEX "#define[ ]+PGL_VERSION[ ]+0x[0-9A-F]+")
-    message(STATUS ${PGL_VERSION})
     string(REGEX MATCH "0x[0-9A-F]+" PGL_VERSION ${PGL_VERSION})
     set(PGL_VERSION ${PGL_VERSION} PARENT_SCOPE)
-    message(STATUS ${PGL_VERSION})
 
     if (PGL_VERSION)
       math(EXPR PGL_VERSION_MAJOR "(${PGL_VERSION}  & 0xff0000) >> 16")

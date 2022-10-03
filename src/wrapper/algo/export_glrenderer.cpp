@@ -53,7 +53,7 @@
 
 #ifndef PGL_WITHOUT_QT
 
-#include <QtOpenGL/qgl.h>
+#include <QOpenGLWidget>
 #include <plantgl/python/extract_widget.h>
 
 #endif
@@ -71,14 +71,14 @@ GLRenderer::RenderingMode get_rd_mode(GLRenderer *rd) { return rd->getRenderingM
 GLRenderer::SelectionId get_sel_mode(GLRenderer *rd) { return rd->getSelectionMode(); }
 
 /*
-QGLWidget * get_fgl_mode(GLRenderer * rd)
+QOpenGLWidget * get_fgl_mode(GLRenderer * rd)
 { return rd->getGLFrame();}
 */
 
 #ifndef PGL_WITHOUT_QT
 
 void py_setGLFrame(GLRenderer *rd, boost::python::object widget) {
-  rd->setGLFrame(extract_widget<QGLWidget>(widget)());
+  rd->setGLFrame(extract_widget<QOpenGLWidget>(widget)());
 }
 
 #endif
@@ -86,7 +86,7 @@ void py_setGLFrame(GLRenderer *rd, boost::python::object widget) {
 void export_GLRenderer() {
   scope glrenderer = class_<GLRenderer, bases<Action>, boost::noncopyable>
           ("GLRenderer", init<Discretizer &>(
-                  "GLRenderer(Discretizer d [, QGLWidget *]) An action which draws objects of type of Geometry or of type of Material to the current GL context."))
+                  "GLRenderer(Discretizer d [, QOpenGLWidget *]) An action which draws objects of type of Geometry or of type of Material to the current GL context."))
           .def("clear", &GLRenderer::clear)
           .def("beginSceneList", &GLRenderer::beginSceneList)
           .def("endSceneList", &GLRenderer::endSceneList)

@@ -68,7 +68,7 @@ class VIEW_API PGLViewer : public Viewer
 public:
 
   /// Constructor.
-  PGLViewer(  QWidget * parent = 0, Qt::WindowFlags f = Qt::WindowFlags() );
+  PGLViewer(  QWidget * parent = 0, Qt::WindowFlags f = Qt::Widget );
 
   /// Constructor.
   PGLViewer( int argc, char ** argv );

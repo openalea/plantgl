@@ -45,7 +45,7 @@
 #include <QtGui/qevent.h>
 #include <QtGui/qclipboard.h>
 #include <QtCore/qstringlist.h>
-#include <QtCore/qregexp.h>
+#include <QtCore>
 #include <QtGlobal>
 #if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/qpushbutton.h>
@@ -404,14 +404,14 @@ void ViewErrorDialog::qtMessage(QtMsgType type, const char *msg )
 }
 
 QString& ViewErrorDialog::highligthText(QString&t){
-    t.replace(QRegExp("<"),"&lt;");
-    t.replace(QRegExp(">"),"&gt;");
-    t.replace(QRegExp("\\*\\*\\*[ \\t]*[Ww][Aa][Rr][Nn][Ii][Nn][Gg][ \\t]*:"),
+    t.replace(QRegularExpression("<"),"&lt;");
+    t.replace(QRegularExpression(">"),"&gt;");
+    t.replace(QRegularExpression("\\*\\*\\*[ \\t]*[Ww][Aa][Rr][Nn][Ii][Nn][Gg][ \\t]*:"),
               "<B>*** Warning :</B>");
-    t.replace(QRegExp("\\*\\*\\*[ \\t]*[Cc][Oo][Mm][Mm][Ee][Nn][Tt][ \\t]*:"),"<B>*** Comment :</B>");
-    t.replace(QRegExp("\\*\\*\\*[ \\t]*[Ee][Rr][Rr][Oo][Rr][ \\t]*:"),"<B>*** Error :</B>");
-    t.replace(QRegExp("\\*\\*\\*[ \\t]*[Pp][Aa][Rr][Ss][Ee][Rr][ \\t]*:"),"<B>*** Parser :</B>");
-    t.replace(QRegExp("\\*\\*\\*[ \\t]*[Ss][Cc][Aa][Nn][Nn][Ee][Rr][ \\t]*:"),"<B>*** Scanner :</B>");
-    t.replace(QRegExp("\\n"),"<BR>");
+    t.replace(QRegularExpression("\\*\\*\\*[ \\t]*[Cc][Oo][Mm][Mm][Ee][Nn][Tt][ \\t]*:"),"<B>*** Comment :</B>");
+    t.replace(QRegularExpression("\\*\\*\\*[ \\t]*[Ee][Rr][Rr][Oo][Rr][ \\t]*:"),"<B>*** Error :</B>");
+    t.replace(QRegularExpression("\\*\\*\\*[ \\t]*[Pp][Aa][Rr][Ss][Ee][Rr][ \\t]*:"),"<B>*** Parser :</B>");
+    t.replace(QRegularExpression("\\*\\*\\*[ \\t]*[Ss][Cc][Aa][Nn][Nn][Ee][Rr][ \\t]*:"),"<B>*** Scanner :</B>");
+    t.replace(QRegularExpression("\\n"),"<BR>");
     return t;
 }

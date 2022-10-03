@@ -36,6 +36,7 @@ getdata = {
     ('PyQt5', 3) : PyQt_data,
     ('PySide', 3) : direct_buffer_data,
     ('PySide2', 3) : direct_buffer_data,
+    ('PySide6', 3) : direct_buffer_data,
 }[qt.name(), sys.version_info.major]
 
 validFormats_8bit = [getattr(QtGui.QImage, name) for name in ('Format_Indexed8', 'Format_Grayscale8') if name in dir(QtGui.QImage)]

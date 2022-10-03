@@ -57,7 +57,10 @@
 
 #ifndef PGL_WITHOUT_QT
 
-#include <QtOpenGL/QGLWidget>
+#include <QtOpenGL>
+#include <QOpenGLWidget>
+#include <QWidget>
+
 #include <QtGui/QImage>
 #include <QtGui/QFont>
 
@@ -202,7 +205,7 @@ bool GLRenderer::discretize_and_render(T *geom) {
 
 GLRenderer::GLRenderer(Discretizer &discretizer
 #ifndef PGL_WITHOUT_QT
-    , QGLWidget *glframe
+    , QOpenGLWidget *glframe
 #endif
 ) :
     Action(),
@@ -249,9 +252,9 @@ bool GLRenderer::setGLFrameFromId(WId wid) {
 #ifdef Q_CC_MSVC
   // By default qmake do not compile project with rtti information when
   // using msvc. So do a static cast
-  QGLWidget * glwidget = static_cast<QGLWidget *>(widget);
+  QOpenGLWidget * glwidget = static_cast<QOpenGLWidget *>(widget);
 #else
-  QGLWidget * glwidget = dynamic_cast<QGLWidget *>(widget);
+  QOpenGLWidget * glwidget = dynamic_cast<QOpenGLWidget *>(widget);
 #endif
   if (!glwidget) return false;
   setGLFrame(glwidget);
@@ -279,7 +282,7 @@ void GLRenderer::init() {
 #ifndef __APPLE__
 
   if (HasGenerateMipmap == -1) {
-      glGenerateMipmap = (PFNGLGENERATEMIPMAPPROC)QGLContext::currentContext()->getProcAddress("glGenerateMipmap");
+      glGenerateMipmap = (PFNGLGENERATEMIPMAPPROC)QOpenGLContext::currentContext()->getProcAddress("glGenerateMipmap");
       HasGenerateMipmap = (glGenerateMipmap?1:0);
   }
 
@@ -1082,7 +1085,9 @@ bool GLRenderer::process(ImageTexture * texture) {
     if (img.load(texture->getFilename().c_str())) {
       bool notUsingMipmap = (!texture->getMipmaping()) && isPowerOfTwo(img.width()) && isPowerOfTwo(img.height());
       glEnable(GL_TEXTURE_2D);
-      img = QGLWidget::convertToGLFormat(img);
+      QOpenGLTexture qgl_texture(img);
+      //img = QGLWidget::convertToGLFormat(img);
+      
       GLuint id;
       glGenTextures(1, &id);
       if (id != 0) {
@@ -1110,8 +1115,9 @@ bool GLRenderer::process(ImageTexture * texture) {
                           GL_TEXTURE_MIN_FILTER,
                           GL_LINEAR);
 
-          glTexImage2D(GL_TEXTURE_2D, 0, 4, img.width(), img.height(), 0,
-                       GL_RGBA, GL_UNSIGNED_BYTE, img.bits());
+          qgl_texture.bind();
+          //glTexImage2D(GL_TEXTURE_2D, 0, 4, img.width(), img.height(), 0,
+          //             GL_RGBA, GL_UNSIGNED_BYTE, img.bits());
         } else {
 #ifndef PGL_OLD_MIPMAP_STYLE
           if (HasGenerateMipmap) {
@@ -1121,8 +1127,9 @@ bool GLRenderer::process(ImageTexture * texture) {
 
             glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
 
-            glTexImage2D(GL_TEXTURE_2D, 0, 4, img.width(), img.height(), 0,
-                         GL_RGBA, GL_UNSIGNED_BYTE, img.bits());
+            qgl_texture.bind();
+            //glTexImage2D(GL_TEXTURE_2D, 0, 4, img.width(), img.height(), 0,
+            //             GL_RGBA, GL_UNSIGNED_BYTE, img.bits());
 
             glGenerateMipmap(GL_TEXTURE_2D);
           }
@@ -1941,7 +1948,19 @@ bool GLRenderer::process(Text * text) {
         }
 
         const Vector3 &position = text->getPosition();
-        __glframe->renderText(position.x(), position.y(), position.z(), QString(text->getString().c_str()), f);
+
+        // Retrieve last OpenGL color to use as a font color
+        GLdouble glColor[4];
+        glGetDoublev(GL_CURRENT_COLOR, glColor);
+        QColor fontColor = QColor(glColor[0], glColor[1], glColor[2], glColor[3]);
+
+        // Render text
+        QPainter painter(__glframe);
+        painter.setPen(fontColor);
+        painter.setFont(f);
+        painter.drawText(position.x(), position.y(), QString(text->getString().c_str()));
+        painter.end();
+        //__glframe->renderText(position.x(), position.y(), position.z(), QString(text->getString().c_str()), f);
 
         if (text->getScreenCoordinates()) {
           glMatrixMode(GL_PROJECTION);

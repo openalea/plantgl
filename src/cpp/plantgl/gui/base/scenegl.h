@@ -66,7 +66,7 @@ class QMenuBar;
 class QMainWindow;
 class QTreeWidget;
 class QTreeWidgetItem;
-class QGLWidget;
+class QOpenGLWidget;
 class QEvent;
 
 /* ----------------------------------------------------------------------- */
@@ -97,7 +97,7 @@ class VIEW_API ViewRendererGL  : public ViewObjectGL
 public :
 
   /// Constructor
-  ViewRendererGL(QGLWidget * parent=0, const char * name=0);
+  ViewRendererGL(QOpenGLWidget * parent=0, const char * name=0);
 
   /// Destructor.
   virtual ~ViewRendererGL();
@@ -106,7 +106,7 @@ public :
   virtual void connectTo(ViewStatusBar *);
 
   /// Connect this to a GL Widget.
-  virtual void connectTo(QGLWidget *);
+  virtual void connectTo(QOpenGLWidget *);
 
   /// Connect this to a error dialog.
   virtual void connectTo(ViewErrorDialog *);
@@ -258,7 +258,7 @@ public :
   /// Constructor.
   ViewSceneRendererGL(ViewCameraGL * camera=0,
               ViewLightGL * light=0,
-              QGLWidget * parent=0,
+              QOpenGLWidget * parent=0,
               const char * name=0);
 
   /// Destructor.

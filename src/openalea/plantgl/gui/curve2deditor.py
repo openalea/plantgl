@@ -4,9 +4,9 @@ from openalea.plantgl.math import *
 from math import pow,log
 
 from openalea.plantgl.gui.qt import QtCore, QtGui, QtOpenGL
-from openalea.plantgl.gui.qt.QtCore import QEvent, QObject, QPoint, Qt, pyqtSignal, qWarning
-from openalea.plantgl.gui.qt.QtGui import QColor, QImage,QFont
-from openalea.plantgl.gui.qt.QtOpenGL import QGLWidget
+from openalea.plantgl.gui.qt.QtCore import QEvent, QObject, QPoint, Qt, Signal, qWarning
+from openalea.plantgl.gui.qt.QtGui import QColor, QImage, QFont
+from openalea.plantgl.gui.qt.QtOpenGL import QOpenGLWidget
 from openalea.plantgl.gui.qt.QtWidgets import QFileDialog, QApplication
 
 class Curve2DConstraint:
@@ -163,7 +163,7 @@ from OpenGL.GLU import *
 class Curve2DEditor (QGLViewer):
     BLACK_THEME = {'Curve' : (255,255,255), 'BackGround' : (51,51,51), 'Text' : (255,255,255), 'CtrlCurve' : (122,122,0), 'GridStrong' : (102,102,102), 'GridFade' : (51,51,51) , 'Points' : (250,30,30), 'FirstPoint' : (250,30,250), 'SelectedPoint' : (30,250,30), 'DisabledBackGround' : (150,150,150) }
     WHITE_THEME = {'Curve' : (255,0,0), 'BackGround' : (255,255,255), 'Text' : (0,0,0), 'CtrlCurve' : (25,0,25), 'GridStrong' : (102,102,102), 'GridFade' : (153,153,153) , 'Points' : (30,250,30), 'FirstPoint' : (250,30,250), 'SelectedPoint' : (30,250,30), 'DisabledBackGround' : (150,150,150)}
-    valueChanged = pyqtSignal()
+    valueChanged = Signal()
 
     def __init__(self,parent,constraints=Curve2DConstraint()):
         QGLViewer.__init__(self,parent)
@@ -293,7 +293,7 @@ class Curve2DEditor (QGLViewer):
             #qWarning("Image size set to " + str(newWidth) + "x" + str(newHeight) + " pixels")
             img = img.copy(0, 0, newWidth, newHeight)
 
-        glImg = QImage(QGLWidget.convertToGLFormat(img)) # flipped 32bit RGBA
+        glImg = QImage(QOpenGLWidget.convertToGLFormat(img)) # flipped 32bit RGBA
 
         # Bind the img texture...
         glTexImage2D(GL_TEXTURE_2D, 0, 4, glImg.width(), glImg.height(), 0,

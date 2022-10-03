@@ -53,7 +53,7 @@
 
 #ifndef PGL_WITHOUT_QT
 
-#include <QtOpenGL/qgl.h>
+#include <QtOpenGL>
 #ifdef QT_NO_OPENGL
 #pragma message "Qt compiled without openGL support"
 #endif

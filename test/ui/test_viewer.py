@@ -5,7 +5,13 @@ import openalea.plantgl.all as pgl
 
 def get_qapp():
     qtversion = get_pgl_qt_version() >> 16
-    if qtversion == 4:
+    if qtversion == 6:
+        from PySide6.QtWidgets import QApplication
+        if QtGui.QApplication.instance() is None:
+            return QtGui.QApplication([])
+
+        return QtGui.QApplication.instance()
+    elif qtversion == 4:
         from PyQt4.QtGui import qApp
         return qApp
     else:
