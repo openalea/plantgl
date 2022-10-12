@@ -41,10 +41,27 @@ using namespace std;
 
 
 boost::python::object py_grabZBufferPoints(ZBufferEngine * ze, real_t jitter = 0, real_t raywidth = 0){
-    std::pair<Point3ArrayPtr,Color4ArrayPtr> bufpoints = ze->grabZBufferPoints(jitter, raywidth);
-    return boost::python::make_tuple(bufpoints.first,bufpoints.second);
+    std::tuple<Point3ArrayPtr,Color3ArrayPtr,Uint32Array1Ptr> bufpoints = ze->grabZBufferPoints(jitter, raywidth);
+    if (ze->getRenderingStyle() & ZBufferEngine::eIdAndColorBased)
+        return boost::python::make_tuple(std::get<0>(bufpoints),std::get<1>(bufpoints),std::get<2>(bufpoints));
+    else {
+        if (ze->getRenderingStyle() & ZBufferEngine::eIdBased)
+            return boost::python::make_tuple(std::get<0>(bufpoints),std::get<2>(bufpoints));
+        else if (ze->getRenderingStyle() & ZBufferEngine::eColorBased)
+            return boost::python::make_tuple(std::get<0>(bufpoints),std::get<1>(bufpoints));
+        else
+            return boost::python::make_tuple(std::get<0>(bufpoints));
+    }
 }
 
+boost::python::object py_idhistogram(ZBufferEngine * ze, bool solidangle = true){
+    pgl_hash_map<uint32_t,uint32_t> res = ze->idhistogram(solidangle);
+    boost::python::list bres;
+    for(pgl_hash_map<uint32_t,uint32_t>::const_iterator _it = res.begin(); _it != res.end(); ++_it){
+      bres.append(boost::python::make_tuple(_it->first,_it->second));
+    }
+    return bres;
+}
 void export_ZBufferEngine()
 {
 
@@ -52,17 +69,23 @@ void export_ZBufferEngine()
     .value("eColorBased",ZBufferEngine::eColorBased)
     .value("eIdBased",ZBufferEngine::eIdBased)
     .value("eDepthOnly",ZBufferEngine::eDepthOnly)
+    .value("eIdAndColorBased",ZBufferEngine::eIdAndColorBased)
       .export_values()
       ;
-    
+
+
   class_< ZBufferEngine, bases<ProjectionEngine>, boost::noncopyable > 
-      ("ZBufferEngine", init<uint16_t, uint16_t , const Color3&, ZBufferEngine::eRenderingStyle>("Construct a ZBufferEngine.",(bp::arg("imageWidth")=800, bp::arg("imageHeight")=600, bp::arg("backGroundColor")=Color3(0,0,0), bp::arg("renderingStyle") = ZBufferEngine::eColorBased)) )
-      .def(init<uint16_t, uint16_t , const Color4&, ZBufferEngine::eRenderingStyle>("Construct a ZBufferEngine.",(bp::arg("imageWidth")=800, bp::arg("imageHeight")=600, bp::arg("defaultColor")=Color4::fromUint(Shape::NOID), bp::arg("renderingStyle") = ZBufferEngine::eIdBased)))
-      .def(init<uint16_t, uint16_t , uint32_t, Color4::eColor4Format>("Construct a ZBufferEngine.",(bp::arg("imageWidth")=800, bp::arg("imageHeight")=600, bp::arg("defaultId")=Shape::NOID, bp::arg("conversionformat")=Color4::eARGB)))
-      .def("setLight", (void(ZBufferEngine::*)(const Vector3&, const Color3&))&ZBufferEngine::setLight)
-      .def("setLight", (void(ZBufferEngine::*)(const Vector3&, const Color3&, const Color3&, const Color3&))&ZBufferEngine::setLight)
+      ("ZBufferEngine", init<uint16_t, uint16_t, ZBufferEngine::eRenderingStyle, const Color3&, uint32_t, bool>("Construct a ZBufferEngine.",(bp::arg("imageWidth")=800, bp::arg("imageHeight")=600, bp::arg("renderingStyle") = ZBufferEngine::eColorBased, bp::arg("backGroundColor")=Color3(0,0,0), bp::arg("defaultId")=Shape::NOID, bp::arg("multithreaded")=true)) )
+      .def("setLight", (void(ZBufferEngine::*)(const Vector3&, const Color3&, bool))&ZBufferEngine::setLight, (bp::arg("position"), bp::arg("color")=Color3(255,255,255), bp::arg("directional")=false))
+      .def("setLight", (void(ZBufferEngine::*)(const Vector3&, const Color3&, const Color3&, const Color3&, bool))&ZBufferEngine::setLight, (bp::arg("position"), bp::arg("ambient")=Color3(255,255,255), bp::arg("diffuse")=Color3(255,255,255), bp::arg("specular")=Color3(255,255,255), bp::arg("directional")=false))
+      .def("setHemisphericCamera", &ZBufferEngine::setHemisphericCamera, (bp::arg("near")=0,bp::arg("far")=REAL_MAX))
+      .def("setSphericalCamera", &ZBufferEngine::setSphericalCamera, (bp::arg("viewAngle")=180,bp::arg("near")=0,bp::arg("far")=REAL_MAX))
+      .def("setCylindricalCamera", &ZBufferEngine::setCylindricalCamera, (bp::arg("viewAngle")=180,bp::arg("bottom")=-1,bp::arg("top")=1,bp::arg("near")=0,bp::arg("far")=REAL_MAX))
+      .def("getRenderingStyle", &ZBufferEngine::getRenderingStyle)
       .def("getImage", &ZBufferEngine::getImage)
       .def("getDepthBuffer", &ZBufferEngine::getDepthBuffer)
+      .def("getIdBuffer", &ZBufferEngine::getIdBuffer)
+      .def("getIdBufferAsImage", &ZBufferEngine::getIdBufferAsImage,(bp::arg("conversionFormat")=Color4::eARGB))
       .add_property("multithreaded",&ZBufferEngine::isMultiThreaded, &ZBufferEngine::setMultiThreaded)
 
 
@@ -70,11 +93,11 @@ void export_ZBufferEngine()
       .def("duplicateBuffer", (void(ZBufferEngine::*)(int32_t, int32_t, real_t, bool, const Color3&))&ZBufferEngine::duplicateBuffer,(bp::arg("from"), bp::arg("to")=600, bp::arg("useDefaultColor")=true, bp::arg("defaultcolor")=Color3(0,0,0)))
       .def("periodizeBuffer", (void(ZBufferEngine::*)(const Vector3&, const Vector3&, bool, const Color3&))&ZBufferEngine::periodizeBuffer,(bp::arg("from"), bp::arg("to")=600, bp::arg("useDefaultColor")=true, bp::arg("defaultcolor")=Color3(0,0,0)))
       .def("periodizeBuffer", (void(ZBufferEngine::*)(int32_t, int32_t, real_t, bool, const Color3&))&ZBufferEngine::periodizeBuffer,(bp::arg("from"), bp::arg("to")=600, bp::arg("useDefaultColor")=true, bp::arg("defaultcolor")=Color3(0,0,0)))
-      .def("setIdRendering", &ZBufferEngine::setIdRendering)
       .def("isVisible", (bool(ZBufferEngine::*)(int32_t, int32_t, real_t) const)&ZBufferEngine::isVisible,(bp::arg("x"), bp::arg("y"), bp::arg("z")))
       .def("isVisible", (bool(ZBufferEngine::*)(const Vector3&) const)&ZBufferEngine::isVisible,(bp::arg("position")))
       .def("grabZBufferPoints", &py_grabZBufferPoints,(bp::arg("jitter")=0, bp::arg("raywidth")=0))
+      .def("idhistogram", &py_idhistogram, (bp::arg("solidangle")=true))
       ;
 
-
+      def("formFactors", &formFactors, (bp::arg("points"), bp::arg("triangles"), bp::arg("normals")=Point3ArrayPtr(0), bp::arg("ccw")=true, bp::arg("discretization")=200, bp::arg("solidangle")=200));
 }

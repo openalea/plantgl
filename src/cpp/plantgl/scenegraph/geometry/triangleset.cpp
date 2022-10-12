@@ -368,3 +368,18 @@ TriangleSet::transform( const Transformation3DPtr& transformation ) const {
 
 /* ----------------------------------------------------------------------- */
 
+std::pair<Vector3, real_t> PGL(circumsphere)(const Vector3& a, const Vector3& b, const Vector3& c){
+
+    Vector3 ac = c - a ;
+    Vector3 ab = b - a ;
+    Vector3 abXac = cross(ab, ac ) ;
+
+    // this is the vector from a TO the circumsphere center
+    Vector3 toCircumsphereCenter = (cross(abXac, ab )*normSquared(ac) + cross(ac, abXac )*normSquared(ab)) / (2.*normSquared(abXac)) ;
+    float circumsphereRadius = norm(toCircumsphereCenter) ;
+
+    // The 3 space coords of the circumsphere center then:
+    Vector3 ccs = a  +  toCircumsphereCenter ; // now this is the actual 3space location
+
+    return std::pair<Vector3, real_t>(ccs, circumsphereRadius);
+}

@@ -48,70 +48,33 @@
 #include <boost/asio.hpp>
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
-#include <queue>
 #include <chrono>
 /* ----------------------------------------------------------------------- */
 
 PGL_USING_NAMESPACE
 
-#define DEFAULT_MULTITHREAD true
-
-ZBufferEngine::ZBufferEngine(uint16_t imageWidth, uint16_t imageHeight, const Color3& backGroundColor, eRenderingStyle style):
+ZBufferEngine::ZBufferEngine(uint16_t imageWidth, 
+                             uint16_t imageHeight,
+                             eRenderingStyle style,
+                             const Color3& backGroundColor,
+                             uint32_t defaultid,
+                             bool multithreaded ):
     ImageProjectionEngine(imageWidth,imageHeight),
-    __light(new Light()),  
+    __light(new Light()),
+    __style(style),
+    __defaultid(defaultid),
     __alphathreshold(0.99),
     __depthBuffer(new RealArray2(uint_t(imageWidth), uint_t(imageHeight), REAL_MAX)),
-    __frameBuffer(style != eDepthOnly ? new PglFrameBufferManager(imageWidth, imageHeight, style == eIdBased ? 4 : 3, backGroundColor) : NULL),
+    __frameBuffer((style & eColorBased) ? new PglFrameBufferManager(imageWidth, imageHeight, 3, backGroundColor) : NULL),
+    __idBuffer((style & eIdBased) ? new Uint32Array2(uint_t(imageWidth), uint_t(imageHeight), defaultid) : NULL),
     __imageMutex(),
-    __triangleshader(NULL),
+    __triangleshader((style != eDepthOnly) ? new TriangleShaderSelector(this) : NULL),
     __triangleshaderset(NULL),
-    __multithreaded(DEFAULT_MULTITHREAD)
+    __multithreaded(multithreaded)
 {
-    if (style != eDepthOnly) {
-        if (style == eIdBased) __triangleshader = TriangleShaderPtr(new IdBasedShader(this));
-        else __triangleshader = TriangleShaderPtr(new TriangleShaderSelector(this));
-    }
+    beginProcess();
 }    
 
-
-ZBufferEngine::ZBufferEngine(uint16_t imageWidth, uint16_t imageHeight, const Color4& backGroundColor, eRenderingStyle style):
-    ImageProjectionEngine(imageWidth,imageHeight),
-    __light(new Light()),  
-    __alphathreshold(0.99),
-    __depthBuffer(new RealArray2(uint_t(imageWidth), uint_t(imageHeight), REAL_MAX)),
-    __frameBuffer(style == eColorBased ? new PglFrameBufferManager(imageWidth, imageHeight, 3, backGroundColor) : NULL),
-    __imageMutex(),
-    __triangleshader(NULL),
-    __triangleshaderset(NULL),
-    __multithreaded(DEFAULT_MULTITHREAD)
-{
-    if (style != eDepthOnly) {
-        if (style == eIdBased) __triangleshader = TriangleShaderPtr(new IdBasedShader(this, backGroundColor.toUint()));
-        else __triangleshader = TriangleShaderPtr(new TriangleShaderSelector(this));
-    }
-}    
-    
-ZBufferEngine::ZBufferEngine(uint16_t imageWidth, uint16_t imageHeight,uint32_t defaultid, Color4::eColor4Format conversionformat):
-    ImageProjectionEngine(imageWidth,imageHeight),
-    __light(new Light()),  
-    __alphathreshold(0.99),
-    __depthBuffer(new RealArray2(uint_t(imageWidth), uint_t(imageHeight), REAL_MAX)),
-    __frameBuffer(), // will be initialized into IdBasedShader constructor
-    __imageMutex(),
-    __triangleshader(new IdBasedShader(this, defaultid, conversionformat)),
-    __triangleshaderset(NULL),
-    __multithreaded(DEFAULT_MULTITHREAD)
-{
-}    
-
-ZBufferEngine::ZBufferEngine(uint16_t imageWidth, uint16_t imageHeight) :
-    ImageProjectionEngine(imageWidth,imageHeight),
-    __light(new Light()),  
-	__alphathreshold(0.99),
-	__depthBuffer(new RealArray2(uint_t(imageWidth), uint_t(imageHeight), REAL_MAX)),
-	__frameBuffer(),
-	__triangleshader(NULL)
-{}  
     
 ZBufferEngine::~ZBufferEngine()
 {
@@ -136,7 +99,7 @@ bool ZBufferEngine::tryLock(uint_t x, uint_t y)
 void ZBufferEngine::beginProcess()
 {
 
-    if (__multithreaded){
+    if (__multithreaded && is_null_ptr(__imageMutex)){
         // printf("begin rendering : create thread pool\n");
         __imageMutex = getImageMutex(__imageWidth, __imageHeight);
     }
@@ -148,10 +111,29 @@ void ZBufferEngine::endProcess()
 
     if(__multithreaded){
         ThreadManager::get().join();
-        // __pool->join();
-        // printf("end rendering : %u\n", uint32_t(__nb_tasks));
-        //printf("end rendering done\n");
     }
+}
+
+void ZBufferEngine::setHemisphericCamera(real_t near, real_t far)
+{  
+    setSphericalCamera(180, near, far);
+}
+
+void ZBufferEngine::setSphericalCamera(real_t viewAngle, real_t near, real_t far)
+{  
+    __camera = ProjectionCamera::sphericalCamera(viewAngle, near, far); 
+    for (uint32_t x = 0; x < __imageWidth; ++x){
+        for (uint32_t y = 0; y < __imageHeight; ++y){
+            if (!__camera->isValidPixel(x,y,__imageWidth,__imageHeight)){
+                if(__style & eColorBased) setFrameBufferAt(x,y,Color3::BLACK);
+                __depthBuffer->setAt(x, y, near);
+            }
+        }
+    }
+}
+void ZBufferEngine::setCylindricalCamera(real_t viewAngle, real_t bottom, real_t top, real_t near, real_t far)
+{  
+    __camera = ProjectionCamera::cylindricalCamera(viewAngle, bottom, top, near, far); 
 }
 
 
@@ -159,7 +141,20 @@ ImagePtr ZBufferEngine::getImage() const
 {
     PglFrameBufferManagerPtr fb = dynamic_pointer_cast<PglFrameBufferManager>(__frameBuffer);
     if (is_valid_ptr(fb)) { return fb->getImage(); }
+    printf("No valid framebuffer\n");
     return ImagePtr();
+}
+
+ImagePtr ZBufferEngine::getIdBufferAsImage(Color4::eColor4Format conversionformat) const
+{
+    ImagePtr result(new Image(__imageWidth, __imageHeight, 4));
+
+    for (uint_t x = 0 ; x < __imageWidth ; ++x)
+        for (uint_t y = 0 ; y < __imageHeight ; ++y){
+            result->setPixelAt(x,y,Color4::fromUint(__idBuffer->getAt(x,y), conversionformat));
+        }
+
+    return result;
 }
 
 
@@ -205,31 +200,61 @@ bool ZBufferEngine::isVisible(const Vector3& pos) const
 }
 
 
-bool ZBufferEngine::renderRaster(uint32_t x, uint32_t y, real_t z, const Color4& rasterColor)
+bool ZBufferEngine::renderRaster(uint32_t x, uint32_t y, real_t z, const Color4& rasterColor, const uint32_t id)
 {
     if (isTotallyTransparent(rasterColor.getAlpha())) return false;
 
     lock(x,y);
     if (isVisible(x,y,z)) {
         __depthBuffer->setAt(x, y, z);
-        setFrameBufferAt(x,y,rasterColor);
+        if(__style & eColorBased){
+            setFrameBufferAt(x, y, rasterColor);
+        }
+        if(__style & eIdBased){
+            __idBuffer->setAt(x, y, id);
+        }
         unlock(x,y);
         return true;
     }
     unlock(x,y);
-
     return false;
+}
+
+void ZBufferEngine::_tryRenderRaster(const struct Fragment& fragment, FragmentQueue& failqueue)
+{
+    if (!_tryRenderRaster(fragment.x, fragment.y, fragment.z, fragment.color, fragment.id))
+        failqueue.push(fragment);
+}
+
+bool ZBufferEngine::_tryRenderRaster(uint32_t x, uint32_t y, real_t z, const Color4& rasterColor, const uint32_t id)
+{
+    if (isTotallyTransparent(rasterColor.getAlpha())) return false;
+
+    if(tryLock(x,y)){
+        if (isVisible(x,y,z)) {
+            __depthBuffer->setAt(x, y, z);
+            if(__style & eColorBased){
+                setFrameBufferAt(x, y, rasterColor);
+            }
+            if(__style & eIdBased){
+                __idBuffer->setAt(x, y, id);
+            }
+        }
+        unlock(x,y);
+        return true;
+    }
+    else return false;
 
 }
 
-void ZBufferEngine::setLight(const Vector3& lightPosition, const Color3& lightColor)
+void ZBufferEngine::setLight(const Vector3& lightPosition, const Color3& lightColor, bool directional)
 {
-    __light->set(lightPosition, lightColor);
+    __light->set(lightPosition, lightColor, directional);
 }
 
-void ZBufferEngine::setLight(const Vector3& lightPosition, const Color3& lightAmbient, const Color3& lightDiffuse, const Color3& lightSpecular)
+void ZBufferEngine::setLight(const Vector3& lightPosition, const Color3& lightAmbient, const Color3& lightDiffuse, const Color3& lightSpecular, bool directional)
 {
-    __light->set(lightPosition, lightAmbient, lightDiffuse, lightSpecular);
+    __light->set(lightPosition, lightAmbient, lightDiffuse, lightSpecular, directional);
 }
 
 
@@ -247,13 +272,15 @@ void ZBufferEngine::iprocess(TriangleSetPtr triangles, AppearancePtr appearance,
     bool hasColor = triangles->hasColorList();
 
     TriangleShaderPtr shader;
-    if (threadid != 0) {
-        assert(threadid <= ThreadManager::get().nb_threads());
-        //printf("session %u\n", threadid);
-        shader = __triangleshaderset[threadid-1];
-    }
-    else {
-        shader = __triangleshader;
+    if (getRenderingStyle() & eColorBased){
+        if (threadid != 0) {
+            assert(threadid <= ThreadManager::get().nb_threads());
+            //printf("session %u\n", threadid);
+            shader = __triangleshaderset[threadid-1];
+        }
+        else {
+            shader = __triangleshader;
+        }
     }
 
     // ProjectionCameraPtr camera = (__multithreaded?ProjectionCameraPtr(_camera->copy()):_camera);
@@ -265,17 +292,19 @@ void ZBufferEngine::iprocess(TriangleSetPtr triangles, AppearancePtr appearance,
         const Vector3& v2 = triangles->getFacePointAt(itidx,2);
 
         if(is_valid_ptr(shader)){
-            shader->init(appearance, triangles, itidx, id, _camera, __light);
+            shader->init(appearance, triangles, itidx, _camera, __light);
         }
       
         // shader->initEnv(_camera, __light);
-        renderShadedTriangle(v0, v1, v2, ccw, shader, _camera);
+        renderShadedTriangle(v0, v1, v2, ccw, id, shader, _camera);
 
     }
+    // printf("end process TriangleSetPtr\n");
 
 }
 
-void ZBufferEngine::renderShadedTriangle(const TOOLS(Vector3)& v0, const TOOLS(Vector3)& v1, const TOOLS(Vector3)& v2, bool ccw, const TriangleShaderPtr& shader,  const ProjectionCameraPtr& camera)
+
+void ZBufferEngine::renderShadedTriangle(const TOOLS(Vector3)& v0, const TOOLS(Vector3)& v1, const TOOLS(Vector3)& v2, bool ccw, const uint32_t id, const TriangleShaderPtr& shader,  const ProjectionCameraPtr& camera)
 {
     
      // Projection in camera space
@@ -288,6 +317,10 @@ void ZBufferEngine::renderShadedTriangle(const TOOLS(Vector3)& v0, const TOOLS(V
     Vector3 v1Raster = camera->cameraToRaster(v1Cam,__imageWidth, __imageHeight);
     Vector3 v2Raster = camera->cameraToRaster(v2Cam,__imageWidth, __imageHeight);
 
+    /*printf("rasterize t point [%f,%f,%f] \n",v0Raster.x(),v0Raster.y(),v0Raster.z());
+    printf("rasterize t point [%f,%f,%f] \n",v1Raster.x(),v1Raster.y(),v1Raster.z());
+    printf("rasterize t point [%f,%f,%f] \n",v2Raster.x(),v2Raster.y(),v2Raster.z());*/
+
     v0Raster.x() = std::round(v0Raster.x());
     v0Raster.y() = std::round(v0Raster.y());
     v1Raster.x() = std::round(v1Raster.x());
@@ -295,77 +328,78 @@ void ZBufferEngine::renderShadedTriangle(const TOOLS(Vector3)& v0, const TOOLS(V
     v2Raster.x() = std::round(v2Raster.x());
     v2Raster.y() = std::round(v2Raster.y());
 
-    // Prepare vertex attributes. Divde them by their vertex z-coordinate
-    // (though we use a multiplication here because v.z = 1 / v.z)
-    //Vec2f st0 = st[stindices[i * 3]];
-    //Vec2f st1 = st[stindices[i * 3 + 1]];
-    //Vec2f st2 = st[stindices[i * 3 + 2]];
-    // st0 *= v0Raster.z, st1 *= v1Raster.z, st2 *= v2Raster.z;
+    real_t xmin, ymin, zmin;
+    real_t xmax, ymax, zmax;
 
-    real_t xmin = min3(v0Raster.x(), v1Raster.x(), v2Raster.x());
-    real_t ymin = min3(v0Raster.y(), v1Raster.y(), v2Raster.y());
-    real_t zmin = min3(v0Raster.z(), v1Raster.z(), v2Raster.z());
+    xmin = min3(v0Raster.x(), v1Raster.x(), v2Raster.x());
+    ymin = min3(v0Raster.y(), v1Raster.y(), v2Raster.y());
 
-    real_t xmax = max3(v0Raster.x(), v1Raster.x(), v2Raster.x());
-    real_t ymax = max3(v0Raster.y(), v1Raster.y(), v2Raster.y());
-    real_t zmax = max3(v0Raster.z(), v1Raster.z(), v2Raster.z());
+    xmax = max3(v0Raster.x(), v1Raster.x(), v2Raster.x());
+    ymax = max3(v0Raster.y(), v1Raster.y(), v2Raster.y());
 
+    zmin = min3(v0Raster.z(), v1Raster.z(), v2Raster.z());
+    zmax = max3(v0Raster.z(), v1Raster.z(), v2Raster.z());
+
+    if(camera->methodType() == ProjectionCamera::eRayIntersection && (std::floor(xmax)-std::floor(xmin)>1) && (std::floor(ymax)-std::floor(ymin)>1)) {
+        std::pair<Vector3, real_t> csphere = circumsphere(v0Raster,v1Raster,v2Raster);
+        Vector3 vMeanRaster = csphere.first;
+        real_t radius = csphere.second;
+
+        xmin = vMeanRaster.x() - radius;
+        ymin = vMeanRaster.y() - radius;
+
+        xmax = vMeanRaster.x() + radius;
+        ymax = vMeanRaster.y() + radius;
+
+        if (zmin < 0 && zmax > 0) {
+            if (xmax < __imageWidth/2){ xmin = 0;}
+            else if  (xmin > __imageWidth/2){ xmax = __imageWidth;}
+        }
+
+    }
 
       // the triangle is out of screen
     if (xmin >= __imageWidth  || xmax < 0 || ymin >= __imageHeight || ymax < 0 || !camera->isInZRange(zmin, zmax)) {
-        // printf("skip \n");
-        // printf("%f %f %f \n", v0Raster.x(), v1Raster.x(), v2Raster.x());
-        // printf("%f %f %f \n", v0Raster.y(), v1Raster.y(), v2Raster.y());
-        // printf("%f %f %f \n", v0Raster.z(), v1Raster.z(), v2Raster.z());
         return;
     }
 
     // be careful xmin/xmax/ymin/ymax can be negative. Don't cast to uint32_t
     int32_t x0 = pglMax(int32_t(0), (int32_t)(std::floor(xmin)));
-    int32_t x1 = pglMin(int32_t(__imageWidth) - 1, (int32_t)(std::floor(xmax)));
+    int32_t x1 = pglMin(int32_t(__imageWidth) - 1, (int32_t)(std::ceil(xmax)));
     int32_t y0 = pglMax(int32_t(0), (int32_t)(std::floor(ymin)));
-    int32_t y1 = pglMin(int32_t(__imageHeight) - 1, (int32_t)(std::floor(ymax)));
+    int32_t y1 = pglMin(int32_t(__imageHeight) - 1, (int32_t)(std::ceil(ymax)));
 
     if (__multithreaded && (x1-x0+1)*(y1-y0+1) > 20) {
-        ThreadManager::get().new_task(boost::bind(&ZBufferEngine::rasterizeMT, this, Index4(x0,x1,y0,y1), v0Raster, v1Raster, v2Raster, ccw, TriangleShaderPtr(shader->copy()), ProjectionCameraPtr(camera->copy())));
+        std::tuple<Vector3,Vector3,Vector3> vRasters(v0Raster, v1Raster, v2Raster);
+        std::tuple<Vector3,Vector3,Vector3> vCams(v0Cam,v1Cam,v2Cam);
+
+        ThreadManager::get().new_task(boost::bind(&ZBufferEngine::rasterizeMT, this, Index4(x0,x1,y0,y1), 
+                                                  // v0Raster, v1Raster, v2Raster, v0Cam,v1Cam,v2Cam,
+                                                  vRasters,vCams,
+                                                  ccw, id, 
+                                                  (getRenderingStyle() & eColorBased) ? TriangleShaderPtr(shader->copy()) : shader, ProjectionCameraPtr(camera->copy())));
     }
     else {
-        rasterize(x0,x1,y0,y1,v0Raster,v1Raster,v2Raster,ccw,shader,camera);
+        rasterize(x0,x1,y0,y1,v0Raster,v1Raster,v2Raster,v0Cam,v1Cam,v2Cam,ccw,id,shader,camera);
     }
 }
 
-
-
-
-struct Fragment {
-    real_t x,y,z;
-    real_t w0,w1,w2;
-    Fragment(real_t _x,real_t _y,real_t _z,real_t _w0,real_t _w1,real_t _w2): x(_x),y(_y),z(_z),w0(_w0),w1(_w1),w2(_w2){ }
-};
 
 
 void ZBufferEngine::rasterizeMT(const Index4& rect,
-                              const TOOLS(Vector3)& v0Raster, const TOOLS(Vector3)& v1Raster, const TOOLS(Vector3)& v2Raster, bool ccw, 
+                                const std::tuple<Vector3,Vector3,Vector3>& vRasters, 
+                                const std::tuple<Vector3,Vector3,Vector3>& vCams,
+                              // const TOOLS(Vector3)& v0Raster, const TOOLS(Vector3)& v1Raster, const TOOLS(Vector3)& v2Raster, 
+                            // const TOOLS(Vector3)& v0Cam,    const TOOLS(Vector3)& v1Cam,    const TOOLS(Vector3)& v2Cam,
+                              bool ccw, const uint32_t id, 
                               const TriangleShaderPtr& shader, const ProjectionCameraPtr& camera)
 {
-    rasterize(rect[0],rect[1],rect[2],rect[3],v0Raster,v1Raster,v2Raster,ccw,shader,camera);  
+    rasterize(rect[0],rect[1],rect[2],rect[3],
+              std::get<0>(vRasters),std::get<1>(vRasters),std::get<2>(vRasters),
+              std::get<0>(vCams),std::get<1>(vCams),std::get<2>(vCams),
+             // v1Raster,v2Raster,v0Cam,v1Cam,v2Cam,
+              ccw,id,shader,camera);  
 }
-
-#define PROCESS_FRAGMENT(x,y,z,w0,w1,w2) \
-        if (camera->isInZRange(z)){ \
-            if (isVisible(x, y, z)) { \
-                if(tryLock(x,y)){ \
-                    if (isVisible(x, y, z)) { \
-                        __depthBuffer->setAt(x, y, z); \
-                        if(is_valid_ptr(shader))shader->process(x, y, z, w0, w1, w2); \
-                    } \
-                    unlock(x,y); \
-                } \
-                else { \
-                    fragqueue.push(Fragment(x,y,z, w0, w1, w2)); \
-                } \
-            }  \
-        }
 
 void findorder(real_t * zs, int& firstpoint, int& secpoint, int& thirdpoint){
     firstpoint = 0; secpoint = 1; thirdpoint = 2;
@@ -375,7 +409,9 @@ void findorder(real_t * zs, int& firstpoint, int& secpoint, int& thirdpoint){
 }
 
 void ZBufferEngine::rasterize(int32_t x0, int32_t x1, int32_t y0, int32_t y1,
-                              TOOLS(Vector3) v0Raster, TOOLS(Vector3) v1Raster, TOOLS(Vector3) v2Raster, bool ccw, 
+                              TOOLS(Vector3) v0Raster, TOOLS(Vector3) v1Raster, TOOLS(Vector3) v2Raster, 
+                              TOOLS(Vector3) v0Cam, TOOLS(Vector3) v1Cam, TOOLS(Vector3) v2Cam, 
+                              bool ccw, const uint32_t id, 
                               const TriangleShaderPtr& shader, const ProjectionCameraPtr& camera)
 {
 
@@ -387,153 +423,67 @@ void ZBufferEngine::rasterize(int32_t x0, int32_t x1, int32_t y0, int32_t y1,
     real_t z2 = v2Raster.z();
 
     // Precompute reciprocal of vertex z-coordinate
-    v0Raster.z() = 1. / v0Raster.z();
-    v1Raster.z() = 1. / v1Raster.z();
-    v2Raster.z() = 1. / v2Raster.z();
+    real_t area;
+    if (camera->methodType() == ProjectionCamera::eRayIntersection){
+        area = norm(cross(v0Cam-v1Cam, v0Cam-v2Cam));
+    }
+    else {
+        v0Raster.z() = 1. / v0Raster.z();
+        v1Raster.z() = 1. / v1Raster.z();
+        v2Raster.z() = 1. / v2Raster.z();
 
-    real_t area = edgeFunction(v0Raster, v1Raster, v2Raster, ccw);
+        area = edgeFunction(v0Raster, v1Raster, v2Raster, ccw);
+    }
 
-    std::queue<Fragment> fragqueue;
+    FragmentQueue fragqueue;
 
     // Inner loop
     if ((x0 == x1) && (y0 == y1)) {
-        real_t z = (z0+z1+z2)/3;
-        real_t w0 = 1/3.;
-        PROCESS_FRAGMENT(x0, y0, z, w0, w0, w0)
+        if (camera->isValidPixel(x0,y0,__imageWidth, __imageHeight)){
+            real_t z = (z0+z1+z2)/3;
+            real_t w0 = 1/3.;
+            _tryRenderRaster(Fragment(x0,y0,z, is_valid_ptr(shader) ? shader->process(x0, y0, z, (w0 * z / z0), (w0 * z / z1), (w0 * z / z2)) : Color4::BLACK, id), fragqueue );
+        }
     }
-   /* else if (x0 == x1){
-        real_t zs[3];
-        zs[0] = z0; zs[1] = z1; zs[2] = z2; 
-        uint32_t ys[3];
-        ys[0] = v0Raster.y(); ys[1] = v1Raster.y(); ys[2] = v2Raster.y(); 
-        int firstpoint, secpoint, thirdpoint;
-        findorder(zs, firstpoint, secpoint, thirdpoint);
-
-        real_t ws[3];
-        ws[0] = 0; ws[1] = 0; ws[2] = 0;
-
-        std::vector<std::pair<int,int> > toprocess;
-        toprocess.push_back(std::pair<int,int>(firstpoint, secpoint));
-        if ((ys[thirdpoint]-ys[firstpoint]) * (ys[secpoint]-ys[firstpoint]) < 0){
-            // they are in opposite direction, compare to third point. easy
-            toprocess.push_back(std::pair<int,int>(firstpoint, thirdpoint));
-        }
-        else if ((ys[thirdpoint]-ys[firstpoint]) > (ys[secpoint]-ys[firstpoint]) ){
-            // thirdpoint is more far that second
-            toprocess.push_back(std::pair<int,int>(secpoint, thirdpoint));
-        }
-
-        for (std::vector<std::pair<int,int> >::const_iterator itp = toprocess.begin(); itp != toprocess.end(); ++itp) {
-            int apoint = itp->first;
-            int bpoint = itp->second;
-
-            int deltay = ys[bpoint]-ys[apoint];
-            // printf("process %i to %i : %i %i\n", apoint, bpoint, ys[apoint], ys[bpoint]);
-
-            if (deltay == 0) {
-                ws[apoint] = 1;
-                PROCESS_FRAGMENT(x0, ys[apoint], zs[apoint], ws[0], ws[1], ws[2])
-            }
-            else {
-                real_t fdeltay = fabs(deltay);
-                int32_t dy = (deltay>=0?1:-1);
-                for (int32_t y = ys[apoint]; y != ys[bpoint]+dy; y+=dy) {
-                    ws[0] = 0; ws[1] = 0; ws[2] = 0;
-                    ws[apoint] = fabs(real_t(ys[bpoint])-y)/fdeltay;
-                    ws[bpoint] = fabs(real_t(ys[apoint])-y)/fdeltay;
-                    real_t z = zs[apoint]*ws[apoint]+zs[bpoint]*ws[bpoint];
-                    PROCESS_FRAGMENT(x0, y, z, ws[0], ws[1], ws[2])
-                }
-            }
-        }
-
-    }
-    else if (y0 == y1){
-        real_t zs[3];
-        zs[0] = z0; zs[1] = z1; zs[2] = z2; 
-        real_t xs[3];
-        xs[0] = v0Raster.x(); xs[1] = v1Raster.x(); xs[2] = v2Raster.x(); 
-
-        int firstpoint, secpoint, thirdpoint;
-        findorder(zs, firstpoint, secpoint, thirdpoint);
-
-        real_t ws[3];
-        ws[0] = 0; ws[1] = 0; ws[2] = 0;
-
-        std::vector<std::pair<int,int> > toprocess;
-        toprocess.push_back(std::pair<int,int>(firstpoint, secpoint));
-        if ((xs[thirdpoint]-xs[firstpoint]) * (xs[secpoint]-xs[firstpoint]) < 0){
-            // they are in opposite direction, compare to third point. easy
-            toprocess.push_back(std::pair<int,int>(firstpoint, thirdpoint));
-        }
-        else if ((xs[thirdpoint]-xs[firstpoint]) > (xs[secpoint]-xs[firstpoint]) ){
-            // thirdpoint is more far that second
-            toprocess.push_back(std::pair<int,int>(secpoint, thirdpoint));
-        }
-
-        for (std::vector<std::pair<int,int> >::const_iterator itp = toprocess.begin(); itp != toprocess.end(); ++itp) {
-            int apoint = itp->first;
-            int bpoint = itp->second;
-
-            int deltax = xs[bpoint]-xs[apoint];
-
-            if (deltax == 0) {
-                ws[apoint] = 1;
-                PROCESS_FRAGMENT(xs[apoint], y0, zs[apoint], ws[0], ws[1], ws[2])
-            }
-            else {
-                real_t fdeltax = fabs(deltax);
-                int32_t dx = (deltax>=0?1:-1);
-                for (int32_t x = xs[apoint]; x != xs[bpoint]+dx; x+=dx) {
-                    ws[0] = 0; ws[1] = 0; ws[2] = 0;
-                    ws[apoint] = fabs(xs[bpoint]-x)/fdeltax;
-                    ws[bpoint] = fabs(xs[apoint]-x)/fdeltax;
-                    real_t z = zs[apoint]*ws[apoint]+zs[bpoint]*ws[bpoint];
-                    PROCESS_FRAGMENT(x, y0, z, ws[0], ws[1], ws[2])
-                }
-            }
-        }
-
-    }*/
     else {
         for (int32_t y = y0; y <= y1; ++y) {
             for (int32_t x = x0; x <= x1; ++x) {
 
                 Vector2 pixelSample(x + 0.5, y + 0.5);
+                if (camera->methodType() == ProjectionCamera::eProjection){
 
-                // find weight of pixel
-                real_t w0 = edgeFunction(v1Raster, v2Raster, pixelSample, ccw);
-                real_t w1 = edgeFunction(v2Raster, v0Raster, pixelSample, ccw);
-                real_t w2 = edgeFunction(v0Raster, v1Raster, pixelSample, ccw);
+                    // find weight of pixel
+                    real_t w0 = edgeFunction(v1Raster, v2Raster, pixelSample, ccw);
+                    real_t w1 = edgeFunction(v2Raster, v0Raster, pixelSample, ccw);
+                    real_t w2 = edgeFunction(v0Raster, v1Raster, pixelSample, ccw);
 
-                // printf("%i %i : %f %f %f\n", x,y,w0,w1,w2);
+                    // printf("%i %i : %f %f %f\n", x,y,w0,w1,w2);
 
-                if ((w0 > -GEOM_EPSILON && w1 > -GEOM_EPSILON && w2 > -GEOM_EPSILON) || (w0 < GEOM_EPSILON && w1 < GEOM_EPSILON && w2 < GEOM_EPSILON)) {
-                    w0 /= area;
-                    w1 /= area;
-                    w2 /= area;
+                    if ((w0 > -GEOM_EPSILON && w1 > -GEOM_EPSILON && w2 > -GEOM_EPSILON) || (w0 < GEOM_EPSILON && w1 < GEOM_EPSILON && w2 < GEOM_EPSILON)) {
+                        w0 /= area;
+                        w1 /= area;
+                        w2 /= area;
 
-                    real_t oneOverZ = v0Raster.z() * w0 + v1Raster.z() * w1 + v2Raster.z() * w2;
-                    real_t z = 1. / oneOverZ;
+                        real_t oneOverZ = v0Raster.z() * w0 + v1Raster.z() * w1 + v2Raster.z() * w2;
+                        real_t z = 1. / oneOverZ;
 
-                    // Depth-buffer test
-                    if (camera->isInZRange(z)){
-
-                        // Vec2f st = st0 * w0 + st1 * w1 + st2 * w2;                        
-                        // st *= z;
-                        if (isVisible(x, y, z)) {
-                            if(tryLock(x,y)){
-                                if (isVisible(x, y, z)) {
-                                    __depthBuffer->setAt(x, y, z);
-                                    if(is_valid_ptr(shader))shader->process(x, y, z, (w0 * z / z0), (w1 * z / z1), (w2 * z / z2));
-                                }
-                                unlock(x,y);
-                            }
-                            else {
-                                fragqueue.push(Fragment(x,y,z,(w0 * z / z0), (w1 * z / z1), (w2 * z / z2)));
-
-                            }
-                        }                   
+                        // Depth-buffer test
+                        if (camera->isInZRange(z)){
+                            _tryRenderRaster(Fragment(x,y,z, is_valid_ptr(shader) ? shader->process(x, y, z, (w0 * z / z0), (w1 * z / z1), (w2 * z / z2)) : Color4::BLACK, id), fragqueue );
+                        }
+                    }
+                }
+                else {
+                    if (camera->isValidPixel(pixelSample.x(),pixelSample.y(),__imageWidth, __imageHeight)){
+                        Vector3 intersection;
+                        int intersected = __camera->rasterToCameraRay(pixelSample.x(), pixelSample.y(), __imageWidth, __imageHeight).intersect(v0Cam, v1Cam, v2Cam, intersection);
+                        if (intersected == 1){
+                            real_t w0 = norm(cross(v1Cam-v2Cam, v1Cam-intersection));
+                            real_t w1 = norm(cross(v2Cam-v0Cam, v2Cam-intersection));
+                            real_t w2 = norm(cross(v0Cam-v1Cam, v0Cam-intersection));
+                            real_t z = norm(intersection);
+                            _tryRenderRaster(Fragment(x,y,z, is_valid_ptr(shader) ? shader->process(x, y, z, (w0 / area), (w1 / area), (w2 / area)) : Color4::BLACK, id), fragqueue );
+                        }
                     }
                 }
             }
@@ -542,34 +492,25 @@ void ZBufferEngine::rasterize(int32_t x0, int32_t x1, int32_t y0, int32_t y1,
     while(!fragqueue.empty()) {
         Fragment f = fragqueue.front();
         fragqueue.pop();
-        if(tryLock(f.x,f.y)){
-            if (isVisible(f.x, f.y, f.z)) {
-                __depthBuffer->setAt(f.x, f.y, f.z);
-                if(is_valid_ptr(shader))shader->process(f.x, f.y, f.z, f.w0, f.w1, f.w2);
-            }
-            unlock(f.x,f.y);
-        }
-        else {
-            fragqueue.push(f);
-        }        
+        _tryRenderRaster(f, fragqueue );
     }
-
 }
 
 
 
 void ZBufferEngine::renderTriangle(const Vector3& v0, const Vector3& v1, const Vector3& v2, 
                                      const Color4& c0,  const Color4& c1,  const Color4& c2, 
-                                     bool ccw, ProjectionCameraPtr camera)
+                                     bool ccw, const uint32_t id, ProjectionCameraPtr camera)
 {
     if(is_null_ptr(camera)) camera = __camera;
     ColorBasedShader * shader = new ColorBasedShader(this);
     shader->setColors(c0, c1, c2);
-    renderShadedTriangle(v0, v1, v2, ccw, shader, camera);
+    TriangleShaderPtr shaderptr(shader);
+    renderShadedTriangle(v0, v1, v2, ccw, id, shaderptr, camera);
 }
 
 
-void ZBufferEngine::renderPoint(const TOOLS(Vector3)& v, const Color4& c, const uint32_t width, ProjectionCameraPtr camera)
+void ZBufferEngine::renderPoint(const TOOLS(Vector3)& v, const Color4& c, const uint32_t width, const uint32_t id, ProjectionCameraPtr camera)
 {
     
     if(is_null_ptr(camera)) camera = __camera;
@@ -579,11 +520,12 @@ void ZBufferEngine::renderPoint(const TOOLS(Vector3)& v, const Color4& c, const 
     // Convert the vertices of the triangle to raster space
     Vector3 vRaster = camera->cameraToRaster(vCam,__imageWidth, __imageHeight);
 
+    // printf("rasterize  point [%f,%f,%f] \n",vRaster.x(),vRaster.y(),vRaster.z());
+    
     // v0Raster.z() = 1. / v0Raster.z();
 
     // the point is out of screen
-    if (vRaster.x() >= __imageWidth  || vRaster.x() < 0 || 
-        vRaster.y() >= __imageHeight || vRaster.y() < 0 || 
+    if (!camera->isValidPixel(vRaster.x(),vRaster.y(),__imageWidth, __imageHeight)||  
         !camera->isInZRange(vRaster.z())) {
         return;
     }
@@ -596,22 +538,109 @@ void ZBufferEngine::renderPoint(const TOOLS(Vector3)& v, const Color4& c, const 
 
     for (int32_t y = y0; y <= y1; ++y) {
         for (int32_t x = x0; x <= x1; ++x) {
-            renderRaster(x, y, vRaster.z(), c);
+            if (camera->isValidPixel(x,y,__imageWidth, __imageHeight)){
+                renderRaster(x, y, vRaster.z(), c, id);
+            }
         }
     }
 }
 
-void ZBufferEngine::renderSegment(const TOOLS(Vector3)& v0, const TOOLS(Vector3)& v1, const Color4& c0, const Color4& c1, const uint32_t width, ProjectionCameraPtr camera)
+void ZBufferEngine::renderSegment(const TOOLS(Vector3)& v0, const TOOLS(Vector3)& v1, const Color4& c0, const Color4& c1, const uint32_t width, const uint32_t id, ProjectionCameraPtr camera)
 {
     if(is_null_ptr(camera)) camera = __camera;
 
+    renderPoint(v0, c0, width, id, camera);
+    renderPoint(v1, c1, width, id, camera);
+
+    Vector3 v0Cam = camera->worldToCamera(v0);
+    Vector3 v1Cam = camera->worldToCamera(v1);
+
+    // Convert the vertices of the triangle to raster space
+    Vector3 v0Raster = camera->cameraToRaster(v0Cam,__imageWidth, __imageHeight);
+    Vector3 v1Raster = camera->cameraToRaster(v1Cam,__imageWidth, __imageHeight);
+
+    if (fabs(v1Raster.y()-v0Raster.y()) < fabs(v1Raster.x()-v0Raster.x())){
+        if(v0Raster.x() > v1Raster.x()){
+            _renderSegment(0, v1Raster, v0Raster, c1, c0, width, id);
+        }
+        else{
+            _renderSegment(0, v0Raster, v1Raster, c0, c1, width, id);
+        }
+    }
+    else {
+        if(v0Raster.y() > v1Raster.y()){
+            _renderSegment(1, v1Raster, v0Raster, c1, c0, width, id);
+        }
+        else {
+            _renderSegment(1, v0Raster, v1Raster, c0, c1, width, id);
+        }
+    }
 }
 
+void ZBufferEngine::_renderSegment(uchar dim, const TOOLS(Vector3)& v0Raster, const TOOLS(Vector3)& v1Raster, const Color4& c0, const Color4& c1, const uint32_t width, const uint32_t id)
+{
+    Vector3 dRaster = v1Raster - v0Raster;
+    real_t totW = norm(dRaster);
+    real_t Dz = dRaster.z()/dRaster[dim];
+    uchar otherdim = (dim + 1) %2;
+    uint32_t dims[2] = { __imageWidth , __imageHeight };
+
+    real_t decal = 1;
+    if (dRaster[otherdim] < 0){
+        decal = -1;
+        dRaster[otherdim] = -dRaster[otherdim];
+    }
+
+    real_t D = 2 * dRaster[otherdim] - dRaster[dim];
+    Vector3 cRaster = v0Raster;
+
+    int32_t halfwidth = width/2.;
+
+    while (cRaster[dim] < v1Raster[dim]+1) {
+        if ((0 <= cRaster[dim] and cRaster[dim] < dims[dim])&&
+            (0 <= cRaster[otherdim] and cRaster[otherdim] < dims[otherdim])){
+            real_t w = norm(cRaster - v0Raster) / totW;
+            Color4 c = c0 * (1-w) + c1 * w;
+            // printf("Render raster %f %f %f\n", cRaster.x(), cRaster.y(), cRaster.z());
+            int32_t w0 = pglMax<int32_t>(int32_t(0), (int32_t)(cRaster[otherdim]) - halfwidth );
+            int32_t w1 = pglMin<int32_t>(int32_t(dims[otherdim]) - 1, (int32_t)(cRaster[otherdim] + halfwidth ));
+            Vector3 ciRaster = cRaster;
+            for (int di = w0 ; di <= w1; ++di) {
+                ciRaster[otherdim] = di;
+                if (__camera->isValidPixel(ciRaster.x(),ciRaster.y(),__imageWidth, __imageHeight)){
+                    renderRaster(ciRaster.x(), ciRaster.y(), ciRaster.z(), c, id);
+                }
+            }
+        }
+        if ( D > 0){
+            cRaster[otherdim] += decal;
+            D -= 2*dRaster[dim];
+        }
+        D += 2* dRaster[otherdim];
+        cRaster.z() += Dz;
+        cRaster[dim] += 1;
+    }
+}
 
 void ZBufferEngine::iprocess(PolylinePtr polyline, MaterialPtr material, uint32_t id, ProjectionCameraPtr camera, uint32_t threadid)
 {
     if(is_null_ptr(camera)) camera = __camera;
+    Point3ArrayPtr points = polyline->getPointList();
+    if (is_valid_ptr(points) && points->size() > 1){
+        Color4ArrayPtr colorlist = polyline->getColorList();
+        if (is_valid_ptr(colorlist)){
+            for(uint32_t i = 0; i < points->size()-1; ++i){
+                renderSegment(points->getAt(i), points->getAt(i+1), colorlist->getAt(i), colorlist->getAt(i+1), polyline->getWidth(), id, camera );
+            }
+        }
+        else {
+            Color4 color = Color4(material->getDiffuseColor(),material->getTransparency());
+            for(uint32_t i = 0; i < points->size()-1; ++i){
+                renderSegment(points->getAt(i), points->getAt(i+1), color, color, polyline->getWidth(), id, camera );
+            }
 
+        }
+    }
 }
 
 void ZBufferEngine::iprocess(PointSetPtr pointset, MaterialPtr material, uint32_t id, ProjectionCameraPtr camera, uint32_t threadid)
@@ -619,7 +648,7 @@ void ZBufferEngine::iprocess(PointSetPtr pointset, MaterialPtr material, uint32_
     if(is_null_ptr(camera)) camera = __camera;
 
     const Point3ArrayPtr points(pointset->getPointList());
-    Color4 defaultcolor = Color4(material->getAmbient(),material->getTransparency());
+    Color4 defaultcolor = Color4(material->getDiffuseColor(),material->getTransparency());
     Color4Array::const_iterator itCol;
     bool colorPerPoint = pointset->hasColorList();
     if (colorPerPoint) {
@@ -628,7 +657,7 @@ void ZBufferEngine::iprocess(PointSetPtr pointset, MaterialPtr material, uint32_
     uint32_t pointsize = pointset->getWidth();
     for (Point3Array::const_iterator it = points->begin(); it!= points->end(); ++it)
     {
-        renderPoint(*it, (colorPerPoint?*itCol:defaultcolor), pointsize, camera);
+        renderPoint(*it, (colorPerPoint?*itCol:defaultcolor), pointsize, id, camera);
     }
 }
 
@@ -894,7 +923,7 @@ real_t pixweigth(const Vector2& a, const Vector2& b, real_t raywidth) {
     }
 }
 
-  std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)> ZBufferEngine::grabZBufferPoints(real_t jitter, real_t raywidth) const
+  std::tuple<PGL(Point3ArrayPtr),PGL(Color3ArrayPtr),PGL(Uint32Array1Ptr)> ZBufferEngine::grabZBufferPoints(real_t jitter, real_t raywidth) const
   {
    uint32_t width = __imageWidth;
    uint32_t height = __imageHeight;
@@ -902,7 +931,13 @@ real_t pixweigth(const Vector2& a, const Vector2& b, real_t raywidth) {
    uint32_t raynbpix = ceil(raywidth);
    
    PGL(Point3ArrayPtr) points(new Point3Array());
-   PGL(Color4ArrayPtr) colors(new Color4Array());
+   PGL(Color3ArrayPtr) colors;
+   if (getRenderingStyle() & eColorBased)
+        colors = new Color3Array();
+   PGL(Uint32Array1Ptr) ids;
+   if (getRenderingStyle() & eIdBased)
+        ids = new Uint32Array1();
+   
    Vector3 origin = __camera->position();
    for (int32_t i = 0 ; i < width ; i++) {
         for (int32_t j = 0 ; j < height ; j++) {
@@ -933,8 +968,11 @@ real_t pixweigth(const Vector2& a, const Vector2& b, real_t raywidth) {
                 }
                 if (point.isValid()) {
                     points->push_back(point);
-                    colors->push_back(Color4(getFrameBufferAt(i,j),0));
-                }
+                    if (getRenderingStyle() & eColorBased)
+                        colors->push_back(getFrameBufferAt(i,j));
+                    if (getRenderingStyle() & eIdBased)
+                        ids->push_back(__idBuffer->getAt(i,j));
+                }   
                 else {
                     printf("invalid points\n");
                 }
@@ -942,5 +980,73 @@ real_t pixweigth(const Vector2& a, const Vector2& b, real_t raywidth) {
         }
     }
 
-    return  std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)> (points, colors);
+    return  std::tuple<PGL(Point3ArrayPtr),PGL(Color3ArrayPtr),PGL(Uint32Array1Ptr)> (points, colors, ids);
   }
+
+pgl_hash_map<uint32_t,uint32_t> ZBufferEngine::idhistogram(bool solidangle) const
+{
+    pgl_hash_map<uint32_t,uint32_t> histo;
+
+    if ((__style & eIdBased) && is_valid_ptr(__idBuffer)){
+       for (int32_t i = 0 ; i < __imageWidth ; i++) {
+            for (int32_t j = 0 ; j < __imageHeight ; j++) {
+            // for (Uint32Array2::const_iterator it = __idBuffer->begin(); it != __idBuffer->end(); ++it){
+                uint32_t pid = __idBuffer->getAt(i,j);
+                // printf("consider id %i\n",pid);
+                if (pid != __defaultid){
+                    pgl_hash_map<uint32_t,uint32_t>::iterator itId = histo.find(pid);
+                    real_t value = (solidangle ? __camera->solidAngle(i,j,__imageWidth,__imageHeight) : 1);
+                    printf("sa[%i,%i] : %f\n",i,j,value);
+                    if (itId == histo.end()){
+                        histo[pid] = value;
+                    }
+                    else {
+                        histo[pid] = itId->second+value;
+                    }
+                }
+            }
+        }
+    }
+
+    return histo;
+}
+
+RealArray2Ptr PGL(formFactors)(const Point3ArrayPtr& points, 
+                               const Index3ArrayPtr& triangles, 
+                               const Point3ArrayPtr& normals,
+                               bool ccw,
+                               uint16_t discretization,
+                               bool solidangle)
+{
+    RealArray2Ptr result(new RealArray2(triangles->size(),triangles->size(),0));
+    uint32_t id = 0;
+    Color4 color = Color4::BLACK;
+    for(Index3Array::const_iterator it = triangles->begin(); it != triangles->end(); ++it, ++id){
+        const Vector3& v0 = points->getAt((*it)[0]); 
+        const Vector3& v1 = points->getAt((*it)[1]); 
+        const Vector3& v2 = points->getAt((*it)[2]); 
+        Vector3 center = (v0+v1+v2)/3;
+        Vector3 normal = (is_valid_ptr(normals) ? normals->getAt(id) : cross(v1-v0,v2-v0));
+        if(normal.normalize() > GEOM_EPSILON){
+            Vector3 up = v0-center;
+            ZBufferEngine ze(discretization,discretization,ZBufferEngine::eIdBased, Color3::BLACK, Shape::NOID, false);
+            ze.setHemisphericCamera();
+            ze.lookAt(center, center+normal, up);
+            uint32_t id2 = 0;
+            ze.beginProcess();
+            for(Index3Array::const_iterator it2 = triangles->begin(); it2 != triangles->end(); ++it2, ++id2){
+                if (it2 != it){
+                    ze.renderTriangle(points->getAt((*it2)[0]), points->getAt((*it2)[1]), points->getAt((*it2)[2]), 
+                                      color, color, color, ccw, id2);
+                }
+            }
+            ze.endProcess();
+            pgl_hash_map<uint32_t,uint32_t> histo = ze.idhistogram(solidangle);
+            for (pgl_hash_map<uint32_t,uint32_t>::const_iterator histoit = histo.begin(); histoit != histo.end(); ++histoit){
+                result->setAt(id, histoit->first, histoit->second);
+            }
+        }
+    }
+    return result;
+}
+

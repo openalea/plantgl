@@ -81,7 +81,7 @@ using namespace std;
   __stream << val.c_str(); \
 
 #define GEOM_XMLPRINT_GEOMETRY(val,finish) \
-  __stream << endl << __indent; val->apply(*this); \
+  __stream << Qt::endl << __indent; val->apply(*this); \
 
 
 #define GEOM_XMLPRINT_INT(val) \
@@ -103,14 +103,14 @@ using namespace std;
   __stream << val.x() << ' ' << val.y() << ' ' << val.z() << ' ' << val.w(); \
 
 #define GEOM_XMLPRINT_FIELD(name,val,type) { \
-    __stream << endl << __indent << name << "=\""; \
+    __stream << Qt::endl << __indent << name << "=\""; \
     GEOM_XMLPRINT_##type(val); \
     __stream << "\" "; \
   };
 
 #define GEOM_XMLPRINT_FIELD_GEOMETRY(name,val,type,finish) { \
         if(!finish)GEOM_XMLPRINT_FINISHOBJ(finish); \
-    __stream << endl << __indent << "<" << name << " >"; \
+    __stream << Qt::endl << __indent << "<" << name << " >"; \
         GEOM_XMLPRINT_INCREMENT_INDENT; \
     GEOM_XMLPRINT_GEOMETRY(val); \
         GEOM_XMLPRINT_DECREMENT_INDENT; \
@@ -118,7 +118,7 @@ using namespace std;
   };
 
 #define GEOM_XMLPRINT_FIELD_ARRAY(name,val,type) { \
-    __stream << endl << __indent << name << "=\""; \
+    __stream << Qt::endl << __indent << name << "=\""; \
     GEOM_XMLPRINT_ARRAY(val,type); \
     __stream << "\" "; \
   };
@@ -156,7 +156,7 @@ using namespace std;
   GEOM_ASSERT( obj ); \
   if (obj->isNamed()) { \
     if (! __cache.insert(obj->getObjectId()).second) { \
-      __stream  <<  __indent << "<" << type << " Name=\"" << obj->getName().c_str() << "\" > " << endl; \
+      __stream  <<  __indent << "<" << type << " Name=\"" << obj->getName().c_str() << "\" > " << Qt::endl; \
       return true; \
     } \
     else { \
@@ -167,7 +167,7 @@ using namespace std;
   bool finish = false; \
 
 #define GEOM_XMLPRINT_FINISHOBJ(finish) \
-        __stream << " />" << endl; \
+        __stream << " />" << Qt::endl; \
         finish = true; \
 
 
@@ -176,7 +176,7 @@ using namespace std;
         if(!finish){ \
                 GEOM_XMLPRINT_FINISHOBJ(finish); \
         } \
-        else { __stream  << endl << __indent << "</" << type << ">" << endl ;} \
+        else { __stream  << Qt::endl << __indent << "</" << type << ">" << Qt::endl ;} \
 
 /* ----------------------------------------------------------------------- */
 
@@ -192,10 +192,10 @@ XMLPrinter::~XMLPrinter()
 
 
 bool XMLPrinter::header(const char * comment){
-  __stream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << endl;
-  __stream << "<!-- File create with GEOM.-->" << endl;
-  if(comment)__stream << "<!--" << comment << "-->" << endl;
-  __stream << endl;
+  __stream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << Qt::endl;
+  __stream << "<!-- File create with GEOM.-->" << Qt::endl;
+  if(comment)__stream << "<!--" << comment << "-->" << Qt::endl;
+  __stream << Qt::endl;
   return true;
 }
 

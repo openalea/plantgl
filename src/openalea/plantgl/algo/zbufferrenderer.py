@@ -1,5 +1,5 @@
 from math import *
-from openalea.plantgl.all import Vector3, Vector4, Matrix4, cross
+from openalea.plantgl.all import Vector3, Vector4, Matrix4, cross, direction
 import numpy as np
 
 class PyZBufferRenderer:
@@ -265,8 +265,7 @@ def test():
     print(renderer.renderPoint((0,0,0)))
     renderer.view()
 
-
-if __name__ == '__main__':
+def test2():
     renderer = ZBufferRenderer(100, 100)
     print(renderer.setPerspective(30, 1, 0.1, 100))
     print(renderer.lookAt(Vector3(5,0,1), (0,0,0),(0,0,1)))
@@ -274,3 +273,91 @@ if __name__ == '__main__':
     renderer.renderPoint((0,0,0), (255,0,0), 3)
     renderer.renderLine((0,0,-1), (0,0,1), (0,255,0) )
     renderer.view()
+
+
+def RayIntersectsTriangle (rayOrigin,rayVector, vertex0, vertex1, vertex2):
+    from openalea.plantgl.all import cross, dot
+    EPSILON = 0.0000001
+    edge1 = vertex1 - vertex0
+    edge2 = vertex2 - vertex0
+    h = cross(rayVector,edge2)
+    a = dot(edge1,h)
+    if (a > -EPSILON and a < EPSILON):
+        return None    # Le rayon est parallèle au triangle.
+
+    f = 1.0/a
+    s = rayOrigin - vertex0
+    u = f * (dot(s,h))
+    if (u < 0.0 or u > 1.0):
+        return None
+    q = cross(s,edge1)
+    v = f * dot(rayVector,q)
+    if (v < 0.0 or u + v > 1.0):
+        return None
+
+    # On calcule t pour savoir ou le point d'intersection se situe sur la ligne.
+    t = f * dot(edge2,q)
+    if (t > EPSILON): # Intersection avec le rayon
+        return  t;
+    else : # On a bien une intersection de droite, mais pas de rayon.
+        return None
+
+
+def hemispheric_rendering(p1,p2,p3, width = 200, height = 200, maxangle = 270, camOrigin = Vector3(0,0,0), maxZ = 2 ):
+    from math import pi, cos, sin, atan, degrees, radians
+    from openalea.plantgl.all import norm, Vector2
+    p1 = Vector3(p1)
+    p2 = Vector3(p2)
+    p3 = Vector3(p3)
+    langle = radians(maxangle)/2
+    def toimgcoord(p_i):
+        sph = Vector3.Spherical(direction(p_i))
+        print(p_i, degrees(sph.phi), degrees(sph.theta))
+        r = sph.phi/langle
+        res = [ round((r * cos(sph.theta) + 1) * (width-1)/2), round((r * sin(sph.theta) + 1) * (height-1)/2)]
+        if sph.phi < langle :
+            return True, res, sph.radius
+        else:
+            return False, res, sph.radius
+    def fromimgcoord(x,y):
+        rcostheta = (2 * x)/(width-1) -1
+        rsintheta = (2 * y)/(height-1) -1
+        theta = atan(rsintheta/rcostheta)
+        phi = rcostheta*langle/cos(theta)
+        return theta, phi
+
+    result = np.zeros((width,height))
+    for x in range(0, width):
+        for y in range(0,height):
+            if norm(Vector2(x-width/2,y-height/2)) <= min(width,height)/2:
+                result[x,y] = maxZ
+    result
+    coord_i = []
+    for p_i in [p1, p2, p3]:
+        ivalid, icoord, zi = toimgcoord(p_i)
+        coord_i.append((icoord, zi))
+        if ivalid :
+            result[icoord[0],icoord[1]] = zi
+    _, (xmean,ymean), _ = toimgcoord((p1+p2+p3)/3)
+    pixradius = norm(Vector2(coord_i[0][0]) - (xmean,ymean))*1.1
+    for x in range(max(0,int(round(xmean-pixradius))-1), min(width,int(round(xmean+pixradius))+1)):
+        for y in range(max(0,int(round(ymean-pixradius))-1), min(height,int(round(ymean+pixradius))+1)):
+          if norm(Vector2(x-xmean,y-ymean)) <= pixradius and norm(Vector2(x-width/2,y-height/2)) <= min(width,height)/2:  
+            theta_i, phi_i = fromimgcoord(x,y)
+            if phi_i <= langle :
+                intersect = RayIntersectsTriangle(camOrigin, Vector3(Vector3.Spherical(1,theta_i, phi_i)), p1,p2,p3)
+                if not intersect is None:
+                    result[x,y] = intersect
+
+    #for i, (p_i,p_j) in enumerate([(p1, p2), (p1, p3), (p2, p3)],2):
+    #   for a in np.arange(0,1.001,0.01):
+    #        icoord = toimgcoord(p_i*a+p_j*(1-a))
+    #        if icoord :
+    #            result[icoord[0],icoord[1]] = i/3
+    return result
+
+
+if __name__ == '__main__':
+    from matplotlib.pyplot import imshow, show
+    imshow(hemispheric_rendering((1,-0.5,0.5),(-1,-0.5,0.5),(0,-0.1,-1)))
+    show()

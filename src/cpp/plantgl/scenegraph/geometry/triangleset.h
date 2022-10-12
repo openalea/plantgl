@@ -140,6 +140,8 @@ public:
 typedef RCPtr<TriangleSet> TriangleSetPtr;
 
 
+std::pair<Vector3, real_t> SG_API circumsphere(const Vector3& a, const Vector3& b, const Vector3& c);
+
 /* ----------------------------------------------------------------------- */
 
 // __geom_triangleset_h__

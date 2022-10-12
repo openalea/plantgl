@@ -14,6 +14,7 @@ cmake -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX} \
       -LAH ..
 
 #cmake -DCMAKE_BUILD_TYPE=Release -DBoost_INCLUDE_DIR=/opt/local/include ..
+#cmake -DCMAKE_BUILD_TYPE=Release -DBoost_INCLUDE_DIR=`readlink /opt/local/include/boost`/.. .. 
 
 make
 make install

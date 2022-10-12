@@ -43,8 +43,7 @@ ImageMutex::ImageMutex(uint16_t imageWidth, uint16_t imageHeight):
     __imageHeight(imageHeight), 
     __mutexarray(imageWidth, imageHeight)
 {
-    printf("ImageMutex\n");
-
+    // printf("ImageMutex\n");
 }
 
 ImageMutex::~ImageMutex() 

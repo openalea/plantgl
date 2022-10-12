@@ -2,7 +2,8 @@ from openalea.plantgl.all import *
 import openalea.plantgl.all as pgl
 import  matplotlib.pyplot as plt
 from os.path import join, dirname, abspath, exists
-
+import numpy as np
+from math import *
 
 fname = abspath(join(dirname(__file__),'data/teapot.obj'))
 
@@ -131,7 +132,58 @@ def test_projected_sphere(view = False):
         plt.imshow(i.to_array())
         plt.show()
 
+def test_hemispheric_point():
+    a = (0,100, 100)
+    z = ZBufferEngine(800,800)
+    z.setHemisphericCamera(pi,1,1000)
+    cam = (0,0,0)
+    z.multithreaded = MT
+    z.lookAt(cam,(0,0,100),(1,0,0))
+    #print(z.getBoundingBoxView())
+    print(z.camera().getWorldToCameraMatrix())
+    print()
+    print('World : \t', Vector3(a))
+    b = z.camera().worldToCamera(a)    
+    print('Camera : \t', b)
+    c = z.camera().cameraToNDC(b)
+    print('NDC :   \t', c)
+    d = z.camera().NDCToRaster(c, 800, 800)    
+    print('Raster : \t', d)
+    e = z.camera().cameraToRaster(b, 800, 800)
+    print('Raster : \t', e)
+    f = z.camera().rasterToCamera(e, 800, 800)
+    print('Camera : \t', f)
+
+
+def test_formfactors():
+    tr = Scene('data/cube.obj')[0].geometry
+    t = Tesselator()
+    tr.apply(t)
+    tr = t.result
+    print(tr.pointList,tr.indexList)
+    result = formFactors(tr.pointList,tr.indexList,ccw=True,solidangle=True)
+    print(result)
+
+def test_solidangle(view = True):
+    angle = 359
+    rangle = radians(angle)
+    cam = SphericalCamera(angle)
+    d = 200
+    w, h = d, d
+    img = np.array([[cam.solidAngle(x,y,w,h) if cam.isValidPixel(x,y,w,h) else 0 for x in range(w)] for y in range(h)])
+
+
+
+    #img = np.array([[component(cam.NDCToSpherical(cam.rasterToNDC((x+1,y+1,1),w,h))) for x in range(w)] for y in range(h)])
+    #img = np.array([[sa(coord(x,y),coord2(x,y),coord3(x,y)) for x in range(w)] for y in range(h)])
+    print(img[d//2,d//2])
+    print(sum(sum(img)) )
+    p = plt.imshow(img) #,vmin=0.2,vmax=-0.2)
+    plt.colorbar(p)
+    plt.show()
 
 if __name__ == '__main__':
-    test_projected_sphere(True)
+    test_solidangle()
+    #test_formfactors()
+    #test_hemispheric_point()
     #test_projected_sphere(True)

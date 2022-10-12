@@ -223,6 +223,9 @@ class ALGO_API Fit
     */
     static Point2ArrayPtr convexPolyline(const Point2ArrayPtr& _points);
 
+
+    virtual GeometryPtr alphashape(real_t alpha = 0);
+
     /*!
       Fit the 2D points \e points with a bounding circle.
     */

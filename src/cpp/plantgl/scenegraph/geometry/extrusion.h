@@ -295,20 +295,38 @@ class SG_API Extrusion : public ParametricModel
   // Get the point value at u,v.
   Vector3 getPointAt(real_t u, real_t v) const;
 
+  // Get the point value at u,v.
+  Vector3 getPointAt(real_t u, real_t v, const Matrix3& frame) const;
+
   /* Returns the \e Tangent for u = \e u and v = \e v.
      \pre
       - \e u, \e v must be in [0,1];*/
-    Vector3 getUTangentAt(real_t u,real_t v) const;
+  Vector3 getUTangentAt(real_t u,real_t v) const;
+
+  /* Returns the \e Tangent for u = \e u and v = \e v.
+     \pre
+      - \e u, \e v must be in [0,1];*/
+  Vector3 getUTangentAt(real_t u,real_t v, const Matrix3& frame) const;
 
   /* Returns the \e Tangent for u = \e u and v = \e v.
      \pre
       - \e u, \e v must be in [0,1];*/
   Vector3 getVTangentAt(real_t u,real_t v) const;
 
+  /* Returns the \e Tangent for u = \e u and v = \e v.
+     \pre
+      - \e u, \e v must be in [0,1];*/
+  Vector3 getVTangentAt(real_t u,real_t v, const Matrix3& frame) const;
+
   /* Returns the principal \e Normal for u,v = \e u, \e v.
      \pre
       - \e u, \e v must be in [0,1];*/
   Vector3 getNormalAt(real_t u,real_t v) const;
+
+  /* Returns the principal \e Normal for u,v = \e u, \e v.
+     \pre
+      - \e u, \e v must be in [0,1];*/
+  Vector3 getNormalAt(real_t u,real_t v, const Matrix3& frame) const;
 
   /*! Returns the \e derivative of degree \e d for u = \e u, v = \e v.
      \pre
@@ -325,11 +343,20 @@ class SG_API Extrusion : public ParametricModel
   Vector3 getSecondDerivativeUUAt(real_t u, real_t v) const;
 
   // Compute the derivative.
+  Vector3 getSecondDerivativeUUAt(real_t u, real_t v, const Matrix3& frame) const;
+
+  // Compute the derivative.
   Vector3 getSecondDerivativeUVAt(real_t u, real_t v) const;
+
+  // Compute the derivative.
+  Vector3 getSecondDerivativeUVAt(real_t u, real_t v, const Matrix3& frame) const;
 
   // Compute the derivative.
   Vector3 getSecondDerivativeVVAt(real_t u, real_t v) const;
 
+  // Compute the derivative.
+  Vector3 getSecondDerivativeVVAt(real_t u, real_t v, const Matrix3& frame) const;
+  
 protected:
 
     /// The axis of the extrusion.

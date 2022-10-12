@@ -1932,6 +1932,83 @@ Point2ArrayPtr Fit::convexPolyline(const Point2ArrayPtr& _points){
 #endif
 }
 
+
+/* ----------------------------------------------------------------------- */
+#ifdef PGL_WITH_CGAL
+#include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
+#include <CGAL/Alpha_shape_3.h>
+#include <CGAL/Alpha_shape_cell_base_3.h>
+#include <CGAL/Alpha_shape_vertex_base_3.h>
+#include <CGAL/Delaunay_triangulation_3.h>
+#endif
+/*
+      Fit the 3D points \e points with a plane.
+*/
+GeometryPtr Fit::alphashape(real_t alpha)
+{
+  if(! __pointstofit )return GeometryPtr();
+#ifdef PGL_WITH_CGAL
+    typedef CGAL::Exact_predicates_inexact_constructions_kernel Gt;
+    typedef CGAL::Alpha_shape_vertex_base_3<Gt>          Vb;
+    typedef CGAL::Alpha_shape_cell_base_3<Gt>            Fb;
+    typedef CGAL::Triangulation_data_structure_3<Vb,Fb>  Tds;
+    typedef CGAL::Delaunay_triangulation_3<Gt,Tds>       Triangulation_3;
+    typedef CGAL::Alpha_shape_3<Triangulation_3>         Alpha_shape_3;
+    typedef Gt::Point_3                                  Point;
+    typedef Alpha_shape_3::Alpha_iterator                Alpha_iterator;
+    typedef Alpha_shape_3::Cell_handle                  Cell_handle;
+    typedef Alpha_shape_3::Vertex_handle                Vertex_handle;
+    typedef Alpha_shape_3::Facet                        Facet;
+    typedef std::map<Alpha_shape_3::Vertex_handle, uint32_t > Alpha_shape_vertex_map;
+    
+
+
+    std::list<Point> cgpts =  toPoint3List<Point>(__pointstofit);
+
+    Alpha_shape_3 as(cgpts.begin(),cgpts.end(), alpha);
+
+    if (alpha == 0){
+       Alpha_shape_3::NT opt = as.find_alpha_solid();
+       printf("opt alpha:%f\n",opt); 
+       as.set_alpha(opt);
+    }
+
+    std::list<Facet>       facets;
+    as.get_alpha_shape_facets(std::back_inserter(facets),
+                              Alpha_shape_3::EXTERIOR);
+    //as.get_alpha_shape_facets(std::back_inserter(facets),
+    //                          Alpha_shape_3::SINGULAR);
+    printf("nb:%i\n",facets.size()); 
+    Point3ArrayPtr ptresult(new Point3Array());
+    Index3ArrayPtr indresult(new Index3Array());
+    Alpha_shape_vertex_map vertexmap;
+    uint32_t pcount = 0;
+    for(std::list<Facet>::const_iterator  f_iter = facets.begin(); f_iter != facets.end(); ++f_iter){
+      Index3 ind;
+      for(int i = 0; i < 3; ++i){
+        Vertex_handle v = f_iter->first->vertex(i);
+        uint32_t cid = pcount;
+        Alpha_shape_vertex_map::iterator itvmap = vertexmap.find(v);
+        if(itvmap == vertexmap.end()){
+          ptresult->push_back(toVector3(v->point()));
+          vertexmap[v] = cid;
+          ++pcount;
+        }
+        else{
+          cid = itvmap->second;
+        }
+        ind[i] = cid;
+      }
+      indresult->push_back(ind);
+    }
+
+    return GeometryPtr(new TriangleSet(ptresult, indresult));
+#else
+    return GeometryPtr();
+#endif
+}
+
+
 /* ----------------------------------------------------------------------- */
 
 GeometryPtr Fit::extrusion(){

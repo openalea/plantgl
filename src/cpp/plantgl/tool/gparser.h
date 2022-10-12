@@ -319,7 +319,7 @@ bool GenericParser<T>::handleError(std::string msg, int yychar, const char* toke
 
  */
 
-#define YYLEX_PARAM   ((ParserPair*)parser)->second
+#define YYLEX_PARAM  ((ParserPair*)parser)->second
 
   // to call the parser an its symbol table from within
   // the action part of the grammar rules, either :
