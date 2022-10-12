@@ -55,7 +55,8 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QPoint>
-class QGLWidget;
+#include <QOpenGLWidget>
+
 class QMenu;
 class QToolBar;
 
@@ -84,7 +85,7 @@ public:
   ViewObjectGL(QObject * parent=0, const char * name=0);
 
   /// Constructor. Connect GL Frame to \e this.
-  ViewObjectGL(QGLWidget * parent, const char * name=0);
+  ViewObjectGL(QOpenGLWidget * parent, const char * name=0);
 
   /// Destructor.
   virtual ~ViewObjectGL();
@@ -102,7 +103,7 @@ public:
   virtual void connectTo(ViewStatusBar *);
 
   /// Connect this to a GL Widget.
-  virtual void connectTo(QGLWidget *);
+  virtual void connectTo(QOpenGLWidget *);
 
   /// Connect this to a error dialog.
   virtual void connectTo(ViewErrorDialog *);
@@ -176,7 +177,7 @@ signals:
 protected:
 
   /// frame GL.
-  QGLWidget * __frame;
+  QOpenGLWidget * __frame;
 
 };
 
@@ -208,7 +209,7 @@ public:
   ViewRelativeObjectGL(ViewCameraGL *camera, QObject * parent=0, const char * name=0);
 
   /// Constructor.
-  ViewRelativeObjectGL(ViewCameraGL *camera, QGLWidget * parent, const char * name=0);
+  ViewRelativeObjectGL(ViewCameraGL *camera, QOpenGLWidget * parent, const char * name=0);
 
 
 
@@ -227,7 +228,7 @@ public:
   virtual void connectTo(ViewStatusBar *);
 
   /// Connect this to a GL Widget.
-  virtual void connectTo(QGLWidget *);
+  virtual void connectTo(QOpenGLWidget *);
 
   /// Connect this to a error dialog.
   virtual void connectTo(ViewErrorDialog *);

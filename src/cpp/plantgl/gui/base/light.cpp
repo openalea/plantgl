@@ -59,7 +59,7 @@ PGL_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-ViewLightGL::ViewLightGL(ViewCameraGL *camera,QGLWidget * parent, const char * name):
+ViewLightGL::ViewLightGL(ViewCameraGL *camera,QOpenGLWidget * parent, const char * name):
   ViewRelativeObjectGL(camera,parent,name),
   __azimuth(0),
   __elevation(45),
@@ -394,12 +394,12 @@ ViewLightGL::createToolsMenu(QWidget * parent)
     QMenu * menu = new QMenu(parent);
     QPixmap home(ViewerIcon::getPixmap(ViewerIcon::home));
     QPixmap _light(ViewerIcon::getPixmap(ViewerIcon::light));
-    menu->addAction(home,tr("&Home"),this,SLOT(home()),Qt::CTRL+Qt::SHIFT+Qt::Key_H);
-    menu->addAction(tr("on X axis"),this,SLOT(XAxis()),Qt::CTRL+Qt::SHIFT+Qt::Key_X);
-    menu->addAction(tr("on Y axis"),this,SLOT(YAxis()),Qt::CTRL+Qt::SHIFT+Qt::Key_Y);
-    menu->addAction(tr("on Z axis"),this,SLOT(ZAxis()),Qt::CTRL+Qt::SHIFT+Qt::Key_Z);
+    menu->addAction(home,tr("&Home"),this,SLOT(home()),Qt::CTRL | Qt::SHIFT | Qt::Key_H);
+    menu->addAction(tr("on X axis"),this,SLOT(XAxis()),Qt::CTRL | Qt::SHIFT | Qt::Key_X);
+    menu->addAction(tr("on Y axis"),this,SLOT(YAxis()),Qt::CTRL | Qt::SHIFT | Qt::Key_Y);
+    menu->addAction(tr("on Z axis"),this,SLOT(ZAxis()),Qt::CTRL | Qt::SHIFT | Qt::Key_Z);
     menu->addSeparator();
-    QAction * idVisibility = menu->addAction(_light,tr("Visible"),this,SLOT(changeVisibility()),Qt::CTRL+Qt::SHIFT+Qt::Key_S);
+    QAction * idVisibility = menu->addAction(_light,tr("Visible"),this,SLOT(changeVisibility()),Qt::CTRL |Qt::SHIFT | Qt::Key_S);
     idVisibility->setCheckable( true );
     idVisibility->setChecked( isVisible() );
     QObject::connect(this,SIGNAL(visibilityChanged( bool)),idVisibility,SLOT(setChecked(bool)));

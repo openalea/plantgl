@@ -4,16 +4,16 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 import os
 
-from openalea.plantgl.gui.qt.QtCore import QObject, QPoint, QTimer, Qt, pyqtSignal
+from openalea.plantgl.gui.qt.QtCore import QObject, QPoint, QTimer, Qt, Signal
 from openalea.plantgl.gui.qt.QtGui import QCursor, QImageReader, QPixmap, QGuiApplication
 from openalea.plantgl.gui.qt.QtWidgets import QApplication, QDialog, QDockWidget, QFileDialog, QMenu, QMessageBox, QScrollArea, QSplashScreen, QVBoxLayout, QWidget
-from openalea.plantgl.gui.qt.QtOpenGL import QGLWidget 
+from openalea.plantgl.gui.qt.QtOpenGL import QOpenGLWidget 
 
-class MaterialPanelView (QGLWidget):
-    valueChanged = pyqtSignal()
+class MaterialPanelView (QOpenGLWidget):
+    valueChanged = Signal()
 
     def __init__(self,parent):
-        QGLWidget.__init__(self,parent)
+        QOpenGLWidget.__init__(self,parent)
         self.unitsize = 30
         self.sphere = None
         self.spherelist = None
@@ -387,11 +387,11 @@ class MaterialPanelView (QGLWidget):
                 self.preview.hide()
             if self.previewtrigger.isActive():
                 self.previewtrigger.stop()
-        QGLWidget.leaveEvent(self,event)
+        QOpenGLWidget.leaveEvent(self,event)
     def enterEvent(self,event):
         self.mousepos = None
         self.setMouseTracking(True)
-        QGLWidget.enterEvent(self,event)
+        QOpenGLWidget.enterEvent(self,event)
     def showMessage(self,msg,timeout):
         if hasattr(self,'statusBar'):
             self.statusBar.showMessage(msg,timeout)
@@ -556,7 +556,7 @@ class MaterialPanelView (QGLWidget):
                 self.valueChanged.emit()            
 
 class MaterialPanelWidget(QWidget):
-    valueChanged = pyqtSignal()
+    valueChanged = Signal()
     def __init__(self,parent):
         QWidget.__init__(self,parent)
         self.setObjectName("materialPanelContents")
@@ -592,7 +592,7 @@ class MaterialPanelWidget(QWidget):
 MaterialEditor = MaterialPanelWidget
 
 class MaterialPanelDock (QDockWidget):
-    valueChanged = pyqtSignal()
+    valueChanged = Signal()
     def __init__(self,parent,name = None):
         QDockWidget.__init__(self,parent)
         if name:

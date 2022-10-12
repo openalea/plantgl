@@ -8,9 +8,9 @@ add_library(_pglalgo SHARED ${SRC_FILES})
 
 target_link_libraries(_pglalgo pglmath pgltool pglsg pglalgo)
 
-if (QT5_FOUND)
-    target_link_libraries(_pglalgo Qt5::Core Qt5::Widgets Qt5::OpenGL)
-endif()
+#if (Qt6_FOUND)
+    target_link_libraries(_pglalgo Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::OpenGL)
+#endif()
 
 pglwrapper_link_boost(_pglalgo)
 pglwrapper_link_python(_pglalgo)

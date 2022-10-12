@@ -76,7 +76,7 @@ public:
       the normal display type \t. */
   GLTransitionRenderer( Discretizer& discretizer,
 #ifndef PGL_CORE_WITHOUT_QT
-                        QGLWidget * widget = NULL,
+                        QOpenGLWidget * widget = NULL,
 #endif
                         uint_t step = 10);
 

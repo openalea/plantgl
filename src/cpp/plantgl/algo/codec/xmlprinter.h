@@ -53,8 +53,7 @@
 #include <plantgl/tool/util_hashset.h>
 
 #ifndef PGL_CORE_WITHOUT_QT
-#include <QtCore/qstring.h>
-class QTextStream;
+#include <QtCore>
 #else
 #include <string>
 #include <fstream>

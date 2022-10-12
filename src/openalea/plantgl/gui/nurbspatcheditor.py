@@ -11,7 +11,7 @@ import numpy as np
 import itertools
 
 
-from openalea.plantgl.gui.qt.QtCore import QObject, QRect, Qt, pyqtSignal
+from openalea.plantgl.gui.qt.QtCore import QObject, QRect, Qt, Signal
 from openalea.plantgl.gui.qt.QtWidgets import QApplication
 
 helpstr = """<h2>N u r b s  E d i t o r</h2>
@@ -47,9 +47,9 @@ class AbstractNurbsObjectEditorView(QGLViewer):
     """ The class NurbsPatchEditor is the viewer of the scene, it contains all the informations about the NurbsPatch, that's why a getter and a setter have been created, the NubrsPatch is defined by a 2 dimensional Array of 3d Vectors"""
    
     Edit,Rotate = list(range(2))
-    valueChanged = pyqtSignal()
-    manipulated = pyqtSignal()
-    selectionChanged = pyqtSignal()
+    valueChanged = Signal()
+    manipulated = Signal()
+    selectionChanged = Signal()
     
     def __init__(self,parent):
         """ Constructor 
@@ -727,8 +727,8 @@ class NurbsCurveEditorView(AbstractNurbsObjectEditorView):
 DimensionViewClass[1] = NurbsCurveEditorView
 
 class NurbsObjectEditor(QtWidgets.QWidget):
-    valueChanged = pyqtSignal()
-    manipulated = pyqtSignal()
+    valueChanged = Signal()
+    manipulated = Signal()
 
     def __init__(self, parent, dimension = 2):
         QtWidgets.QWidget.__init__(self, parent)

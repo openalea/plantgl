@@ -80,8 +80,8 @@
     #include <QtGui/qapplication.h>
 #endif
 
-#include <QtOpenGL/qgl.h>
-#include <QtOpenGL/QGLPixelBuffer>
+#include <QOpenGLWidget>
+#include <QOpenGLFramebufferObject>
 
 #include <plantgl/algo/codec/scne_binaryparser.h>
 
@@ -98,7 +98,7 @@ using namespace STDEXT;
 
 ViewGeomSceneGL::ViewGeomSceneGL(ViewCameraGL * camera,
                                  ViewLightGL * light,
-                                 QGLWidget * parent,
+                                 QOpenGLWidget * parent,
                                  const char * name) :
   ViewModalRendererGL(camera,light,parent,name),
   __scene(),
@@ -141,7 +141,7 @@ ViewGeomSceneGL::useThread()
 }
 
 /// Connect this to a GL Widget.
-void ViewGeomSceneGL::connectTo(QGLWidget * glw)
+void ViewGeomSceneGL::connectTo(QOpenGLWidget * glw)
 {
     ViewRendererGL::connectTo(glw);
     __renderer.setGLFrame(glw);
@@ -918,7 +918,7 @@ ViewGeomSceneGL::castRays(const ScenePtr& sc, bool back_test){
         uint_t id = dynamic_pointer_cast<Shape>(*it)->getId();
         setScene(nsc);
         if(frame->isPixelBufferUsed())frame->paintPixelBuffer();
-        else if (!autoredraw) frame->updateGL();
+        else if (!autoredraw) frame->update();
         ViewZBuffer * cbuff = frame->grabDepthBuffer(false);
 
         if(! back_test) {
@@ -934,7 +934,7 @@ ViewGeomSceneGL::castRays(const ScenePtr& sc, bool back_test){
         else {
             frame->getCamera()->setAngles(b_az,b_el);
             if(frame->isPixelBufferUsed())frame->paintPixelBuffer();
-            else frame->updateGL();
+            else frame->update();
             ViewZBuffer * cbackbuff = frame->grabDepthBuffer(false);
             for(int c = 0;  c < w; ++c){
                 for(int r = 0;  r < h; ++r){
@@ -1014,7 +1014,7 @@ ViewGeomSceneGL::getPixelPerShape(double* pixelwidth)
         // scene init
         ScenePtr oldscene = __scene;
         setScene(nsc);
-        if(!frame->isPixelBufferUsed()) frame->updateGL();
+        if(!frame->isPixelBufferUsed()) frame->update();
 
         // projection computation
         std::vector<std::pair<uint_t,uint_t> > res = frame->getProjectionPixelPerColor(pixelwidth);
@@ -1078,7 +1078,7 @@ ViewGeomSceneGL::customEvent(QEvent * e) {
 
 ViewMultiGeomSceneGL::ViewMultiGeomSceneGL(ViewCameraGL * camera,
                                            ViewLightGL * light,
-                                           QGLWidget * parent,
+                                           QOpenGLWidget * parent,
                                            const char * name):
   ViewGeomSceneGL(camera,light,parent,name),
   __transitionRenderer(__discretizer),

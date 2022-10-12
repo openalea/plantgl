@@ -65,7 +65,10 @@ class QTabWidget;
 
 /* ----------------------------------------------------------------------- */
 
-#include <QtOpenGL/qgl.h>
+#include <QtOpenGL>
+#include <QOpenGLWidget>
+#include <QWidget>
+
 #ifdef QT_NO_OPENGL
 #warning Qt compiled without openGL support
 #endif
@@ -95,7 +98,7 @@ class ViewEvent;
 
 TOOLS_USING(Vector3)
 
-class QGLPixelBuffer;
+class QOpenGLFramebufferObject;
 
 /* ----------------------------------------------------------------------- */
 
@@ -107,7 +110,7 @@ class QGLPixelBuffer;
 
 /* ----------------------------------------------------------------------- */
 
-class VIEW_API ViewGLFrame : public QGLWidget
+class VIEW_API ViewGLFrame : public QOpenGLWidget
 {
   Q_OBJECT
   Q_PROPERTY( QColor BgColor READ getBackGroundColor WRITE setBackGroundColor )
@@ -122,8 +125,7 @@ class VIEW_API ViewGLFrame : public QGLWidget
   /// Constructor
   ViewGLFrame( QWidget* parent,
            const char* name = NULL,
-           ViewRendererGL * r = 0,
-           const QGLWidget * shareWidget = 0 );
+           ViewRendererGL * r = 0);
 
   /// Destructor
   ~ViewGLFrame();
@@ -227,7 +229,7 @@ class VIEW_API ViewGLFrame : public QGLWidget
   virtual bool event(QEvent *e);
 
   void activatePBuffer(bool b);
-  QGLPixelBuffer * getPBuffer();
+  QOpenGLFramebufferObject * getPBuffer();
 
   bool isPixelBufferUsed()  { return __usePBuffer; }
 
@@ -436,7 +438,7 @@ signals:
 
   bool __useOcclusionQuery;
 
-  QGLPixelBuffer * __pixelbuffer;
+  QOpenGLFramebufferObject * __pixelbuffer;
   bool __pBufferActivated;
   bool __usePBuffer;
 

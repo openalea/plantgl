@@ -69,7 +69,7 @@
     #include <QtGui/qmainwindow.h>
 #endif
 
-#include <QtOpenGL/qgl.h>
+#include <QOpenGLWidget>
 #include <plantgl/algo/opengl/util_glut.h>
 
 PGL_USING_NAMESPACE
@@ -77,7 +77,7 @@ PGL_USING_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 ViewRotCenterGL::ViewRotCenterGL(ViewCameraGL *camera,
-                 QGLWidget * parent,
+                 QOpenGLWidget * parent,
                  const char * name):
   ViewRelativeObjectGL(camera,parent,name),
   __active(false),

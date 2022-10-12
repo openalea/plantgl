@@ -67,7 +67,7 @@ ViewRenderingModeActions::ViewRenderingModeActions(ViewModalRendererGL * rendere
     mActionGroup->setExclusive(true);
 
     idVolume   = new QAction(volume,  tr("&Volume"), this);
-    idVolume->setShortcut(Qt::CTRL+Qt::Key_M);
+    idVolume->setShortcut(Qt::CTRL| Qt::Key_M);
     QObject::connect(idVolume,SIGNAL(triggered()), renderer, SLOT(setRenderVolume()));
     idVolume->setCheckable(true);
     idVolume->setWhatsThis(tr("<b>Volume Rendering</b><br><br>"
@@ -75,7 +75,7 @@ ViewRenderingModeActions::ViewRenderingModeActions(ViewModalRendererGL * rendere
     "You can also use Menu <br><b>Tools > Renderer > Volume</b><br>"));
 
     idWire     = new QAction(wire,    tr("&Wire"), this);
-    idWire->setShortcut(Qt::CTRL+Qt::Key_W);
+    idWire->setShortcut(Qt::CTRL | Qt::Key_W);
     QObject::connect(idWire,SIGNAL(triggered()), renderer, SLOT(setRenderWire()));
     idWire->setCheckable(true);
     idWire->setWhatsThis(tr("<b>Wire Rendering</b><br><br>"
@@ -83,7 +83,7 @@ ViewRenderingModeActions::ViewRenderingModeActions(ViewModalRendererGL * rendere
     "You can also use Menu <br><b>Tools > Renderer > Wire</b><br>"));
 
     idSkeleton = new QAction(skeleton,tr("S&keleton"),  this);
-    idWire->setShortcut(Qt::CTRL+Qt::Key_K);
+    idWire->setShortcut(Qt::CTRL | Qt::Key_K);
     QObject::connect(idSkeleton,SIGNAL(triggered()), renderer, SLOT(setRenderSkeleton()));
     idSkeleton->setCheckable(true);
     idSkeleton->setWhatsThis(tr("<b>Skeleton Rendering</b><br><br>"

@@ -32,7 +32,7 @@ import sys
 import os
 
 from openalea.core.path import path as Path
-from openalea.plantgl.gui.qt import QT_MODULE_NAME
+from openalea.plantgl.gui.qt import QT_MODULE_NAME, QT_API, PYSIDE6_API
 
 
 FORCE_UI_GENERATION = False
@@ -183,9 +183,12 @@ def generate_pyfile_from_uifile(name, src=None, dest=None, uibasename=None, forc
         else:
             print('%s has changed, build %s\n' % (path, pyfilename))
 
-        pyfile = open(pyfilename, 'w')
-        compileUi(path, pyfile, **compile_args)
-        pyfile.close()
+        if os.environ[QT_API] in PYSIDE6_API:
+            compileUi(path, pyfile)
+        else:
+            pyfile = open(pyfilename, 'w')
+            compileUi(path, pyfile, **compile_args)
+            pyfile.close()
 
 
 def compile_ui_files(module, import_instructions=None):

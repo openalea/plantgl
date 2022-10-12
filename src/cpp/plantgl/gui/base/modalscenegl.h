@@ -74,7 +74,7 @@ class VIEW_API ViewModalRendererGL  : public ViewSceneRendererGL
   /// Constructor.
     ViewModalRendererGL(ViewCameraGL * camera=0,
             ViewLightGL * light=0,
-            QGLWidget * parent=0,
+            QOpenGLWidget * parent=0,
             const char * name=0);
 
   /// Destructor.

@@ -93,7 +93,7 @@ class VIEW_API ViewGeomSceneGL  : public ViewModalRendererGL
   /// Constructor.
   ViewGeomSceneGL(ViewCameraGL * camera=0,
                   ViewLightGL * light=0,
-                  QGLWidget * parent=0,
+                  QOpenGLWidget * parent=0,
                   const char * name=0);
 
   /// Destructor.
@@ -240,7 +240,7 @@ class VIEW_API ViewGeomSceneGL  : public ViewModalRendererGL
                  PGL(ScenePtr) scene);
 
   /// Connect this to a GL Widget.
-  virtual void connectTo(QGLWidget *);
+  virtual void connectTo(QOpenGLWidget *);
 
   bool isBlendingEnabled() { return __blending; }
 
@@ -407,7 +407,7 @@ class VIEW_API ViewMultiGeomSceneGL  : public ViewGeomSceneGL
   /// Constructor.
   ViewMultiGeomSceneGL(ViewCameraGL * camera=0,
                        ViewLightGL * light=0,
-                       QGLWidget * parent=0,
+                       QOpenGLWidget * parent=0,
                        const char * name=0);
 
   /// Destructor.

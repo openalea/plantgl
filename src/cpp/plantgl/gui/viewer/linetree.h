@@ -78,7 +78,7 @@ class VIEW_API ViewReadLinetree : public QDialog
     Q_PROPERTY(bool bigEndian  READ bigEndian  WRITE setEndianess );
 
 public:
-    ViewReadLinetree( bool open = true, QWidget* parent = 0, const char* name = 0, bool modal = true, Qt::WindowFlags fl = Qt::WindowFlags() );
+    ViewReadLinetree( bool open = true, QWidget* parent = 0, const char* name = 0, bool modal = true, Qt::WindowFlags fl=Qt::Widget );
     ~ViewReadLinetree();
 
     /// Get the Lig File

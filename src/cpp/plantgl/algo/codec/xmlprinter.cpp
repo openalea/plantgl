@@ -42,8 +42,21 @@
 
 
 #include "xmlprinter.h"
-#ifndef PGL_CORE_WITHOUT_QT
+
+#if PGL_QT_VERSION == 5
 #include <QtCore/qtextstream.h>
+
+#include <QtGlobal>
+#include <QString>
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+namespace Qt
+{
+    static auto endl = ::endl;
+    static auto SkipEmptyParts = QString::SkipEmptyParts;
+}
+#endif
+
 #endif
 
 #include <plantgl/pgl_scene.h>
@@ -138,7 +151,7 @@ using namespace std;
    } \
  };
 
-//      if(_i != 0 && _i % 3 == 0 )__stream << endl << __indent;
+//      if(_i != 0 && _i % 3 == 0 )__stream << Qt::endl << __indent;
 
 
 #define GEOM_XMLPRINT_INDEX3(val) \
@@ -261,17 +274,17 @@ XMLPrinter::process( Material * material )
 /*
   if (material->isNamed()) {
     if (! __cache.insert(material->getObjectId()).second) {
-      __stream  <<  __indent << "<Appearance USE " << material->getName().c_str() << " > " << endl;
+      __stream  <<  __indent << "<Appearance USE " << material->getName().c_str() << " > " << Qt::endl;
       return true;
     }
     else {
-      __stream  <<  __indent << "<Appearance DEF " << material->getName().c_str() << " >  " << endl;
+      __stream  <<  __indent << "<Appearance DEF " << material->getName().c_str() << " >  " << Qt::endl;
       GEOM_XMLPRINT_INCREMENT_INDENT;
-      __stream  <<  __indent << "<material>" << endl;
+      __stream  <<  __indent << "<material>" << Qt::endl;
       GEOM_XMLPRINT_INCREMENT_INDENT;
     }
   }
-  __stream  <<  __indent << "<Material " << endl;
+  __stream  <<  __indent << "<Material " << Qt::endl;
   GEOM_XMLPRINT_INCREMENT_INDENT;
   GEOM_XMLPRINT_BEG
 
@@ -280,25 +293,25 @@ XMLPrinter::process( Material * material )
            uchar(material->getDiffuse()*material->getAmbient().getBlue()));
   __stream  <<__indent;
   GEOM_XMLPRINT_FIELD("diffuseColor",a,COLOR3);
-  __stream  << endl << __indent;
+  __stream  << Qt::endl << __indent;
   real_t b = 0.0;
   if(fabs(material->getDiffuse())>GEOM_EPSILON) b = (real_t)1.0 / (real_t)material->getDiffuse();
   GEOM_XMLPRINT_FIELD("ambientIntensity",b,REAL);
-  __stream  << endl << __indent;
+  __stream  << Qt::endl << __indent;
   GEOM_XMLPRINT_FIELD("specularColor",material->getSpecular(),COLOR3);
-  __stream  << endl << __indent;
+  __stream  << Qt::endl << __indent;
   GEOM_XMLPRINT_FIELD("emissiveColor",material->getEmission(),COLOR3);
-  __stream  << endl << __indent;
+  __stream  << Qt::endl << __indent;
   GEOM_XMLPRINT_FIELD("shininess",material->getShininess(),REAL);
-  __stream  << endl << __indent;
+  __stream  << Qt::endl << __indent;
   GEOM_XMLPRINT_FIELD("transparency",material->getTransparency(),REAL);
-  __stream  << "/>" << endl;
+  __stream  << "/>" << Qt::endl;
   GEOM_XMLPRINT_DECREMENT_INDENT;
   if (material->isNamed()) {
     GEOM_XMLPRINT_DECREMENT_INDENT;
-    __stream << __indent << "</material>" << endl;
+    __stream << __indent << "</material>" << Qt::endl;
     GEOM_XMLPRINT_DECREMENT_INDENT;
-    __stream << __indent << "</Appearance>  " << endl;
+    __stream << __indent << "</Appearance>  " << Qt::endl;
   }
   return true;*/
 }
