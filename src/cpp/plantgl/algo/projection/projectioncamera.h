@@ -177,7 +177,10 @@ public:
 
    const Vector3& position() const { return __position; }
 
+   virtual real_t projectedArea(uint16_t x, uint16_t y, real_t z, const uint16_t imageWidth, const uint16_t imageHeight);
    virtual real_t solidAngle(uint16_t x, uint16_t y, const uint16_t imageWidth, const uint16_t imageHeight);
+
+   // virtual bool fitViewTo(const BoundingBoxPtr bbx, uint16_t margin) = 0;
 
 protected:
    
@@ -239,6 +242,8 @@ public:
 
    virtual Ray rasterToCameraRay(uint16_t x, uint16_t y, const uint16_t imageWidth, const uint16_t imageHeight) const;
    virtual Ray rasterToWorldRay(uint16_t x, uint16_t y, const uint16_t imageWidth, const uint16_t imageHeight) const;
+
+   // virtual bool fitViewTo(const BoundingBoxPtr bbx, uint16_t margin) ;
 
 };
 

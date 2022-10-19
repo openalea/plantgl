@@ -179,6 +179,19 @@ void ProjectionCamera::scaleModel(const Vector3& v)
 }
 /* ----------------------------------------------------------------------- */
 
+real_t projectedArea(uint16_t x, uint16_t y, real_t z, const uint16_t imageWidth, const uint16_t imageHeight)
+{
+    Vector3 dir1 = rasterToCamera(Vector3(x,y,1), imageWidth, imageHeight);
+    Vector3 dir2 = rasterToCamera(Vector3(x+1,y,1), imageWidth, imageHeight);
+    Vector3 dir3 = rasterToCamera(Vector3(x,y+1,1), imageWidth, imageHeight);
+    real_t alpha = norm(Vector3(dir2)-Vector3(dir1));
+    real_t beta = norm(Vector3(dir3)-Vector3(dir1));
+    return alpha*beta;
+
+}
+
+/* ----------------------------------------------------------------------- */
+
 real_t ProjectionCamera::solidAngle(uint16_t x, uint16_t y, const uint16_t imageWidth, const uint16_t imageHeight)
 {
     // This assumes that the camera has only one central point
@@ -307,6 +320,12 @@ Ray PerspectiveCamera::rasterToWorldRay(uint16_t x, uint16_t y, const uint16_t i
 {
     Vector3 direction = rasterToWorld(Vector3(x,y,1), imageWidth, imageHeight);
     return Ray(__position, direction.normed());
+}
+
+
+bool fitViewTo(const BoundingBoxPtr bbx, uint16_t margin)
+{
+
 }
 
 /* ----------------------------------------------------------------------- */
