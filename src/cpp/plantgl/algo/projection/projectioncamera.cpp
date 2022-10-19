@@ -179,7 +179,7 @@ void ProjectionCamera::scaleModel(const Vector3& v)
 }
 /* ----------------------------------------------------------------------- */
 
-real_t projectedArea(uint16_t x, uint16_t y, real_t z, const uint16_t imageWidth, const uint16_t imageHeight)
+real_t ProjectionCamera::projectedArea(uint16_t x, uint16_t y, real_t z, const uint16_t imageWidth, const uint16_t imageHeight)
 {
     Vector3 dir1 = rasterToCamera(Vector3(x,y,1), imageWidth, imageHeight);
     Vector3 dir2 = rasterToCamera(Vector3(x+1,y,1), imageWidth, imageHeight);
