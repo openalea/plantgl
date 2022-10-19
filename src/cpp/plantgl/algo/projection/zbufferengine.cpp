@@ -996,7 +996,6 @@ pgl_hash_map<uint32_t,uint32_t> ZBufferEngine::idhistogram(bool solidangle) cons
                 if (pid != __defaultid){
                     pgl_hash_map<uint32_t,uint32_t>::iterator itId = histo.find(pid);
                     real_t value = (solidangle ? __camera->solidAngle(i,j,__imageWidth,__imageHeight) : 1);
-                    printf("sa[%i,%i] : %f\n",i,j,value);
                     if (itId == histo.end()){
                         histo[pid] = value;
                     }
