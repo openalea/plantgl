@@ -89,6 +89,9 @@ public:
     inline const TurtleParam& getParameters() const
     { return *__params; }
 
+    //TODO: come back later
+    virtual AppearancePtr getCurrentMaterial() = 0;
+
     /// test validity of self
     bool isValid() const ;
 
@@ -371,7 +374,7 @@ public:
       { return 0; }
 
     inline void sphere()
-    { __drawer->sphere(__params,getWidth()); }
+    { __drawer->sphere(this->getId(), this->getCurrentMaterial(), __params->frame_info, __params->width); }
 
     void sphere(real_t radius );
 

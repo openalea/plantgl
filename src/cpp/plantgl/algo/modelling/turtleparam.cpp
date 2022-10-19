@@ -39,7 +39,6 @@
  */
 
 
-#include "pglturtleparam.h"
 #include <plantgl/scenegraph/container/pointarray.h>
 #include <plantgl/scenegraph/container/indexarray.h>
 #include <plantgl/scenegraph/container/geometryarray2.h>
@@ -48,6 +47,8 @@
 #include <plantgl/tool/util_string.h>
 
 #include <sstream>
+
+#include "turtleparam.h"
 
 using namespace std;
 PGL_USING_NAMESPACE
@@ -106,6 +107,13 @@ TurtleParam::TurtleParam() :
   sectionResolution(Cylinder::DEFAULT_SLICES),
   initial()
 {
+  frame_info.heading = heading;
+  frame_info.left = left;
+  frame_info.up = up;
+  frame_info.scaling = scale;
+  frame_info.screenprojection = screenCoordinates;
+  frame_info.position = position;
+
 }
 
 TurtleParam::~TurtleParam() {}
