@@ -49,18 +49,13 @@
 
 PGL_BEGIN_NAMESPACE
 
+class Index3Array;
+typedef RCPtr<Index3Array> Index3ArrayPtr;
+
 /// Turtle class allow rotation, displacement and drawing operation
 class ALGO_API TurtleDrawer : public RefCountObject {
 public:
 
-    struct FrameInfo {
-        const Vector3& position;
-        const Vector3& heading;
-        const Vector3& left;
-        const Vector3& up;
-        const Vector3& scaling; 
-        bool screenprojection;              
-    };
 
 
     TurtleDrawer();
@@ -135,7 +130,7 @@ public:
                        int size = -1){}
 
     virtual void customGeometry(const uint_t id,
-                                AppearancePtr appearance
+                                AppearancePtr appearance,
                                 const FrameInfo& frameinfo, 
                                 const GeometryPtr smb, 
                                 real_t scale = 1.0);

@@ -150,7 +150,7 @@ public:
                        const Vector3& up, 
                        const Vector3& scaling, 
                        const uint_t id,
-                       AppearancePtr appearance
+                       AppearancePtr appearance,
                        real_t heigth, 
                        real_t cap_heigth_ratio, 
                        real_t cap_radius_ratio,

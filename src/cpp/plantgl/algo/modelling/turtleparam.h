@@ -53,6 +53,15 @@
 #include <vector>
 
 PGL_BEGIN_NAMESPACE
+
+typedef struct {
+        const Vector3& position;
+        const Vector3& heading;
+        const Vector3& left;
+        const Vector3& up;
+        const Vector3& scaling; 
+        bool& screenprojection;              
+    } FrameInfo;
 class TurtleDrawParameter {
 public:
 
@@ -155,10 +164,6 @@ public:
 
     void forward(real_t l);
 
-    void left(real_t angle);
-
-    void up(real_t angle);
-
     void rollR(real_t angle);
 
 public:
@@ -169,6 +174,8 @@ public:
   Vector3 up;
   Vector3 scale;
   Vector3 reflection;
+
+  FrameInfo frame_info;
 
   real_t width;
 
