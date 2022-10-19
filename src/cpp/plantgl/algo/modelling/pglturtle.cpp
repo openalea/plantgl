@@ -268,7 +268,7 @@ void PglTurtle::customGeometry(const GeometryPtr smb, real_t scale)
 
 void PglTurtle::pglShape(const GeometryPtr smb, real_t scale)
 {
-    __drawer->customGeometry(smb,scale);
+    __drawer->customGeometry(getId(), getCurrentMaterial(), __params->frame_info, smb, scale);
 }
 
 void PglTurtle::pglShape(const ShapePtr shape, real_t scale)
@@ -276,7 +276,7 @@ void PglTurtle::pglShape(const ShapePtr shape, real_t scale)
 
     AppearancePtr prevapp  = __params->customMaterial;
     setCustomAppearance(shape->getAppearance());
-    __drawer->customGeometry(shape->getGeometry());
+    __drawer->customGeometry(getId(), getCurrentMaterial(), __params->frame_info, shape->getGeometry());
     setCustomAppearance(prevapp);
 }
 void PglTurtle::pglShape(const ScenePtr scene, real_t scale)
@@ -286,7 +286,7 @@ void PglTurtle::pglShape(const ScenePtr scene, real_t scale)
         ShapePtr sh = dynamic_pointer_cast<Shape>(*it);
         if (sh) {
             setCustomAppearance(sh->getAppearance());
-            __drawer->customGeometry(sh->getGeometry());
+            __drawer->customGeometry(getId(), getCurrentMaterial(), __params->frame_info, sh->getGeometry());
         }
     }
     setCustomAppearance(prevapp);
@@ -299,7 +299,7 @@ void PglTurtle::surface(const string& name, real_t scale){
     error("Unknown surface '" + name + '\'');
   }
   if(scale < -GEOM_EPSILON) warning("Invalid scale for surface");
-  __drawer->customGeometry(it->second, scale);
+  __drawer->customGeometry(getId(), getCurrentMaterial(), __params->frame_info, it->second, scale);
 }
 
 #include "plantgl/algo/base/tesselator.h"

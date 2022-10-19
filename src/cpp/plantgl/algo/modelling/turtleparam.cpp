@@ -39,6 +39,8 @@
  */
 
 
+#include <plantgl/scenegraph/scene/shape.h>
+#include <plantgl/scenegraph/geometry/cylinder.h>
 #include <plantgl/scenegraph/container/pointarray.h>
 #include <plantgl/scenegraph/container/indexarray.h>
 #include <plantgl/scenegraph/container/geometryarray2.h>
@@ -105,15 +107,9 @@ TurtleParam::TurtleParam() :
   customId(Shape::NOID),
   customParentId(Shape::NOID),
   sectionResolution(Cylinder::DEFAULT_SLICES),
-  initial()
+  initial(),
+  frame_info{position, heading, left, up, scale, screenCoordinates}
 {
-  frame_info.heading = heading;
-  frame_info.left = left;
-  frame_info.up = up;
-  frame_info.scaling = scale;
-  frame_info.screenprojection = screenCoordinates;
-  frame_info.position = position;
-
 }
 
 TurtleParam::~TurtleParam() {}

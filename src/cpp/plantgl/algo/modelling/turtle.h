@@ -379,7 +379,7 @@ public:
     void sphere(real_t radius );
 
     inline void circle()
-    { __drawer->circle(__params,getWidth()); }
+    { __drawer->circle(this->getId(), this->getCurrentMaterial(), __params->frame_info, __params->width); }
 
     void circle(real_t radius );
 
