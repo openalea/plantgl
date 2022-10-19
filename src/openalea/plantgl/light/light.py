@@ -131,7 +131,7 @@ def projectedBBox(bbx, direction, up):
 
 
 
-def directionalInterception(scene, directions, north = 0, horizontal = False, screenresolution = None, verbose = False, multithreaded = False):
+def directionalInterception(scene, directions, north = 0, horizontal = False, screenresolution = None, verbose = False, multithreaded = True):
 
   bbox=pgl.BoundingBox( scene )
   d_factor = max(bbox.getXRange() , bbox.getYRange() , bbox.getZRange())
@@ -156,19 +156,16 @@ def directionalInterception(scene, directions, north = 0, horizontal = False, sc
         print('image size :', w,'x',h)
     worldWidth = w * screenresolution
     worldheight = h * screenresolution
-    noid = pgl.Shape.NOID
-    z = pgl.ZBufferEngine(w,h,noid)
+    z = pgl.ZBufferEngine(w,h,pgl.eIdBased)
     z.multithreaded = multithreaded
     z.setOrthographicCamera(-worldWidth/2., worldWidth/2., -worldheight/2., worldheight/2., d_factor , 3*d_factor)
     eyepos = bbox.getCenter() - dir* d_factor * 2
     z.lookAt(eyepos, bbox.getCenter(), up) 
     z.process(scene)
-    img = z.getImage()
-    values = img.histogram()
+    values = z.idhistogram(False)
     if not values is None:
         for shid, val in values:
-            if shid != noid:
-                shapeLight[shid] = shapeLight.get(shid,0) + val*pixsize*wg
+            shapeLight[shid] = shapeLight.get(shid,0) + val*pixsize*wg
   
   return shapeLight
 
