@@ -145,19 +145,16 @@ AppearancePtr PglTurtle::getCurrentInitialMaterial() const{
 }
 */
 
-void PglTurtleDrawer::customGeometry(const Vector3& position, 
-                                     const Vector3& heading, 
-                                     const Vector3& left, 
-                                     const Vector3& up, 
-                                     const Vector3& scaling, 
-                                     const uint_t id,
-                                     AppearancePtr appearance,
-                                     const GeometryPtr smb)
+void PglTurtleDrawer::customGeometry(const uint_t id,
+                                AppearancePtr appearance,
+                                const FrameInfo& frameinfo, 
+                                const GeometryPtr smb, 
+                                real_t scale = 1.0)
 {
-    if( FABS(norm(scaling)) > GEOM_EPSILON){
-        PlanarModelPtr _2Dtest = dynamic_pointer_cast<PlanarModel>(smb);
-        if (is_valid_ptr(_2Dtest) && __params->screenCoordinates)
-            _addToScene(transform(position, heading, left, up scaling, GeometryPtr(new Oriented(Vector3(0,1,0),Vector3(0,0,1),smb))));
+    if( FABS(norm(frameinfo.scaling)) > GEOM_EPSILON){
+        PlanarModelPtr _2Dtest = dynamic_pointer_cast<PlanarModel>(smb); 
+        if (is_valid_ptr(_2Dtest) && frameinfo.screenprojection)
+            _addToScene(transform(frameinfo.position, frameinfo.heading, frameinfo.left, frameinfo.up, frameinfo.scaling, GeometryPtr(new Oriented(Vector3(0,1,0),Vector3(0,0,1),smb))), id, appearance, frameinfo.screenprojection);
         else _addToScene(transform(position, heading, left, up scaling, smb));
     }
 }
@@ -192,10 +189,11 @@ PglTurtleDrawer::transform_n_scale(const Vector3& position,
 
 
 
-void PglTurtleDrawer::addToScene(const GeometryPtr geom, const uint_t id, AppearancePtr app, bool projection)
+
+void PglTurtleDrawer::_addToScene(const GeometryPtr geom, const uint_t id, AppearancePtr app, bool projection)
 {
   GeometryPtr mgeom = geom;
-  if (projection && getParameters().screenCoordinates)
+  if (projection)
       mgeom = GeometryPtr(new ScreenProjected(GeometryPtr(new Oriented(Vector3(0,0,1),Vector3(1,0,0),mgeom)),false));
 
    if (custompid)
@@ -602,3 +600,4 @@ AppearancePtr PglTurtleDrawer::getCurrentInitialMaterial() const{
     }
    else return AppearancePtr(new Material("Color_"+TOOLS(number(__params->initial.color))));
 }
+

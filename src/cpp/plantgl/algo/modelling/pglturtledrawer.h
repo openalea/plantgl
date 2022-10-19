@@ -42,7 +42,6 @@
 #define __PGL_PGLTURTLEDRAWER_H__
 
 #include "turtledrawer.h"
-#include "turtledrawer.h"
 
 #include <plantgl/scenegraph/geometry/geometry.h>
 #include <plantgl/scenegraph/geometry/polyline.h>
@@ -162,14 +161,11 @@ public:
                        const std::string& text, 
                        int size = -1){}
 
-    virtual void customGeometry(const Vector3& position, 
-                       const Vector3& heading, 
-                       const Vector3& left, 
-                       const Vector3& up, 
-                       const Vector3& scaling, 
-                       const uint_t id,
-                       AppearancePtr appearance,
-                       const GeometryPtr smb);
+    virtual void customGeometry(const uint_t id,
+                                AppearancePtr appearance,
+                                const FrameInfo& frameinfo, 
+                                const GeometryPtr smb, 
+                                real_t scale = 1.0);
 protected:
 
     GeometryPtr getCircle(real_t radius) const;
