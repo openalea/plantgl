@@ -180,9 +180,6 @@ protected:
 
     virtual void _arrow(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius_ratio);
 
-    SurfaceMap __surfList;
-    std::vector<AppearancePtr> __appList;
-
     // ScenePtr __scene;
     
 };
