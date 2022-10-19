@@ -99,9 +99,9 @@ public:
     virtual void box(const uint_t id,
                      AppearancePtr appearance,
                      const FrameInfo& frameinfo, 
-                    real_t length, 
-                    real_t botradius, 
-                    real_t topradius){}
+                     real_t length,
+                     real_t botradius,
+                     real_t topradius){}
 
     virtual void quad(const uint_t id,
                       AppearancePtr appearance,

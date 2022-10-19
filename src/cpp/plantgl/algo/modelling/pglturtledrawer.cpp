@@ -603,3 +603,20 @@ AppearancePtr PglTurtleDrawer::getCurrentInitialMaterial() const{
    else return AppearancePtr(new Material("Color_"+TOOLS(number(__params->initial.color))));
 }
 
+ScenePtr PglTurtleDrawer::partialView(const uint_t id,
+                                      AppearancePtr appearance,
+                                      bool generalizedCylinderOn,
+                                      Point3ArrayPtr& pointList,
+                                      std::vector<Vector3>& leftList,
+                                      std::vector<real_t>& radiusList,
+                                      TurtleDrawParameter& initial) {
+    ScenePtr currentscene = new Scene(*__scene);
+    if(generalizedCylinderOn && pointList->size() > 1){
+        this->generalizedCylinder(id, appearance, pointList, leftList, radiusList, initial.crossSection, initial.crossSectionCCW);
+    }
+    frame();
+    ScenePtr result = __scene;
+    __scene = currentscene;
+    return result;
+}
+
