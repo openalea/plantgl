@@ -163,9 +163,17 @@ public:
 
     virtual void customGeometry(const uint_t id,
                                 AppearancePtr appearance,
-                                const FrameInfo& frameinfo, 
-                                const GeometryPtr smb, 
+                                const FrameInfo& frameinfo,
+                                const GeometryPtr smb,
                                 real_t scale = 1.0);
+
+    ScenePtr partialView(const uint_t id,
+                         AppearancePtr appearance,
+                         bool generalizedCylinderOn,
+                         Point3ArrayPtr& pointList,
+                         std::vector<Vector3>& leftList,
+                         std::vector<real_t>& radiusList,
+                         TurtleDrawParameter& initial);
 protected:
 
     GeometryPtr getCircle(real_t radius) const;
