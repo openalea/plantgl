@@ -67,16 +67,12 @@ public:
     const ScenePtr& getScene() const
     { return __scene;  }
 
-    virtual void cylinder(const Vector3& position, 
-                          const Vector3& heading, 
-                          const Vector3& left, 
-                          const Vector3& up, 
-                          const Vector3& scaling, 
+    virtual void cylinder(const FrameInfo& frameinfo, 
                           const id_pair ids,
                           AppearancePtr appearance,
                           real_t length,
                           real_t radius,
-                          uint_t sectionResolution){}
+                          uint_t sectionResolution);
 
 
     virtual void frustum( const id_pair ids,
@@ -96,62 +92,43 @@ public:
                                      const Curve2DPtr& crossSection,
                                      bool crossSectionCCW);
 
-    virtual void sphere(const Vector3& position, 
-                        const Vector3& heading, 
-                        const Vector3& left, 
-                        const Vector3& up, 
-                        const Vector3& scaling, 
-                        const id_pair ids,
+    virtual void sphere(const id_pair ids,
                         AppearancePtr appearance,
-                        real_t radius){}
+                        const FrameInfo& frameinfo, 
+                        real_t radius,
+                        uint_t sectionResolution);
 
-    virtual void circle(const Vector3& position, 
-                        const Vector3& heading, 
-                        const Vector3& left, 
-                        const Vector3& up, 
-                        const Vector3& scaling, 
-                        const id_pair ids,
+    virtual void circle(const id_pair ids,
                         AppearancePtr appearance,
-                        real_t radius){}
+                        const FrameInfo& frameinfo, 
+                        real_t radius,
+                        uint_t sectionResolution);
 
-    virtual void box(const Vector3& position, 
-                    const Vector3& heading, 
-                    const Vector3& left, 
-                    const Vector3& up, 
-                    const Vector3& scaling, 
-                    const id_pair ids,
-                    AppearancePtr appearance,
-                    real_t length, 
-                    real_t botradius, 
-                    real_t topradius){}
+    virtual void box(const id_pair ids,
+                     AppearancePtr appearance,
+                     const FrameInfo& frameinfo, 
+                     real_t length,
+                     real_t botradius,
+                     real_t topradius);
 
-    virtual void quad(const Vector3& position, 
-                      const Vector3& heading, 
-                      const Vector3& left, 
-                      const Vector3& up, 
-                      const Vector3& scaling, 
-                      const id_pair ids,
+    virtual void quad(const id_pair ids,
                       AppearancePtr appearance,
+                      const FrameInfo& frameinfo, 
                       real_t length, 
                       real_t botradius, 
-                      real_t topradius){}
+                      real_t topradius);
 
     virtual void polygon(const id_pair ids,
                          AppearancePtr appearance,
+                         bool screenprojection,
                          const Point3ArrayPtr& points,
-                         const Index3ArrayPtr& indices){}
+                         const Index3ArrayPtr& indices);
 
-    virtual void arrow(const Vector3& position, 
-                       const Vector3& heading, 
-                       const Vector3& left, 
-                       const Vector3& up, 
-                       const Vector3& scaling, 
-                       const id_pair ids,
-                       AppearancePtr appearance,
+    virtual void arrow(const FrameInfo& frameinfo, 
                        real_t heigth, 
                        real_t cap_heigth_ratio, 
                        real_t cap_radius_ratio,
-                       Color4 color) { }
+                       Color4 color);
 
     virtual void label(const Vector3& position, 
                        const id_pair ids,
@@ -184,20 +161,12 @@ public:
                          TurtleDrawParameter& initial);
 protected:
 
-    GeometryPtr getCircle(real_t radius) const;
+    // GeometryPtr getCircle(real_t radius) const;
 
-    GeometryPtr transform(const Vector3& position, 
-                          const Vector3& heading, 
-                          const Vector3& left, 
-                          const Vector3& up, 
-                          const Vector3& scaling,
+    GeometryPtr transform(const FrameInfo& frameinfo,
                           const GeometryPtr& obj) const;
 
-    GeometryPtr transform_n_scale(const Vector3& position, 
-                                  const Vector3& heading, 
-                                  const Vector3& left, 
-                                  const Vector3& up, 
-                                  const GeometryPtr& obj) const;
+    GeometryPtr transform_n_scale(const FrameInfo& frameinfo, const GeometryPtr& obj) const;
 
 
     void _addToScene(const GeometryPtr geom, const id_pair ids, AppearancePtr app = NULL, bool projection = true);
