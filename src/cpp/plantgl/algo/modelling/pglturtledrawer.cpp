@@ -154,37 +154,28 @@ void PglTurtleDrawer::customGeometry(const id_pair ids,
     if( FABS(norm(frameinfo.scaling)) > GEOM_EPSILON){
         PlanarModelPtr _2Dtest = dynamic_pointer_cast<PlanarModel>(smb); 
         if (is_valid_ptr(_2Dtest) && frameinfo.screenprojection)
-            _addToScene(transform(frameinfo.position, frameinfo.heading, frameinfo.left, frameinfo.up, frameinfo.scaling, GeometryPtr(new Oriented(Vector3(0,1,0),Vector3(0,0,1),smb))), id, appearance, frameinfo.screenprojection);
-        else _addToScene(transform(position, heading, left, up scaling, smb));
+            _addToScene(transform(frameinfo, GeometryPtr(new Oriented(Vector3(0,1,0),Vector3(0,0,1),smb))), ids, appearance, frameinfo.screenprojection);
+        else    _addToScene(transform(frameinfo, smb), ids, appearance, frameinfo.screenprojection);
     }
 }
 
 GeometryPtr
-PglTurtleDrawer::transform(const Vector3& position, 
-                           const Vector3& heading, 
-                           const Vector3& left, 
-                           const Vector3& up, 
-                           const GeometryPtr& obj) const {
-  if ( up != Vector3::OX ||
-       left   != -Vector3::OY )
-       obj = GeometryPtr(new Oriented(up,-left,obj));
-  if ( position != Vector3::ORIGIN )
-       obj = GeometryPtr(new Translated(position,obj));
-  return obj;
+PglTurtleDrawer::transform(const FrameInfo& frameinfo, const GeometryPtr& obj) const {
+  if ( frameinfo.up != Vector3::OX ||
+       frameinfo.left!= -Vector3::OY )
+       return GeometryPtr(new Oriented(frameinfo.up,-frameinfo.left,obj));
+  if ( frameinfo.position != Vector3::ORIGIN )
+       return GeometryPtr(new Translated(frameinfo.position,obj));
 }
 
 GeometryPtr
-PglTurtleDrawer::transform_n_scale(const Vector3& position, 
-                                   const Vector3& heading, 
-                                   const Vector3& left, 
-                                   const Vector3& up, 
-                                   const Vector3& scaling,
-                                   const GeometryPtr& obj) const {
-   if ( scaling !=  Vector3(1,1,1) &&
-      (scaling.x() != scaling.y() ||
-       scaling.y() != scaling.z() ))
-       obj = GeometryPtr(new Scaled(scaling,obj));
-   return transform(position, heading, left, up, obj);
+PglTurtleDrawer::transform_n_scale(const FrameInfo& frameinfo, const GeometryPtr& obj) const {
+   if ( frameinfo.scaling !=  Vector3(1,1,1) &&
+      (frameinfo.scaling.x() != frameinfo.scaling.y() ||
+       frameinfo.scaling.y() != frameinfo.scaling.z() ))
+       return transform(frameinfo, GeometryPtr(new Scaled(frameinfo.scaling,obj)));
+   
+   return transform(frameinfo, obj);
 }
 
 
@@ -220,110 +211,114 @@ void PglTurtleDrawer::frustum(id_pair ids,
             a = GeometryPtr(new Cylinder(baseradius, length*frameinfo.scaling.z(), false, sectionResolution));
         else
             a = GeometryPtr(new Frustum(baseradius, length*frameinfo.scaling.z(), taper, false, sectionResolution));
-                  _addToScene(transform(GeometryPtr(new Scaled(getScale()*scale,GeometryPtr(new Oriented(Vector3(0,1,0),Vector3(0,0,1),smb)))),false));
-
-        _addToScene(transform(a));
+        
+        _addToScene(transform(frameinfo, a), ids, appearance, frameinfo.screenprojection);
     }
     else {
         if (FABS(topradius) < GEOM_EPSILON){
-            Point3ArrayPtr pts = Point3ArrayPtr(new Point3Array(2,getPosition()));
-            pts->setAt(1,getPosition()+getHeading()*length*getScale().z());
+            Point3ArrayPtr pts = Point3ArrayPtr(new Point3Array(2,frameinfo.position));
+            pts->setAt(1,frameinfo.position+frameinfo.heading*length*frameinfo.scaling.z());
             a = GeometryPtr(new Polyline(pts));
 
         }
         else {
             real_t _topradius = topradius;
-            if ( getScale() !=  Vector3(1,1,1) &&
-                (getScale().x() == getScale().y() &&
-                getScale().y() == getScale().z() ))
-                _topradius *= getScale().x();
-            a = GeometryPtr(new Cone(_topradius,length*getScale().z(),false,getParameters().sectionResolution));
-            if (getLeft() != Vector3::OX ||
-                getUp() != -Vector3::OY)
-                a = GeometryPtr(new Oriented(getLeft(),-getUp(),a));
-            a = GeometryPtr(new Translated(getPosition()+getHeading()*length*getScale().z(),a));
+            if ( frameinfo.scaling !=  Vector3(1,1,1) &&
+                (frameinfo.scaling.x() == frameinfo.scaling.y() &&
+                frameinfo.scaling.y() == frameinfo.scaling.z() ))
+                _topradius *= frameinfo.scaling.x();
+            a = GeometryPtr(new Cone(_topradius, length*frameinfo.scaling.z(), false, sectionResolution));
+            if (frameinfo.left != Vector3::OX ||
+                frameinfo.up != -Vector3::OY)
+                a = GeometryPtr(new Oriented(frameinfo.left,-frameinfo.up,a));
+            a = GeometryPtr(new Translated(frameinfo.position+frameinfo.heading*length*frameinfo.scaling.z(),a));
         }
-        _addToScene(a);
+        _addToScene(a, ids, appearance, frameinfo.screenprojection);
     }
   }
 }
 
-void PglTurtleDrawer::void cylinder(const Vector3& position, 
-                          const Vector3& heading, 
-                          const Vector3& left, 
-                          const Vector3& up, 
-                          const Vector3& scaling, 
+void PglTurtleDrawer::cylinder(const FrameInfo& frameinfo, 
                           const id_pair ids,
                           AppearancePtr appearance,
                           real_t length,
                           real_t radius,
                           uint_t sectionResolution){
   if (fabs(length) > GEOM_EPSILON) {
-      real_t width = getWidth();
-      if(FABS(width) < GEOM_EPSILON){
-          Point3ArrayPtr pts = Point3ArrayPtr(new Point3Array(2,getPosition()));
-          pts->setAt(1,getPosition()+getHeading()*length*getScale().z());
-          _addToScene(GeometryPtr(new Polyline(pts)));
+      if(FABS(radius) < GEOM_EPSILON){
+          Point3ArrayPtr pts = Point3ArrayPtr(new Point3Array(2,frameinfo.position));
+          pts->setAt(1, frameinfo.position + frameinfo.heading * length * frameinfo.scaling.z());
+          _addToScene(GeometryPtr(new Polyline(pts)), ids, appearance, frameinfo.screenprojection);
       }
       else {
-        if ( getScale() !=  Vector3(1,1,1) &&
-            (getScale().x() == getScale().y() ))
-            width *= getScale().x();
-        _addToScene(transform(GeometryPtr(new Cylinder(width,length*getScale().z(),false,getParameters().sectionResolution))));
+        if ( frameinfo.scaling !=  Vector3(1,1,1) &&
+            (frameinfo.scaling.x() == frameinfo.scaling.y()))
+            radius *= frameinfo.scaling.x();
+        _addToScene(transform(frameinfo, GeometryPtr(new Cylinder(radius, length*frameinfo.scaling.z(), false, sectionResolution))), ids, appearance, frameinfo.screenprojection);
       }
   }
 }
 
-void PglTurtleDrawer::box(real_t length, real_t botradius,  real_t topradius){
+void PglTurtleDrawer::box(const id_pair ids,
+                        AppearancePtr appearance,
+                        const FrameInfo& frameinfo, 
+                        real_t length,
+                        real_t botradius,
+                        real_t topradius) {
     GeometryPtr a;
     if((FABS(botradius) < GEOM_EPSILON)&& (FABS(topradius) < GEOM_EPSILON)){
-            Point3ArrayPtr pts = Point3ArrayPtr(new Point3Array(2,getPosition()));
-            pts->setAt(1,getPosition()+getHeading()*length*getScale().z());
+            Point3ArrayPtr pts = Point3ArrayPtr(new Point3Array(2,frameinfo.position));
+            pts->setAt(1,frameinfo.position+frameinfo.heading*length*frameinfo.scaling.z());
             a = GeometryPtr(new Polyline(pts));
-            _addToScene(a);
+            _addToScene(a, ids, appearance, frameinfo.screenprojection);
    }
     else{
-        if ( getScale() !=  Vector3(1,1,1) &&
-            (getScale().x() == getScale().y() )){
-            botradius *= getScale().x();
-            topradius *= getScale().x();
+        if ( frameinfo.scaling !=  Vector3(1,1,1) &&
+            (frameinfo.scaling.x() == frameinfo.scaling.y() )){
+            botradius *= frameinfo.scaling.x();
+            topradius *= frameinfo.scaling.x();
         }
 
         if (FABS(topradius-botradius) < GEOM_EPSILON){
-            real_t l = length*getScale().z()/2;
+            real_t l = length*frameinfo.scaling.z()/2;
             a = GeometryPtr(new Translated(Vector3(0,0,l),GeometryPtr(new Box(Vector3(botradius,botradius,l)))));
         }
         else {
-            real_t l = length*getScale().z()/2;
+            real_t l = length*frameinfo.scaling.z()/2;
             a = GeometryPtr(new Translated(Vector3(0,0,l),GeometryPtr(new Tapered(botradius, topradius,PrimitivePtr(new Box(Vector3(1,1,l)))))));
          }
-        _addToScene(transform(a));
+        _addToScene(transform(frameinfo, a), ids, appearance, frameinfo.screenprojection);
     }
 }
 
-void PglTurtleDrawer::quad(real_t length, real_t botradius,  real_t topradius){
+void PglTurtleDrawer::quad(const id_pair ids,
+                        AppearancePtr appearance,
+                        const FrameInfo& frameinfo, 
+                        real_t length, 
+                        real_t botradius, 
+                        real_t topradius) {
     GeometryPtr a;
-    if ( getScale() !=  Vector3(1,1,1) &&
-        (getScale().x() == getScale().y() )){
-        botradius *= getScale().x();
-        topradius *= getScale().x();
+    if ( frameinfo.scaling !=  Vector3(1,1,1) &&
+        (frameinfo.scaling.x() == frameinfo.scaling.y() )){
+        botradius *= frameinfo.scaling.x();
+        topradius *= frameinfo.scaling.x();
     }
     Point3ArrayPtr points(new Point3Array());
     if (FABS(botradius) < GEOM_EPSILON){
-        points->push_back(getPosition());
+        points->push_back(frameinfo.position);
     }
     else {
-        points->push_back(getPosition()+getLeft()*botradius);
-        points->push_back(getPosition()-getLeft()*botradius);
+        points->push_back(frameinfo.position+frameinfo.left*botradius);
+        points->push_back(frameinfo.position-frameinfo.left*botradius);
 
     }
-    Vector3 toppos = getPosition()+getHeading()*length*getScale().z();
+    Vector3 toppos = frameinfo.position+frameinfo.heading*length*frameinfo.scaling.z();
     if (FABS(topradius) < GEOM_EPSILON){
         points->push_back(toppos);
     }
     else {
-        points->push_back(toppos-getLeft()*topradius);
-        points->push_back(toppos+getLeft()*topradius);
+        points->push_back(toppos-frameinfo.left*topradius);
+        points->push_back(toppos+frameinfo.left*topradius);
     }
 
     switch (points->size()){
@@ -346,74 +341,80 @@ void PglTurtleDrawer::quad(real_t length, real_t botradius,  real_t topradius){
             }
             break;
     }
-     _addToScene(a);
+    _addToScene(a, ids, appearance, frameinfo.screenprojection);
 }
 
 
 
 GeometryPtr PglTurtleDrawer::DEFAULT_SPHERE;
 
-void PglTurtleDrawer::sphere(real_t radius){
-  if (getParameters().sectionResolution == Cylinder::DEFAULT_SLICES){
+void PglTurtleDrawer::sphere(const id_pair ids,
+                        AppearancePtr appearance,
+                        const FrameInfo& frameinfo, 
+                        real_t radius,
+                        uint_t sectionResolution) {
+  if (sectionResolution == Cylinder::DEFAULT_SLICES){
       if (is_null_ptr(DEFAULT_SPHERE))DEFAULT_SPHERE = GeometryPtr(new Sphere(1));
-      _addToScene(transform(GeometryPtr(new Scaled(getScale() * radius,DEFAULT_SPHERE)),false));
+      _addToScene(transform(frameinfo, GeometryPtr(new Scaled(frameinfo.scaling * radius,DEFAULT_SPHERE))), ids, appearance, frameinfo.screenprojection);
 
   }
   else {
       bool anisotropicscaling = true;
-      if ( getScale() !=  Vector3(1,1,1) &&
-            (getScale().x() == getScale().y() &&
-             getScale().y() == getScale().z() ))
+      if ( frameinfo.scaling !=  Vector3(1,1,1) &&
+            (frameinfo.scaling.x() == frameinfo.scaling.y() &&
+             frameinfo.scaling.y() == frameinfo.scaling.z() ))
       {
             anisotropicscaling = false;
       }
       if (anisotropicscaling)
-            _addToScene(transform(GeometryPtr(new Sphere(radius * getScale().x(),getParameters().sectionResolution,getParameters().sectionResolution)),false));
+            _addToScene(transform(frameinfo, GeometryPtr(new Sphere(radius * frameinfo.scaling.x(), sectionResolution,sectionResolution))), ids, appearance, frameinfo.screenprojection);
       else
-          _addToScene(transform(GeometryPtr(new Sphere(radius,getParameters().sectionResolution,getParameters().sectionResolution))));
+          _addToScene(transform(frameinfo, GeometryPtr(new Sphere(radius,sectionResolution, sectionResolution))), ids, appearance, frameinfo.screenprojection);
   }
 }
 
-GeometryPtr PglTurtleDrawer::getCircle(real_t radius) const{
-   int res = getParameters().sectionResolution;
-   Point3ArrayPtr pts = Point3ArrayPtr(new Point3Array(res+1,Vector3(0,1,0)));
-   real_t angdelta = (2*GEOM_PI)/res;
-   real_t angle = 0;
-   for (int i = 1; i < res; i++){
-     angle += angdelta;
-     pts->setAt(i,Vector3(0,cos(angle),sin(angle)));
-   }
-   pts->setAt(res,Vector3(0,1,0));
-   Vector3 scale = getScale()* radius;
-   return GeometryPtr(new Scaled(scale,GeometryPtr(new Polyline(pts))));
-}
+// GeometryPtr PglTurtleDrawer::getCircle(real_t radius) const{
+//    int res = getParameters().sectionResolution;
+//    Point3ArrayPtr pts = Point3ArrayPtr(new Point3Array(res+1,Vector3(0,1,0)));
+//    real_t angdelta = (2*GEOM_PI)/res;
+//    real_t angle = 0;
+//    for (int i = 1; i < res; i++){
+//      angle += angdelta;
+//      pts->setAt(i,Vector3(0,cos(angle),sin(angle)));
+//    }
+//    pts->setAt(res,Vector3(0,1,0));
+//    Vector3 scale = frameinfo.scaling* radius;
+//    return GeometryPtr(new Scaled(scale,GeometryPtr(new Polyline(pts))));
+// }
 
 void
-PglTurtleDrawer::circle(real_t radius){
+PglTurtleDrawer::circle(const id_pair ids,
+                        AppearancePtr appearance,
+                        const FrameInfo& frameinfo, 
+                        real_t radius,
+                        uint_t sectionResolution) {
   if (radius < GEOM_EPSILON)
-  { warning("Invalid radius for circle"); return; }
-  real_t rad = radius;
-  if ( getScale() !=  Vector3(1,1,1) &&
-        (getScale().x() == getScale().y() &&
-         getScale().y() == getScale().z() ))
-        rad *= getScale().x();
-  _addToScene(transform(GeometryPtr(new AxisRotated(Vector3::OY,GEOM_HALF_PI,GeometryPtr(new Disc(rad,getParameters().sectionResolution)) )) ));
-//   __scene->add(Shape(transform(getCircle(radius),false),getCurrentMaterial()));
-}
-
-void PglTurtleDrawer::surface(const string& name,real_t scale){
-  SurfaceMap::const_iterator it = __surfList.find(name);
-  if (it == __surfList.end()){
-    error("Unknown surface '" + name + '\'');
+  { 
+    std::cerr << "Invalid radius for circle" << std::endl; 
+    return; 
   }
-  GeometryPtr obj(new Scaled(getScale()*scale,it->second));
-  _addToScene(transform(obj,false));
+  real_t rad = radius;
+  if ( frameinfo.scaling !=  Vector3(1,1,1) &&
+        (frameinfo.scaling.x() == frameinfo.scaling.y() &&
+         frameinfo.scaling.y() == frameinfo.scaling.z() ))
+        rad *= frameinfo.scaling.x();
+  _addToScene(transform(frameinfo, GeometryPtr(new AxisRotated(Vector3::OY,GEOM_HALF_PI,GeometryPtr(new Disc(rad, sectionResolution)) ))), ids, appearance, frameinfo.screenprojection);
+//   __scene->add(Shape(transform(getCircle(radius),false),getCurrentMaterial()));
 }
 
 #include "plantgl/algo/base/tesselator.h"
 
 void
-PglTurtleDrawer::polygon(const Point3ArrayPtr& pointList, bool concavetest){
+PglTurtleDrawer::polygon(const id_pair ids,
+                         AppearancePtr appearance,
+                         bool screenprojection,
+                         const Point3ArrayPtr& points,
+                         const Index3ArrayPtr& indices) {
   size_t s = pointList->size();
   Point3ArrayPtr points ;
   if (norm(pointList->getAt(0) - pointList->getAt(s-1)) < GEOM_EPSILON){
@@ -490,14 +491,14 @@ PglTurtleDrawer::label(const string& text, int size ){
   FontPtr font;
   if (size > 0) font = FontPtr(new Font("",size));
   if (__params->screenCoordinates){
-    Vector3 p = (getPosition() + Vector3(1,1,1))*50;
+    Vector3 p = (frameinfo.position + Vector3(1,1,1))*50;
      _addToScene(GeometryPtr(new Text(text, Vector3(p.y(),p.z(),p.x()) , true, font)), false, NULL, false);
 
   }
   else {
     GeometryPtr obj(new Text(text, Vector3(0,0,0), false, font));
-    if ( getPosition() != Vector3::ORIGIN )
-       obj = GeometryPtr(new Translated(getPosition(),obj));
+    if ( frameinfo.position != Vector3::ORIGIN )
+       obj = GeometryPtr(new Translated(frameinfo.position,obj));
     _addToScene(obj);
   }
 }

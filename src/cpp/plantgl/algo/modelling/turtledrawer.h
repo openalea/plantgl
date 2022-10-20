@@ -94,12 +94,14 @@ public:
     virtual void sphere(const id_pair ids,
                         AppearancePtr appearance,
                         const FrameInfo& frameinfo, 
-                        real_t radius){}
+                        real_t radius,
+                        uint_t sectionResolution){}
 
     virtual void circle(const id_pair ids,
                         AppearancePtr appearance,
                         const FrameInfo& frameinfo, 
-                        real_t radius){}
+                        real_t radius,
+                        uint_t sectionResolution){}
 
     virtual void box(const id_pair ids,
                      AppearancePtr appearance,
