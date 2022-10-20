@@ -119,22 +119,30 @@ public:
 
     virtual void polygon(const id_pair ids,
                          AppearancePtr appearance,
-                         bool screenprojection,
-                         const Point3ArrayPtr& points,
-                         const Index3ArrayPtr& indices){}
+                         const FrameInfo& frameinfo,
+                         const Point3ArrayPtr& pointList,
+                         bool concaveTest){}
 
-    virtual void arrow(const FrameInfo& frameinfo, 
-                       real_t heigth, 
-                       real_t cap_heigth_ratio, 
+    virtual void arrow(const id_pair ids,
+                       AppearancePtr appearance,
+                       const FrameInfo& frameinfo,
+                       real_t heigth,
+                       real_t cap_heigth_ratio,
+                       real_t width,
+                       real_t cap_radius_ratio) { }
+
+    virtual void frame(const id_pair ids,
+                       AppearancePtr appearance,
+                       const FrameInfo& frameinfo,
+                       real_t heigth,
+                       real_t cap_heigth_ratio,
+                       real_t width,
                        real_t cap_radius_ratio,
-                       Color4 color) { }
+                       real_t color,
+                       real_t transparency) { }
 
-    virtual void label(const Vector3& position, 
-                       bool screenprojection,
-                       const id_pair ids,
-                       AppearancePtr appearance, 
-                       const std::string& text, 
-                       int size = -1){}
+    virtual void label(const id_pair ids, AppearancePtr appearance, const FrameInfo& frameinfo,
+                       const std::string &text, int size = -1) {}
 
     virtual void customGeometry(const id_pair ids,
                                 AppearancePtr appearance,

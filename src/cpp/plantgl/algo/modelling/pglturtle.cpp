@@ -327,13 +327,6 @@ void PglTurtle::_frustum(real_t length,real_t topdiam){
                                     length, getWidth(), topdiam, __params->sectionResolution);
 }
 
-void PglTurtle::_quad(real_t length, real_t botradius, real_t topradius);
-
-/// draw the polygon with current polygon points
-void PglTurtle::_polygon(const Point3ArrayPtr& points, bool concavetest = false){
-    
-}
-
 void PglTurtle::_label(const std::string& text , int size = -1);
 
 void PglTurtle::_frame(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius_ratio, real_t color, real_t transparency);

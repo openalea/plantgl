@@ -67,7 +67,7 @@ public:
     const ScenePtr& getScene() const
     { return __scene;  }
 
-    virtual void cylinder(const FrameInfo& frameinfo, 
+    virtual void cylinder(const FrameInfo& frameinfo,
                           const id_pair ids,
                           AppearancePtr appearance,
                           real_t length,
@@ -94,45 +94,57 @@ public:
 
     virtual void sphere(const id_pair ids,
                         AppearancePtr appearance,
-                        const FrameInfo& frameinfo, 
+                        const FrameInfo& frameinfo,
                         real_t radius,
                         uint_t sectionResolution);
 
     virtual void circle(const id_pair ids,
                         AppearancePtr appearance,
-                        const FrameInfo& frameinfo, 
+                        const FrameInfo& frameinfo,
                         real_t radius,
                         uint_t sectionResolution);
 
     virtual void box(const id_pair ids,
                      AppearancePtr appearance,
-                     const FrameInfo& frameinfo, 
+                     const FrameInfo& frameinfo,
                      real_t length,
                      real_t botradius,
                      real_t topradius);
 
     virtual void quad(const id_pair ids,
                       AppearancePtr appearance,
-                      const FrameInfo& frameinfo, 
-                      real_t length, 
+                      const FrameInfo& frameinfo,
+                      real_t length,
                       real_t botradius, 
                       real_t topradius);
 
     virtual void polygon(const id_pair ids,
                          AppearancePtr appearance,
-                         bool screenprojection,
+                         const FrameInfo& frameinfo,
                          const Point3ArrayPtr& points,
-                         const Index3ArrayPtr& indices);
+                         bool concaveTest);
 
-    virtual void arrow(const FrameInfo& frameinfo, 
-                       real_t heigth, 
-                       real_t cap_heigth_ratio, 
+    virtual void arrow(const id_pair ids,
+                       AppearancePtr appearance,
+                       const FrameInfo& frameinfo,
+                       real_t heigth,
+                       real_t cap_heigth_ratio,
+                       real_t width,
+                       real_t cap_radius_ratio);
+
+    virtual void frame(const id_pair ids,
+                       AppearancePtr appearance,
+                       const FrameInfo& frameinfo,
+                       real_t heigth,
+                       real_t cap_heigth_ratio,
+                       real_t width,
                        real_t cap_radius_ratio,
-                       Color4 color);
+                       real_t color,
+                       real_t transparency);
 
-    virtual void label(const Vector3& position, 
-                       const id_pair ids,
-                       AppearancePtr appearance, 
+    virtual void label(const id_pair ids,
+                       AppearancePtr appearance,
+                       const FrameInfo& frameinfo,
                        const std::string& text, 
                        int size = -1){}
 

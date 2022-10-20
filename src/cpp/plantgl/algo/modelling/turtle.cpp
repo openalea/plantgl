@@ -665,14 +665,22 @@ void Turtle::oLineTo(const Vector3& v, real_t topradius )
   }
 
   void Turtle::startPolygon(){
-      __params->polygon(true);
+    __params->polygon(true);
     __params->customId = popId();
     __params->customParentId = parentId;
     // __params->pushPosition();
   }
 
   void Turtle::stopPolygon(bool concavetest){
-      if(__params->pointList->size() > 2)_polygon(__params->pointList,concavetest);
+      if(__params->pointList->size() > 2) {
+          __drawer->polygon(
+                  getIdPair(),
+                  getCurrentMaterial(),
+                  __params->frame_info,
+                  __params->pointList,
+                  concavetest
+                  );
+      }
       __params->polygon(false);
       __params->customId = Shape::NOID;
       __params->customParentId = Shape::NOID;
@@ -1044,7 +1052,7 @@ void Turtle::quad(real_t length,real_t topradius){
 
 void Turtle::label(const std::string& text, int size )
 {
-    if(!text.empty())__drawer->label(__params, text, size);
+    if(!text.empty())__drawer->label(size, PGL::AppearancePtr(), __params, text, <#initializer#>);
     else warning("Invalid text for label");
 }
 
@@ -1058,8 +1066,18 @@ void Turtle::frame(real_t scale, real_t cap_heigth_ratio, real_t cap_radius_rati
 {
     color = max<real_t>(0,min<real_t>(1,color));
     transparency = max<real_t>(0,min<real_t>(1,transparency));
-    if (scale > GEOM_EPSILON && cap_heigth_ratio < 1 && cap_heigth_ratio > 0) _frame(scale,cap_heigth_ratio,cap_radius_ratio,color, transparency);
-    else {
+    if (scale > GEOM_EPSILON && cap_heigth_ratio < 1 && cap_heigth_ratio > 0) {
+        __drawer->frame(
+                getIdPair(),
+                getCurrentMaterial(),
+                __params->frame_info,
+                scale,
+                cap_heigth_ratio,
+                __params->width,
+                cap_radius_ratio
+                );
+        _frame(scale, cap_heigth_ratio, cap_radius_ratio, color, transparency);
+    } else {
         if(scale < GEOM_EPSILON) warning("Invalid scale for frame. Should be positive");
         if(cap_heigth_ratio > 1 || cap_heigth_ratio < 0) warning("Invalid cap_heigth_ratio for frame. Should be in [0,1].");
         if(cap_radius_ratio < GEOM_EPSILON) warning("Invalid cap_radius_ratio for frame. Should be positive.");
@@ -1068,8 +1086,16 @@ void Turtle::frame(real_t scale, real_t cap_heigth_ratio, real_t cap_radius_rati
 
 void Turtle::arrow(real_t scale, real_t cap_heigth_ratio, real_t cap_radius_ratio )
 {
-    if (scale > GEOM_EPSILON && cap_heigth_ratio < 1 && cap_heigth_ratio > 0) _arrow(scale,cap_heigth_ratio,cap_radius_ratio);
-    else {
+    if (scale > GEOM_EPSILON && cap_heigth_ratio < 1 && cap_heigth_ratio > 0) {
+        __drawer->arrow(
+                getIdPair(),
+                getCurrentMaterial(),
+                __params->frame_info,
+                scale, // might be a bad name for length ???
+                cap_heigth_ratio,
+                cap_radius_ratio
+                );
+    } else {
         if(scale < GEOM_EPSILON) warning("Invalid scale for arrow. Should be positive");
         if(cap_heigth_ratio > 1 || cap_heigth_ratio < 0) warning("Invalid cap_heigth_ratio for arrow. Should be in [0,1].");
         if(cap_radius_ratio < GEOM_EPSILON) warning("Invalid cap_radius_ratio for arrow. Should be positive.");
@@ -1086,8 +1112,8 @@ void Turtle::sweep(const LineicModelPtr& path, const Curve2DPtr& section, real_t
     setGuide(path,length); setCrossSection(section); nF(length,dl,radius,radiusvariation);
 }
 
-id_pair Turtle::getIdPair(bool custom) {
-    if(custom) {
+id_pair Turtle::getIdPair() {
+    if(__params->customId != Shape::NOID) {
         return {__params->customId, __params->customParentId};
     } else {
         auto parent_id = parentId;
