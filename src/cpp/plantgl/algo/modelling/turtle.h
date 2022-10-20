@@ -510,19 +510,11 @@ public:
 
 protected:
 
-    id_pair getIdPair(bool custom=false);
+    id_pair getIdPair();
 
     virtual void _frustum(real_t length, real_t topradius){}
 
-    virtual void _quad(real_t radius, real_t botradius, real_t topradius){}
-
-    virtual void _polygon(const Point3ArrayPtr& points, bool concavetest = false){}
-
-    virtual void _surface(const std::string& name, real_t scale){}
-
     virtual void _frame(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius_ratio, real_t color, real_t transparency) { }
-
-    virtual void _arrow(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius_ratio) { }
 
     virtual void _label(const std::string& text, int size = -1){}
     

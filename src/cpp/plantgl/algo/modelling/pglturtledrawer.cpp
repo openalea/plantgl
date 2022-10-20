@@ -174,7 +174,7 @@ PglTurtleDrawer::transform_n_scale(const FrameInfo& frameinfo, const GeometryPtr
       (frameinfo.scaling.x() != frameinfo.scaling.y() ||
        frameinfo.scaling.y() != frameinfo.scaling.z() ))
        return transform(frameinfo, GeometryPtr(new Scaled(frameinfo.scaling,obj)));
-   
+
    return transform(frameinfo, obj);
 }
 
@@ -211,7 +211,7 @@ void PglTurtleDrawer::frustum(id_pair ids,
             a = GeometryPtr(new Cylinder(baseradius, length*frameinfo.scaling.z(), false, sectionResolution));
         else
             a = GeometryPtr(new Frustum(baseradius, length*frameinfo.scaling.z(), taper, false, sectionResolution));
-        
+
         _addToScene(transform(frameinfo, a), ids, appearance, frameinfo.screenprojection);
     }
     else {
@@ -238,7 +238,7 @@ void PglTurtleDrawer::frustum(id_pair ids,
   }
 }
 
-void PglTurtleDrawer::cylinder(const FrameInfo& frameinfo, 
+void PglTurtleDrawer::cylinder(const FrameInfo& frameinfo,
                           const id_pair ids,
                           AppearancePtr appearance,
                           real_t length,
@@ -261,7 +261,7 @@ void PglTurtleDrawer::cylinder(const FrameInfo& frameinfo,
 
 void PglTurtleDrawer::box(const id_pair ids,
                         AppearancePtr appearance,
-                        const FrameInfo& frameinfo, 
+                        const FrameInfo& frameinfo,
                         real_t length,
                         real_t botradius,
                         real_t topradius) {
@@ -293,9 +293,9 @@ void PglTurtleDrawer::box(const id_pair ids,
 
 void PglTurtleDrawer::quad(const id_pair ids,
                         AppearancePtr appearance,
-                        const FrameInfo& frameinfo, 
-                        real_t length, 
-                        real_t botradius, 
+                        const FrameInfo& frameinfo,
+                        real_t length,
+                        real_t botradius,
                         real_t topradius) {
     GeometryPtr a;
     if ( frameinfo.scaling !=  Vector3(1,1,1) &&
@@ -350,7 +350,7 @@ GeometryPtr PglTurtleDrawer::DEFAULT_SPHERE;
 
 void PglTurtleDrawer::sphere(const id_pair ids,
                         AppearancePtr appearance,
-                        const FrameInfo& frameinfo, 
+                        const FrameInfo& frameinfo,
                         real_t radius,
                         uint_t sectionResolution) {
   if (sectionResolution == Cylinder::DEFAULT_SLICES){
@@ -390,13 +390,13 @@ void PglTurtleDrawer::sphere(const id_pair ids,
 void
 PglTurtleDrawer::circle(const id_pair ids,
                         AppearancePtr appearance,
-                        const FrameInfo& frameinfo, 
+                        const FrameInfo& frameinfo,
                         real_t radius,
                         uint_t sectionResolution) {
   if (radius < GEOM_EPSILON)
-  { 
-    std::cerr << "Invalid radius for circle" << std::endl; 
-    return; 
+  {
+    std::cerr << "Invalid radius for circle" << std::endl;
+    return;
   }
   real_t rad = radius;
   if ( frameinfo.scaling !=  Vector3(1,1,1) &&
@@ -412,9 +412,9 @@ PglTurtleDrawer::circle(const id_pair ids,
 void
 PglTurtleDrawer::polygon(const id_pair ids,
                          AppearancePtr appearance,
-                         bool screenprojection,
-                         const Point3ArrayPtr& points,
-                         const Index3ArrayPtr& indices) {
+                         const FrameInfo& frameinfo,
+                         const Point3ArrayPtr& pointList,
+                         bool concaveTest){
   size_t s = pointList->size();
   Point3ArrayPtr points ;
   if (norm(pointList->getAt(0) - pointList->getAt(s-1)) < GEOM_EPSILON){
@@ -423,7 +423,7 @@ PglTurtleDrawer::polygon(const id_pair ids,
   }
   else  points = Point3ArrayPtr(new Point3Array(*pointList));
 
-  if (s > 2 && concavetest){
+  if (s > 2 && concaveTest){
       Vector3 v0 = points->getAt(0), v1 = points->getAt(1), v2 = points->getAt(2);
       Vector3 normal = - cross(v1-v0,v2-v0); // - is for clockwise orientation
       normal.normalize();
@@ -507,12 +507,20 @@ AppearancePtr PglTurtleDrawer::HEADING_FRAME_MATERIAL(new Material("HEADING_FRAM
 AppearancePtr PglTurtleDrawer::UP_FRAME_MATERIAL(new Material("UP_FRAME_MATERIAL",Color3(50,50,250),1));
 AppearancePtr PglTurtleDrawer::LEFT_FRAME_MATERIAL(new Material("LEFT_FRAME_MATERIAL",Color3(50,250,50),1));
 
-void PglTurtleDrawer::frame(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius_ratio, real_t color, real_t transparency) {
+void PglTurtleDrawer::frame(const id_pair ids,
+                            AppearancePtr appearance,
+                            const FrameInfo& frameinfo,
+                            real_t heigth,
+                            real_t cap_heigth_ratio,
+                            real_t width,
+                            real_t cap_radius_ratio,
+                            real_t color,
+                            real_t transparency) {
   GeometryPtr arrow;
   GroupPtr group;
   real_t lengthstick = heigth*(1-cap_heigth_ratio);
   if ( cap_heigth_ratio > 0 && cap_radius_ratio > 0) {
-     GeometryPtr cap(new Cone(getWidth()*cap_radius_ratio,heigth*cap_heigth_ratio,true,getParameters().sectionResolution));
+     GeometryPtr cap(new Cone(width*cap_radius_ratio,heigth*cap_heigth_ratio,true,getParameters().sectionResolution));
      if ( cap_heigth_ratio < 1) {
          group = GroupPtr(new Group(GeometryArrayPtr(new GeometryArray(2))));
          group->getGeometryList()->setAt(0,GeometryPtr(new Translated(Vector3(0,0,lengthstick),cap)));
@@ -521,7 +529,7 @@ void PglTurtleDrawer::frame(real_t heigth, real_t cap_heigth_ratio, real_t cap_r
      else arrow = cap;
   }
   if ( lengthstick > GEOM_EPSILON) {
-     GeometryPtr stick(new Cylinder(getWidth(),lengthstick,true,getParameters().sectionResolution));
+     GeometryPtr stick(new Cylinder(width,lengthstick,true,getParameters().sectionResolution));
      if (group) group->getGeometryList()->setAt(1,stick);
      else arrow = stick;
   }
@@ -635,7 +643,30 @@ PglTurtleDrawer::smallSweep(const id_pair ids, AppearancePtr appearance, const F
     std::vector<real_t> radius;
     radius.push_back(bottomradius);
     radius.push_back(topradius);
-    this->generalizedCylinder(id, appearance, frameinfo, points, left, radius, crossSection, crossSectionCCW);
+    this->generalizedCylinder(ids, appearance, frameinfo, points, left, radius, crossSection, crossSectionCCW);
+}
+
+void PglTurtleDrawer::arrow(const id_pair ids, AppearancePtr appearance, const FrameInfo &frameinfo, real_t heigth,
+                            real_t cap_heigth_ratio, real_t width, real_t cap_radius_ratio) {
+    GeometryPtr arrow;
+    GroupPtr group;
+    real_t lengthstick = heigth*(1-cap_heigth_ratio);
+    if ( cap_heigth_ratio > 0 && cap_radius_ratio > 0) {
+        GeometryPtr cap(new Cone(width*cap_radius_ratio,heigth*cap_heigth_ratio,true,getParameters().sectionResolution));
+        if ( cap_heigth_ratio < 1) {
+            group = GroupPtr(new Group(GeometryArrayPtr(new GeometryArray(2))));
+            group->getGeometryList()->setAt(0,GeometryPtr(new Translated(Vector3(0,0,lengthstick),cap)));
+            arrow = group;
+        }
+        else arrow = cap;
+    }
+    if ( lengthstick > GEOM_EPSILON) {
+        GeometryPtr stick(new Cylinder(width,lengthstick,true,getParameters().sectionResolution));
+        if (group) group->getGeometryList()->setAt(1,stick);
+        else arrow = stick;
+    }
+    arrow->setName("Arrow_"+number(arrow->getObjectId()));
+    _addToScene(transform(arrow,false));
 }
 
 
