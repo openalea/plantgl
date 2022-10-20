@@ -305,28 +305,19 @@ void PglTurtle::surface(const string& name, real_t scale){
 #include "plantgl/algo/base/tesselator.h"
 
 ScenePtr PglTurtle::partialView(){
-    ScenePtr currentscene = new Scene(*__scene);
-    if(__params->isGeneralizedCylinderOn()){
-      if(__params->pointList->size() > 1){
-        if(__drawer)__drawer->generalizedCylinder(__params,
-                                      __params->pointList,
-                                      __params->leftList,
-                                      __params->radiusList,
-                                      __params->initial.crossSection,
-                                      __params->initial.crossSectionCCW);
-      }
+    auto drawer = dynamic_pointer_cast<PglTurtleDrawer>(__drawer);
+    if(drawer) {
+        return drawer->partialView(
+                getId(),
+                getCurrentMaterial(),
+                __params->isGeneralizedCylinderOn(),
+                __params->pointList,
+                __params->leftList,
+                __params->radiusList,
+                __params->initial
+                );
     }
-    frame();
-    ScenePtr result = __scene;
-    __scene = currentscene;
-    return result;
-}
-
-/// draw a cylinder of length = length, diameter = current width
-void PglTurtle::_cylinder(real_t length){
-    if(__drawer) __drawer->cylinder(getPosition(), getHeading(), getLeft(), getUp(), getScale(),
-                                    getId(), getCurrentMaterial(), 
-                                    length, getWidth(), __params->sectionResolution);
+    return {};
 }
 
 /// draw a frustum of length = length, bottom diameter = current width and top diameter = topdiam

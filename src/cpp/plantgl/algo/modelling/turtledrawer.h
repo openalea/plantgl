@@ -99,9 +99,9 @@ public:
     virtual void box(const uint_t id,
                      AppearancePtr appearance,
                      const FrameInfo& frameinfo, 
-                    real_t length, 
-                    real_t botradius, 
-                    real_t topradius){}
+                     real_t length,
+                     real_t botradius,
+                     real_t topradius){}
 
     virtual void quad(const uint_t id,
                       AppearancePtr appearance,
@@ -133,7 +133,16 @@ public:
                                 AppearancePtr appearance,
                                 const FrameInfo& frameinfo, 
                                 const GeometryPtr smb, 
-                                real_t scale = 1.0);
+                                real_t scale = 1.0) {}
+
+    virtual void smallSweep(const uint_t id,
+                            AppearancePtr appearance,
+                            const FrameInfo& frameinfo,
+                            const real_t length,
+                            const real_t bottomradius,
+                            const real_t topradius,
+                            const Curve2DPtr& crossSection,
+                            bool crossSectionCCW) {}
 };
 
 typedef RCPtr<TurtleDrawer> TurtleDrawerPtr;

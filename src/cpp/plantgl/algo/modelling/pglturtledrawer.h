@@ -160,9 +160,26 @@ public:
 
     virtual void customGeometry(const uint_t id,
                                 AppearancePtr appearance,
-                                const FrameInfo& frameinfo, 
-                                const GeometryPtr smb, 
+                                const FrameInfo& frameinfo,
+                                const GeometryPtr smb,
                                 real_t scale = 1.0);
+
+    virtual void smallSweep(const uint_t id,
+                            AppearancePtr appearance,
+                            const FrameInfo& frameinfo,
+                            const real_t length,
+                            const real_t bottomradius,
+                            const real_t topradius,
+                            const Curve2DPtr& crossSection,
+                            bool crossSectionCCW);
+
+    ScenePtr partialView(const uint_t id,
+                         AppearancePtr appearance,
+                         bool generalizedCylinderOn,
+                         Point3ArrayPtr& pointList,
+                         std::vector<Vector3>& leftList,
+                         std::vector<real_t>& radiusList,
+                         TurtleDrawParameter& initial);
 protected:
 
     GeometryPtr getCircle(real_t radius) const;

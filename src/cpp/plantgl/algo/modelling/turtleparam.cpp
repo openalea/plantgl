@@ -234,3 +234,15 @@ void TurtleParam::pushPosition(){
 void TurtleParam::pushRadius(){
     *(radiusList.end()-1) = width;
 }
+
+void TurtleParam::setCrossSection(const Curve2DPtr &curve, bool ccw, bool defaultSection) {
+    crossSection = curve;
+    crossSectionCCW = ccw;
+    this->defaultSection = defaultSection;
+    if(isGeneralizedCylinderOnInit())
+    {
+        initial.crossSection = curve;
+        initial.crossSectionCCW = ccw;
+        initial.defaultSection = defaultSection;
+    }
+}

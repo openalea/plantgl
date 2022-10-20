@@ -603,3 +603,36 @@ AppearancePtr PglTurtleDrawer::getCurrentInitialMaterial() const{
    else return AppearancePtr(new Material("Color_"+TOOLS(number(__params->initial.color))));
 }
 
+ScenePtr PglTurtleDrawer::partialView(const uint_t id,
+                                      AppearancePtr appearance,
+                                      bool generalizedCylinderOn,
+                                      Point3ArrayPtr& pointList,
+                                      std::vector<Vector3>& leftList,
+                                      std::vector<real_t>& radiusList,
+                                      TurtleDrawParameter& initial) {
+    ScenePtr currentscene = new Scene(*__scene);
+    if(generalizedCylinderOn && pointList->size() > 1){
+        this->generalizedCylinder(id, appearance, pointList, leftList, radiusList, initial.crossSection, initial.crossSectionCCW);
+    }
+    frame();
+    ScenePtr result = __scene;
+    __scene = currentscene;
+    return result;
+}
+
+void
+PglTurtleDrawer::smallSweep(const uint_t id, AppearancePtr appearance, const FrameInfo &frameinfo, const real_t length,
+                            const real_t bottomradius, const real_t topradius, const Curve2DPtr& crossSection,
+                            bool crossSectionCCW) {
+    Point3ArrayPtr points(new Point3Array(frameinfo.position,frameinfo.position+frameinfo.heading*length));
+    std::vector<Vector3> left;
+    left.push_back(frameinfo.left);
+    left.push_back(frameinfo.left);
+    std::vector<real_t> radius;
+    radius.push_back(bottomradius);
+    radius.push_back(topradius);
+    this->generalizedCylinder(id, appearance, points, left, radius, crossSection, crossSectionCCW);
+}
+
+
+
