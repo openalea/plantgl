@@ -148,9 +148,6 @@ protected:
 
     // GeometryPtr transform(const GeometryPtr& obj, bool scaled = true) const;
 
-    /// draw a cylinder of length = length, diameter = current width
-    virtual void _cylinder(real_t length);
-
     /// draw a frustum of length = length, bottom diameter = current width and top diameter = topdiam
     virtual void _frustum(real_t length,real_t topdiam);
 

@@ -303,10 +303,24 @@ void Turtle::stop(){
           if (length > GEOM_EPSILON){
               if (!__params->isGeneralizedCylinderOn()){
                       if(__params->defaultSection && __params->width > -GEOM_EPSILON){
-                        if (topradius < -GEOM_EPSILON)  _cylinder (length);
-                        else __drawer->frustum(getId(), getCurrentMaterial(), __params->frame_info, length, __params->width, topradius, __params->sectionResolution);
+                            if (topradius < -GEOM_EPSILON) {
+                                __drawer->cylinder(getId(), getCurrentMaterial(), __params->frame_info, length, __params->width);
+                            } else {
+                                __drawer->frustum(getId(), getCurrentMaterial(), __params->frame_info, length, __params->width, topradius, __params->sectionResolution);
+                            }
                       }
-                      else { _smallsweep(length, topradius < -GEOM_EPSILON?getWidth():topradius); }
+                      else {
+                          __drawer->smallSweep(
+                                  getId(),
+                                  getCurrentMaterial(),
+                                  __params->frame_info,
+                                  length,
+                                  __params->width,
+                                  topradius < -GEOM_EPSILON?getWidth():topradius,
+                                  __params->crossSection,
+                                  __params->crossSectionCCW
+                                  );
+                      }
               }
               __params->position += __params->heading*length*getScale().z();
               __params->axialLength += length;
@@ -1052,22 +1066,6 @@ void Turtle::sweep(const LineicModelPtr& path, const Curve2DPtr& section, real_t
     setGuide(path,length); setCrossSection(section); nF(length,dl,radius,radiusvariation);
 }
 
-
-void Turtle::_smallsweep(real_t length, real_t topradius)
-{
-
-    // default sweep
-    Point3ArrayPtr points(new Point3Array(getPosition(),getPosition()+getHeading()*length));
-    std::vector<Vector3> left;
-    left.push_back(getLeft());
-    left.push_back(getLeft());
-    std::vector<real_t> radius;
-    radius.push_back(getWidth());
-    radius.push_back(topradius);
-    _generalizedCylinder(points, left, radius,
-                         __params->crossSection,
-                         __params->crossSectionCCW, true);
-}
 /*----------------------------------------------------------*/
 
 //Polyline2DPtr PglTurtle::DEFAULT_CROSS_SECTION(0);

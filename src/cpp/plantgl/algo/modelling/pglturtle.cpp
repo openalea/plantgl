@@ -320,13 +320,6 @@ ScenePtr PglTurtle::partialView(){
     return {};
 }
 
-/// draw a cylinder of length = length, diameter = current width
-void PglTurtle::_cylinder(real_t length){
-    if(__drawer) __drawer->cylinder(getPosition(), getHeading(), getLeft(), getUp(), getScale(),
-                                    getId(), getCurrentMaterial(), 
-                                    length, getWidth(), __params->sectionResolution);
-}
-
 /// draw a frustum of length = length, bottom diameter = current width and top diameter = topdiam
 void PglTurtle::_frustum(real_t length,real_t topdiam){
     if(__drawer) __drawer->frustum(getId(), getPosition(), getHeading(), getLeft(), getUp(), getScale(),
