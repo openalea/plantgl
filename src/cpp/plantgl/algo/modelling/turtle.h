@@ -510,22 +510,9 @@ public:
 
 protected:
 
+    id_pair getIdPair(bool custom=false);
+
     virtual void _frustum(real_t length, real_t topradius){}
-    
-    virtual void _sweep(real_t length, real_t topradius);
-
-    virtual void _generalizedCylinder(const Point3ArrayPtr& points,
-                                      const std::vector<Vector3>& left,
-                                      const std::vector<real_t>& radius,
-                                      const Curve2DPtr& crossSection,
-                                      bool crossSectionCCW,
-                                      bool currentcolor = false){}
-
-    virtual void _sphere(real_t radius){}
-
-    virtual void _circle(real_t radius){}
-
-    virtual void _box(real_t radius, real_t botradius, real_t topradius){}
 
     virtual void _quad(real_t radius, real_t botradius, real_t topradius){}
 

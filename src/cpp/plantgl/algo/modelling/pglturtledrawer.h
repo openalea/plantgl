@@ -72,35 +72,36 @@ public:
                           const Vector3& left, 
                           const Vector3& up, 
                           const Vector3& scaling, 
-                          const uint_t id,
+                          const id_pair ids,
                           AppearancePtr appearance,
                           real_t length,
                           real_t radius,
                           uint_t sectionResolution){}
 
 
-    virtual void frustum( const uint_t id,
+    virtual void frustum( const id_pair ids,
                           AppearancePtr appearance,
-                          const FrameInfo& frameinfo, 
-                          real_t length, 
+                          const FrameInfo& frameinfo,
+                          real_t length,
                           real_t baseradius, 
                           real_t topradius, 
                           uint_t sectionResolution);
 
-    virtual void generalizedCylinder(const uint_t id,
+    virtual void generalizedCylinder(const id_pair ids,
                                      AppearancePtr appearance,
+                                     const FrameInfo& frameinfo,
                                      const Point3ArrayPtr& points,
                                      const std::vector<Vector3>& left,
                                      const std::vector<real_t>& radius,
                                      const Curve2DPtr& crossSection,
-                                     bool crossSectionCCW){}
+                                     bool crossSectionCCW);
 
     virtual void sphere(const Vector3& position, 
                         const Vector3& heading, 
                         const Vector3& left, 
                         const Vector3& up, 
                         const Vector3& scaling, 
-                        const uint_t id,
+                        const id_pair ids,
                         AppearancePtr appearance,
                         real_t radius){}
 
@@ -109,7 +110,7 @@ public:
                         const Vector3& left, 
                         const Vector3& up, 
                         const Vector3& scaling, 
-                        const uint_t id,
+                        const id_pair ids,
                         AppearancePtr appearance,
                         real_t radius){}
 
@@ -118,7 +119,7 @@ public:
                     const Vector3& left, 
                     const Vector3& up, 
                     const Vector3& scaling, 
-                    const uint_t id,
+                    const id_pair ids,
                     AppearancePtr appearance,
                     real_t length, 
                     real_t botradius, 
@@ -129,13 +130,13 @@ public:
                       const Vector3& left, 
                       const Vector3& up, 
                       const Vector3& scaling, 
-                      const uint_t id,
+                      const id_pair ids,
                       AppearancePtr appearance,
                       real_t length, 
                       real_t botradius, 
                       real_t topradius){}
 
-    virtual void polygon(const uint_t id,
+    virtual void polygon(const id_pair ids,
                          AppearancePtr appearance,
                          const Point3ArrayPtr& points,
                          const Index3ArrayPtr& indices){}
@@ -145,7 +146,7 @@ public:
                        const Vector3& left, 
                        const Vector3& up, 
                        const Vector3& scaling, 
-                       const uint_t id,
+                       const id_pair ids,
                        AppearancePtr appearance,
                        real_t heigth, 
                        real_t cap_heigth_ratio, 
@@ -153,18 +154,18 @@ public:
                        Color4 color) { }
 
     virtual void label(const Vector3& position, 
-                       const uint_t id,
+                       const id_pair ids,
                        AppearancePtr appearance, 
                        const std::string& text, 
                        int size = -1){}
 
-    virtual void customGeometry(const uint_t id,
+    virtual void customGeometry(const id_pair ids,
                                 AppearancePtr appearance,
                                 const FrameInfo& frameinfo,
                                 const GeometryPtr smb,
                                 real_t scale = 1.0);
 
-    virtual void smallSweep(const uint_t id,
+    virtual void smallSweep(const id_pair ids,
                             AppearancePtr appearance,
                             const FrameInfo& frameinfo,
                             const real_t length,
@@ -173,8 +174,9 @@ public:
                             const Curve2DPtr& crossSection,
                             bool crossSectionCCW);
 
-    ScenePtr partialView(const uint_t id,
+    ScenePtr partialView(const id_pair ids,
                          AppearancePtr appearance,
+                         const FrameInfo& frameinfo,
                          bool generalizedCylinderOn,
                          Point3ArrayPtr& pointList,
                          std::vector<Vector3>& leftList,
@@ -198,7 +200,7 @@ protected:
                                   const GeometryPtr& obj) const;
 
 
-    void _addToScene(const GeometryPtr geom, const uint_t id, AppearancePtr app = NULL, bool projection = true);
+    void _addToScene(const GeometryPtr geom, const id_pair ids, AppearancePtr app = NULL, bool projection = true);
 
     ScenePtr __scene;
 

@@ -49,6 +49,11 @@
 
 PGL_BEGIN_NAMESPACE
 
+typedef struct {
+    uint_t id;
+    uint_t parent_id;
+} id_pair;
+
 class Index3Array;
 typedef RCPtr<Index3Array> Index3ArrayPtr;
 
@@ -62,14 +67,14 @@ public:
 
     virtual ~TurtleDrawer();
 
-    virtual void cylinder(const uint_t id,
+    virtual void cylinder(const id_pair ids,
                           AppearancePtr appearance,
                           const FrameInfo& frameinfo, 
                           real_t length,
                           real_t radius,
                           uint_t sectionResolution){}
 
-    virtual void frustum( const uint_t id,
+    virtual void frustum( const id_pair ids,
                           AppearancePtr appearance,
                           const FrameInfo& frameinfo, 
                           real_t length, 
@@ -77,40 +82,40 @@ public:
                           real_t topradius, 
                           uint_t sectionResolution){}
 
-    virtual void generalizedCylinder(const uint_t id,
+    virtual void generalizedCylinder(const id_pair ids,
                                      AppearancePtr appearance,
-                                     bool screenprojection,
+                                     const FrameInfo& frameinfo,
                                      const Point3ArrayPtr& points,
                                      const std::vector<Vector3>& left,
                                      const std::vector<real_t>& radius,
                                      const Curve2DPtr& crossSection,
                                      bool crossSectionCCW){}
 
-    virtual void sphere(const uint_t id,
+    virtual void sphere(const id_pair ids,
                         AppearancePtr appearance,
                         const FrameInfo& frameinfo, 
                         real_t radius){}
 
-    virtual void circle(const uint_t id,
+    virtual void circle(const id_pair ids,
                         AppearancePtr appearance,
                         const FrameInfo& frameinfo, 
                         real_t radius){}
 
-    virtual void box(const uint_t id,
+    virtual void box(const id_pair ids,
                      AppearancePtr appearance,
                      const FrameInfo& frameinfo, 
                      real_t length,
                      real_t botradius,
                      real_t topradius){}
 
-    virtual void quad(const uint_t id,
+    virtual void quad(const id_pair ids,
                       AppearancePtr appearance,
                       const FrameInfo& frameinfo, 
                       real_t length, 
                       real_t botradius, 
                       real_t topradius){}
 
-    virtual void polygon(const uint_t id,
+    virtual void polygon(const id_pair ids,
                          AppearancePtr appearance,
                          bool screenprojection,
                          const Point3ArrayPtr& points,
@@ -124,18 +129,18 @@ public:
 
     virtual void label(const Vector3& position, 
                        bool screenprojection,
-                       const uint_t id,
+                       const id_pair ids,
                        AppearancePtr appearance, 
                        const std::string& text, 
                        int size = -1){}
 
-    virtual void customGeometry(const uint_t id,
+    virtual void customGeometry(const id_pair ids,
                                 AppearancePtr appearance,
                                 const FrameInfo& frameinfo, 
                                 const GeometryPtr smb, 
                                 real_t scale = 1.0) {}
 
-    virtual void smallSweep(const uint_t id,
+    virtual void smallSweep(const id_pair ids,
                             AppearancePtr appearance,
                             const FrameInfo& frameinfo,
                             const real_t length,

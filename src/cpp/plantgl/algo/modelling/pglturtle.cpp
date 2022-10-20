@@ -327,34 +327,6 @@ void PglTurtle::_frustum(real_t length,real_t topdiam){
                                     length, getWidth(), topdiam, __params->sectionResolution);
 }
 
-void PglTurtle::_generalizedCylinder(const Point3ArrayPtr& points,
-                                  const std::vector<Vector3>& left,
-                                  const std::vector<real_t>& radius,
-                                  const Curve2DPtr& crossSection,
-                                  bool crossSectionCCW,
-                                  bool currentcolor = false)
-{
-    if(__drawer) __drawer->generalizedCylinder(getId(), currentcolor?getCurrentMaterial():getInitialCurrentMaterial(), 
-                                               points, left, radius, crossSection, crossSectionCCW);
-
-}
-
-void PglTurtle::_sphere(real_t radius){
-    if(__drawer) __drawer->sphere(getPosition(), getHeading(), getLeft(), getUp(), getScale(),
-                                  getId(), getCurrentMaterial(), 
-                                  radius, __params->sectionResolution);
-}
-
-/// draw a circle in yz plane of radius = radius (default : current width)
-void PglTurtle::_circle(real_t radius)
-{
-    if(__drawer) __drawer->circle(getPosition(), getHeading(), getLeft(), getUp(), getScale(),
-                                  getId(), getCurrentMaterial(), 
-                                  radius, __params->sectionResolution);
-}
-
-void PglTurtle::_box(real_t length, real_t botradius, real_t topradius);
-
 void PglTurtle::_quad(real_t length, real_t botradius, real_t topradius);
 
 /// draw the polygon with current polygon points

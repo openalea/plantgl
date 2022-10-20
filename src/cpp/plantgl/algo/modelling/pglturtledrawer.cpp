@@ -145,7 +145,7 @@ AppearancePtr PglTurtle::getCurrentInitialMaterial() const{
 }
 */
 
-void PglTurtleDrawer::customGeometry(const uint_t id,
+void PglTurtleDrawer::customGeometry(const id_pair ids,
                                 AppearancePtr appearance,
                                 const FrameInfo& frameinfo, 
                                 const GeometryPtr smb, 
@@ -190,21 +190,21 @@ PglTurtleDrawer::transform_n_scale(const Vector3& position,
 
 
 
-void PglTurtleDrawer::_addToScene(const GeometryPtr geom, id_pair idpair, AppearancePtr app, bool projection)
+void PglTurtleDrawer::_addToScene(const GeometryPtr geom, id_pair ids, AppearancePtr app, bool projection)
 {
     GeometryPtr mgeom = geom;
     if (projection)
       mgeom = GeometryPtr(new ScreenProjected(GeometryPtr(new Oriented(Vector3(0,0,1),Vector3(1,0,0),mgeom)),false));
 
-    __scene->add(Shape3DPtr(new Shape(mgeom, app, idpair.id, idpair.parentId)));
+    __scene->add(Shape3DPtr(new Shape(mgeom, app, ids.id, ids.parent_id)));
 }
 
-void PglTurtleDrawer::frustum(id_pair idpair,
+void PglTurtleDrawer::frustum(id_pair ids,
                           AppearancePtr appearance,
-                          const FrameInfo& frameinfo, 
-                          real_t length, 
-                          real_t baseradius, 
-                          real_t topradius, 
+                          const FrameInfo& frameinfo,
+                          real_t length,
+                          real_t baseradius,
+                          real_t topradius,
                           uint_t sectionResolution) {
   if (fabs(length) > GEOM_EPSILON) {
     GeometryPtr a;
@@ -253,7 +253,7 @@ void PglTurtleDrawer::void cylinder(const Vector3& position,
                           const Vector3& left, 
                           const Vector3& up, 
                           const Vector3& scaling, 
-                          const uint_t id,
+                          const id_pair ids,
                           AppearancePtr appearance,
                           real_t length,
                           real_t radius,
@@ -455,12 +455,14 @@ PglTurtleDrawer::polygon(const Point3ArrayPtr& pointList, bool concavetest){
 }
 
 void
-PglTurtleDrawer::generalizedCylinder(const Point3ArrayPtr& points,
-                                const vector<Vector3>& leftList,
-                                const vector<real_t>& radiusList,
-                                const Curve2DPtr& crossSection,
-                                bool crossSectionCCW,
-                                bool currentcolor){
+PglTurtleDrawer::generalizedCylinder(const id_pair ids,
+                                     AppearancePtr appearance,
+                                     const FrameInfo& frameinfo,
+                                     const Point3ArrayPtr& points,
+                                     const std::vector<Vector3>& left,
+                                     const std::vector<real_t>& radius,
+                                     const Curve2DPtr& crossSection,
+                                     bool crossSectionCCW){
   if (points->size() == 2 && norm(points->getAt(0) - points->getAt(1)) < GEOM_EPSILON) return;
   LineicModelPtr axis = LineicModelPtr(new Polyline(Point3ArrayPtr(
                           new Point3Array(*points))));
@@ -603,8 +605,9 @@ AppearancePtr PglTurtleDrawer::getCurrentInitialMaterial() const{
    else return AppearancePtr(new Material("Color_"+TOOLS(number(__params->initial.color))));
 }
 
-ScenePtr PglTurtleDrawer::partialView(const uint_t id,
+ScenePtr PglTurtleDrawer::partialView(const id_pair ids,
                                       AppearancePtr appearance,
+                                      const FrameInfo& frameinfo,
                                       bool generalizedCylinderOn,
                                       Point3ArrayPtr& pointList,
                                       std::vector<Vector3>& leftList,
@@ -612,7 +615,7 @@ ScenePtr PglTurtleDrawer::partialView(const uint_t id,
                                       TurtleDrawParameter& initial) {
     ScenePtr currentscene = new Scene(*__scene);
     if(generalizedCylinderOn && pointList->size() > 1){
-        this->generalizedCylinder(id, appearance, pointList, leftList, radiusList, initial.crossSection, initial.crossSectionCCW);
+        this->generalizedCylinder(id, appearance, frameinfo, pointList, leftList, radiusList, initial.crossSection, initial.crossSectionCCW);
     }
     frame();
     ScenePtr result = __scene;
@@ -621,7 +624,7 @@ ScenePtr PglTurtleDrawer::partialView(const uint_t id,
 }
 
 void
-PglTurtleDrawer::smallSweep(const uint_t id, AppearancePtr appearance, const FrameInfo &frameinfo, const real_t length,
+PglTurtleDrawer::smallSweep(const id_pair ids, AppearancePtr appearance, const FrameInfo &frameinfo, const real_t length,
                             const real_t bottomradius, const real_t topradius, const Curve2DPtr& crossSection,
                             bool crossSectionCCW) {
     Point3ArrayPtr points(new Point3Array(frameinfo.position,frameinfo.position+frameinfo.heading*length));
@@ -631,7 +634,7 @@ PglTurtleDrawer::smallSweep(const uint_t id, AppearancePtr appearance, const Fra
     std::vector<real_t> radius;
     radius.push_back(bottomradius);
     radius.push_back(topradius);
-    this->generalizedCylinder(id, appearance, points, left, radius, crossSection, crossSectionCCW);
+    this->generalizedCylinder(id, appearance, frameinfo, points, left, radius, crossSection, crossSectionCCW);
 }
 
 

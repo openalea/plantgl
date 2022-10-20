@@ -230,7 +230,9 @@ uint_t Turtle::popId()
 void Turtle::stop(){
   if(__params->isGeneralizedCylinderOn()){
       if(__params->pointList->size() > 1){
-        __drawer->generalizedCylinder(__params,
+        __drawer->generalizedCylinder(getId(),
+                           getCurrentMaterial(),
+                           __params->frame_info,
                            __params->pointList,
                            __params->leftList,
                            __params->radiusList,
@@ -258,12 +260,14 @@ void Turtle::stop(){
   void Turtle::pop(){
     if (__params->isGeneralizedCylinderOn()){
         if(__params->pointList->size() > 1){
-            __drawer->generalizedCylinder(__params,
-                                 __params->pointList,
-                                 __params->leftList,
-                                 __params->radiusList,
-                                 __params->initial.crossSection,
-                                 __params->initial.crossSectionCCW);
+            __drawer->generalizedCylinder(getId(),
+                                          getCurrentMaterial(),
+                                          __params->frame_info,
+                                          __params->pointList,
+                                          __params->leftList,
+                                          __params->radiusList,
+                                          __params->initial.crossSection,
+                                          __params->initial.crossSectionCCW);
         }
     }
     if(!__paramstack.empty()){
@@ -688,11 +692,16 @@ void Turtle::oLineTo(const Vector3& v, real_t topradius )
 
 void Turtle::stopGC(){
     if(__params->pointList->size() > 1){
-        _generalizedCylinder(__params->pointList,
-                             __params->leftList,
-                             __params->radiusList,
-                             __params->initial.crossSection,
-                             __params->initial.crossSectionCCW);
+        __drawer->generalizedCylinder(
+                getId(),
+                getCurrentMaterial(),
+                __params->frame_info,
+                __params->pointList,
+                __params->leftList,
+                __params->radiusList,
+                __params->initial.crossSection,
+                __params->initial.crossSectionCCW
+                );
     }
     __params->generalizedCylinder(false);
     __params->customId = Shape::NOID;
@@ -962,7 +971,9 @@ void Turtle::sphere(real_t radius )
 {
   if (radius < -GEOM_EPSILON)
   { warning("Invalid radius for sphere"); }
-  else if (radius > GEOM_EPSILON) _sphere(radius);
+  else if (radius > GEOM_EPSILON) {
+      __drawer->sphere(getId(), getCurrentMaterial(), __params->frame_info, radius);
+  };
 }
 
 
@@ -970,7 +981,9 @@ void Turtle::circle(real_t radius )
 {
   if (radius < -GEOM_EPSILON)
   { warning("Invalid radius for circle"); }
-  else if (radius > GEOM_EPSILON) _circle(radius);
+  else if (radius > GEOM_EPSILON) {
+      __drawer->circle(getId(), getCurrentMaterial(), __params->frame_info, radius);
+  }
 }
 
 void Turtle::box(real_t length,real_t topradius){
@@ -978,7 +991,7 @@ void Turtle::box(real_t length,real_t topradius){
           if (__params->guide) _applyGuide(length);
           if (__params->elasticity > GEOM_EPSILON) _applyTropism();
 
-          _box( length, topradius);
+          __drawer->box(getId(), getCurrentMaterial(), __params->frame_info, length, __params->width, topradius);
 
           __params->position += __params->heading*length*getScale().z();
           __params->axialLength += length;
@@ -1003,7 +1016,14 @@ void Turtle::quad(real_t length,real_t topradius){
           if (__params->elasticity > GEOM_EPSILON){
               _applyTropism();
           }
-          _quad(length, topradius);
+          __drawer->quad(
+                  getId(),
+                  getCurrentMaterial(),
+                  __params->frame_info,
+                  length,
+                  __params->width,
+                  topradius
+                  );
 
           __params->position += __params->heading*length*getScale().z();
           __params->axialLength += length;
@@ -1064,6 +1084,15 @@ void Turtle::sweep(const Curve2DPtr& path, const Curve2DPtr& section, real_t len
 void Turtle::sweep(const LineicModelPtr& path, const Curve2DPtr& section, real_t length, real_t dl, real_t radius, const QuantisedFunctionPtr radiusvariation)
 {
     setGuide(path,length); setCrossSection(section); nF(length,dl,radius,radiusvariation);
+}
+
+id_pair Turtle::getIdPair(bool custom) {
+    if(custom) {
+        return {__params->customId, __params->customParentId};
+    } else {
+        auto parent_id = parentId;
+        return {popId(), parent_id};
+    }
 }
 
 /*----------------------------------------------------------*/
