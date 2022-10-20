@@ -304,7 +304,7 @@ void Turtle::stop(){
               if (!__params->isGeneralizedCylinderOn()){
                       if(__params->defaultSection && __params->width > -GEOM_EPSILON){
                         if (topradius < -GEOM_EPSILON)  _cylinder (length);
-                        else _frustum(length, topradius);
+                        else __drawer->frustum(getId(), getCurrentMaterial(), __params->frame_info, length, __params->width, topradius, __params->sectionResolution);
                       }
                       else { _smallsweep(length, topradius < -GEOM_EPSILON?getWidth():topradius); }
               }
