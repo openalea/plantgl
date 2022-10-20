@@ -510,10 +510,6 @@ public:
 
 protected:
 
-    void _smallsweep(real_t length, real_t topradius);
-
-    virtual void _cylinder(real_t length){}
-
     virtual void _frustum(real_t length, real_t topradius){}
     
     virtual void _sweep(real_t length, real_t topradius);
