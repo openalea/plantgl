@@ -230,7 +230,7 @@ uint_t Turtle::popId()
 void Turtle::stop(){
   if(__params->isGeneralizedCylinderOn()){
       if(__params->pointList->size() > 1){
-        __drawer->generalizedCylinder(getId(),
+        __drawer->generalizedCylinder(getIdPair(),
                            getCurrentMaterial(),
                            __params->frame_info,
                            __params->pointList,
@@ -260,7 +260,7 @@ void Turtle::stop(){
   void Turtle::pop(){
     if (__params->isGeneralizedCylinderOn()){
         if(__params->pointList->size() > 1){
-            __drawer->generalizedCylinder(getId(),
+            __drawer->generalizedCylinder(getIdPair(),
                                           getCurrentMaterial(),
                                           __params->frame_info,
                                           __params->pointList,
@@ -298,7 +298,7 @@ void Turtle::stop(){
       // else error("f length should be positive.");
   }
 
-  void Turtle::F(real_t length,real_t topradius){
+  void Turtle::F(real_t length, real_t topradius){
       if(length > 0){
           if (__params->guide) _applyGuide(length);
           if (__params->elasticity > GEOM_EPSILON){
@@ -308,14 +308,14 @@ void Turtle::stop(){
               if (!__params->isGeneralizedCylinderOn()){
                       if(__params->defaultSection && __params->width > -GEOM_EPSILON){
                             if (topradius < -GEOM_EPSILON) {
-                                __drawer->cylinder(getId(), getCurrentMaterial(), __params->frame_info, length, __params->width);
+                                __drawer->cylinder(getIdPair(), getCurrentMaterial(), __params->frame_info, length, __params->width);
                             } else {
                                 __drawer->frustum(getId(), getCurrentMaterial(), __params->frame_info, length, __params->width, topradius, __params->sectionResolution);
                             }
                       }
                       else {
                           __drawer->smallSweep(
-                                  getId(),
+                                  getIdPair(),
                                   getCurrentMaterial(),
                                   __params->frame_info,
                                   length,
@@ -693,7 +693,7 @@ void Turtle::oLineTo(const Vector3& v, real_t topradius )
 void Turtle::stopGC(){
     if(__params->pointList->size() > 1){
         __drawer->generalizedCylinder(
-                getId(),
+                getIdPair(),
                 getCurrentMaterial(),
                 __params->frame_info,
                 __params->pointList,
@@ -972,7 +972,7 @@ void Turtle::sphere(real_t radius )
   if (radius < -GEOM_EPSILON)
   { warning("Invalid radius for sphere"); }
   else if (radius > GEOM_EPSILON) {
-      __drawer->sphere(getId(), getCurrentMaterial(), __params->frame_info, radius);
+      __drawer->sphere(getIdPair(), getCurrentMaterial(), __params->frame_info, radius);
   };
 }
 
@@ -982,7 +982,7 @@ void Turtle::circle(real_t radius )
   if (radius < -GEOM_EPSILON)
   { warning("Invalid radius for circle"); }
   else if (radius > GEOM_EPSILON) {
-      __drawer->circle(getId(), getCurrentMaterial(), __params->frame_info, radius);
+      __drawer->circle(getIdPair(), getCurrentMaterial(), __params->frame_info, radius);
   }
 }
 
@@ -991,7 +991,7 @@ void Turtle::box(real_t length,real_t topradius){
           if (__params->guide) _applyGuide(length);
           if (__params->elasticity > GEOM_EPSILON) _applyTropism();
 
-          __drawer->box(getId(), getCurrentMaterial(), __params->frame_info, length, __params->width, topradius);
+          __drawer->box(getIdPair(), getCurrentMaterial(), __params->frame_info, length, __params->width, topradius);
 
           __params->position += __params->heading*length*getScale().z();
           __params->axialLength += length;
@@ -1017,7 +1017,7 @@ void Turtle::quad(real_t length,real_t topradius){
               _applyTropism();
           }
           __drawer->quad(
-                  getId(),
+                  getIdPair(),
                   getCurrentMaterial(),
                   __params->frame_info,
                   length,
