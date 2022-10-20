@@ -687,26 +687,14 @@ void Turtle::stopGC(){
 
 void Turtle::setCrossSection(const Curve2DPtr& curve, bool ccw)
 {
-    _setCrossSection(curve, ccw, false);
+    __params->setCrossSection(curve, ccw, false);
 }
 
 void Turtle::setDefaultCrossSection(size_t slices)
 {
-    _setCrossSection(Curve2DPtr(Polyline2D::Circle(1,slices)),true,true);
+    __params->setCrossSection(Curve2DPtr(Polyline2D::Circle(1,slices)),true,true);
 }
 
-void Turtle::_setCrossSection(const Curve2DPtr& curve, bool ccw, bool defaultSection)
-{
-    __params->crossSection = curve;
-    __params->crossSectionCCW = ccw;
-    __params->defaultSection = defaultSection;
-    if(__params->isGeneralizedCylinderOnInit())
-    {
-        __params->initial.crossSection = curve;
-        __params->initial.crossSectionCCW = ccw;
-        __params->initial.defaultSection = defaultSection;
-    }
-}
 
 void  Turtle::setSectionResolution(uint_t resolution)
 {

@@ -509,7 +509,6 @@ public:
     { return __drawer; }
 
 protected:
-    void _setCrossSection(const Curve2DPtr& curve, bool ccw = false, bool defaultSection = false);
 
     void _smallsweep(real_t length, real_t topradius);
 
