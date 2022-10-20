@@ -331,8 +331,8 @@ void PglTurtle::_cylinder(real_t length){
 
 /// draw a frustum of length = length, bottom diameter = current width and top diameter = topdiam
 void PglTurtle::_frustum(real_t length,real_t topdiam){
-    if(__drawer) __drawer->frustum(getPosition(), getHeading(), getLeft(), getUp(), getScale(),
-                                    getId(), getCurrentMaterial(), 
+    if(__drawer) __drawer->frustum(getId(), getPosition(), getHeading(), getLeft(), getUp(), getScale(),
+                                   getCurrentMaterial(), 
                                     length, getWidth(), topdiam, __params->sectionResolution);
 }
 

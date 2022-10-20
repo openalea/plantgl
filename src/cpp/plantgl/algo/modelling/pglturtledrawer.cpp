@@ -190,36 +190,38 @@ PglTurtleDrawer::transform_n_scale(const Vector3& position,
 
 
 
-void PglTurtleDrawer::_addToScene(const GeometryPtr geom, const uint_t id, AppearancePtr app, bool projection)
+void PglTurtleDrawer::_addToScene(const GeometryPtr geom, id_pair idpair, AppearancePtr app, bool projection)
 {
-  GeometryPtr mgeom = geom;
-  if (projection)
+    GeometryPtr mgeom = geom;
+    if (projection)
       mgeom = GeometryPtr(new ScreenProjected(GeometryPtr(new Oriented(Vector3(0,0,1),Vector3(1,0,0),mgeom)),false));
 
-   if (custompid)
-       __scene->add(Shape3DPtr(new Shape(mgeom,app?app:getCurrentInitialMaterial(),__params->customId,__params->customParentId)));
-   else{
-     uint_t pid = parentId;
-     __scene->add(Shape3DPtr(new Shape(mgeom,app?app:getCurrentMaterial(),popId(),pid)));
-   }
+    __scene->add(Shape3DPtr(new Shape(mgeom, app, idpair.id, idpair.parentId)));
 }
 
-void PglTurtleDrawer::frustum(real_t length, real_t topradius){
+void PglTurtleDrawer::frustum(id_pair idpair,
+                          AppearancePtr appearance,
+                          const FrameInfo& frameinfo, 
+                          real_t length, 
+                          real_t baseradius, 
+                          real_t topradius, 
+                          uint_t sectionResolution) {
   if (fabs(length) > GEOM_EPSILON) {
     GeometryPtr a;
 
-    real_t width = getWidth();
-    if(FABS(width) > GEOM_EPSILON){
-        real_t taper = topradius/width;
-        if ( getScale() !=  Vector3(1,1,1) &&
-            (getScale().x() == getScale().y() ))
-            width *= getScale().x();
+    if(FABS(baseradius) > GEOM_EPSILON){
+        real_t taper = topradius/baseradius;
+        if (frameinfo.scaling !=  Vector3(1,1,1) &&
+            (frameinfo.scaling.x() == frameinfo.scaling.y()))
+            baseradius *= frameinfo.scaling.x();
         if (FABS(taper) < GEOM_EPSILON)
-            a = GeometryPtr(new Cone(width,length*getScale().z(),false,getParameters().sectionResolution));
+            a = GeometryPtr(new Cone(baseradius,length*frameinfo.scaling.z(), false, sectionResolution));
         else if (FABS(taper-1.0) < GEOM_EPSILON)
-            a = GeometryPtr(new Cylinder(width,length*getScale().z(),false,getParameters().sectionResolution));
+            a = GeometryPtr(new Cylinder(baseradius, length*frameinfo.scaling.z(), false, sectionResolution));
         else
-            a = GeometryPtr(new Frustum(width,length*getScale().z(),taper,false,getParameters().sectionResolution));
+            a = GeometryPtr(new Frustum(baseradius, length*frameinfo.scaling.z(), taper, false, sectionResolution));
+                  _addToScene(transform(GeometryPtr(new Scaled(getScale()*scale,GeometryPtr(new Oriented(Vector3(0,1,0),Vector3(0,0,1),smb)))),false));
+
         _addToScene(transform(a));
     }
     else {

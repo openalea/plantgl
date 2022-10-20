@@ -78,17 +78,14 @@ public:
                           real_t radius,
                           uint_t sectionResolution){}
 
-    virtual void frustum(const Vector3& position, 
-                          const Vector3& heading, 
-                          const Vector3& left, 
-                          const Vector3& up, 
-                          const Vector3& scaling, 
-                          const uint_t id,
+
+    virtual void frustum( const uint_t id,
                           AppearancePtr appearance,
+                          const FrameInfo& frameinfo, 
                           real_t length, 
                           real_t baseradius, 
                           real_t topradius, 
-                          uint_t sectionResolution){}
+                          uint_t sectionResolution);
 
     virtual void generalizedCylinder(const uint_t id,
                                      AppearancePtr appearance,

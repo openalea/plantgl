@@ -133,7 +133,7 @@ public:
 
     inline int getColor() const
     { return __params->color; }
-
+    
     inline uint_t getId() const
     { return id; }
 
