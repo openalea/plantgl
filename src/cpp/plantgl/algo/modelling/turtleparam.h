@@ -166,6 +166,8 @@ public:
 
     void rollR(real_t angle);
 
+    void setCrossSection(const Curve2DPtr& curve, bool ccw = false, bool defaultSection = false);
+
 public:
 
   Vector3 position;
