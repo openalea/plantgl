@@ -149,7 +149,7 @@ void PglTurtleDrawer::customGeometry(const id_pair ids,
                                 AppearancePtr appearance,
                                 const FrameInfo& frameinfo, 
                                 const GeometryPtr smb, 
-                                real_t scale = 1.0)
+                                real_t scale)
 {
     if( FABS(norm(frameinfo.scaling)) > GEOM_EPSILON){
         PlanarModelPtr _2Dtest = dynamic_pointer_cast<PlanarModel>(smb); 
@@ -492,8 +492,8 @@ PglTurtleDrawer::label(const id_pair ids,
                        AppearancePtr appearance,
                        const FrameInfo& frameinfo,
                        const std::string& text, 
-                       int size = -1,
-                       bool screenCoordinates){
+                       bool screenCoordinates,
+                       int size) {
   FontPtr font;
   if (size > 0) font = FontPtr(new Font("",size));
   if (screenCoordinates){
@@ -550,7 +550,7 @@ void PglTurtleDrawer::frame(const id_pair ids,
       lmat = new Material(Color3(int(50*color),int(250 * color),int(50*color)),transparency);
   }
 
-  _addToScene(transform(frameinfo, arrow),ids, hmat, false);
+  _addToScene(transform(frameinfo, arrow), ids, hmat, false);
   _addToScene(transform(frameinfo, GeometryPtr(new Oriented(Vector3(1,0,0),Vector3(0,0,1),arrow))), ids, lmat, false);
   _addToScene(transform(frameinfo, GeometryPtr(new Oriented(Vector3(0,1,0),Vector3(0,0,1),arrow))), ids, umat, false);
 }
@@ -567,7 +567,8 @@ ScenePtr PglTurtleDrawer::partialView(const id_pair ids,
     if(generalizedCylinderOn && pointList->size() > 1){
         this->generalizedCylinder(ids, appearance, frameinfo, pointList, leftList, radiusList, initial.crossSection, initial.crossSectionCCW);
     }
-    frame();
+    // TODO: set frame parameters correctly
+    frame(ids, appearance, frameinfo, 0, 0, 0, 0, 0, 0, 0);
     ScenePtr result = __scene;
     __scene = currentscene;
     return result;
