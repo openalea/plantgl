@@ -310,7 +310,15 @@ void Turtle::stop(){
                             if (topradius < -GEOM_EPSILON) {
                                 __drawer->cylinder(getIdPair(), getCurrentMaterial(), __params->frame_info, length, __params->width);
                             } else {
-                                _frustum(length, topradius);
+                                __drawer->frustum(
+                                        getIdPair(),
+                                        getCurrentMaterial(),
+                                        __params->frame_info,
+                                        length,
+                                        __params->width,
+                                        topradius,
+                                        __params->sectionResolution
+                                        );
                             }
                       }
                       else {
@@ -1074,9 +1082,11 @@ void Turtle::frame(real_t scale, real_t cap_heigth_ratio, real_t cap_radius_rati
                 scale,
                 cap_heigth_ratio,
                 __params->width,
-                cap_radius_ratio
+                cap_radius_ratio,
+                color,
+                transparency,
+                __params->sectionResolution
                 );
-        _frame(scale, cap_heigth_ratio, cap_radius_ratio, color, transparency);
     } else {
         if(scale < GEOM_EPSILON) warning("Invalid scale for frame. Should be positive");
         if(cap_heigth_ratio > 1 || cap_heigth_ratio < 0) warning("Invalid cap_heigth_ratio for frame. Should be in [0,1].");
@@ -1093,7 +1103,9 @@ void Turtle::arrow(real_t scale, real_t cap_heigth_ratio, real_t cap_radius_rati
                 __params->frame_info,
                 scale, // might be a bad name for length ???
                 cap_heigth_ratio,
-                cap_radius_ratio
+                __params->width,
+                cap_radius_ratio,
+                __params->sectionResolution
                 );
     } else {
         if(scale < GEOM_EPSILON) warning("Invalid scale for arrow. Should be positive");

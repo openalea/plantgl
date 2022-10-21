@@ -512,13 +512,6 @@ protected:
 
     id_pair getIdPair();
 
-    virtual void _frustum(real_t length, real_t topradius){}
-
-    virtual void _frame(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius_ratio, real_t color, real_t transparency) { }
-
-    virtual void _label(const std::string& text, int size = -1){}
-    
-
     TurtleParam& getParameters()
       { return *__params; }
 

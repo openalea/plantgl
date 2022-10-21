@@ -130,7 +130,8 @@ public:
                        real_t heigth,
                        real_t cap_heigth_ratio,
                        real_t width,
-                       real_t cap_radius_ratio);
+                       real_t cap_radius_ratio,
+                       uint_t section_resolution);
 
     virtual void frame(const id_pair ids,
                        AppearancePtr appearance,
@@ -140,7 +141,8 @@ public:
                        real_t width,
                        real_t cap_radius_ratio,
                        real_t color,
-                       real_t transparency);
+                       real_t transparency,
+                       uint_t section_resolution);
 
     virtual void label(const id_pair ids,
                        AppearancePtr appearance,

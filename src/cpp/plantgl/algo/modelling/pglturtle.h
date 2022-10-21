@@ -146,15 +146,6 @@ protected:
 
     GeometryPtr getCircle(real_t radius) const;
 
-    // GeometryPtr transform(const GeometryPtr& obj, bool scaled = true) const;
-
-    /// draw a frustum of length = length, bottom diameter = current width and top diameter = topdiam
-    virtual void _frustum(real_t length,real_t topdiam);
-
-    virtual void _label(const std::string& text , int size = -1);
-
-    virtual void _frame(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius_ratio, real_t color, real_t transparency);
-
     // ScenePtr __scene;
     
 };

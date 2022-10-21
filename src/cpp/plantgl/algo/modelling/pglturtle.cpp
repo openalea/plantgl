@@ -320,14 +320,3 @@ ScenePtr PglTurtle::partialView(){
     return {};
 }
 
-/// draw a frustum of length = length, bottom diameter = current width and top diameter = topdiam
-void PglTurtle::_frustum(real_t length,real_t topdiam){
-    if(__drawer) __drawer->frustum(getId(), getPosition(), getHeading(), getLeft(), getUp(), getScale(),
-                                   getCurrentMaterial(), 
-                                    length, getWidth(), topdiam, __params->sectionResolution);
-}
-
-void PglTurtle::_label(const std::string& text , int size = -1);
-
-void PglTurtle::_frame(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius_ratio, real_t color, real_t transparency);
-
