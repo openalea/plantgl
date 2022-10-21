@@ -444,14 +444,14 @@ PglTurtleDrawer::polygon(const id_pair ids,
       }
       IndexArrayPtr iarray = polygonization(points2,eConvexTriangulation);
       GeometryPtr t = GeometryPtr(new FaceSet(points,iarray));
-      _addToScene(t,true);
+      _addToScene(t, ids, appearance, frameinfo.screenprojection);
   }
   else {
     Index3ArrayPtr ind(new Index3Array(s-2));
     for (int i=0; i < s-2; i++)
         ind->setAt(i,Index3(0,i+1,i+2));
     GeometryPtr t = GeometryPtr(new TriangleSet(points,ind));
-    _addToScene(t,true);
+    _addToScene(t, ids, appearance, frameinfo.screenprojection);
   }
 }
 
@@ -460,10 +460,11 @@ PglTurtleDrawer::generalizedCylinder(const id_pair ids,
                                      AppearancePtr appearance,
                                      const FrameInfo& frameinfo,
                                      const Point3ArrayPtr& points,
-                                     const std::vector<Vector3>& left,
-                                     const std::vector<real_t>& radius,
+                                     const std::vector<Vector3>& leftList,
+                                     const std::vector<real_t>& radiusList,
                                      const Curve2DPtr& crossSection,
-                                     bool crossSectionCCW){
+                                     bool crossSectionCCW,
+                                     uint_t sectionResolution){
   if (points->size() == 2 && norm(points->getAt(0) - points->getAt(1)) < GEOM_EPSILON) return;
   LineicModelPtr axis = LineicModelPtr(new Polyline(Point3ArrayPtr(
                           new Point3Array(*points))));
@@ -475,7 +476,7 @@ PglTurtleDrawer::generalizedCylinder(const id_pair ids,
   }
   Curve2DPtr mcrossSection = crossSection;
   if (!mcrossSection) {
-      mcrossSection = Curve2DPtr(Polyline2D::Circle(1,__params->sectionResolution));
+      mcrossSection = Curve2DPtr(Polyline2D::Circle(1, sectionResolution));
       crossSectionCCW = true;
       // error("Invalid cross section");
   }
@@ -483,23 +484,28 @@ PglTurtleDrawer::generalizedCylinder(const id_pair ids,
   Extrusion * extrusion = new Extrusion(axis,mcrossSection,radius);
   extrusion->getCCW() = crossSectionCCW;
   extrusion->getInitialNormal() = leftList[0];
-  _addToScene(GeometryPtr(extrusion),!currentcolor);
+  _addToScene(GeometryPtr(extrusion),ids, appearance, frameinfo.screenprojection);
 }
 
 void
-PglTurtleDrawer::label(const string& text, int size ){
+PglTurtleDrawer::label(const id_pair ids,
+                       AppearancePtr appearance,
+                       const FrameInfo& frameinfo,
+                       const std::string& text, 
+                       int size = -1,
+                       bool screenCoordinates){
   FontPtr font;
   if (size > 0) font = FontPtr(new Font("",size));
-  if (__params->screenCoordinates){
+  if (screenCoordinates){
     Vector3 p = (frameinfo.position + Vector3(1,1,1))*50;
-     _addToScene(GeometryPtr(new Text(text, Vector3(p.y(),p.z(),p.x()) , true, font)), false, NULL, false);
+     _addToScene(GeometryPtr(new Text(text, Vector3(p.y(),p.z(),p.x()) , true, font)),ids, appearance, false);
 
   }
   else {
     GeometryPtr obj(new Text(text, Vector3(0,0,0), false, font));
     if ( frameinfo.position != Vector3::ORIGIN )
        obj = GeometryPtr(new Translated(frameinfo.position,obj));
-    _addToScene(obj);
+    _addToScene(obj, ids, appearance, frameinfo.screenprojection);
   }
 }
 
@@ -543,76 +549,10 @@ void PglTurtleDrawer::frame(const id_pair ids,
       umat = new Material(Color3(int(50*color),int(50*color),int(250 * color)),transparency);
       lmat = new Material(Color3(int(50*color),int(250 * color),int(50*color)),transparency);
   }
-  _addToScene(transform(arrow,false),false,hmat);
-  _addToScene(transform(GeometryPtr(new Oriented(Vector3(1,0,0),Vector3(0,0,1),arrow)),false),false,lmat);
-  _addToScene(transform(GeometryPtr(new Oriented(Vector3(0,1,0),Vector3(0,0,1),arrow)),false),false,umat);
-}
 
-
-AppearancePtr PglTurtleDrawer::getCurrentMaterial() const{
-    if (__params->customMaterial) return __params->customMaterial;
-    if (getColor() < __appList.size()){
-        AppearancePtr res = __appList[getColor()];
-        if (res->isTexture()){
-            real_t texshiftY = __params->axialLength;
-            Vector2 texshift(0,texshiftY*__params->texCoordScale.y());
-            if ( norm(texshift) > GEOM_EPSILON || __params->texCoordScale != Vector2(1,1) ||
-                 __params->texCoordTranslation != Vector2(0,0) ||
-                 __params->texCoordRotAngle != 0){
-
-                Texture2DPtr tex = new Texture2D(
-                    dynamic_pointer_cast<Texture2D>(res)->getImage(),
-                    new Texture2DTransformation(__params->texCoordScale,
-                                            __params->texCoordTranslation + texshift,
-                                            __params->texCoordRotCenter,
-                                            __params->texCoordRotAngle*GEOM_RAD),
-                    __params->texBaseColor);
-               return AppearancePtr(tex);
-            }
-            else if(__params->texBaseColor != Texture2D::DEFAULT_BASECOLOR){
-                Texture2DPtr tex = new Texture2D(
-                    dynamic_pointer_cast<Texture2D>(res)->getImage(),
-                    Texture2DTransformationPtr(0),
-                    __params->texBaseColor);
-               return AppearancePtr(tex);
-
-            }
-        }
-        return res;
-    }
-   else return AppearancePtr(new Material("Color_"+TOOLS(number(getColor()))));
-}
-
-AppearancePtr PglTurtleDrawer::getCurrentInitialMaterial() const{
-    if (__params->initial.customMaterial) return __params->initial.customMaterial;
-    if (__params->initial.color < __appList.size()){
-        AppearancePtr res = __appList[__params->initial.color];
-        if (res->isTexture() ){
-
-            if (__params->initial.texCoordScale != Vector2(1,1) ||
-                __params->initial.texCoordTranslation != Vector2(0,0) ||
-                __params->initial.texCoordRotAngle != 0){
-                    Texture2DPtr tex = new Texture2D(
-                        dynamic_pointer_cast<Texture2D>(res)->getImage(),
-                        new Texture2DTransformation(__params->initial.texCoordScale,
-                                                    __params->initial.texCoordTranslation,
-                                                    __params->initial.texCoordRotCenter,
-                                                    __params->initial.texCoordRotAngle*GEOM_RAD),
-                        __params->initial.texBaseColor);
-                    return AppearancePtr(tex);
-            }
-            else if(__params->initial.texBaseColor != Texture2D::DEFAULT_BASECOLOR){
-                Texture2DPtr tex = new Texture2D(
-                    dynamic_pointer_cast<Texture2D>(res)->getImage(),
-                    Texture2DTransformationPtr(0),
-                    __params->initial.texBaseColor);
-                return AppearancePtr(tex);
-
-            }
-        }
-        return res;
-    }
-   else return AppearancePtr(new Material("Color_"+TOOLS(number(__params->initial.color))));
+  _addToScene(transform(frameinfo, arrow),ids, hmat, false);
+  _addToScene(transform(frameinfo, GeometryPtr(new Oriented(Vector3(1,0,0),Vector3(0,0,1),arrow))), ids, lmat, false);
+  _addToScene(transform(frameinfo, GeometryPtr(new Oriented(Vector3(0,1,0),Vector3(0,0,1),arrow))), ids, umat, false);
 }
 
 ScenePtr PglTurtleDrawer::partialView(const id_pair ids,
@@ -625,7 +565,7 @@ ScenePtr PglTurtleDrawer::partialView(const id_pair ids,
                                       TurtleDrawParameter& initial) {
     ScenePtr currentscene = new Scene(*__scene);
     if(generalizedCylinderOn && pointList->size() > 1){
-        this->generalizedCylinder(id, appearance, frameinfo, pointList, leftList, radiusList, initial.crossSection, initial.crossSectionCCW);
+        this->generalizedCylinder(ids, appearance, frameinfo, pointList, leftList, radiusList, initial.crossSection, initial.crossSectionCCW);
     }
     frame();
     ScenePtr result = __scene;
@@ -668,7 +608,7 @@ void PglTurtleDrawer::arrow(const id_pair ids, AppearancePtr appearance, const F
         else arrow = stick;
     }
     arrow->setName("Arrow_"+number(arrow->getObjectId()));
-    _addToScene(transform(arrow,false));
+    _addToScene(transform(frameinfo, arrow), ids, appearance, frameinfo.screenprojection);
 }
 
 

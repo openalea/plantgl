@@ -144,7 +144,7 @@ public:
                        uint_t section_resolution) { }
 
     virtual void label(const id_pair ids, AppearancePtr appearance, const FrameInfo& frameinfo,
-                       const std::string &text, int size = -1) {}
+                       const std::string &text, int size = -1, bool screenCoordinates) {}
 
     virtual void customGeometry(const id_pair ids,
                                 AppearancePtr appearance,
