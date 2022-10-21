@@ -89,7 +89,8 @@ public:
                                      const std::vector<Vector3>& left,
                                      const std::vector<real_t>& radius,
                                      const Curve2DPtr& crossSection,
-                                     bool crossSectionCCW){}
+                                     bool crossSectionCCW,
+                                     uint_t sectionResolution){}
 
     virtual void sphere(const id_pair ids,
                         AppearancePtr appearance,
@@ -159,7 +160,8 @@ public:
                             const real_t bottomradius,
                             const real_t topradius,
                             const Curve2DPtr& crossSection,
-                            bool crossSectionCCW) {}
+                            bool crossSectionCCW,
+                            uint_t sectionResolution) {}
 };
 
 typedef RCPtr<TurtleDrawer> TurtleDrawerPtr;

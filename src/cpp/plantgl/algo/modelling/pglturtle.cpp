@@ -312,6 +312,7 @@ ScenePtr PglTurtle::partialView(){
                 getCurrentMaterial(),
                 __params->frame_info,
                 __params->isGeneralizedCylinderOn(),
+                __params->sectionResolution,
                 __params->pointList,
                 __params->leftList,
                 __params->radiusList,
