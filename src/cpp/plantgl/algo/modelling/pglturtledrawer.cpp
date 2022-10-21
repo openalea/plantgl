@@ -559,13 +559,14 @@ ScenePtr PglTurtleDrawer::partialView(const id_pair ids,
                                       AppearancePtr appearance,
                                       const FrameInfo& frameinfo,
                                       bool generalizedCylinderOn,
+                                      uint_t sectionResolution,
                                       Point3ArrayPtr& pointList,
                                       std::vector<Vector3>& leftList,
                                       std::vector<real_t>& radiusList,
                                       TurtleDrawParameter& initial) {
     ScenePtr currentscene = new Scene(*__scene);
     if(generalizedCylinderOn && pointList->size() > 1){
-        this->generalizedCylinder(ids, appearance, frameinfo, pointList, leftList, radiusList, initial.crossSection, initial.crossSectionCCW);
+        this->generalizedCylinder(ids, appearance, frameinfo, pointList, leftList, radiusList, initial.crossSection, initial.crossSectionCCW, sectionResolution);
     }
     // TODO: set frame parameters correctly
     frame(ids, appearance, frameinfo, 0, 0, 0, 0, 0, 0, 0);
@@ -577,7 +578,8 @@ ScenePtr PglTurtleDrawer::partialView(const id_pair ids,
 void
 PglTurtleDrawer::smallSweep(const id_pair ids, AppearancePtr appearance, const FrameInfo &frameinfo, const real_t length,
                             const real_t bottomradius, const real_t topradius, const Curve2DPtr& crossSection,
-                            bool crossSectionCCW) {
+                            bool crossSectionCCW,
+                            uint_t sectionResolution) {
     Point3ArrayPtr points(new Point3Array(frameinfo.position,frameinfo.position+frameinfo.heading*length));
     std::vector<Vector3> left;
     left.push_back(frameinfo.left);
@@ -585,7 +587,7 @@ PglTurtleDrawer::smallSweep(const id_pair ids, AppearancePtr appearance, const F
     std::vector<real_t> radius;
     radius.push_back(bottomradius);
     radius.push_back(topradius);
-    this->generalizedCylinder(ids, appearance, frameinfo, points, left, radius, crossSection, crossSectionCCW);
+    this->generalizedCylinder(ids, appearance, frameinfo, points, left, radius, crossSection, crossSectionCCW, sectionResolution);
 }
 
 void PglTurtleDrawer::arrow(const id_pair ids, AppearancePtr appearance, const FrameInfo &frameinfo, real_t heigth,

@@ -165,12 +165,14 @@ public:
                             const real_t bottomradius,
                             const real_t topradius,
                             const Curve2DPtr& crossSection,
-                            bool crossSectionCCW);
+                            bool crossSectionCCW,
+                            uint_t sectionResolution);
 
     ScenePtr partialView(const id_pair ids,
                          AppearancePtr appearance,
                          const FrameInfo& frameinfo,
                          bool generalizedCylinderOn,
+                         uint_t sectionResolution,
                          Point3ArrayPtr& pointList,
                          std::vector<Vector3>& leftList,
                          std::vector<real_t>& radiusList,

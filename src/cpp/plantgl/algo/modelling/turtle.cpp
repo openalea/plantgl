@@ -237,7 +237,8 @@ void Turtle::stop(){
                            __params->leftList,
                            __params->radiusList,
                            __params->initial.crossSection,
-                           __params->initial.crossSectionCCW);
+                           __params->initial.crossSectionCCW,
+                           __params->sectionResolution);
       }
     __params->removePoints();
   }
@@ -267,7 +268,9 @@ void Turtle::stop(){
                                           __params->leftList,
                                           __params->radiusList,
                                           __params->initial.crossSection,
-                                          __params->initial.crossSectionCCW);
+                                          __params->initial.crossSectionCCW,
+                                          __params->sectionResolution
+                                        );
         }
     }
     if(!__paramstack.empty()){
@@ -336,8 +339,8 @@ void Turtle::stop(){
                                   __params->width,
                                   topradius < -GEOM_EPSILON?getWidth():topradius,
                                   __params->crossSection,
-                                  __params->crossSectionCCW
-                                  );
+                                  __params->crossSectionCCW,
+                                  __params->sectionResolution);
                       }
               }
               __params->position += __params->heading*length*getScale().z();
@@ -722,7 +725,8 @@ void Turtle::stopGC(){
                 __params->leftList,
                 __params->radiusList,
                 __params->initial.crossSection,
-                __params->initial.crossSectionCCW
+                __params->initial.crossSectionCCW,
+                __params->sectionResolution
                 );
     }
     __params->generalizedCylinder(false);

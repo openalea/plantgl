@@ -374,12 +374,12 @@ public:
       { return 0; }
 
     inline void sphere()
-    { __drawer->sphere(this->getId(), this->getCurrentMaterial(), __params->frame_info, __params->width); }
+    { __drawer->sphere(this->getIdPair(), this->getCurrentMaterial(), __params->frame_info, __params->width, __params->sectionResolution); }
 
     void sphere(real_t radius );
 
     inline void circle()
-    { __drawer->circle(this->getId(), this->getCurrentMaterial(), __params->frame_info, __params->width); }
+    { __drawer->circle(this->getIdPair(), this->getCurrentMaterial(), __params->frame_info, __params->width, __params->sectionResolution); }
 
     void circle(real_t radius );
 
