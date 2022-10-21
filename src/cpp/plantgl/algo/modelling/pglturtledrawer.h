@@ -90,7 +90,8 @@ public:
                                      const std::vector<Vector3>& left,
                                      const std::vector<real_t>& radius,
                                      const Curve2DPtr& crossSection,
-                                     bool crossSectionCCW);
+                                     bool crossSectionCCW,
+                                     uint_t sectionResolution);
 
     virtual void sphere(const id_pair ids,
                         AppearancePtr appearance,
@@ -148,7 +149,8 @@ public:
                        AppearancePtr appearance,
                        const FrameInfo& frameinfo,
                        const std::string& text, 
-                       int size = -1){}
+                       int size = -1,
+                       bool screenCoordinates);
 
     virtual void customGeometry(const id_pair ids,
                                 AppearancePtr appearance,
