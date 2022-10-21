@@ -308,7 +308,13 @@ void Turtle::stop(){
               if (!__params->isGeneralizedCylinderOn()){
                       if(__params->defaultSection && __params->width > -GEOM_EPSILON){
                             if (topradius < -GEOM_EPSILON) {
-                                __drawer->cylinder(getIdPair(), getCurrentMaterial(), __params->frame_info, length, __params->width);
+                                __drawer->cylinder(
+                                        getIdPair(),
+                                        getCurrentMaterial(),
+                                        __params->frame_info,
+                                        length,
+                                        __params->width,
+                                        __params->sectionResolution);
                             } else {
                                 __drawer->frustum(
                                         getIdPair(),
@@ -988,7 +994,7 @@ void Turtle::sphere(real_t radius )
   if (radius < -GEOM_EPSILON)
   { warning("Invalid radius for sphere"); }
   else if (radius > GEOM_EPSILON) {
-      __drawer->sphere(getIdPair(), getCurrentMaterial(), __params->frame_info, radius);
+      __drawer->sphere(getIdPair(), getCurrentMaterial(), __params->frame_info, radius, __params->sectionResolution);
   };
 }
 
@@ -998,7 +1004,7 @@ void Turtle::circle(real_t radius )
   if (radius < -GEOM_EPSILON)
   { warning("Invalid radius for circle"); }
   else if (radius > GEOM_EPSILON) {
-      __drawer->circle(getIdPair(), getCurrentMaterial(), __params->frame_info, radius);
+      __drawer->circle(getIdPair(), getCurrentMaterial(), __params->frame_info, radius, __params->sectionResolution);
   }
 }
 
@@ -1060,7 +1066,13 @@ void Turtle::quad(real_t length,real_t topradius){
 
 void Turtle::label(const std::string& text, int size )
 {
-    if(!text.empty())__drawer->label(size, PGL::AppearancePtr(), __params, text, <#initializer#>);
+    if(!text.empty()) {
+        __drawer->label(
+                getIdPair(),
+                getCurrentMaterial(),
+                __params->frame_info,
+                text, size);
+    }
     else warning("Invalid text for label");
 }
 
