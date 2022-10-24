@@ -90,7 +90,7 @@ public:
     { return *__params; }
 
     //TODO: come back later
-    virtual AppearancePtr getCurrentMaterial() = 0;
+    virtual AppearancePtr getCurrentMaterial() {return __params->customMaterial;}
 
     /// test validity of self
     bool isValid() const ;

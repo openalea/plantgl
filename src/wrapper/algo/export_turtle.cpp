@@ -87,7 +87,7 @@ void export_Turtle()
     Turtle::register_warning_handler(&py_warning_handler);
 
 
-  class_< Turtle , boost::noncopyable>("Turtle", init< optional<TurtleParam * > >("Turtle([TurtleParam]) -> Create Turtle"))
+  class_< Turtle , boost::noncopyable>("Turtle", init<optional<TurtleDrawerPtr,TurtleParam *>>("Turtle([TurtleDrawerPtr], [TurtleParam]) -> Create Turtle"))
 
     .def("f", (void (Turtle::*) ())         &Turtle::f, return_self<>() )
     .def("f", (void (Turtle::*) (real_t))     &Turtle::f, return_self<>() )
