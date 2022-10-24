@@ -134,6 +134,17 @@ public:
                        real_t cap_radius_ratio,
                        uint_t section_resolution);
 
+    virtual void arrow(const id_pair ids,
+                       AppearancePtr appearance,
+                       const FrameInfo& frameinfo,
+                       real_t heigth,
+                       real_t cap_heigth_ratio,
+                       real_t width,
+                       real_t cap_radius_ratio,
+                       real_t color,
+                       real_t transparency,
+                       uint_t section_resolution);
+
     virtual void frame(const id_pair ids,
                        AppearancePtr appearance,
                        const FrameInfo& frameinfo,

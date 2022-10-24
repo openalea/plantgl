@@ -40,6 +40,9 @@
 
 
 #include "pglturtle.h"
+#include "turtle.h"
+#include "turtledrawer.h"
+
 // #include <plantgl/gui/viewer/pglapplication.h>
 #include <plantgl/scenegraph/transformation/axisrotated.h>
 #include <plantgl/scenegraph/transformation/oriented.h>
@@ -166,8 +169,10 @@ void Turtle::registerPushPopHandler(PushPopHandlerPtr handler)
 const ScenePtr& Turtle::getScene() const
 {   
     PglTurtleDrawerPtr pgldrawer = dynamic_pointer_cast<PglTurtleDrawer>(__drawer);
-    if (pgldrawer) return pgldrawer->getScene();
-    return ScenePtr();
+    if (!is_null_ptr(pgldrawer)) return pgldrawer->getScene();
+    static auto default_drawer = Scene();
+    static auto default_drawer_ptr = ScenePtr(&default_drawer);
+    return default_drawer_ptr;
 }
 
 string
@@ -525,14 +530,13 @@ void Turtle::setHead(const Vector3& head, const Vector3& up){
         __params->customMaterial = AppearancePtr();
         __params->axialLength = 0;
         if(__params->isGCorPolygonOnInit()) __params->initial.color = v;
+      } else {
+          stringstream st;
+          int maxcolor = getColorListSize();
+          st << "Invalid Color value " << v << " in setColor (maximum is " <<  maxcolor - 1 << ')' <<  std::flush;
+          warning(st.str());
+          return;
       }
-    else {
-      stringstream st;
-      int maxcolor = getColorListSize();
-      st << "Invalid Color value " << v << " in setColor (maximum is " <<  maxcolor - 1 << ')' <<  std::flush;
-      warning(st.str());
-      return;
-    }
   }
 
 void Turtle::interpolateColors(int val1, int val2, real_t alpha){
@@ -1147,6 +1151,20 @@ id_pair Turtle::getIdPair() {
         auto parent_id = parentId;
         return {popId(), parent_id};
     }
+}
+
+void
+Turtle::vector(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius_ratio, real_t color, real_t transparency) {
+    return __drawer->arrow(
+            getIdPair(),
+            getCurrentMaterial(),
+            __params->frame_info,
+            heigth,
+            cap_heigth_ratio,
+            __params->width,
+            cap_radius_ratio,
+            color, transparency,
+            __params->sectionResolution);
 }
 
 /*----------------------------------------------------------*/
