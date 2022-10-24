@@ -615,4 +615,41 @@ void PglTurtleDrawer::arrow(const id_pair ids, AppearancePtr appearance, const F
 }
 
 
+void PglTurtleDrawer::arrow(const id_pair ids, AppearancePtr appearance, const FrameInfo &frameinfo, real_t heigth,
+                            real_t cap_heigth_ratio, real_t width, real_t cap_radius_ratio, real_t color,
+                            real_t transparency, uint_t section_resolution) {
+    GeometryPtr arrow;
+    GroupPtr group;
+    real_t lengthstick = heigth*(1-cap_heigth_ratio);
+    if ( cap_heigth_ratio > 0 && cap_radius_ratio > 0) {
+        GeometryPtr cap(new Cone(width*cap_radius_ratio,heigth*cap_heigth_ratio,true,section_resolution));
+        if ( cap_heigth_ratio < 1) {
+            group = GroupPtr(new Group(GeometryArrayPtr(new GeometryArray(2))));
+            group->getGeometryList()->setAt(0,GeometryPtr(new Translated(Vector3(0,0,lengthstick),cap)));
+            arrow = group;
+        }
+        else arrow = cap;
+    }
+    if ( lengthstick > GEOM_EPSILON) {
+        GeometryPtr stick(new Cylinder(width, lengthstick, true, section_resolution));
+        if (group) group->getGeometryList()->setAt(1,stick);
+        else arrow = stick;
+    }
+    arrow->setName("Arrow_"+number(arrow->getObjectId()));
+    AppearancePtr hmat(HEADING_FRAME_MATERIAL);
+    if( color < (1.0- GEOM_EPSILON) || transparency > GEOM_EPSILON){
+        hmat = new Material(Color3(int(250 * color),int(50*color),int(50*color)),transparency);
+    }
+    _addToScene(transform(frameinfo, arrow), ids, hmat, frameinfo.screenprojection);
+}
+
+PglTurtleDrawer::PglTurtleDrawer(): __scene(new Scene()) {
+
+}
+
+PglTurtleDrawer::~PglTurtleDrawer() {
+    delete __scene;
+}
+
+
 

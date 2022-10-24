@@ -322,3 +322,7 @@ ScenePtr PglTurtle::partialView(){
     return {};
 }
 
+AppearancePtr PglTurtle::getCurrentMaterial() {
+    return __params->customMaterial;
+}
+

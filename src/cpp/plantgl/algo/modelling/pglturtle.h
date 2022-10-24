@@ -135,6 +135,8 @@ public:
     /// draw the surface identified by name, scaled by a factor scale
     virtual void surface(const std::string& name,real_t scale);
 
+    AppearancePtr getCurrentMaterial() override;
+
 protected:
 
 

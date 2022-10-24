@@ -1978,7 +1978,7 @@ GeometryPtr Fit::alphashape(real_t alpha)
                               Alpha_shape_3::EXTERIOR);
     //as.get_alpha_shape_facets(std::back_inserter(facets),
     //                          Alpha_shape_3::SINGULAR);
-    printf("nb:%i\n",facets.size()); 
+    printf("nb:%i\n", (int)facets.size());
     Point3ArrayPtr ptresult(new Point3Array());
     Index3ArrayPtr indresult(new Index3Array());
     Alpha_shape_vertex_map vertexmap;
