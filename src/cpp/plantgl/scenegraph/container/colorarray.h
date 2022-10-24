@@ -115,6 +115,16 @@ public:
     Array1<Color4>(begin,end) {
   }
 
+  /// Constructs an Array1 with \e size copies of \e t.
+  Color4Array( const Color3Array& t, uchar_t alpha = 0 ) :
+    Array1<Color4>(t.size()) 
+  {
+    Color4Array::iterator selfiter = begin();
+    for(Color3Array::const_iterator it = t.begin(); it != t.end(); ++it, ++selfiter){
+      *selfiter = Color4(*it, alpha);
+    }
+  }
+
   /// Destructor
   virtual ~Color4Array( ) {
   }

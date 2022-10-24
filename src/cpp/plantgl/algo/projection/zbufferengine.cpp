@@ -985,27 +985,44 @@ real_t pixweigth(const Vector2& a, const Vector2& b, real_t raywidth) {
 
 ScenePtr ZBufferEngine::grabSortedZBufferPoints(real_t jitter, real_t raywidth ) const
 {
-    std::tuple<PGL(Point3ArrayPtr),PGL(Color3ArrayPtr),PGL(Uint32Array1Ptr)> pointinfos = grabZBufferPoints(jitter, raywidth);
-    typedef pgl_hash_map<uint32_t,PointSetPtr> PointSetMap;
-    PointSetMap idmap;
-    Point3Array::const_iterator piter = std::get<0>(pointinfos)->begin();
-    Point3Array::const_iterator piterend = std::get<0>(pointinfos)->end();
-    Color3Array::const_iterator citer = std::get<1>(pointinfos)->begin();
-    Uint32Array1::const_iterator iiter = std::get<2>(pointinfos)->begin();
-    for(;piter != piterend; ++piter, ++citer, ++iiter){
-        PointSetMap::const_iterator imiter = idmap.find(*iiter);
-        PointSetPtr pset;
-        if (imiter == idmap.end()){
-            pset = PointSetPtr(new PointSet(new Point3Array(), new Color4Array()));
-            idmap[*iiter] = pset;
-        }
-        else { pset = imiter->second; }
-        pset->getPointList()->push_back(*piter);
-        pset->getColorList()->push_back(*citer);
-    }
     ScenePtr result(new Scene());
-    for(PointSetMap::const_iterator imiter = idmap.begin(); imiter != idmap.end(); ++imiter){
-        result->add(ShapePtr(new Shape(GeometryPtr(imiter->second), AppearancePtr(0), imiter->first)));
+    std::tuple<PGL(Point3ArrayPtr),PGL(Color3ArrayPtr),PGL(Uint32Array1Ptr)> pointinfos = grabZBufferPoints(jitter, raywidth);
+    bool hasId = is_valid_ptr(std::get<2>(pointinfos));
+    bool hasColor = is_valid_ptr(std::get<1>(pointinfos));
+    if (!hasId) {
+        Point3ArrayPtr points = std::get<0>(pointinfos);
+        if(hasColor){
+            Color4ArrayPtr colors = Color4ArrayPtr(new Color4Array(*std::get<1>(pointinfos)));
+            result->add(ShapePtr(new Shape(GeometryPtr(new PointSet(points,colors)))));
+        }
+        else {
+            result->add(ShapePtr(new Shape(GeometryPtr(new PointSet(points)))));
+        }
+    }
+    else {
+        typedef pgl_hash_map<uint32_t,PointSetPtr> PointSetMap;
+        Point3Array::const_iterator piter = std::get<0>(pointinfos)->begin();
+        Point3Array::const_iterator piterend = std::get<0>(pointinfos)->end();
+        bool hasColor = is_valid_ptr(std::get<1>(pointinfos));
+        Color3Array::const_iterator citer;
+        if (hasColor) citer = std::get<1>(pointinfos)->begin();
+        Uint32Array1::const_iterator iiter = std::get<2>(pointinfos)->begin();
+        PointSetMap idmap;
+        for(;piter != piterend; ++piter, ++citer, ++iiter){
+            PointSetMap::const_iterator imiter = idmap.find(*iiter);
+            PointSetPtr pset;
+            if (imiter == idmap.end()){
+                pset = PointSetPtr(new PointSet(new Point3Array(), (hasColor ? Color4ArrayPtr(new Color4Array()) : Color4ArrayPtr())));
+                idmap[*iiter] = pset;
+            }
+            else { pset = imiter->second; }
+            pset->getPointList()->push_back(*piter);
+            if(hasColor) pset->getColorList()->push_back(*citer);
+        }
+
+        for(PointSetMap::const_iterator imiter = idmap.begin(); imiter != idmap.end(); ++imiter){
+            result->add(ShapePtr(new Shape(GeometryPtr(imiter->second), AppearancePtr(0), imiter->first)));
+        }
     }
     return result;
 }

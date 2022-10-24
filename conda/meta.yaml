@@ -13,7 +13,7 @@ about:
   summary: An open-source graphic toolkit for the creation, simulation and analysis of 3D virtual plants.
 
 build:
-  number: 1
+  number: 2
   preserve_egg_dir: True
 
 requirements:
@@ -21,7 +21,7 @@ requirements:
       - python x.x
       - setuptools
       - numpy x.x
-      - qt>=5.15
+      - qt-main>=5.15
       - pyqt
       - sip<6.6
       - libpng
@@ -70,13 +70,12 @@ requirements:
       - {{ pin_compatible('eigen',    max_pin='x.x') }} 
       - {{ pin_compatible('cgal-cpp', max_pin='x.x') }} 
       - {{ pin_compatible('ann',      max_pin='x.x') }} 
-      - {{ pin_compatible('qt',       max_pin='x.x') }} 
+      - {{ pin_compatible('qt-main',  max_pin='x.x') }} 
       - {{ pin_compatible('libpng',   max_pin='x.x') }} 
       - {{ pin_compatible('zlib',     max_pin='x.x') }} 
       - pyqt
-      - qt>=5.15
       - pyopengl
-      - pyqglviewer=1.3
+      - pyqglviewer>=1.3
       - xorg-libxfixes                     # [linux]
       - libglu                             # [linux]
 
