@@ -11,7 +11,9 @@ def popEvent(self):
         setattr(self, p, v)
 
 Turtle.pushEvent = pushEvent
+PglTurtle.pushEvent = pushEvent
 Turtle.popEvent = popEvent
+PglTurtle.popEvent = popEvent
 
 del pushEvent
 del popEvent
@@ -34,7 +36,9 @@ def clear_parameters(self):
 
 
 Turtle.add_parameter = add_parameter
+PglTurtle.add_parameter = add_parameter
 del add_parameter
 
 Turtle.clear_parameters = clear_parameters
+PglTurtle.clear_parameters = clear_parameters
 del clear_parameters
