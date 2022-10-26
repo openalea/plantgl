@@ -100,6 +100,7 @@ void module_algo()
     // Turtle export
     export_TurtleParam();
     export_Turtle();
+    export_TurtleDrawer();
     export_PglTurtle();
 
     // Modeling
