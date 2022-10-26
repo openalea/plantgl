@@ -1097,7 +1097,6 @@ void Turtle::frame(real_t scale, real_t cap_heigth_ratio, real_t cap_radius_rati
     if (scale > GEOM_EPSILON && cap_heigth_ratio < 1 && cap_heigth_ratio > 0) {
         __drawer->frame(
                 getIdPair(),
-                getCurrentMaterial(),
                 __params->frame_info,
                 scale,
                 cap_heigth_ratio,
@@ -1106,7 +1105,7 @@ void Turtle::frame(real_t scale, real_t cap_heigth_ratio, real_t cap_radius_rati
                 color,
                 transparency,
                 __params->sectionResolution
-                );
+        );
     } else {
         if(scale < GEOM_EPSILON) warning("Invalid scale for frame. Should be positive");
         if(cap_heigth_ratio > 1 || cap_heigth_ratio < 0) warning("Invalid cap_heigth_ratio for frame. Should be in [0,1].");
@@ -1157,7 +1156,6 @@ void
 Turtle::vector(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius_ratio, real_t color, real_t transparency) {
     return __drawer->arrow(
             getIdPair(),
-            getCurrentMaterial(),
             __params->frame_info,
             heigth,
             cap_heigth_ratio,
