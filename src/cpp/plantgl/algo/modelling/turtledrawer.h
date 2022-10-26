@@ -68,8 +68,8 @@ public:
     virtual ~TurtleDrawer() = default;
 
     virtual void cylinder(const id_pair ids,
-                          const FrameInfo& frameinfo,
                           AppearancePtr appearance,
+                          const FrameInfo& frameinfo,
                           real_t length,
                           real_t radius,
                           uint_t sectionResolution){}
