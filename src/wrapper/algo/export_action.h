@@ -97,6 +97,7 @@ void export_ProjectionRenderer();
 // Turtle export
 void export_TurtleParam();
 void export_Turtle();
+void export_TurtleDrawer();
 void export_PglTurtle();
 
 /* ----------------------------------------------------------------------- */
