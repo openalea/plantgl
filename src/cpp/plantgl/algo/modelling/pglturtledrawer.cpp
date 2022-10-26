@@ -238,12 +238,12 @@ void PglTurtleDrawer::frustum(id_pair ids,
   }
 }
 
-void PglTurtleDrawer::cylinder(const FrameInfo& frameinfo,
-                          const id_pair ids,
-                          AppearancePtr appearance,
-                          real_t length,
-                          real_t radius,
-                          uint_t sectionResolution){
+void PglTurtleDrawer::cylinder(const id_pair ids,
+                               const FrameInfo& frameinfo,
+                               AppearancePtr appearance,
+                               real_t length,
+                               real_t radius,
+                               uint_t sectionResolution){
   if (fabs(length) > GEOM_EPSILON) {
       if(FABS(radius) < GEOM_EPSILON){
           Point3ArrayPtr pts = Point3ArrayPtr(new Point3Array(2,frameinfo.position));
@@ -513,15 +513,8 @@ AppearancePtr PglTurtleDrawer::HEADING_FRAME_MATERIAL(new Material("HEADING_FRAM
 AppearancePtr PglTurtleDrawer::UP_FRAME_MATERIAL(new Material("UP_FRAME_MATERIAL",Color3(50,50,250),1));
 AppearancePtr PglTurtleDrawer::LEFT_FRAME_MATERIAL(new Material("LEFT_FRAME_MATERIAL",Color3(50,250,50),1));
 
-void PglTurtleDrawer::frame(const id_pair ids,
-                            AppearancePtr appearance,
-                            const FrameInfo& frameinfo,
-                            real_t heigth,
-                            real_t cap_heigth_ratio,
-                            real_t width,
-                            real_t cap_radius_ratio,
-                            real_t color,
-                            real_t transparency,
+void PglTurtleDrawer::frame(const id_pair ids, const FrameInfo &frameinfo, real_t heigth, real_t cap_heigth_ratio,
+                            real_t width, real_t cap_radius_ratio, real_t color, real_t transparency,
                             uint_t section_resolution) {
   GeometryPtr arrow;
   GroupPtr group;
@@ -569,7 +562,7 @@ ScenePtr PglTurtleDrawer::partialView(const id_pair ids,
         this->generalizedCylinder(ids, appearance, frameinfo, pointList, leftList, radiusList, initial.crossSection, initial.crossSectionCCW, sectionResolution);
     }
     // TODO: set frame parameters correctly
-    frame(ids, appearance, frameinfo, 0, 0, 0, 0, 0, 0, 0);
+    frame(ids, frameinfo, 0, 0, 0, 0, 0, 0, 0);
     ScenePtr result = __scene;
     __scene = currentscene;
     return result;
@@ -615,7 +608,7 @@ void PglTurtleDrawer::arrow(const id_pair ids, AppearancePtr appearance, const F
 }
 
 
-void PglTurtleDrawer::arrow(const id_pair ids, AppearancePtr appearance, const FrameInfo &frameinfo, real_t heigth,
+void PglTurtleDrawer::arrow(const id_pair ids, const FrameInfo &frameinfo, real_t heigth,
                             real_t cap_heigth_ratio, real_t width, real_t cap_radius_ratio, real_t color,
                             real_t transparency, uint_t section_resolution) {
     GeometryPtr arrow;
