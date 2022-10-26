@@ -102,6 +102,7 @@ void module_algo()
     export_Turtle();
     export_TurtleDrawer();
     export_PglTurtle();
+    export_PglTurtleDrawer();
 
     // Modeling
     export_SpaceColonization();
