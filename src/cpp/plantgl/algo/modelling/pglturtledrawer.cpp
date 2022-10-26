@@ -239,8 +239,8 @@ void PglTurtleDrawer::frustum(id_pair ids,
 }
 
 void PglTurtleDrawer::cylinder(const id_pair ids,
-                               const FrameInfo& frameinfo,
                                AppearancePtr appearance,
+                               const FrameInfo& frameinfo,
                                real_t length,
                                real_t radius,
                                uint_t sectionResolution){
