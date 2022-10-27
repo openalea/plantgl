@@ -48,45 +48,9 @@ using namespace boost::python;
 #define bp boost::python
 PGL_USING_NAMESPACE
 
-void py_error_handler(const std::string& msg){
-    PyErr_SetString(PyExc_ValueError, msg.c_str() );
-    throw_error_already_set();
-}
-
-void py_warning_handler(const std::string& msg){
-    PyErr_WarnEx(PyExc_Warning,msg.c_str(),1);
-}
-
-/*
-void setDefaultCrossSection1(TurtleDrawer * t, size_t slices) { t->setDefaultCrossSection(slices); }
-void setDefaultCrossSection0(TurtleDrawer * t) { t->setDefaultCrossSection(); }
-
-class PyPushPopHandler : public PushPopHandler {
-public:
-    PyPushPopHandler(boost::python::object _push, boost::python::object _pop) : 
-        PushPopHandler(),
-        push(_push), pop(_pop) { }
-
-    virtual ~PyPushPopHandler() {}
-
-    virtual void pushEvent() { push(); }
-
-    virtual void popEvent() { pop();}
-
-protected:
-    boost::python::object push;
-    boost::python::object pop;
-};
-
-void py_register_pushpop(TurtleDrawer * t, boost::python::object push, boost::python::object pop) {
-    t->registerPushPopHandler(PushPopHandlerPtr(new PyPushPopHandler(push, pop)));
-}
-*/
 void export_TurtleDrawer()
 {
-    // TurtleDrawer::register_error_handler(&py_error_handler);
-    // TurtleDrawer::register_warning_handler(&py_warning_handler);
-
+  class_<TurtleDrawerPtr, boost::noncopyable>("TurtleDrawerPtr", init<TurtleDrawer*>("TurtleDrawerPtr(TurtleDrawer) -> Create TurtleDrawerPtr"));
 
   class_< TurtleDrawer , boost::noncopyable>("TurtleDrawer", init<>("TurtleDrawer() -> Create TurtleDrawer"))
 

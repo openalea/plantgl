@@ -42,52 +42,17 @@
 
 #include <plantgl/algo/modelling/pglturtledrawer.h>
 #include <plantgl/python/export_property.h>
+#include <plantgl/python/export_list.h>
+#include <plantgl/python/extract_list.h>
 
 #include <boost/python.hpp>
 using namespace boost::python;
 #define bp boost::python
 PGL_USING_NAMESPACE
 
-void py_error_handler(const std::string& msg){
-    PyErr_SetString(PyExc_ValueError, msg.c_str() );
-    throw_error_already_set();
-}
 
-void py_warning_handler(const std::string& msg){
-    PyErr_WarnEx(PyExc_Warning,msg.c_str(),1);
-}
-
-/*
-void setDefaultCrossSection1(PglTurtleDrawer * t, size_t slices) { t->setDefaultCrossSection(slices); }
-void setDefaultCrossSection0(PglTurtleDrawer * t) { t->setDefaultCrossSection(); }
-
-class PyPushPopHandler : public PushPopHandler {
-public:
-    PyPushPopHandler(boost::python::object _push, boost::python::object _pop) : 
-        PushPopHandler(),
-        push(_push), pop(_pop) { }
-
-    virtual ~PyPushPopHandler() {}
-
-    virtual void pushEvent() { push(); }
-
-    virtual void popEvent() { pop();}
-
-protected:
-    boost::python::object push;
-    boost::python::object pop;
-};
-
-void py_register_pushpop(PglTurtleDrawer * t, boost::python::object push, boost::python::object pop) {
-    t->registerPushPopHandler(PushPopHandlerPtr(new PyPushPopHandler(push, pop)));
-}
-*/
 void export_PglTurtleDrawer()
 {
-    // PglTurtleDrawer::register_error_handler(&py_error_handler);
-    // PglTurtleDrawer::register_warning_handler(&py_warning_handler);
-
-
   class_< PglTurtleDrawer , boost::noncopyable, bases<TurtleDrawer> >("PglTurtleDrawer", init<>("PglTurtleDrawer() -> Create PglTurtleDrawer"))
 
     .def("cylinder",
