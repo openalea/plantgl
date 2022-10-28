@@ -508,6 +508,10 @@ public:
     const TurtleDrawerPtr getDrawer() const
     { return __drawer; }
 
+    void setDrawer(TurtleDrawerPtr new_drawer) {
+        __drawer = new_drawer;
+    }
+
 protected:
 
     id_pair getIdPair();
