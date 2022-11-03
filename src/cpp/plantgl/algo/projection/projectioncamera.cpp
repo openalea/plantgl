@@ -322,12 +322,12 @@ Ray PerspectiveCamera::rasterToWorldRay(uint16_t x, uint16_t y, const uint16_t i
     return Ray(__position, direction.normed());
 }
 
-
+/*
 bool fitViewTo(const BoundingBoxPtr bbx, uint16_t margin)
 {
 
 }
-
+*/
 /* ----------------------------------------------------------------------- */
 
 OrthographicCamera::OrthographicCamera(real_t _left, real_t _right, real_t _bottom, real_t _top, real_t _near, real_t _far):
