@@ -137,6 +137,7 @@ public:
 
     AppearancePtr getCurrentMaterial() override;
 
+    void customGeometry(const GeometryPtr smb, real_t scale=1);
 protected:
 
 
