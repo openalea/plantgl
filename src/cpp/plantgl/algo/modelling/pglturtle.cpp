@@ -255,16 +255,17 @@ GeometryPtr PglTurtle::getSurface(const string& name){
   else return GeometryPtr();
 }
 
-/*
+
 void PglTurtle::customGeometry(const GeometryPtr smb, real_t scale)
 {
-    if( FABS(scale) > GEOM_EPSILON){
+    /*if( FABS(scale) > GEOM_EPSILON){
     PlanarModelPtr _2Dtest = dynamic_pointer_cast<PlanarModel>(smb);
     if (is_valid_ptr(_2Dtest) && __params->screenCoordinates)
       _addToScene(transform(GeometryPtr(new Scaled(getScale()*scale,GeometryPtr(new Oriented(Vector3(0,1,0),Vector3(0,0,1),smb)))),false));
     else _addToScene(transform(GeometryPtr(new Scaled(getScale()*scale,smb)),false));
-  }
-}*/
+  }*/
+    __drawer->customGeometry(getIdPair(), getCurrentMaterial(), __params->frame_info, smb, scale);
+}
 
 void PglTurtle::pglShape(const GeometryPtr smb, real_t scale)
 {
