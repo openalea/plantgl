@@ -528,7 +528,7 @@ protected:
 
     uint_t popId();
 
-    TurtleParam *        __params;
+    TurtleParam *__params = nullptr;
 
     std::stack<TurtleParam *> __paramstack;
 

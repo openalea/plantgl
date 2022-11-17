@@ -636,12 +636,10 @@ void PglTurtleDrawer::arrow(const id_pair ids, const FrameInfo &frameinfo, real_
     _addToScene(transform(frameinfo, arrow), ids, hmat, frameinfo.screenprojection);
 }
 
-PglTurtleDrawer::PglTurtleDrawer(): __scene(new Scene()) {
-
+PglTurtleDrawer::PglTurtleDrawer(): __scene(ScenePtr(new Scene())) {
 }
 
 PglTurtleDrawer::~PglTurtleDrawer() {
-    delete __scene;
 }
 
 
