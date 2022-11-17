@@ -31,7 +31,7 @@ requirements:
       - qhull
       - ann
       - boost>=1.74                        # [linux]
-      - boost=1.74                        # [win]
+      - boost=1.74                         # [win]
       - expat                              # [linux]
       - libxcb                             # [linux]
       - pthread-stubs                      # [linux]

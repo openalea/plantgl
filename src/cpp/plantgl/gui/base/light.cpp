@@ -59,8 +59,8 @@ PGL_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-ViewLightGL::ViewLightGL(ViewCameraGL *camera,QOpenGLWidget * parent, const char * name):
-  ViewRelativeObjectGL(camera,parent,name),
+ViewLightGL::ViewLightGL(ViewCameraGL *camera,QOpenGLBaseWidget * parent, const char * name, PGLOpenGLFunctionsPtr ogl):
+  ViewRelativeObjectGL(camera,parent,name, ogl),
   __azimuth(0),
   __elevation(45),
   __distance(15),
@@ -281,11 +281,11 @@ ViewLightGL::initializeGL()
 {
   gllightMaterial();
   Vector3 pos(Vector3::Spherical(__distance,__azimuth*GEOM_RAD,(__elevation)*GEOM_RAD));
-  glGeomLightPosition(GL_LIGHT0,pos);
+  __ogl->glGeomLightPosition(GL_LIGHT0,pos);
 /*
   pos *= -1;
   pos.normalize();
-  glGeomLightDirection(GL_LIGHT0,pos);
+  __ogl->glGeomLightDirection(GL_LIGHT0,pos);
 */
 
 }
@@ -307,19 +307,19 @@ ViewLightGL::paintGL()
   if(fabs(pos.x()) < GEOM_EPSILON && fabs(pos.y()) < GEOM_EPSILON && fabs(pos.z()) < GEOM_EPSILON){
     pos = Vector3(0,0,1);
   }
-   glGeomLightPosition(GL_LIGHT0,pos);
+   __ogl->glGeomLightPosition(GL_LIGHT0,pos);
   Vector3 dir(pos);
   dir *= -1;
   dir.normalize();
-  glGeomLightDirection(GL_LIGHT0,dir);
+  __ogl->glGeomLightDirection(GL_LIGHT0,dir);
 
   switchOn();
   if(__show){
-    glPushMatrix();
-    glGeomTranslate(pos);
+    __ogl->glPushMatrix();
+    __ogl->glGeomTranslate(pos);
     glGeomMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, __ambient);
     glutSolidSphere(getStep()*0.1,8,8);
-    glPopMatrix();
+    __ogl->glPopMatrix();
   }
 
   GEOM_GL_ERROR;
@@ -343,18 +343,18 @@ void
 ViewLightGL::switchOn()
 {
     if (__enable){
-        glEnable(GL_LIGHTING);
-        glEnable(GL_LIGHT0);
+        __ogl->glEnable(GL_LIGHTING);
+        __ogl->glEnable(GL_LIGHT0);
     }
     else {
-        glDisable(GL_LIGHTING);
+        __ogl->glDisable(GL_LIGHTING);
     }
 }
 
 void
 ViewLightGL::switchOff()
 {
-  glDisable(GL_LIGHTING);
+  __ogl->glDisable(GL_LIGHTING);
 }
 
 bool

@@ -9,8 +9,8 @@ from math import pow,log
 from openalea.plantgl.gui.qt import QtCore, QtGui, QtOpenGL
 from openalea.plantgl.gui.qt.QtCore import QEvent, QObject, QPoint, Qt, Signal, qWarning
 from openalea.plantgl.gui.qt.QtGui import QColor, QImage,QFont
-from openalea.plantgl.gui.qt.QtOpenGL import QOpenGLWidget
-from openalea.plantgl.gui.qt.QtWidgets import QFileDialog, QApplication
+#from openalea.plantgl.gui.qt.QtOpenGL import QOpenGLWidget
+from openalea.plantgl.gui.qt.QtWidgets import QFileDialog, QApplication, QOpenGLWidget
 
 class CurveConstraint:
     def __init__(self):

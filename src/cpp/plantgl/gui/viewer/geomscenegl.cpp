@@ -98,23 +98,25 @@ using namespace STDEXT;
 
 ViewGeomSceneGL::ViewGeomSceneGL(ViewCameraGL * camera,
                                  ViewLightGL * light,
-                                 QOpenGLWidget * parent,
-                                 const char * name) :
-  ViewModalRendererGL(camera,light,parent,name),
+                                 QOpenGLBaseWidget * parent,
+                                 const char * name, 
+                                PGLOpenGLFunctionsPtr ogl) :
+  ViewModalRendererGL(camera,light,parent,name,ogl),
   __scene(),
   __discretizer(),
-  __renderer(__discretizer,parent),
+  __renderer(__discretizer,parent, ogl),
   __skelComputer(__discretizer),
   __bboxComputer(__discretizer),
-  __skelRenderer(__skelComputer),
-  __bboxRenderer(__bboxComputer),
-  __ctrlPtRenderer(__discretizer),
+  __skelRenderer(__skelComputer, ogl),
+  __bboxRenderer(__bboxComputer, ogl),
+  __ctrlPtRenderer(__discretizer, ogl),
   __bbox(new BoundingBox(Vector3(-1,-1,-1),Vector3(1,1,1))),
   __selectedShapes(),
   __blending(true)
 #ifdef QT_THREAD_SUPPORT
-  ,__reader(0)
+  , __reader(0)
 #endif
+
 {
   __renderingOption[0] = false;
   __renderingOption[1] = false;
@@ -140,8 +142,16 @@ ViewGeomSceneGL::useThread()
 #endif
 }
 
+void ViewGeomSceneGL::openGLFunctionsChanged()
+{
+  __renderer.setOpenGLFunctions(__ogl);
+  __skelRenderer.setOpenGLFunctions(__ogl);
+  __bboxRenderer.setOpenGLFunctions(__ogl);
+  __ctrlPtRenderer.setOpenGLFunctions(__ogl);
+}
+
 /// Connect this to a GL Widget.
-void ViewGeomSceneGL::connectTo(QOpenGLWidget * glw)
+void ViewGeomSceneGL::connectTo(QOpenGLBaseWidget * glw)
 {
     ViewRendererGL::connectTo(glw);
     __renderer.setGLFrame(glw);
@@ -409,6 +419,14 @@ ViewGeomSceneGL::computeCamera()
 
 /* ----------------------------------------------------------------------- */
 
+void ViewGeomSceneGL::useVertexArray(bool value) {
+    __renderer.useVertexArray(value);
+}
+
+bool ViewGeomSceneGL::isVertexArrayUsed() const {
+    return __renderer.isVertexArrayUsed();
+}
+
 void
 ViewGeomSceneGL::initializeGL()
 {
@@ -431,9 +449,9 @@ ViewGeomSceneGL::paintGL()
     switch (__renderingMode) {
     case 1:
       __light->switchOn();
-      if(__blending)glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-      else glBlendFunc(GL_ONE,GL_ZERO);
-      glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+      if(__blending)__ogl->glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+      else __ogl->glBlendFunc(GL_ONE,GL_ZERO);
+      __ogl->glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
       if(__renderer.beginSceneList()){
         if(__renderer.getRenderingMode() & GLRenderer::Dynamic){
             __scene->apply(__renderer);
@@ -450,11 +468,11 @@ ViewGeomSceneGL::paintGL()
                     cur++;
                     if(cur / tenpercent > cpercent){
                         cpercent = cur / tenpercent;
-                        progress(cur,tot);
+                        // progress(cur,tot);
                     }
                 }
             }
-            progress(tot,tot);
+            // progress(tot,tot);
             __renderer.endProcess();
         }
         __renderer.endSceneList();
@@ -470,8 +488,8 @@ ViewGeomSceneGL::paintGL()
       break;
     case 2:
       __light->switchOff();
-      glBlendFunc(GL_ONE,GL_ZERO);
-      glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+      __ogl->glBlendFunc(GL_ONE,GL_ZERO);
+      __ogl->glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
       if(__renderer.beginSceneList()){
         __scene->apply(__renderer);
         __renderer.endSceneList();
@@ -481,7 +499,7 @@ ViewGeomSceneGL::paintGL()
       break;
     case 3:
       __light->switchOff();
-      glBlendFunc(GL_ONE,GL_ZERO);
+      __ogl->glBlendFunc(GL_ONE,GL_ZERO);
       if(__skelRenderer.beginSceneList()){
         __scene->apply(__skelRenderer);
         __skelRenderer.endSceneList();
@@ -491,17 +509,17 @@ ViewGeomSceneGL::paintGL()
       break;
     case 4:
       __light->switchOff();
-      glBlendFunc(GL_ONE,GL_ZERO);
-      glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+      __ogl->glBlendFunc(GL_ONE,GL_ZERO);
+      __ogl->glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
       if(__renderer.beginSceneList()){
         __scene->apply(__renderer);
         __renderer.endSceneList();
       }
       if(!__dynamicscene->empty()) __dynamicscene->apply(__renderer);
       __light->switchOn();
-      if(__blending)glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-      else glBlendFunc(GL_ONE,GL_ZERO);
-      glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+      if(__blending)__ogl->glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+      else __ogl->glBlendFunc(GL_ONE,GL_ZERO);
+      __ogl->glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
       if(__renderer.beginSceneList()){
         __scene->apply(__renderer);
         __renderer.endSceneList();
@@ -513,9 +531,9 @@ ViewGeomSceneGL::paintGL()
 
     if(__renderingOption[0]){
       __light->switchOn();
-      if(__blending)glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-      else glBlendFunc(GL_ONE,GL_ZERO);
-      glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+      if(__blending)__ogl->glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+      else __ogl->glBlendFunc(GL_ONE,GL_ZERO);
+      __ogl->glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
       if(__bboxRenderer.beginSceneList()){
         __scene->apply(__bboxRenderer);
         __bboxRenderer.endSceneList();
@@ -525,7 +543,7 @@ ViewGeomSceneGL::paintGL()
     };
     if(__renderingOption[1]){
       __light->switchOff();
-      glBlendFunc(GL_ONE,GL_ZERO);
+      __ogl->glBlendFunc(GL_ONE,GL_ZERO);
       glGeomColor(Color3(64,64,64));
       if(__ctrlPtRenderer.beginSceneList()){
         __scene->apply(__ctrlPtRenderer);
@@ -536,8 +554,8 @@ ViewGeomSceneGL::paintGL()
     }
     if(!__selectedShapes.empty()){
       __light->switchOff();
-      glBlendFunc(GL_ONE,GL_ZERO);
-      glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+      __ogl->glBlendFunc(GL_ONE,GL_ZERO);
+      __ogl->glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
       glGeomColor(Color3(64,64,64));
       for(SelectionCache::iterator _it = __selectedShapes.begin();
           _it !=__selectedShapes.end(); _it++)
@@ -551,9 +569,9 @@ void
 ViewGeomSceneGL::selectGL()
 {
   if (__scene){
-    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-    if(__blending)glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-    else glBlendFunc(GL_ONE,GL_ZERO);
+    __ogl->glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+    if(__blending)__ogl->glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+    else __ogl->glBlendFunc(GL_ONE,GL_ZERO);
     GLRenderer::RenderingMode rtype = __renderer.getRenderingMode();
     __renderer.setRenderingMode(GLRenderer::Selection);
     __scene->apply(__renderer);
@@ -1078,9 +1096,10 @@ ViewGeomSceneGL::customEvent(QEvent * e) {
 
 ViewMultiGeomSceneGL::ViewMultiGeomSceneGL(ViewCameraGL * camera,
                                            ViewLightGL * light,
-                                           QOpenGLWidget * parent,
-                                           const char * name):
-  ViewGeomSceneGL(camera,light,parent,name),
+                                           QOpenGLBaseWidget * parent,
+                                           const char * name, 
+                                           PGLOpenGLFunctionsPtr ogl ):
+  ViewGeomSceneGL(camera,light,parent,name,ogl),
   __transitionRenderer(__discretizer),
   __simpleScene(true),
   __renderingStep(0),
@@ -1089,6 +1108,11 @@ ViewMultiGeomSceneGL::ViewMultiGeomSceneGL(ViewCameraGL * camera,
 {
 }
 
+void ViewMultiGeomSceneGL::openGLFunctionsChanged()
+{
+  ViewGeomSceneGL::openGLFunctionsChanged();
+  __transitionRenderer.setOpenGLFunctions(__ogl);
+}
 
 ViewMultiGeomSceneGL::~ViewMultiGeomSceneGL()
 {
@@ -1114,19 +1138,19 @@ ViewMultiGeomSceneGL::paintGL()
       switch (__renderingMode) {
       case 1:
         __light->switchOn();
-        glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-        glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+        __ogl->glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+        __ogl->glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
         __transitionRenderer.rend(__renderingStep);
         break;
       case 2:
         __light->switchOff();
-        glBlendFunc(GL_ONE,GL_ZERO);
-        glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+        __ogl->glBlendFunc(GL_ONE,GL_ZERO);
+        __ogl->glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
         __transitionRenderer.rend(__renderingStep);
         break;
       case 3:
         __light->switchOff();
-        glBlendFunc(GL_ONE,GL_ZERO);
+        __ogl->glBlendFunc(GL_ONE,GL_ZERO);
         if(__skelRenderer.beginSceneList()){
           __scene->apply(__skelRenderer);
           __skelRenderer.endSceneList();
@@ -1135,8 +1159,8 @@ ViewMultiGeomSceneGL::paintGL()
 
       if(__renderingOption[0]){
         __light->switchOn();
-        glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-        glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+        __ogl->glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+        __ogl->glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
         if(__bboxRenderer.beginSceneList()){
           __scene->apply(__bboxRenderer);
           __bboxRenderer.endSceneList();
@@ -1144,7 +1168,7 @@ ViewMultiGeomSceneGL::paintGL()
       };
       if(__renderingOption[1]){
         __light->switchOff();
-        glBlendFunc(GL_ONE,GL_ZERO);
+        __ogl->glBlendFunc(GL_ONE,GL_ZERO);
         if(__ctrlPtRenderer.beginSceneList()){
           __scene->apply(__ctrlPtRenderer);
           __ctrlPtRenderer.endSceneList();
@@ -1152,8 +1176,8 @@ ViewMultiGeomSceneGL::paintGL()
       }
       if(!__selectedShapes.empty()){
         __light->switchOff();
-        glBlendFunc(GL_ONE,GL_ZERO);
-        glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+        __ogl->glBlendFunc(GL_ONE,GL_ZERO);
+        __ogl->glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
         for(SelectionCache::iterator _it = __selectedShapes.begin();
             _it !=__selectedShapes.end(); _it++)
           get_item_value(_it)->apply(__bboxRenderer);

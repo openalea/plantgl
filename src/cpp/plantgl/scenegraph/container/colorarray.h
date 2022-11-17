@@ -142,6 +142,20 @@ public:
       }
       return data;
   }
+  inline real_t * toRealArray() const {
+      size_t len = size();
+      real_t * data = new real_t[4*len];
+      for( size_t i = 0 ; i < len; ++i )
+      {
+        const Color4& color = getAt( i );
+        data[ 4*i ] = color.getRedClamped();
+        data[ 4*i+1 ] = color.getGreenClamped();
+        data[ 4*i+2 ] = color.getBlueClamped();
+        data[ 4*i+3 ] = 1.0f - color.getAlphaClamped();
+      }
+      return data;
+  }
+
 };
 
 typedef RCPtr<Color4Array> Color4ArrayPtr;

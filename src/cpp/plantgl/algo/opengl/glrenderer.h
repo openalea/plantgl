@@ -54,8 +54,9 @@
 #include <plantgl/scenegraph/appearance/appearance.h>
 
 /* ----------------------------------------------------------------------- */
-
-class QOpenGLWidget;
+#define PGL_QT_FWD_DECL
+#include <plantgl/gui/pglqopenglwidget.h>
+#undef PGL_QT_FWD_DECL
 
 /* ----------------------------------------------------------------------- */
 
@@ -80,11 +81,13 @@ class ALGO_API GLRenderer : public Action
 
 public:
 
+
   /** Constructs a GLRenderer with the Discretizer \e discretizer. */
-  GLRenderer( Discretizer& discretizer
+  GLRenderer( Discretizer& discretizer,
 #ifndef PGL_WITHOUT_QT
-    , QOpenGLWidget * glframe = NULL
+    QOpenGLBaseWidget * glframe = NULL,
 #endif
+    PGLOpenGLFunctionsPtr ogl = NULL
     );
 
 
@@ -152,13 +155,15 @@ public:
 
 #ifndef PGL_WITHOUT_QT
   /// Set the gl frame in which the scene must be rendered
-  void setGLFrame(QOpenGLWidget * frame) { __glframe = frame; }
+  void setGLFrame(QOpenGLBaseWidget * frame) { __glframe = frame; }
 
   /// Get the gl frame in which the scene must be rendered
-  QOpenGLWidget * getGLFrame() const { return __glframe; }
+  QOpenGLBaseWidget * getGLFrame() const { return __glframe; }
 
   /// Set the gl frame in which the scene must be rendered
   bool setGLFrameFromId(WId);
+
+  void setOpenGLFunctions(PGLOpenGLFunctionsPtr ogl) { __ogl = ogl; }
 #endif
 
   /// @name Pre and Post Processing
@@ -291,6 +296,9 @@ public:
   void registerTexture(ImageTexture * texture, GLuint id, bool erasePreviousIfExists = true);
   GLuint getTextureId(ImageTexture * texture);
 
+  void useVertexArray(bool value) { __withvertexarray = value; }
+  bool isVertexArrayUsed() const { return __withvertexarray; }
+
 protected:
 
   /// A cache used to store display list.
@@ -316,8 +324,11 @@ protected:
   int __compil;
 
 #ifndef PGL_WITHOUT_QT
-  QOpenGLWidget * __glframe;
+  QOpenGLBaseWidget * __glframe;
 #endif
+
+  PGLOpenGLFunctionsPtr __ogl;
+  bool __ogltoinit;
 
 private:
   template<class T>
@@ -330,6 +341,9 @@ private:
 
   int __precompildepth;
   int __maxprecompildepth;
+
+  bool __withvertexarray;
+
 };
 
 /* ----------------------------------------------------------------------- */

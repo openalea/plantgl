@@ -67,8 +67,8 @@ static double DEFAULT_B[6] = { 0, 0, -1, 1, 0, 0 };
 static double DEFAULT_C[6] = { 0, 0, 0, 0, -1, 1 };
 static double DEFAULT_D[6] = { 0, 0, 0, 0, 0, 0 };
 
-ViewClippingPlaneGL::ViewClippingPlaneGL(QOpenGLWidget * parent, const char * name):
-  ViewObjectGL(parent,name)
+ViewClippingPlaneGL::ViewClippingPlaneGL(QOpenGLBaseWidget * parent, const char * name, PGLOpenGLFunctionsPtr ogl):
+  ViewObjectGL(parent,name, ogl)
 {
     memcpy(__enable,DEFAULT_PLANE_ACTIVATION,sizeof(__enable));
     memcpy(__A,DEFAULT_A,sizeof(__A));
@@ -559,11 +559,11 @@ ViewClippingPlaneGL::paintGL()
     eq[1] = __B[0];
     eq[2] = __C[0];
     eq[3] = __D[0];
-    glClipPlane(GL_CLIP_PLANE0,eq);
-    glEnable(GL_CLIP_PLANE0);
+    __ogl->glClipPlane(GL_CLIP_PLANE0,eq);
+    __ogl->glEnable(GL_CLIP_PLANE0);
   }
   else {
-    glDisable(GL_CLIP_PLANE0);
+    __ogl->glDisable(GL_CLIP_PLANE0);
   }
   if(__enable[1]){
     GLdouble eq[4];
@@ -571,11 +571,11 @@ ViewClippingPlaneGL::paintGL()
     eq[1] = __B[1];
     eq[2] = __C[1];
     eq[3] = __D[1];
-    glClipPlane(GL_CLIP_PLANE1,eq);
-    glEnable(GL_CLIP_PLANE1);
+    __ogl->glClipPlane(GL_CLIP_PLANE1,eq);
+    __ogl->glEnable(GL_CLIP_PLANE1);
   }
   else {
-    glDisable(GL_CLIP_PLANE1);
+    __ogl->glDisable(GL_CLIP_PLANE1);
   }
   if(__enable[2]){
     GLdouble eq[4];
@@ -583,11 +583,11 @@ ViewClippingPlaneGL::paintGL()
     eq[1] = __B[2];
     eq[2] = __C[2];
     eq[3] = __D[2];
-    glClipPlane(GL_CLIP_PLANE2,eq);
-    glEnable(GL_CLIP_PLANE2);
+    __ogl->glClipPlane(GL_CLIP_PLANE2,eq);
+    __ogl->glEnable(GL_CLIP_PLANE2);
   }
   else {
-    glDisable(GL_CLIP_PLANE2);
+    __ogl->glDisable(GL_CLIP_PLANE2);
   }
 
   if(__enable[3]){
@@ -596,11 +596,11 @@ ViewClippingPlaneGL::paintGL()
     eq[1] = __B[3];
     eq[2] = __C[3];
     eq[3] = __D[3];
-    glClipPlane(GL_CLIP_PLANE3,eq);
-    glEnable(GL_CLIP_PLANE3);
+    __ogl->glClipPlane(GL_CLIP_PLANE3,eq);
+    __ogl->glEnable(GL_CLIP_PLANE3);
   }
   else {
-    glDisable(GL_CLIP_PLANE3);
+    __ogl->glDisable(GL_CLIP_PLANE3);
   }
   if(__enable[4]){
     GLdouble eq[4];
@@ -608,11 +608,11 @@ ViewClippingPlaneGL::paintGL()
     eq[1] = __B[4];
     eq[2] = __C[4];
     eq[3] = __D[4];
-    glClipPlane(GL_CLIP_PLANE4,eq);
-    glEnable(GL_CLIP_PLANE4);
+    __ogl->glClipPlane(GL_CLIP_PLANE4,eq);
+    __ogl->glEnable(GL_CLIP_PLANE4);
   }
   else {
-    glDisable(GL_CLIP_PLANE4);
+    __ogl->glDisable(GL_CLIP_PLANE4);
   }
   if(__enable[5]){
     GLdouble eq[4];
@@ -620,11 +620,11 @@ ViewClippingPlaneGL::paintGL()
     eq[1] = __B[5];
     eq[2] = __C[5];
     eq[3] = __D[5];
-    glClipPlane(GL_CLIP_PLANE5,eq);
-    glEnable(GL_CLIP_PLANE5);
+    __ogl->glClipPlane(GL_CLIP_PLANE5,eq);
+    __ogl->glEnable(GL_CLIP_PLANE5);
   }
   else {
-    glDisable(GL_CLIP_PLANE5);
+    __ogl->glDisable(GL_CLIP_PLANE5);
   }
   GEOM_GL_ERROR;
 }

@@ -70,7 +70,7 @@ class ALGO_API GLBBoxRenderer : public GLRenderer
 public:
 
   /// Constructs a GLBBoxRenderer.
-  GLBBoxRenderer( BBoxComputer& bboxComputer );
+  GLBBoxRenderer( BBoxComputer& bboxComputer, PGLOpenGLFunctionsPtr ogl = NULL );
 
   /// Destructor
   virtual ~GLBBoxRenderer( );

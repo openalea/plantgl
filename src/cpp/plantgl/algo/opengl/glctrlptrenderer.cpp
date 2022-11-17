@@ -73,87 +73,88 @@ PGL_USING_NAMESPACE
 
 
 #define GEOM_GLCTRLPOINTRENDERER_DRAW_LINE(Point4A) { \
-    glBegin(GL_LINE_STRIP); \
+    __ogl->glBegin(GL_LINE_STRIP); \
     for (Point4Array::const_iterator _i = Point4A->begin(); \
          _i != Point4A->end(); \
          _i++) \
-      glGeomVertex(_i->x(), \
+      __ogl->glGeomVertex(_i->x(), \
                    _i->y(), \
                    _i->z()); \
-    glEnd(); \
+    __ogl->glEnd(); \
   };
 
 #define GEOM_GLCTRLPOINTRENDERER_DRAW_LINE3(Point3A) { \
-    glBegin(GL_LINE_STRIP); \
+    __ogl->glBegin(GL_LINE_STRIP); \
     for (Point3Array::const_iterator _i = Point3A->begin(); \
          _i != Point3A->end(); \
          _i++) \
-      glGeomVertex(_i->x(), \
+      __ogl->glGeomVertex(_i->x(), \
                    _i->y(), \
                    _i->z()); \
-    glEnd(); \
+    __ogl->glEnd(); \
   };
 
 #define GEOM_GLCTRLPOINTRENDERER_DRAW_LINE2D(Point3A) { \
-    glBegin(GL_LINE_STRIP); \
+    __ogl->glBegin(GL_LINE_STRIP); \
     for (Point3Array::const_iterator _i = Point3A->begin(); \
          _i != Point3A->end(); \
          _i++) \
-      glGeomVertex(_i->x(), \
+      __ogl->glGeomVertex(_i->x(), \
                    _i->y(), \
                    0); \
-    glEnd(); \
+    __ogl->glEnd(); \
   };
 
 #define GEOM_GLCTRLPOINTRENDERER_DRAW_HORLINE2D(Point3A) { \
-    glBegin(GL_LINE_STRIP); \
+   __ogl->glBegin(GL_LINE_STRIP); \
     for (Point3Array::const_iterator _i = Point3A->begin(); \
          _i != Point3A->end(); \
          _i++) \
-      glGeomVertex(_i->x(), \
+      __ogl->glGeomVertex(_i->x(), \
                    _i->y(), \
                    0); \
-    glGeomVertex(Point3A->begin()->x(),Point3A->begin()->y(),0); \
-    glEnd(); \
+    __ogl->glGeomVertex(Point3A->begin()->x(),Point3A->begin()->y(),0); \
+    __ogl->glEnd(); \
   };
 
 #define GEOM_GLCTRLPOINTRENDERER_DRAW_VERTLINE2D(Point3A) { \
-    glBegin(GL_LINE_STRIP); \
+    __ogl->glBegin(GL_LINE_STRIP); \
     for (Point3Array::const_iterator _i = Point3A->begin(); \
          _i != Point3A->end(); \
          _i++) \
-      glGeomVertex(_i->x(), \
+      __ogl->glGeomVertex(_i->x(), \
                    0, \
                    _i->y()); \
-    glGeomVertex(Point3A->begin()->x(),0,Point3A->begin()->y()); \
-    glEnd(); \
+    __ogl->glGeomVertex(Point3A->begin()->x(),0,Point3A->begin()->y()); \
+    __ogl->glEnd(); \
   };
 
 #define GEOM_GLCTRLPOINTRENDERER_DRAW_LINES(Point4Matrix) { \
     for (uint_t _usize = 0 ; _usize < Point4Matrix->getRowNb() ; _usize++){ \
-      glBegin(GL_LINE_STRIP); \
+      __ogl->glBegin(GL_LINE_STRIP); \
       for (uint_t _vsize = 0; \
          _vsize <  Point4Matrix->getRowSize() ; _vsize++){ \
          Vector4 mypoint=Point4Matrix->getAt(_usize,_vsize); \
-         glGeomVertex(mypoint.x(), \
+         __ogl->glGeomVertex(mypoint.x(), \
                       mypoint.y(), \
                       mypoint.z()); \
          } \
-      glEnd(); \
+      __ogl->glEnd(); \
     }; \
     for (uint_t _vsize = 0 ; _vsize < Point4Matrix->getRowSize(); _vsize++){ \
-      glBegin(GL_LINE_STRIP); \
+      __ogl->glBegin(GL_LINE_STRIP); \
       for (uint_t _usize = 0; \
          _usize <  Point4Matrix->getRowNb() ; _usize++){ \
          Vector4 mypoint=Point4Matrix->getAt(_usize,_vsize); \
-         glGeomVertex(mypoint.x(), \
+         __ogl->glGeomVertex(mypoint.x(), \
                       mypoint.y(), \
                       mypoint.z()); \
          } \
-      glEnd(); \
+      __ogl->glEnd(); \
     }; \
   };
 
+#define GEOM_ASSERT_OBJ(obj) if (__ogltoinit) { init(); }
 
 
 AppearancePtr GLCtrlPointRenderer::DEFAULT_APPEARANCE(new Material(Color3::RED));
@@ -161,8 +162,8 @@ AppearancePtr GLCtrlPointRenderer::DEFAULT_APPEARANCE(new Material(Color3::RED))
 /* ----------------------------------------------------------------------- */
 
 
-GLCtrlPointRenderer::GLCtrlPointRenderer( Discretizer& discretizer ) :
-  GLRenderer(discretizer) {
+GLCtrlPointRenderer::GLCtrlPointRenderer( Discretizer& discretizer, PGLOpenGLFunctionsPtr ogl ) :
+  GLRenderer(discretizer, NULL, ogl) {
 }
 
 bool GLCtrlPointRenderer::beginProcess(){
@@ -172,13 +173,13 @@ bool GLCtrlPointRenderer::beginProcess(){
 
 /* ----------------------------------------------------------------------- */
 bool GLCtrlPointRenderer::processAppereance(Shape * Shape){
-    GEOM_ASSERT(Shape);
+    GEOM_ASSERT_OBJ(Shape);
     return true;
 }
 
 
 bool GLCtrlPointRenderer::process( BezierCurve * bezierCurve ) {
-  GEOM_ASSERT(bezierCurve);
+  GEOM_ASSERT_OBJ(bezierCurve);
 
   GEOM_GLCTRLPOINTRENDERER_DRAW_LINE(bezierCurve->getCtrlPointList());
 
@@ -189,7 +190,7 @@ bool GLCtrlPointRenderer::process( BezierCurve * bezierCurve ) {
 
 
 bool GLCtrlPointRenderer::process( BezierPatch * bezierPatch ) {
-  GEOM_ASSERT(bezierPatch);
+  GEOM_ASSERT_OBJ(bezierPatch);
 
   GEOM_GLCTRLPOINTRENDERER_DRAW_LINES(bezierPatch->getCtrlPointMatrix());
 
@@ -201,7 +202,7 @@ bool GLCtrlPointRenderer::process( BezierPatch * bezierPatch ) {
 
 
 bool GLCtrlPointRenderer::process( ExtrudedHull * extrudedHull ) {
-  GEOM_ASSERT(extrudedHull);
+  GEOM_ASSERT_OBJ(extrudedHull);
 
   if(extrudedHull->getHorizontal()->apply(__discretizer)){
     PolylinePtr p = dynamic_pointer_cast<Polyline>(__discretizer.getDiscretization());
@@ -227,7 +228,7 @@ bool GLCtrlPointRenderer::process( ExtrudedHull * extrudedHull ) {
 
 
 bool GLCtrlPointRenderer::process( Extrusion * extrusion ) {
-  GEOM_ASSERT(extrusion);
+  GEOM_ASSERT_OBJ(extrusion);
 
   extrusion->getAxis()->apply(*this);
 
@@ -240,7 +241,7 @@ bool GLCtrlPointRenderer::process( Extrusion * extrusion ) {
 
 
 bool GLCtrlPointRenderer::process( NurbsCurve * nurbsCurve ) {
-  GEOM_ASSERT(nurbsCurve);
+  GEOM_ASSERT_OBJ(nurbsCurve);
 
   GEOM_GLCTRLPOINTRENDERER_DRAW_LINE(nurbsCurve->getCtrlPointList());
 
@@ -251,7 +252,7 @@ bool GLCtrlPointRenderer::process( NurbsCurve * nurbsCurve ) {
 
 
 bool GLCtrlPointRenderer::process( NurbsPatch * nurbsPatch ) {
-  GEOM_ASSERT(nurbsPatch);
+  GEOM_ASSERT_OBJ(nurbsPatch);
 
   GEOM_GLCTRLPOINTRENDERER_DRAW_LINES(nurbsPatch->getCtrlPointMatrix());
 
@@ -263,7 +264,7 @@ bool GLCtrlPointRenderer::process( NurbsPatch * nurbsPatch ) {
 
 
 bool GLCtrlPointRenderer::process( Tapered * tapered ) {
-  GEOM_ASSERT(tapered);
+  GEOM_ASSERT_OBJ(tapered);
   BezierCurvePtr _curve = dynamic_pointer_cast<BezierCurve>(tapered->getPrimitive());
   if(_curve){
       Transformation3DPtr _taper=tapered->getTransformation();
@@ -313,7 +314,7 @@ bool GLCtrlPointRenderer::process( Tapered * tapered ) {
 
 
 bool GLCtrlPointRenderer::process( BezierCurve2D * bezierCurve ) {
-  GEOM_ASSERT(bezierCurve);
+  GEOM_ASSERT_OBJ(bezierCurve);
 
   GEOM_GLCTRLPOINTRENDERER_DRAW_LINE2D(bezierCurve->getCtrlPointList());
 
@@ -324,7 +325,7 @@ bool GLCtrlPointRenderer::process( BezierCurve2D * bezierCurve ) {
 
 
 bool GLCtrlPointRenderer::process( NurbsCurve2D * nurbsCurve ) {
-  GEOM_ASSERT(nurbsCurve);
+  GEOM_ASSERT_OBJ(nurbsCurve);
 
   GEOM_GLCTRLPOINTRENDERER_DRAW_LINE2D(nurbsCurve->getCtrlPointList());
 

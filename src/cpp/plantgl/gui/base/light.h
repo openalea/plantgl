@@ -86,7 +86,7 @@ class VIEW_API ViewLightGL  : public ViewRelativeObjectGL
 public:
 
   /// Constructor.
-  ViewLightGL(ViewCameraGL *camera, QOpenGLWidget * parent=0, const char * name=0);
+  ViewLightGL(ViewCameraGL *camera, QOpenGLBaseWidget * parent=0, const char * name=0, PGLOpenGLFunctionsPtr ogl = NULL);
 
   /// Destructor.
   virtual ~ViewLightGL();

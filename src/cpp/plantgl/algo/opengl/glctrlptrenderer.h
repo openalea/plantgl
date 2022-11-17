@@ -72,7 +72,7 @@ public:
   static AppearancePtr DEFAULT_APPEARANCE;
 
   /// Constructs a GLCtrlPointRenderer.
-  GLCtrlPointRenderer( Discretizer& discretizer );
+  GLCtrlPointRenderer( Discretizer& discretizer, PGLOpenGLFunctionsPtr ogl = NULL );
 
   /// Destructor
   virtual ~GLCtrlPointRenderer( ) {

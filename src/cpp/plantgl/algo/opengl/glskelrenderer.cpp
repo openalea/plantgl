@@ -52,27 +52,27 @@ PGL_USING_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 
-
+#define GEOM_ASSERT_OBJ(obj) if (__ogltoinit) { init(); }
 
 #define GEOM_GLSKELRENDERER_DRAW_SKEL(skel) { \
-    glBegin(GL_LINE_STRIP); \
+    __ogl->glBegin(GL_LINE_STRIP); \
     const Point3ArrayPtr& points = skel->getPointList(); \
     for (Point3Array::const_iterator _i = points->begin(); \
          _i != points->end(); \
          _i++) \
-      glGeomVertex(*_i); \
-    glEnd(); \
+      __ogl->glGeomVertex(*_i); \
+    __ogl->glEnd(); \
   };
 
 #define GEOM_GLSKELRENDERER_GEOM(geom){ \
-  GEOM_ASSERT(geom); \
+  GEOM_ASSERT_OBJ(geom); \
   if(!(geom->apply(__skelComputer)))return false; \
   PolylinePtr _skel = __skelComputer.getSkeleton(); \
   if (_skel){ \
       GEOM_GLSKELRENDERER_DRAW_SKEL(_skel); \
   } \
   else return false; \
-  GEOM_ASSERT(glGetError() == GL_NO_ERROR); \
+  GEOM_ASSERT(__ogl->glGetError() == GL_NO_ERROR); \
   return true; \
  };
 
@@ -80,8 +80,8 @@ PGL_USING_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 
-GLSkelRenderer::GLSkelRenderer( SkelComputer& skelComputer ) :
-  GLRenderer(skelComputer.getDiscretizer()),
+GLSkelRenderer::GLSkelRenderer( SkelComputer& skelComputer, PGLOpenGLFunctionsPtr ogl ) :
+  GLRenderer(skelComputer.getDiscretizer(), NULL, ogl),
   __skelComputer(skelComputer) {
 }
 
@@ -212,7 +212,7 @@ bool GLSkelRenderer::process( Frustum * frustum ) {
 
 
 bool GLSkelRenderer::process( Group * group ) {
-  GEOM_ASSERT(group);
+  GEOM_ASSERT_OBJ(group);
 
   PolylinePtr _skel = group->getSkeleton();
   if (_skel){
@@ -283,7 +283,7 @@ bool GLSkelRenderer::process( PointSet * pointSet ) {
 
 
 bool GLSkelRenderer::process( PGL(Polyline) * polyline ) {
-  GEOM_ASSERT(polyline);
+  GEOM_ASSERT_OBJ(polyline);
 
   GEOM_GLSKELRENDERER_DRAW_SKEL(polyline);
 
@@ -296,7 +296,7 @@ bool GLSkelRenderer::process( PGL(Polyline) * polyline ) {
 
 
 bool GLSkelRenderer::process( QuadSet * quadSet ) {
-  GEOM_ASSERT(quadSet);
+  GEOM_ASSERT_OBJ(quadSet);
 
   PolylinePtr _skel = quadSet->getSkeleton();
   if (_skel){
@@ -362,7 +362,7 @@ bool GLSkelRenderer::process( Translated * translated ) {
 
 
 bool GLSkelRenderer::process( TriangleSet * triangleSet ) {
-  GEOM_ASSERT(triangleSet);
+  GEOM_ASSERT_OBJ(triangleSet);
 
   PolylinePtr _skel = triangleSet->getSkeleton();
   if (_skel){
@@ -412,18 +412,18 @@ bool GLSkelRenderer::process( PointSet2D * pointSet ) {
 
 
 bool GLSkelRenderer::process( Polyline2D * polyline ) {
-  GEOM_ASSERT(polyline);
+  GEOM_ASSERT_OBJ(polyline);
 
-  glBegin(GL_LINE_STRIP);
+  __ogl->glBegin(GL_LINE_STRIP);
   const Point2ArrayPtr& points = polyline->getPointList();
   for (Point2Array::const_iterator _i = points->begin();
        _i != points->end();
        _i++){
-     glGeomVertex(_i->x(),_i->y(),0);
+     __ogl->glGeomVertex(_i->x(),_i->y(),0);
   }
-  glEnd();
+  __ogl->glEnd();
 
-  GEOM_ASSERT(glGetError() == GL_NO_ERROR);
+  GEOM_ASSERT(__ogl->glGetError() == GL_NO_ERROR);
   return true;
 }
 
@@ -431,14 +431,14 @@ bool GLSkelRenderer::process( Polyline2D * polyline ) {
 /* ----------------------------------------------------------------------- */
 
 bool GLSkelRenderer::process( Text * text ) {
-  GEOM_ASSERT(text);
+  GEOM_ASSERT_OBJ(text);
   return true;
 }
 
 /* ----------------------------------------------------------------------- */
 
 bool GLSkelRenderer::process( Font * font ) {
-  GEOM_ASSERT(font);
+  GEOM_ASSERT_OBJ(font);
   return true;
 }
 
