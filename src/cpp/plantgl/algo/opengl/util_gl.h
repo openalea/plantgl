@@ -85,6 +85,14 @@
 #include <plantgl/tool/util_assert.h>
 
 /* ----------------------------------------------------------------------- */
+#include <QOpenGLFunctions_2_1>
+#include <boost/smart_ptr/shared_ptr.hpp>
+
+class PGLOpenGLFunctions : public QOpenGLFunctions_2_1 {
+
+public:
+  PGLOpenGLFunctions() :
+    QOpenGLFunctions_2_1() {}
 
 #ifdef PGL_USE_DOUBLE  // For Double Config
 
@@ -576,6 +584,20 @@ inline void glGeomGetLightDirection(GLenum light, PGL(Vector3)& v )
 
 #endif
 
+#ifndef PGL_WITHOUT_QT
+
+inline void glQPoint(const QPoint& p){
+  glVertex2i(p.x(),p.y());
+}
+
+inline void glQRect(const QRect& r){
+  glRecti(r.topLeft().x(),r.topLeft().y(),r.bottomRight().x(),r.bottomRight().y());
+}
+#endif
+
+};
+
+
 /* ----------------------------------------------------------------------- */
 
 inline void glGeomFrustum(const PGL(Vector3)& LowerLeft,const PGL(Vector3)& UpperRigth)
@@ -603,17 +625,7 @@ inline PGL(Vector4) geom2gl(const PGL(Vector4)& v){
     return PGL(Vector4)(v.y(),v.z(),v.x(),v.w());
 }
 
-#ifndef PGL_WITHOUT_QT
-
-inline void glQPoint(const QPoint& p){
-  glVertex2i(p.x(),p.y());
-}
-
-inline void glQRect(const QRect& r){
-  glRecti(r.topLeft().x(),r.topLeft().y(),r.bottomRight().x(),r.bottomRight().y());
-}
-
-#endif
 /* ----------------------------------------------------------------------- */
+typedef boost::shared_ptr<PGLOpenGLFunctions> PGLOpenGLFunctionsPtr;
 
 #endif

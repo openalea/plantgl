@@ -96,6 +96,7 @@ void export_ZBufferEngine()
       .def("isVisible", (bool(ZBufferEngine::*)(int32_t, int32_t, real_t) const)&ZBufferEngine::isVisible,(bp::arg("x"), bp::arg("y"), bp::arg("z")))
       .def("isVisible", (bool(ZBufferEngine::*)(const Vector3&) const)&ZBufferEngine::isVisible,(bp::arg("position")))
       .def("grabZBufferPoints", &py_grabZBufferPoints,(bp::arg("jitter")=0, bp::arg("raywidth")=0))
+      .def("grabSortedZBufferPoints", &ZBufferEngine::grabSortedZBufferPoints,(bp::arg("jitter")=0, bp::arg("raywidth")=0))
       .def("idhistogram", &py_idhistogram, (bp::arg("solidangle")=true))
       ;
 

@@ -118,8 +118,9 @@ class VIEW_API  ViewEditGeomSceneGL : public ViewMultiGeomSceneGL
   /// Constructor.
   ViewEditGeomSceneGL(ViewCameraGL * camera=0,
                ViewLightGL * light=0,
-               QOpenGLWidget * parent=0,
-               const char * name=0);
+               QOpenGLBaseWidget * parent=0,
+               const char * name=0, 
+               PGLOpenGLFunctionsPtr ogl = NULL);
 
   /// Destructor.
   virtual ~ViewEditGeomSceneGL();
@@ -165,8 +166,9 @@ class VIEW_API  ViewMultiscaleEditGeomSceneGL : public ViewEditGeomSceneGL
   /// Constructor.
   ViewMultiscaleEditGeomSceneGL(ViewCameraGL * camera=0,
                ViewLightGL * light=0,
-               QOpenGLWidget * parent=0,
-               const char * name=0);
+               QOpenGLBaseWidget * parent=0,
+               const char * name=0, 
+               PGLOpenGLFunctionsPtr ogl = NULL);
 
   /// Destructor.
   virtual ~ViewMultiscaleEditGeomSceneGL();

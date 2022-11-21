@@ -114,26 +114,26 @@ void ZBufferEngine::endProcess()
     }
 }
 
-void ZBufferEngine::setHemisphericCamera(real_t near, real_t far)
+void ZBufferEngine::setHemisphericCamera(real_t nearValue, real_t farValue)
 {  
-    setSphericalCamera(180, near, far);
+    setSphericalCamera(180, nearValue, farValue);
 }
 
-void ZBufferEngine::setSphericalCamera(real_t viewAngle, real_t near, real_t far)
+void ZBufferEngine::setSphericalCamera(real_t viewAngle, real_t nearValue, real_t farValue)
 {  
-    __camera = ProjectionCamera::sphericalCamera(viewAngle, near, far); 
+    __camera = ProjectionCamera::sphericalCamera(viewAngle, nearValue, farValue); 
     for (uint32_t x = 0; x < __imageWidth; ++x){
         for (uint32_t y = 0; y < __imageHeight; ++y){
             if (!__camera->isValidPixel(x,y,__imageWidth,__imageHeight)){
                 if(__style & eColorBased) setFrameBufferAt(x,y,Color3::BLACK);
-                __depthBuffer->setAt(x, y, near);
+                __depthBuffer->setAt(x, y, nearValue);
             }
         }
     }
 }
-void ZBufferEngine::setCylindricalCamera(real_t viewAngle, real_t bottom, real_t top, real_t near, real_t far)
+void ZBufferEngine::setCylindricalCamera(real_t viewAngle, real_t bottom, real_t top, real_t nearValue, real_t farValue)
 {  
-    __camera = ProjectionCamera::cylindricalCamera(viewAngle, bottom, top, near, far); 
+    __camera = ProjectionCamera::cylindricalCamera(viewAngle, bottom, top, nearValue, farValue); 
 }
 
 
@@ -597,8 +597,8 @@ void ZBufferEngine::_renderSegment(uchar dim, const TOOLS(Vector3)& v0Raster, co
     int32_t halfwidth = width/2.;
 
     while (cRaster[dim] < v1Raster[dim]+1) {
-        if ((0 <= cRaster[dim] and cRaster[dim] < dims[dim])&&
-            (0 <= cRaster[otherdim] and cRaster[otherdim] < dims[otherdim])){
+        if ((0 <= cRaster[dim] && cRaster[dim] < dims[dim])&&
+            (0 <= cRaster[otherdim] && cRaster[otherdim] < dims[otherdim])){
             real_t w = norm(cRaster - v0Raster) / totW;
             Color4 c = c0 * (1-w) + c1 * w;
             // printf("Render raster %f %f %f\n", cRaster.x(), cRaster.y(), cRaster.z());
@@ -983,6 +983,51 @@ real_t pixweigth(const Vector2& a, const Vector2& b, real_t raywidth) {
     return  std::tuple<PGL(Point3ArrayPtr),PGL(Color3ArrayPtr),PGL(Uint32Array1Ptr)> (points, colors, ids);
   }
 
+ScenePtr ZBufferEngine::grabSortedZBufferPoints(real_t jitter, real_t raywidth ) const
+{
+    ScenePtr result(new Scene());
+    std::tuple<PGL(Point3ArrayPtr),PGL(Color3ArrayPtr),PGL(Uint32Array1Ptr)> pointinfos = grabZBufferPoints(jitter, raywidth);
+    bool hasId = is_valid_ptr(std::get<2>(pointinfos));
+    bool hasColor = is_valid_ptr(std::get<1>(pointinfos));
+    if (!hasId) {
+        Point3ArrayPtr points = std::get<0>(pointinfos);
+        if(hasColor){
+            Color4ArrayPtr colors = Color4ArrayPtr(new Color4Array(*std::get<1>(pointinfos)));
+            result->add(ShapePtr(new Shape(GeometryPtr(new PointSet(points,colors)))));
+        }
+        else {
+            result->add(ShapePtr(new Shape(GeometryPtr(new PointSet(points)))));
+        }
+    }
+    else {
+        typedef pgl_hash_map<uint32_t,PointSetPtr> PointSetMap;
+        Point3Array::const_iterator piter = std::get<0>(pointinfos)->begin();
+        Point3Array::const_iterator piterend = std::get<0>(pointinfos)->end();
+        bool hasColor = is_valid_ptr(std::get<1>(pointinfos));
+        Color3Array::const_iterator citer;
+        if (hasColor) citer = std::get<1>(pointinfos)->begin();
+        Uint32Array1::const_iterator iiter = std::get<2>(pointinfos)->begin();
+        PointSetMap idmap;
+        for(;piter != piterend; ++piter, ++citer, ++iiter){
+            PointSetMap::const_iterator imiter = idmap.find(*iiter);
+            PointSetPtr pset;
+            if (imiter == idmap.end()){
+                pset = PointSetPtr(new PointSet(new Point3Array(), (hasColor ? Color4ArrayPtr(new Color4Array()) : Color4ArrayPtr())));
+                idmap[*iiter] = pset;
+            }
+            else { pset = imiter->second; }
+            pset->getPointList()->push_back(*piter);
+            if(hasColor) pset->getColorList()->push_back(*citer);
+        }
+
+        for(PointSetMap::const_iterator imiter = idmap.begin(); imiter != idmap.end(); ++imiter){
+            result->add(ShapePtr(new Shape(GeometryPtr(imiter->second), AppearancePtr(0), imiter->first)));
+        }
+    }
+    return result;
+}
+
+
 pgl_hash_map<uint32_t,uint32_t> ZBufferEngine::idhistogram(bool solidangle) const
 {
     pgl_hash_map<uint32_t,uint32_t> histo;
@@ -996,7 +1041,6 @@ pgl_hash_map<uint32_t,uint32_t> ZBufferEngine::idhistogram(bool solidangle) cons
                 if (pid != __defaultid){
                     pgl_hash_map<uint32_t,uint32_t>::iterator itId = histo.find(pid);
                     real_t value = (solidangle ? __camera->solidAngle(i,j,__imageWidth,__imageHeight) : 1);
-                    printf("sa[%i,%i] : %f\n",i,j,value);
                     if (itId == histo.end()){
                         histo[pid] = value;
                     }

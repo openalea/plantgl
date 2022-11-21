@@ -66,7 +66,9 @@ class QLabel;
 class QTreeWidget;
 class QTreeWidgetItem;
 class QPushButton;
-class QOpenGLWidget;
+#define PGL_QT_FWD_DECL
+#include <plantgl/gui/pglqopenglwidget.h>
+#undef PGL_QT_FWD_DECL
 
 /* ----------------------------------------------------------------------- */
 
@@ -92,7 +94,7 @@ public:
    *  TRUE to construct a modal dialog.
    */
   ViewSysInfo( QWidget* parent = 0,
-             QOpenGLWidget * FrameGL = 0,
+             QOpenGLBaseWidget * FrameGL = 0,
              const char* name = 0,
              bool modal = false,
              Qt::WindowFlags fl = Qt::Widget );

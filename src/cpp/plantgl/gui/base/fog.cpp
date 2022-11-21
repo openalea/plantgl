@@ -67,8 +67,8 @@
 /* ----------------------------------------------------------------------- */
 
 
-ViewFogGL::ViewFogGL(ViewCameraGL *camera,QOpenGLWidget * parent, const char * name):
-  ViewRelativeObjectGL(camera,parent,name),
+ViewFogGL::ViewFogGL(ViewCameraGL *camera,QOpenGLBaseWidget * parent, const char * name, PGLOpenGLFunctionsPtr ogl):
+  ViewRelativeObjectGL(camera,parent,name, ogl),
   __enable(false),
   __mode(0),
   __hintmode(0),
@@ -282,20 +282,20 @@ void
 ViewFogGL::paintGL()
 {
   if(__enable){
-    glEnable(GL_FOG);
-    if(__mode == 0)glFogi(GL_FOG_MODE,GL_LINEAR);
-    else if(__mode == 1)glFogi(GL_FOG_MODE,GL_EXP);
-    else if(__mode == 2)glFogi(GL_FOG_MODE,GL_EXP2);
+    __ogl->glEnable(GL_FOG);
+    if(__mode == 0)__ogl->glFogi(GL_FOG_MODE,GL_LINEAR);
+    else if(__mode == 1)__ogl->glFogi(GL_FOG_MODE,GL_EXP);
+    else if(__mode == 2)__ogl->glFogi(GL_FOG_MODE,GL_EXP2);
     glGeomFogColor(__color);
-    if(__hintmode == 0)glHint(GL_FOG_HINT,GL_DONT_CARE);
-    else if(__hintmode == 1)glHint(GL_FOG_HINT,GL_FASTEST);
-    else if(__hintmode == 2)glHint(GL_FOG_HINT,GL_NICEST);
-    glFogf(GL_FOG_DENSITY,GLfloat(__density));
-    glFogf(GL_FOG_START,GLfloat(__start));
-    glFogf(GL_FOG_END,GLfloat(__end));
+    if(__hintmode == 0)__ogl->glHint(GL_FOG_HINT,GL_DONT_CARE);
+    else if(__hintmode == 1)__ogl->glHint(GL_FOG_HINT,GL_FASTEST);
+    else if(__hintmode == 2)__ogl->glHint(GL_FOG_HINT,GL_NICEST);
+    __ogl->glFogf(GL_FOG_DENSITY,GLfloat(__density));
+    __ogl->glFogf(GL_FOG_START,GLfloat(__start));
+    __ogl->glFogf(GL_FOG_END,GLfloat(__end));
   }
   else {
-    glDisable(GL_FOG);
+    __ogl->glDisable(GL_FOG);
   }
   GEOM_GL_ERROR;
 }

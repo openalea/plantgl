@@ -61,9 +61,9 @@
 /* ----------------------------------------------------------------------- */
 
 ViewGridGL::ViewGridGL(ViewCameraGL *camera,
-               QOpenGLWidget * parent,
-               const char * name):
-  ViewRelativeObjectGL(camera,parent,name),
+               QOpenGLBaseWidget * parent,
+               const char * name, PGLOpenGLFunctionsPtr ogl):
+  ViewRelativeObjectGL(camera,parent,name, ogl),
   __gridUnit(1),
   __gridSize(15),
   __gridList(0),
@@ -86,8 +86,8 @@ ViewGridGL::ViewGridGL(ViewCameraGL *camera,
 
 ViewGridGL::~ViewGridGL()
 {
-  if (__gridList) glDeleteLists(__gridList,1);
-  if (__axisList) glDeleteLists(__axisList,1);
+  if (__gridList) __ogl->glDeleteLists(__gridList,1);
+  if (__axisList) __ogl->glDeleteLists(__axisList,1);
 }
 
 void ViewGridGL::endEvent()
@@ -202,7 +202,7 @@ ViewGridGL::setGridSize(int size)
   if(__gridSize != size){
     __gridSize = size;
     if (__gridList) {
-      glDeleteLists(__gridList,1); __gridList = 0; }
+      __ogl->glDeleteLists(__gridList,1); __gridList = 0; }
     emit GridSizeChanged(__gridSize);
     emit valueChanged();
   }
@@ -213,7 +213,7 @@ ViewGridGL::setGridSize(const QString& size)
 {
   __gridSize = size.toInt();
   if (__gridList) {
-    glDeleteLists(__gridList,1); __gridList = 0; }
+    __ogl->glDeleteLists(__gridList,1); __gridList = 0; }
 }
 
 void
@@ -226,115 +226,115 @@ ViewGridGL::initializeGL()
 
 
   if (__gridList) {
-    glDeleteLists(__gridList,1);
+    __ogl->glDeleteLists(__gridList,1);
   }
-  __gridList = glGenLists(1);
-  glNewList(__gridList,GL_COMPILE);
-  glBegin(GL_LINES);
+  __gridList = __ogl->glGenLists(1);
+  __ogl->glNewList(__gridList,GL_COMPILE);
+  __ogl->glBegin(GL_LINES);
   for(k=min;k<= - 1;k=k+1)
   {
-      glColor3f(0.25,0.25,0.25);
-      glVertex3f(min,k,0);
-      glVertex3f(max,k,0);
+      __ogl->glColor3f(0.25,0.25,0.25);
+      __ogl->glVertex3f(min,k,0);
+      __ogl->glVertex3f(max,k,0);
   }
   for(k=min;k<=-1;k=k+1)
   {
-      glVertex3f(k,min,0);
-      glVertex3f(k,max,0);
+      __ogl->glVertex3f(k,min,0);
+      __ogl->glVertex3f(k,max,0);
   }
   for(k=1;k<=max;k=k+1)
   {
-      glColor3f(0.25,0.25,0.25);
-      glVertex3f(min,k,0);
-      glVertex3f(max,k,0);
+      __ogl->glColor3f(0.25,0.25,0.25);
+      __ogl->glVertex3f(min,k,0);
+      __ogl->glVertex3f(max,k,0);
   }
   for(k=1;k<=max;k=k+1)
   {
-      glVertex3f(k,min,0);
-      glVertex3f(k,max,0);
+      __ogl->glVertex3f(k,min,0);
+      __ogl->glVertex3f(k,max,0);
   }
-  glEnd();
-  glEndList();
+  __ogl->glEnd();
+  __ogl->glEndList();
 
   GEOM_GL_ERROR;
 
   if (__axisList) {
-    glDeleteLists(__axisList,1);
+    __ogl->glDeleteLists(__axisList,1);
   }
-  __axisList = glGenLists(1);
-  glNewList(__axisList,GL_COMPILE);
+  __axisList = __ogl->glGenLists(1);
+  __ogl->glNewList(__axisList,GL_COMPILE);
 
-  glBegin(GL_LINES);
-  glColor3f(0,0.3f,0);
-  glVertex3f(0,min,0);
-  glVertex3f(0,0,0);
-  glEnd();
-  glBegin(GL_LINES);
-  glColor3f(0,0.8f,0);
-  glVertex3f(0,0,0);
-  glVertex3f(0,max,0);
+  __ogl->glBegin(GL_LINES);
+  __ogl->glColor3f(0,0.3f,0);
+  __ogl->glVertex3f(0,min,0);
+  __ogl->glVertex3f(0,0,0);
+  __ogl->glEnd();
+  __ogl->glBegin(GL_LINES);
+  __ogl->glColor3f(0,0.8f,0);
+  __ogl->glVertex3f(0,0,0);
+  __ogl->glVertex3f(0,max,0);
   //Y+
-  glVertex3f (0, 10.5, 0.25);
-  glVertex3f (0, 10.75, 0);
-  glVertex3f (0, 10.75, 0);
-  glVertex3f (0, 11, 0.25);
-  glVertex3f (0, 10.75, 0);
-  glVertex3f (0, 10.75, -0.25);
-  glVertex3f (0, 11.25, 0);
-  glVertex3f (0, 11.75, 0);
-  glVertex3f (0, 11.5, -0.25);
-  glVertex3f (0, 11.5, 0.25);
-  glEnd();
+  __ogl->glVertex3f (0, 10.5, 0.25);
+  __ogl->glVertex3f (0, 10.75, 0);
+  __ogl->glVertex3f (0, 10.75, 0);
+  __ogl->glVertex3f (0, 11, 0.25);
+  __ogl->glVertex3f (0, 10.75, 0);
+  __ogl->glVertex3f (0, 10.75, -0.25);
+  __ogl->glVertex3f (0, 11.25, 0);
+  __ogl->glVertex3f (0, 11.75, 0);
+  __ogl->glVertex3f (0, 11.5, -0.25);
+  __ogl->glVertex3f (0, 11.5, 0.25);
+  __ogl->glEnd();
 
   GEOM_GL_ERROR;
 
   //axi des x
-  glBegin(GL_LINES);
-  glColor3f(0.3f,0,0);
-  glVertex3f(min,0,0);
-  glVertex3f(0,0,0);
-  glEnd();
-  glBegin(GL_LINES);
-  glColor3f(0.8f,0,0);
-  glVertex3f(0,0,0);
-  glVertex3f(max,0,0);
+  __ogl->glBegin(GL_LINES);
+  __ogl->glColor3f(0.3f,0,0);
+  __ogl->glVertex3f(min,0,0);
+  __ogl->glVertex3f(0,0,0);
+  __ogl->glEnd();
+  __ogl->glBegin(GL_LINES);
+  __ogl->glColor3f(0.8f,0,0);
+  __ogl->glVertex3f(0,0,0);
+  __ogl->glVertex3f(max,0,0);
   //X+
-  glVertex3f (10.5, 0, 0.25);
-  glVertex3f (11, 0, -0.25);
-  glVertex3f (10.5, 0, -0.25);
-  glVertex3f (11, 0, 0.25);
-  glVertex3f (11.25, 0, 0);
-  glVertex3f (11.75, 0, 0);
-  glVertex3f (11.5, 0, -0.25);
-  glVertex3f (11.5, 0, 0.25);
-  glEnd();
+  __ogl->glVertex3f (10.5, 0, 0.25);
+  __ogl->glVertex3f (11, 0, -0.25);
+  __ogl->glVertex3f (10.5, 0, -0.25);
+  __ogl->glVertex3f (11, 0, 0.25);
+  __ogl->glVertex3f (11.25, 0, 0);
+  __ogl->glVertex3f (11.75, 0, 0);
+  __ogl->glVertex3f (11.5, 0, -0.25);
+  __ogl->glVertex3f (11.5, 0, 0.25);
+  __ogl->glEnd();
 
   GEOM_GL_ERROR;
 
   //z axis z
-  glBegin(GL_LINES);
-  glColor3f(0,0,0.3f);
-  glVertex3f(0,0,min);
-  glVertex3f(0,0,0);
-  glEnd();
-  glBegin(GL_LINES);
-  glColor3f(0,0,0.8f);
-  glVertex3f(0,0,0);
-  glVertex3f(0,0,max);
+  __ogl->glBegin(GL_LINES);
+  __ogl->glColor3f(0,0,0.3f);
+  __ogl->glVertex3f(0,0,min);
+  __ogl->glVertex3f(0,0,0);
+  __ogl->glEnd();
+  __ogl->glBegin(GL_LINES);
+  __ogl->glColor3f(0,0,0.8f);
+  __ogl->glVertex3f(0,0,0);
+  __ogl->glVertex3f(0,0,max);
 
   // Z+
-  glVertex3f (0, -0.25, 10.5);
-  glVertex3f (0, 0.25, 11);
-  glVertex3f (0, -0.25, 11);
-  glVertex3f (0, 0.25, 11);
-  glVertex3f (0, -0.25,  10.5);
-  glVertex3f (0, 0.25, 10.5);
-  glVertex3f (0, 0.5, 10.75);
-  glVertex3f (0, 1, 10.75);
-  glVertex3f (0, 0.75, 10.5);
-  glVertex3f (0, 0.75, 11);
-  glEnd();
-  glEndList();
+  __ogl->glVertex3f (0, -0.25, 10.5);
+  __ogl->glVertex3f (0, 0.25, 11);
+  __ogl->glVertex3f (0, -0.25, 11);
+  __ogl->glVertex3f (0, 0.25, 11);
+  __ogl->glVertex3f (0, -0.25,  10.5);
+  __ogl->glVertex3f (0, 0.25, 10.5);
+  __ogl->glVertex3f (0, 0.5, 10.75);
+  __ogl->glVertex3f (0, 1, 10.75);
+  __ogl->glVertex3f (0, 0.75, 10.5);
+  __ogl->glVertex3f (0, 0.75, 11);
+  __ogl->glEnd();
+  __ogl->glEndList();
 
   GEOM_GL_ERROR;
 
@@ -344,69 +344,69 @@ void
 ViewGridGL::paintGL()
 {
 
-  glPushAttrib(GL_CURRENT_BIT);
-  glMatrixMode(GL_MODELVIEW);
+  __ogl->glPushAttrib(GL_CURRENT_BIT);
+  __ogl->glMatrixMode(GL_MODELVIEW);
 
-  glBlendFunc(GL_ONE,GL_ZERO);
+  __ogl->glBlendFunc(GL_ONE,GL_ZERO);
 
   if (!__gridList)initializeGL();
 
-  glPushMatrix();
-  if(__gridUnit > 1)glScalef(float(__gridUnit),float(__gridUnit),float(__gridUnit));
+  __ogl->glPushMatrix();
+  if(__gridUnit > 1)__ogl->glScalef(float(__gridUnit),float(__gridUnit),float(__gridUnit));
   if(__XYGrid)
     //XY plane
     {
-      glCallList(__gridList);
+      __ogl->glCallList(__gridList);
     }
 
   if(__YZGrid)
     //YZ plane
     {
-      glPushMatrix();
-      glRotated(90,0,1,0);
-      glCallList(__gridList);
-      glPopMatrix();
+      __ogl->glPushMatrix();
+      __ogl->glRotated(90,0,1,0);
+      __ogl->glCallList(__gridList);
+      __ogl->glPopMatrix();
     }
 
   if(__XZGrid)
     //XZ plane
     {
-      glPushMatrix();
-      glRotated(90,1,0,0);
-      glCallList(__gridList);
-      glPopMatrix();
+      __ogl->glPushMatrix();
+      __ogl->glRotated(90,1,0,0);
+      __ogl->glCallList(__gridList);
+      __ogl->glPopMatrix();
     }
 
   if(__Axis)
     //axis
     {
-      glCallList(__axisList);
+      __ogl->glCallList(__axisList);
     }
   else {
-      glColor3f(0.25,0.25,0.25);
+      __ogl->glColor3f(0.25,0.25,0.25);
       if(__XYGrid || __XZGrid){
-        glBegin(GL_LINES);
-        glVertex3f(-__gridSize,0,0);
-        glVertex3f(__gridSize,0,0);
-        glEnd();
+        __ogl->glBegin(GL_LINES);
+        __ogl->glVertex3f(-__gridSize,0,0);
+        __ogl->glVertex3f(__gridSize,0,0);
+        __ogl->glEnd();
       }
       if(__XYGrid || __YZGrid){
-        glBegin(GL_LINES);
-        glVertex3f(0,-__gridSize,0);
-        glVertex3f(0,__gridSize,0);
-        glEnd();
+        __ogl->glBegin(GL_LINES);
+        __ogl->glVertex3f(0,-__gridSize,0);
+        __ogl->glVertex3f(0,__gridSize,0);
+        __ogl->glEnd();
       }
       if(__XZGrid || __YZGrid){
-        glBegin(GL_LINES);
-        glVertex3f(0,0,-__gridSize);
-        glVertex3f(0,0,__gridSize);
-        glEnd();
+        __ogl->glBegin(GL_LINES);
+        __ogl->glVertex3f(0,0,-__gridSize);
+        __ogl->glVertex3f(0,0,__gridSize);
+        __ogl->glEnd();
       }
 
   }
 
-  glPopMatrix();
-  glPopAttrib();
+  __ogl->glPopMatrix();
+  __ogl->glPopAttrib();
   GEOM_GL_ERROR;
 }
 
@@ -560,7 +560,7 @@ void ViewGridGL::gridEvent(ViewEvent * _e){
   }
   if((e->arg7 & 16) && (__gridSize != e->arg5) && e->arg5 > 1){
     __gridSize = e->arg5;
-    if (__gridList) { glDeleteLists(__gridList,1); __gridList = 0; }
+    if (__gridList) { __ogl->glDeleteLists(__gridList,1); __gridList = 0; }
     emit GridSizeChanged(__gridSize);
     c = true;
   }

@@ -93,8 +93,9 @@ class VIEW_API ViewGeomSceneGL  : public ViewModalRendererGL
   /// Constructor.
   ViewGeomSceneGL(ViewCameraGL * camera=0,
                   ViewLightGL * light=0,
-                  QOpenGLWidget * parent=0,
-                  const char * name=0);
+                  QOpenGLBaseWidget * parent=0,
+                  const char * name=0, 
+                  PGLOpenGLFunctionsPtr ogl = NULL);
 
   /// Destructor.
   virtual ~ViewGeomSceneGL();
@@ -240,10 +241,11 @@ class VIEW_API ViewGeomSceneGL  : public ViewModalRendererGL
                  PGL(ScenePtr) scene);
 
   /// Connect this to a GL Widget.
-  virtual void connectTo(QOpenGLWidget *);
+  virtual void connectTo(QOpenGLBaseWidget *);
 
   bool isBlendingEnabled() { return __blending; }
-
+  bool isVertexArrayUsed() const;
+  
 public slots:
 
   virtual void refreshDisplay();
@@ -306,6 +308,7 @@ public slots:
 
   void changeDisplayListUse();
   virtual void useDisplayList(bool);
+  void useVertexArray(bool);
 
   /// Clear Selection Event.
   virtual void clearSelectionEvent();
@@ -338,6 +341,8 @@ protected :
   virtual void customEvent(QEvent *);
 
   virtual void animationChangedEvent(eAnimationFlag);
+
+  virtual void openGLFunctionsChanged();
 
   /// The scene object (which contains all the geometric shape and appereance to display).
   PGL(ScenePtr) __scene;
@@ -407,8 +412,9 @@ class VIEW_API ViewMultiGeomSceneGL  : public ViewGeomSceneGL
   /// Constructor.
   ViewMultiGeomSceneGL(ViewCameraGL * camera=0,
                        ViewLightGL * light=0,
-                       QOpenGLWidget * parent=0,
-                       const char * name=0);
+                       QOpenGLBaseWidget * parent=0,
+                       const char * name=0, 
+                       PGLOpenGLFunctionsPtr ogl = NULL);
 
   /// Destructor.
   virtual ~ViewMultiGeomSceneGL();
@@ -455,6 +461,7 @@ public slots:
   void sliderVisibilityChanged(bool);
 
 protected :
+  virtual void openGLFunctionsChanged();
 
   /// The Transition Renderer.
   PGL(GLTransitionRenderer) __transitionRenderer;

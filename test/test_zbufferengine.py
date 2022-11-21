@@ -19,7 +19,7 @@ def test_teapot(view = False):
     z.setPerspectiveCamera(60,1,0.1,1000)
     z.lookAt(cam,(0,0,0),(0,0,1))
     z.multithreaded = MT
-    print(z.getBoundingBoxView())
+    #print(z.getBoundingBoxView())
     print('render')
     z.process(tr, Material((0,0,200)),2)
     print('getImage')
@@ -39,7 +39,7 @@ def test_sphere(view = False):
     z.setPerspectiveCamera(60,4/3.,0.1,1000)
     z.lookAt(cam,(0,0,0),(0,0,1))
     z.multithreaded = MT
-    print(z.getBoundingBoxView())
+    #print(z.getBoundingBoxView())
     print('render')
     z.process(tr, Material((100,50,200)),2)
     print('getImage')
@@ -59,7 +59,7 @@ def test_cylinder(view = False):
     z.setPerspectiveCamera(60,1,1,1000)
     z.multithreaded = MT
     z.lookAt(cam,(0,0,-5),(0,0,1))
-    print(z.getBoundingBoxView())
+    #print(z.getBoundingBoxView())
     print('render')
     z.process(tr, Material((100,50,200)),2)
     print('getImage')
@@ -76,7 +76,7 @@ def test_point():
     cam = (300,0,0)
     z.multithreaded = MT
     z.lookAt(cam,(0,0,0),(0,0,1))
-    print(z.getBoundingBoxView())
+    #print(z.getBoundingBoxView())
     print(z.camera().getWorldToCameraMatrix())
     print()
     print('World : \t', Vector3(a))
@@ -122,7 +122,7 @@ def test_projected_sphere(view = False):
     #z.setOrthographicCamera(-1, 1, -1, 1, 0, 10)
     z.lookAt(cam,(0,0,0),(0,0,1))
     z.multithreaded = MT
-    print(z.getBoundingBoxView())
+    #print(z.getBoundingBoxView())
     print('render')
     z.process(s)
     print('getImage')
@@ -135,7 +135,7 @@ def test_projected_sphere(view = False):
 def test_hemispheric_point():
     a = (0,100, 100)
     z = ZBufferEngine(800,800)
-    z.setHemisphericCamera(pi,1,1000)
+    z.setHemisphericCamera(1,1000)
     cam = (0,0,0)
     z.multithreaded = MT
     z.lookAt(cam,(0,0,100),(1,0,0))
@@ -164,7 +164,7 @@ def test_formfactors():
     result = formFactors(tr.pointList,tr.indexList,ccw=True,solidangle=True)
     print(result)
 
-def test_solidangle(view = True):
+def test_solidangle(view = False):
     angle = 359
     rangle = radians(angle)
     cam = SphericalCamera(angle)
@@ -178,9 +178,10 @@ def test_solidangle(view = True):
     #img = np.array([[sa(coord(x,y),coord2(x,y),coord3(x,y)) for x in range(w)] for y in range(h)])
     print(img[d//2,d//2])
     print(sum(sum(img)) )
-    p = plt.imshow(img) #,vmin=0.2,vmax=-0.2)
-    plt.colorbar(p)
-    plt.show()
+    if view:
+        p = plt.imshow(img) #,vmin=0.2,vmax=-0.2)
+        plt.colorbar(p)
+        plt.show()
 
 if __name__ == '__main__':
     test_solidangle()

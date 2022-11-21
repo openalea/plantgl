@@ -66,6 +66,11 @@ PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
+class TriangleSet;
+/// TriangleSet Pointer
+typedef RCPtr<TriangleSet> TriangleSetPtr;
+
+
 class SG_API TriangleSet : public IndexedMesh<Index3Array>
 {
 
@@ -134,10 +139,9 @@ public:
   virtual ExplicitModelPtr
   transform( const Transformation3DPtr& transformation ) const;
 
-};
+  TriangleSetPtr canonicalMesh() const;
 
-/// TriangleSet Pointer
-typedef RCPtr<TriangleSet> TriangleSetPtr;
+};
 
 
 std::pair<Vector3, real_t> SG_API circumsphere(const Vector3& a, const Vector3& b, const Vector3& c);
