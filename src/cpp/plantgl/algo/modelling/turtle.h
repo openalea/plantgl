@@ -497,7 +497,7 @@ public:
     inline void decColor()
     {  setColor( getColor() - color_increment ); }
 
-    virtual AppearancePtr getCurrentMaterial();
+    virtual AppearancePtr getCurrentMaterial() { return __params->customMaterial; };
     virtual void setCustomAppearance(const AppearancePtr app);
     inline void removeCustomAppearance() { setCustomAppearance(AppearancePtr()); }
 
@@ -510,53 +510,11 @@ public:
     virtual void setTextureBaseColor(int v);
     virtual void interpolateTextureBaseColors(int val1, int val2, real_t alpha = 0.5);
 
-    inline void clearColorList() {
-        __appList.clear();
-    }
-
-    inline const std::vector<AppearancePtr>& getColorList() const {
-        return __appList;
-    }
-
-    inline void setColorList(const std::vector<AppearancePtr>& applist) {
-        __appList = applist;
-    }
-
     virtual void defaultValue();
 
-    size_t getColorListSize() const
-    { return __appList.size(); }
+    virtual size_t getColorListSize() const
+    { return 0; }
 
-    virtual void appendMaterial(const AppearancePtr& mat);
-
-    virtual void setMaterial(size_t pos, const AppearancePtr& mat);
-
-    virtual void insertMaterial(size_t pos, const AppearancePtr& mat);
-
-    inline void appendMaterial(const ImageTexturePtr& mat)
-    { appendMaterial(AppearancePtr(new Texture2D(mat))); }
-
-    inline void setMaterial(size_t pos, const ImageTexturePtr& mat)
-    { setMaterial(pos,AppearancePtr(new Texture2D(mat))); }
-
-    inline void insertMaterial(size_t pos, const ImageTexturePtr& mat)
-    { insertMaterial(pos,AppearancePtr(new Texture2D(mat))); }
-
-    virtual AppearancePtr getMaterial(size_t pos);
-
-    virtual void appendColor(uint_t red, uint_t green, uint_t blue);
-
-    virtual void appendColor(float red, float green, float blue);
-
-    virtual void appendColor(const Color3& mat);
-
-    virtual void setColorAt(size_t pos, uint_t red, uint_t green, uint_t blue );
-
-    virtual void setColorAt(size_t pos, float red, float green, float blue );
-
-    virtual void setColorAt(size_t pos, const Color3& mat);
-
-    virtual void removeColor(size_t pos);
 
 protected:
 
@@ -591,7 +549,6 @@ protected:
     PushPopHandlerList __pushpophandlerlist;
     TurtleDrawerPtr __drawer;
 
-    std::vector<AppearancePtr> __appList;
 
 };
 
