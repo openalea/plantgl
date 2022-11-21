@@ -100,6 +100,7 @@ protected:
   PGL(AppearancePtr) __M;
   PGL(Discretizer) __d;
   PGL(GLRenderer) __r;
+  PGLOpenGLFunctionsPtr __ogl;
 };
 
 /*----------------------------------------------------------------------------*/

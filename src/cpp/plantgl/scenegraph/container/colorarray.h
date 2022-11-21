@@ -115,6 +115,16 @@ public:
     Array1<Color4>(begin,end) {
   }
 
+  /// Constructs an Array1 with \e size copies of \e t.
+  Color4Array( const Color3Array& t, uchar_t alpha = 0 ) :
+    Array1<Color4>(t.size()) 
+  {
+    Color4Array::iterator selfiter = begin();
+    for(Color3Array::const_iterator it = t.begin(); it != t.end(); ++it, ++selfiter){
+      *selfiter = Color4(*it, alpha);
+    }
+  }
+
   /// Destructor
   virtual ~Color4Array( ) {
   }
@@ -132,6 +142,20 @@ public:
       }
       return data;
   }
+  inline real_t * toRealArray() const {
+      size_t len = size();
+      real_t * data = new real_t[4*len];
+      for( size_t i = 0 ; i < len; ++i )
+      {
+        const Color4& color = getAt( i );
+        data[ 4*i ] = color.getRedClamped();
+        data[ 4*i+1 ] = color.getGreenClamped();
+        data[ 4*i+2 ] = color.getBlueClamped();
+        data[ 4*i+3 ] = 1.0f - color.getAlphaClamped();
+      }
+      return data;
+  }
+
 };
 
 typedef RCPtr<Color4Array> Color4ArrayPtr;

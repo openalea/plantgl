@@ -30,6 +30,8 @@ import os
 QT_API = 'QT_API'
 #: names of the expected PyQt5 api
 PYQT5_API = ['pyqt5']
+#: names of the expected PyQt6 api
+PYQT6_API = ['pyqt6']
 #: names of the expected PyQt4 api
 PYQT4_API = [
     'pyqt',  # name used in IPython.qt

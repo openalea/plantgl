@@ -199,19 +199,21 @@ class PglViewer (QGLViewer):
         self.renderingStyle = eColorBased
         self.renderingMultithreaded = False
         self.hemisphericangle = 180
+        self.scanshowed = False
         if hasattr(self,'updateGL'):
             self.update = self.updateGL
 
     def init(self):
         self.showEntireScene()
         self.drawCPU()
-        self.setKeyDescription(Qt.Key_E, 'Toogle Camera Type (Perspective or Orthographic)')
+        self.setKeyDescription(Qt.Key_E, 'Toogle Camera Type (Perspective, Orthographic of Hemispheric)')
         self.setKeyDescription(Qt.Key_L, 'Toogle Light Manipulation')
         self.setKeyDescription(Qt.Key_P, 'Periodize Buffer')
         self.setKeyDescription(Qt.Key_D, 'Render depths')
         self.setKeyDescription(Qt.Key_I, 'Render Ids')
         self.setKeyDescription(Qt.Key_M, 'Toogle Multithread')
         self.setKeyDescription(Qt.Key_F, 'Export to Povray')
+        self.setKeyDescription(Qt.Key_S, 'Export Scan View to 3D Scene')
         pos = ogl.glGetLightfv(ogl.GL_LIGHT0, ogl.GL_POSITION)
         self.lighManipulator.setPosition(pos[0], pos[1], pos[2])
         self.lighManipulator.manipulated.connect(self.setLightPosition)
@@ -248,6 +250,15 @@ class PglViewer (QGLViewer):
             self.update()
         elif event.key() == Qt.Key_F:
             self.exportToPov()
+        elif event.key() == Qt.Key_S:
+            if self.scanshowed == False:
+                self.previousscene = self.scene
+                self.exportToScan()
+                self.scanshowed = True
+            else:
+                self.scanshowed = False
+                self.setScene(self.previousscene)
+            self.update()
         elif event.key() == Qt.Key_M:
             self.renderingMultithreaded = not self.renderingMultithreaded
             print('Multithread',self.renderingMultithreaded)
@@ -398,8 +409,11 @@ class PglViewer (QGLViewer):
         dtime = time.time()  - t
         print('done in', dtime,'sec.')
         self.timeout = int(dtime * 1000)
+        self.renderer = z
 
-
+    def exportToScan(self):
+        print(self.renderer.camera().zfar)
+        self.setScene(self.renderer.grabSortedZBufferPoints())
 
     def setAnimation(self,flag):
         self.animationMode = flag
@@ -450,11 +464,11 @@ def main():
     #scene = Scene([Shape(Sphere(10),Material((200,50,100),2))])
     #scene = Scene([Shape(Cylinder(1,10),Material((100,25,50),4))])
     points = [(0,0,0),(0,20,0),(0,0,-10)]
-    scene = Scene([Shape(TriangleSet(points, [range(3)], colorList=[(255,0,0,0),(0,255,0,0),(0,0,255,0)],colorPerVertex=True),id=3), Shape(PointSet(points, width=10),id=100)])
+    #scene = Scene([Shape(TriangleSet(points, [range(3)], colorList=[(255,0,0,0),(0,255,0,0),(0,0,255,0)],colorPerVertex=True),id=3), Shape(PointSet(points, width=10),id=100)])
     #scene = Scene([Shape(Polyline([(0,0,0),(1,0,1)], width=3),Material((200,50,100),2))])
     #scene = Scene('data/cow.obj')
     #scene = Scene('../share/plantgl/database/advancedgraphics/tulipa.geom')
-    #scene = Scene('../share/plantgl/database/advancedgraphics/mango.bgeom')
+    scene = Scene('../share/plantgl/database/advancedgraphics/mango.bgeom')
     #scene = Scene('../share/plantgl/database/examples/snowmanshape.geom')
     #scene = Scene('/Users/fboudon/Dropbox/mtpellier_training/project/benchmark_data/GDR_12_r1.txt')
     #scene[0].geometry.geometry.width=10

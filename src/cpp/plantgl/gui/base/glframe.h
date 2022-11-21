@@ -66,7 +66,7 @@ class QTabWidget;
 /* ----------------------------------------------------------------------- */
 
 #include <QtOpenGL>
-#include <QOpenGLWidget>
+#include <plantgl/gui/pglqopenglwidget.h>
 #include <QWidget>
 
 #ifdef QT_NO_OPENGL
@@ -75,6 +75,7 @@ class QTabWidget;
 #include <QtCore/QTimer>
 
 #include <plantgl/tool/util_types.h>
+#include <plantgl/algo/opengl/util_gl.h>
 #include <vector>
 #include <ctime>
 
@@ -110,7 +111,7 @@ class QOpenGLFramebufferObject;
 
 /* ----------------------------------------------------------------------- */
 
-class VIEW_API ViewGLFrame : public QOpenGLWidget
+class VIEW_API ViewGLFrame : public QOpenGLBaseWidget
 {
   Q_OBJECT
   Q_PROPERTY( QColor BgColor READ getBackGroundColor WRITE setBackGroundColor )
@@ -455,6 +456,8 @@ signals:
   clock_t __lastdraw;
   double __fps;
   int __fpscounter;
+
+  PGLOpenGLFunctionsPtr __ogl;
 };
 
 class VIEW_API ViewDoubleToolButton : public QToolButton {

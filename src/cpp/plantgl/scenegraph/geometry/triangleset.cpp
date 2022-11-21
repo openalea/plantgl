@@ -383,3 +383,56 @@ std::pair<Vector3, real_t> PGL(circumsphere)(const Vector3& a, const Vector3& b,
 
     return std::pair<Vector3, real_t>(ccs, circumsphereRadius);
 }
+
+TriangleSetPtr TriangleSet::canonicalMesh() const
+{
+  bool normal = hasNormalList();
+  bool normalV = !getNormalPerVertex() || is_valid_ptr(__normalIndexList);;
+  bool tex = hasTexCoordList();
+  bool texV = is_valid_ptr(__texCoordIndexList);
+  bool color = hasColorList();
+  bool colorV = !getColorPerVertex() || is_valid_ptr(__colorIndexList);
+
+  if ((normal && normalV) || (tex && texV) || (color && colorV))
+  {
+    Point3ArrayPtr points(new Point3Array());
+    Index3ArrayPtr index(new IndexArray());
+    Color4ArrayPtr colors(color?new Color4Array():NULL);
+    Point3ArrayPtr normals(normal?new Point3Array():NULL);
+    Point2ArrayPtr texCoord(tex? new Point2Array():NULL);
+
+    uint32_t id = 0;
+    for (Index3Array::const_iterator it = __indexList->begin(); it != __indexList->end(); ++id, ++it){
+      for(Index3::const_iterator itind = it->begin(); itind != it->end(); ++itind)
+        points->push_back(__pointList->getAt(*itind));
+      index->push_back(Index3(3*id,3*id+1,3*id+2));
+      if (colors){
+        if (!getColorPerVertex()){
+          for(uint32_t i = 0; i < 3; ++i)
+            colors->push_back(getColorAt(id));
+        }
+        else {
+          for(uint32_t i = 0; i < 3; ++i)
+            colors->push_back(getFaceColorAt(id,i));
+        }
+      }
+      if (normal){
+        if (!getNormalPerVertex()){
+          for(uint32_t i = 0; i < 3; ++i)
+            normals->push_back(getNormalAt(id));
+        }
+        else {
+          for(uint32_t i = 0; i < 3; ++i)
+            normals->push_back(getFaceNormalAt(id,i));
+        }
+      }
+      if (tex){
+        for(uint32_t i = 0; i < 3; ++i)
+          texCoord->push_back(getFaceTexCoordAt(id,i));
+      }
+    }
+    return TriangleSetPtr(new TriangleSet(points, index, normals, Index3ArrayPtr(), colors, Index3ArrayPtr(), texCoord, Index3ArrayPtr(), true, true, __ccw, __solid, __skeleton ));
+  }
+  else return TriangleSetPtr(new TriangleSet(*this));
+
+}

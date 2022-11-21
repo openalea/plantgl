@@ -9,7 +9,7 @@ dependencies:
     - cmake
     - numpy
     - boost
-    - qt
+    - qt-main
     - pyqt
     - libpng
     - zlib

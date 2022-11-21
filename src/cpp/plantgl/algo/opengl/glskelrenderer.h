@@ -72,7 +72,7 @@ class ALGO_API GLSkelRenderer : public GLRenderer
 public:
 
   /// Constructs a GLSkelRenderer.
-  GLSkelRenderer( SkelComputer& skelComputer );
+  GLSkelRenderer( SkelComputer& skelComputer, PGLOpenGLFunctionsPtr ogl = NULL );
 
   /// Destructor
   virtual ~GLSkelRenderer( ) {

@@ -1086,7 +1086,7 @@ ViewGeomSceneGL::saveAsPovRay(const QString& filename)
                                                     col.green(),
                                                     col.blue()));
     _stream << "*/\n\n";
-    const QOpenGLContext * c =__frame->context();
+    const QOpenGLBaseContext * c =__frame->context();
     if(c){
       // QColor bg = c->overlayTransparentColor();
       // if(bg.isValid())_printer.setBackGround(Color3(bg.red(),bg.green(),bg.blue()));
@@ -1205,7 +1205,7 @@ ViewGeomSceneGL::saveAsVrml()
     const QColor& col2 = __light->getAmbient();
     _printer.setLight(__light->getPosition(),Color3(col2.red(),col2.green(),col2.blue()),
                       Color3(col.red(),col.green(),col.blue()),4*norm(__light->getPosition()));
-    const QOpenGLContext * c =__frame->context();
+    const QOpenGLBaseContext * c =__frame->context();
     //if(c){
       //QColor bg = c->overlayTransparentColor();
       //if(bg.isValid())_printer.setBackGround(Color3(bg.red(),bg.green(),bg.blue()));
