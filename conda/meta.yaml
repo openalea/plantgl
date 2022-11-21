@@ -39,7 +39,7 @@ requirements:
       - xorg-libxfixes                    # [linux]
           
   build:
-    - python {{PY_VER}}
+    - python
     - binutils_impl_linux-64            # [linux]
     - {{ compiler('cxx') }}
     - bison                             # [unix]
