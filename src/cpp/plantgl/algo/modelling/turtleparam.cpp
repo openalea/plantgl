@@ -112,6 +112,30 @@ TurtleParam::TurtleParam() :
 {
 }
 
+TurtleParam::TurtleParam(const TurtleParam& origin) :
+        TurtleDrawParameter(origin),
+        position(origin.position),
+        heading(origin.heading),
+        left(origin.left),
+        up(origin.up),
+        scale(origin.scale),
+        reflection(origin.reflection),
+        lastId(origin.lastId),
+        width(origin.width),
+        tropism(origin.tropism),
+        elasticity(origin.elasticity),
+        screenCoordinates(origin.screenCoordinates),
+        __polygon(origin.__polygon),
+        __generalizedCylinder(origin.__generalizedCylinder),
+        pointList(new Point3Array(*origin.pointList.get())),
+        customId(origin.customId),
+        customParentId(origin.customParentId),
+        sectionResolution(origin.sectionResolution),
+        initial(origin.initial),
+        frame_info{position, heading, left, up, scale, screenCoordinates}
+{
+}
+
 TurtleParam::~TurtleParam() {}
 
 void
