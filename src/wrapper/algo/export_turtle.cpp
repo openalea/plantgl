@@ -44,6 +44,9 @@
 #include <plantgl/python/export_property.h>
 
 #include <boost/python.hpp>
+#include <plantgl/python/export_list.h>
+#include <plantgl/python/extract_list.h>
+
 using namespace boost::python;
 #define bp boost::python
 PGL_USING_NAMESPACE
@@ -79,6 +82,14 @@ protected:
 
 void py_register_pushpop(Turtle * t, boost::python::object push, boost::python::object pop) {
     t->registerPushPopHandler(PushPopHandlerPtr(new PyPushPopHandler(push, pop)));
+}
+
+boost::python::object getTurtleColorList(Turtle * turtle) {
+    return make_list(turtle->getColorList())();
+}
+
+void setTurtleColorList(Turtle * turtle, boost::python::object applist) {
+    return turtle->setColorList(extract_vec<AppearancePtr>(applist)());
 }
 
 void export_Turtle()
@@ -151,6 +162,28 @@ void export_Turtle()
 
     .def("getColorListSize",  &Turtle::getColorListSize )
 
+    .def("defaultValue",      &Turtle::defaultValue )
+
+    .def("clearColorList",    &Turtle::clearColorList )
+    .def("removeColor",       &Turtle::removeColor )
+    .def("appendMaterial",    (void(Turtle::*)(const AppearancePtr&))&Turtle::appendMaterial )
+    .def("appendMaterial",    (void(Turtle::*)(const ImageTexturePtr&))&Turtle::appendMaterial )
+    .def("insertMaterial",    (void(Turtle::*)(size_t,const AppearancePtr&))&Turtle::insertMaterial )
+    .def("insertMaterial",    (void(Turtle::*)(size_t,const ImageTexturePtr&))&Turtle::insertMaterial )
+    .def("setMaterial",       (void(Turtle::*)(size_t,const AppearancePtr&))&Turtle::setMaterial )
+    .def("setMaterial",       (void(Turtle::*)(size_t,const ImageTexturePtr&))&Turtle::setMaterial )
+
+    .def("getMaterial",       &Turtle::getMaterial )
+
+    .def("appendColor",       (void(Turtle::*)( uint_t, uint_t, uint_t))&Turtle::appendColor )
+    .def("appendColor",       (void(Turtle::*)( float, float, float))&Turtle::appendColor )
+    .def("setColorAt",        (void(Turtle::*)( size_t, uint_t, uint_t, uint_t))&Turtle::setColorAt )
+    .def("setColorAt",        (void(Turtle::*)( size_t, float, float, float))&Turtle::setColorAt )
+    .def("setColorAt",        (void(Turtle::*)( size_t,const Color3&))&Turtle::setColorAt )
+    .def("appendColor",       (void(Turtle::*)( const Color3&))&Turtle::appendColor )
+    .def("getColorList",      &getTurtleColorList )
+    .def("setColorList",      &setTurtleColorList )
+          
     .def("reset", &Turtle::reset)
     .def("resetValues", &Turtle::resetValues)
     .def("dump", &Turtle::dump)
