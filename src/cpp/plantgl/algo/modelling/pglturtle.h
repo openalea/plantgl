@@ -71,6 +71,60 @@ public:
 
     void defaultValue() override;
 
+    virtual void appendMaterial(const AppearancePtr& mat);
+
+    virtual void setMaterial(size_t pos, const AppearancePtr& mat);
+
+    virtual void insertMaterial(size_t pos, const AppearancePtr& mat);
+
+    inline void appendMaterial(const ImageTexturePtr& mat)
+    { appendMaterial(AppearancePtr(new Texture2D(mat))); }
+
+    inline void setMaterial(size_t pos, const ImageTexturePtr& mat)
+    { setMaterial(pos,AppearancePtr(new Texture2D(mat))); }
+
+    inline void insertMaterial(size_t pos, const ImageTexturePtr& mat)
+    { insertMaterial(pos,AppearancePtr(new Texture2D(mat))); }
+
+    virtual AppearancePtr getMaterial(size_t pos);
+    virtual AppearancePtr getCurrentMaterial()  override;
+
+    virtual void appendColor(uint_t red, uint_t green, uint_t blue);
+
+    virtual void appendColor(float red, float green, float blue);
+
+    virtual void appendColor(const Color3& mat);
+
+    virtual void setColorAt(size_t pos, uint_t red, uint_t green, uint_t blue );
+
+    virtual void setColorAt(size_t pos, float red, float green, float blue );
+
+    virtual void setColorAt(size_t pos, const Color3& mat);
+
+    virtual void removeColor(size_t pos);
+
+    inline void clearColorList() {
+        __appList.clear();
+    }
+
+    virtual inline size_t getColorListSize() const override
+    { return __appList.size(); }
+
+    inline const std::vector<AppearancePtr>& getColorList() const {
+        return __appList;
+    }
+
+    inline void setColorList(const std::vector<AppearancePtr>& applist) {
+        __appList = applist;
+    }
+
+    virtual void interpolateColors(int val1, int val2, real_t alpha = 0.5) override;
+
+    virtual void setTextureBaseColor(const Color4& v) override;
+    virtual void setTextureBaseColor(int v) override;
+    virtual void interpolateTextureBaseColors(int val1, int val2, real_t alpha = 0.5) override;
+
+
     void clearSurfaceList();
 
     const PglTurtle::SurfaceMap& getSurfaceList() const;
@@ -91,6 +145,7 @@ public:
 
     void customGeometry(const GeometryPtr smb, real_t scale=1);
 protected:
+    std::vector<AppearancePtr> __appList;
     SurfaceMap __surfList;
 
     // ScenePtr __scene;
