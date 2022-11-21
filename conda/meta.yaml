@@ -18,10 +18,10 @@ build:
 
 requirements:
   host:
-    - python {{PY_VER}}
+    - python
     - setuptools
-    - numpy
-    - qt>=6.2
+    - numpy {{numpy}}
+    - qt=6.2.2
     - pyside6
     - libpng
     - zlib
@@ -38,7 +38,7 @@ requirements:
     - xorg-libxfixes                    # [linux]
 
   build:
-    - python {{PY_VER}}
+    - python
     - binutils_impl_linux-64            # [linux]
     - {{ compiler('cxx') }}
     - bison                             # [unix]
@@ -60,7 +60,7 @@ requirements:
     - {{ cdt('expat-devel') }}          # [linux]
 
   run:
-    - python {{PY_VER}}
+    - python
     - setuptools
     - ipython
     - {{ pin_compatible('numpy',    max_pin='x.x') }}
