@@ -41,6 +41,7 @@
 
 
 #include <plantgl/algo/modelling/turtledrawer.h>
+#include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
 
 #include <boost/python.hpp>
@@ -48,11 +49,11 @@ using namespace boost::python;
 #define bp boost::python
 PGL_USING_NAMESPACE
 
+DEF_POINTEE(TurtleDrawer)
+
 void export_TurtleDrawer()
 {
-  class_<TurtleDrawerPtr, boost::noncopyable>("TurtleDrawerPtr", init<TurtleDrawer*>("TurtleDrawerPtr(TurtleDrawer) -> Create TurtleDrawerPtr"));
-
-  class_< TurtleDrawer , boost::noncopyable>("TurtleDrawer", init<>("TurtleDrawer() -> Create TurtleDrawer"))
+  class_< TurtleDrawer, TurtleDrawerPtr, boost::noncopyable>("TurtleDrawer", init<>("TurtleDrawer() -> Create TurtleDrawer"))
 
     .def("cylinder",
          (void (TurtleDrawer::*) (const id_pair, const FrameInfo&, AppearancePtr, real_t, real_t, uint_t)) &TurtleDrawer::cylinder,
