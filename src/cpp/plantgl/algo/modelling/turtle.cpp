@@ -526,7 +526,7 @@ void Turtle::setHead(const Vector3& head, const Vector3& up){
 
   void Turtle::setColor(int v){
       if (0 <= v && v < getColorListSize()){
-        __params->color = v;
+        __params->color = v; // TODO: come back and check what material is used when color is set
         __params->customMaterial = AppearancePtr();
         __params->axialLength = 0;
         if(__params->isGCorPolygonOnInit()) __params->initial.color = v;
@@ -540,7 +540,13 @@ void Turtle::setHead(const Vector3& head, const Vector3& up){
   }
 
 void Turtle::interpolateColors(int val1, int val2, real_t alpha){
-
+    AppearancePtr a1 = getMaterial(val1);
+    AppearancePtr a2 = getMaterial(val2);
+    MaterialPtr m1 = dynamic_pointer_cast<Material>(a1);
+    MaterialPtr m2 = dynamic_pointer_cast<Material>(a2);
+    if (is_null_ptr(m1) || is_null_ptr(m2))
+        error("Can only interpolate material. Not texture.");
+    setCustomAppearance(AppearancePtr(interpolate(m1,m2,alpha)));
 }
 
 void Turtle::setCustomAppearance(const AppearancePtr app)
@@ -604,9 +610,22 @@ void Turtle::setTextureBaseColor(const Color4& v)
 }
 
 void Turtle::setTextureBaseColor(int val1){
+    AppearancePtr a1 = getMaterial(val1);
+    MaterialPtr m1 = dynamic_pointer_cast<Material>(a1);
+    if (is_null_ptr(m1))
+        error("Can only set base color from material. Not texture.");
+    setTextureBaseColor(m1->getDiffuseColor());
 }
 
 void Turtle::interpolateTextureBaseColors(int val1, int val2, real_t alpha){
+    AppearancePtr a1 = getMaterial(val1);
+    AppearancePtr a2 = getMaterial(val2);
+    MaterialPtr m1 = dynamic_pointer_cast<Material>(a1);
+    MaterialPtr m2 = dynamic_pointer_cast<Material>(a2);
+    if (is_null_ptr(m1) || is_null_ptr(m2))
+        error("Can only interpolate material. Not texture.");
+    Color3 icol3 = Color3::interpolate(m1->getDiffuseColor(),m2->getDiffuseColor(),alpha);
+    setTextureBaseColor(Color4(icol3,m1->getTransparency()*(1-alpha) + m2->getTransparency()*alpha ));
 }
 
 void Turtle::setWidth(real_t v){
@@ -1163,6 +1182,91 @@ Turtle::vector(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius_ratio, 
             cap_radius_ratio,
             color, transparency,
             __params->sectionResolution);
+}
+
+void Turtle::clear() {
+    reset();
+    __appList.clear();
+}
+
+void Turtle::defaultValue() {
+    __appList.clear();
+    __appList.push_back(AppearancePtr(new Material("Color_0")));
+    __appList.push_back(AppearancePtr(new Material("Color_1",Color3(65,45,15),3))); // Brown
+    __appList.push_back(AppearancePtr(new Material("Color_2",Color3(30,60,10),3))); // Green
+    __appList.push_back(AppearancePtr(new Material("Color_3",Color3(60,0,0),3)));     // Red
+    __appList.push_back(AppearancePtr(new Material("Color_4",Color3(60,60,15),3)));// Yellow
+    __appList.push_back(AppearancePtr(new Material("Color_5",Color3(0,0,60),3)));    // Blue
+    __appList.push_back(AppearancePtr(new Material("Color_6",Color3(60,0,60),3))); // Purple
+
+}
+
+void Turtle::appendMaterial(const AppearancePtr& mat)
+{ if(mat)__appList.push_back(mat); }
+
+void Turtle::insertMaterial(size_t pos, const AppearancePtr& mat)
+{ if(mat)__appList.insert(__appList.begin()+pos,mat); }
+
+void Turtle::setMaterial(size_t pos, const AppearancePtr& mat){
+    while (__appList.size() < pos)
+        __appList.push_back(AppearancePtr(new Material("Color_"+TOOLS(number(pos)))));
+    if (__appList.size() == pos)
+        __appList.push_back(mat);
+    else __appList[pos] = mat;
+}
+
+AppearancePtr Turtle::getMaterial(size_t pos){
+    if (pos >= __appList.size()) {
+        size_t i = __appList.size();
+        while (i <= pos)
+            __appList.push_back(AppearancePtr(new Material("Color_"+TOOLS(number(i++)))));
+    }
+    return __appList[pos];
+}
+
+
+void Turtle::setColorAt(size_t pos, const Color3& mat){
+    size_t i = __appList.size();
+    while (i < pos)
+        __appList.push_back(AppearancePtr(new Material("Color_"+TOOLS(number(i++)))));
+    if (__appList.size() == pos)
+        __appList.push_back(AppearancePtr(new Material("Color_"+TOOLS(number(__appList.size())),mat)));
+    else __appList[pos] = AppearancePtr(new Material("Color_"+TOOLS(number(pos)),mat));
+}
+
+void
+Turtle::appendColor(uint_t red, uint_t green, uint_t blue)
+{ appendColor(Color3(red,green,blue)); }
+
+void
+Turtle::appendColor(float red, float green, float blue)
+{ appendColor(Color3((uchar_t)red*255,(uchar_t)green*255,(uchar_t)blue*255)); }
+
+void
+Turtle::appendColor(const Color3& mat)
+{ __appList.push_back(AppearancePtr(new Material(mat))); }
+
+void
+Turtle::setColorAt(size_t pos, uint_t red, uint_t green, uint_t blue )
+{ setColorAt(pos,Color3(red,green,blue)); }
+
+void
+Turtle::setColorAt(size_t pos, float red, float green, float blue )
+{ setColorAt(pos,Color3((uchar_t)red*255,(uchar_t)green*255,(uchar_t)blue*255)); }
+
+
+void Turtle::removeColor(size_t pos){
+    if (__appList.size() > pos){
+        __appList.erase(__appList.begin()+pos);
+    }
+}
+
+AppearancePtr Turtle::getCurrentMaterial() {
+    if(__params->customMaterial) {
+        return __params->customMaterial;
+    } else {
+        return __appList.at(__params->color);
+    }
 }
 
 /*----------------------------------------------------------*/
