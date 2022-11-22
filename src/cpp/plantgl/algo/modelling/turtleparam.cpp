@@ -128,6 +128,8 @@ TurtleParam::TurtleParam(const TurtleParam& origin) :
         __polygon(origin.__polygon),
         __generalizedCylinder(origin.__generalizedCylinder),
         pointList(new Point3Array(*origin.pointList.get())),
+        leftList(origin.leftList),
+        radiusList(origin.radiusList),
         customId(origin.customId),
         customParentId(origin.customParentId),
         sectionResolution(origin.sectionResolution),
