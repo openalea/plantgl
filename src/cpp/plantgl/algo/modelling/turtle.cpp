@@ -526,7 +526,7 @@ void Turtle::setHead(const Vector3& head, const Vector3& up){
 
   void Turtle::setColor(int v){
       if (0 <= v && v < getColorListSize()){
-        __params->color = v;
+        __params->color = v; // TODO: come back and check what material is used when color is set
         __params->customMaterial = AppearancePtr();
         __params->axialLength = 0;
         if(__params->isGCorPolygonOnInit()) __params->initial.color = v;
@@ -539,9 +539,7 @@ void Turtle::setHead(const Vector3& head, const Vector3& up){
       }
   }
 
-void Turtle::interpolateColors(int val1, int val2, real_t alpha){
-
-}
+void Turtle::interpolateColors(int val1, int val2, real_t alpha){ }
 
 void Turtle::setCustomAppearance(const AppearancePtr app)
 {
@@ -603,11 +601,9 @@ void Turtle::setTextureBaseColor(const Color4& v)
     __params->texBaseColor = v;
 }
 
-void Turtle::setTextureBaseColor(int val1){
-}
+void Turtle::setTextureBaseColor(int val1){ }
 
-void Turtle::interpolateTextureBaseColors(int val1, int val2, real_t alpha){
-}
+void Turtle::interpolateTextureBaseColors(int val1, int val2, real_t alpha){ }
 
 void Turtle::setWidth(real_t v){
     if (v > -GEOM_EPSILON){
@@ -1164,6 +1160,12 @@ Turtle::vector(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius_ratio, 
             color, transparency,
             __params->sectionResolution);
 }
+
+void Turtle::clear() {
+    reset();
+}
+
+void Turtle::defaultValue() { }
 
 /*----------------------------------------------------------*/
 

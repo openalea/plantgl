@@ -202,7 +202,7 @@ bool glInitOcclusionQuery(){
 
 /// Create a ViewGLFrame widget
 ViewGLFrame::ViewGLFrame( QWidget* parent, const char* name, ViewRendererGL * r) :
-  QOpenGLWidget(parent),
+  QOpenGLBaseWidget(parent),
   __camera(0),
   __light(0),
   __grid(0),
@@ -224,19 +224,29 @@ ViewGLFrame::ViewGLFrame( QWidget* parent, const char* name, ViewRendererGL * r)
   __timer(this),
   __fpsDisplay(false),
   __fps(-1),
-  __fpscounter(0)
+  __fpscounter(0),
+  __ogl(new PGLOpenGLFunctions())
 {
     if(name)setObjectName(name);
 
+  // printf("OpenGL Format: %i %i\n",format().majorVersion(),format().minorVersion());
   setAttribute(Qt::WA_DeleteOnClose, false);
 
+  #ifdef PGL_USE_QOPENGLWIDGET
+  QSurfaceFormat format;
+  format.setProfile(QSurfaceFormat::CompatibilityProfile);
+  format.setMajorVersion(2);
+  format.setMinorVersion(1);
+  setFormat(format);
+  #endif
+
   /// Creation
-  __camera = new ViewCameraGL(this,"Camera");
-  __light = new ViewLightGL(__camera,this,"Light");
-  __grid = new ViewGridGL(__camera,this,"Grid");
-  __rotCenter = new ViewRotCenterGL(__camera,this,"Rotating Center");
-  __clippingPlane = new ViewClippingPlaneGL(this,"Clipping Planes");
-  __fog = new ViewFogGL(__camera,this,"Fog");
+  __camera = new ViewCameraGL(this,"Camera", __ogl);
+  __light = new ViewLightGL(__camera,this,"Light", __ogl);
+  __grid = new ViewGridGL(__camera,this,"Grid", __ogl);
+  __rotCenter = new ViewRotCenterGL(__camera,this,"Rotating Center", __ogl);
+  __clippingPlane = new ViewClippingPlaneGL(this,"Clipping Planes", __ogl);
+  __fog = new ViewFogGL(__camera,this,"Fog", __ogl);
 
   LAST_GL_FRAME = this;
 
@@ -250,6 +260,7 @@ ViewGLFrame::ViewGLFrame( QWidget* parent, const char* name, ViewRendererGL * r)
 
   /// Connexion
   rendererStatus();
+  __scene->setOpenGLFunctions(__ogl);
   __scene->connectTo(this);
   QObject::connect(__scene,SIGNAL(changeMode(ViewGLFrame::Mode)),
                    this,SLOT(setMode(ViewGLFrame::Mode)));
@@ -351,6 +362,7 @@ void
 ViewGLFrame::setSceneRenderer(ViewRendererGL * s)
 {
   if(__scene) delete __scene;
+  __scene->setOpenGLFunctions(__ogl);
   __scene = s;
   __scene->connectTo(this);
   QObject::connect(__scene,SIGNAL(changeMode(ViewGLFrame::Mode)),
@@ -471,7 +483,9 @@ ViewGLFrame::setBackground()
   if(m.isValid()){
     __BgColor=m;
   __fog->setColor(m);
+  makeCurrent();
   glClearColor(__BgColor.redF(), __BgColor.greenF(), __BgColor.blueF(), __BgColor.alphaF());
+  doneCurrent();
     update();
   }
 }
@@ -482,7 +496,8 @@ ViewGLFrame::setBackGroundColor(const QColor& color)
   __BgColor=color;
   __fog->setColor(color);
   if(isVisible()){
-        glClearColor(__BgColor.redF(), __BgColor.greenF(), __BgColor.blueF(), __BgColor.alphaF());
+      makeCurrent();
+      glClearColor(__BgColor.redF(), __BgColor.greenF(), __BgColor.blueF(), __BgColor.alphaF());
       redrawGL();
       status(QString(tr("Set Background Color to")+" (%1,%2,%3)").arg(color.red()).arg(color.green()).arg(color.blue()),2000);
   }
@@ -640,6 +655,7 @@ void ViewGLFrame::paintPixelBuffer(){
   Set up the OpenGL rendering state, and define display list
 */
 void ViewGLFrame::initializeGL(){
+  __ogl->initializeOpenGLFunctions();
    reinitializeGL();
   __camera->initializeGL();
   __grid->initializeGL();
@@ -653,7 +669,7 @@ void ViewGLFrame::initializeGL(){
 void ViewGLFrame::reinitializeGL()
 {
   // clears the current GL context
-  glClearColor(__BgColor.redF(), __BgColor.greenF(), __BgColor.blueF(), __BgColor.alphaF());
+  __ogl->glClearColor(__BgColor.redF(), __BgColor.greenF(), __BgColor.blueF(), __BgColor.alphaF());
 
 
   /*
@@ -661,23 +677,23 @@ void ViewGLFrame::reinitializeGL()
     IMPORTANT - GL_NORMALIZE is enabled because GL needs to re-normalize
     normals as we use anisotropic transformation such as scaling.
   */
-  glEnable(GL_NORMALIZE);
+  __ogl->glEnable(GL_NORMALIZE);
   // glEnable(GL_RESCALE_NORMAL);
   __light->initializeGL();
-  glShadeModel(GL_SMOOTH);
+  __ogl->glShadeModel(GL_SMOOTH);
 
   /*
     Hidden-surfaces settings (ZBuffer)
   */
-  glEnable(GL_DEPTH_TEST);
-  glEnable(GL_ALPHA_TEST);
-  glAlphaFunc(GL_GREATER,0.01);
+  __ogl->glEnable(GL_DEPTH_TEST);
+  __ogl->glEnable(GL_ALPHA_TEST);
+  __ogl->glAlphaFunc(GL_GREATER,0.01);
 
-  glEnable(GL_MULTISAMPLE);
+  __ogl->glEnable(GL_MULTISAMPLE);
 
-  glEnable(GL_LIGHTING);
+  __ogl->glEnable(GL_LIGHTING);
 //  __light->enable();
-  glEnable(GL_BLEND);
+  __ogl->glEnable(GL_BLEND);
 
   // glEnable(GL_POLYGON_OFFSET_LINE);
   // glPolygonOffset(0.0, 0.0);
@@ -725,13 +741,14 @@ void ViewGLFrame::paintGL()
       }
   }
 */
-  glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  __ogl->glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   GL_SIMPLECHECK_ERROR;
   __camera->paintGL();
   __light->paintGL();
   __fog->paintGL();
-  glLineWidth(GLfloat(1.0));
-  glPointSize(GLfloat(1.0));
+  __ogl->glLineWidth(GLfloat(1.0));
+  __ogl->glPointSize(GLfloat(1.0));
 
   __rotCenter->paintGL();
   __clippingPlane->paintGL();
@@ -740,8 +757,8 @@ void ViewGLFrame::paintGL()
 
   GL_ERROR;
 
-  glLineWidth(__linewidth);
-  glPointSize(__linewidth);
+  __ogl->glLineWidth(__linewidth);
+  __ogl->glPointSize(__linewidth);
 
   if(__scene){
     __scene->paintGL();
@@ -751,29 +768,29 @@ void ViewGLFrame::paintGL()
   if (!__pBufferActivated) { // __pBufferActivated = false; }
   // else {
       if(__mode == MultipleSelection && __selectionRect){
-          glMatrixMode(GL_PROJECTION);
-          glLoadIdentity();
-          glOrtho(0,width(),0,height(),-50,50);
-          glMatrixMode(GL_MODELVIEW);
-          glLoadIdentity();
-          glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-          glColor3f(0.2,0.2,0.8);
-          glEnable (GL_LINE_STIPPLE);
-          glLineStipple(1,0x0FFF);
-          glBegin(GL_LINE_LOOP);
+          __ogl->glMatrixMode(GL_PROJECTION);
+          __ogl->glLoadIdentity();
+          __ogl->glOrtho(0,width(),0,height(),-50,50);
+          __ogl->glMatrixMode(GL_MODELVIEW);
+          __ogl->glLoadIdentity();
+          __ogl->glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+          __ogl->glColor3f(0.2,0.2,0.8);
+          __ogl->glEnable (GL_LINE_STIPPLE);
+          __ogl->glLineStipple(1,0x0FFF);
+          __ogl->glBegin(GL_LINE_LOOP);
           int x = __selectionRect->x();
           int y = height() - __selectionRect->y();
-          glVertex3f(x,y,0);
-          glVertex3f(x+__selectionRect->width(),y,0);
-          glVertex3f(x+__selectionRect->width(),y-__selectionRect->height(),0);
-          glVertex3f(x,y-__selectionRect->height(),0);
-          glEnd();
-          glDisable (GL_LINE_STIPPLE);
+          __ogl->glVertex3f(x,y,0);
+          __ogl->glVertex3f(x+__selectionRect->width(),y,0);
+          __ogl->glVertex3f(x+__selectionRect->width(),y-__selectionRect->height(),0);
+          __ogl->glVertex3f(x,y-__selectionRect->height(),0);
+          __ogl->glEnd();
+          __ogl->glDisable (GL_LINE_STIPPLE);
       }
       if (!__message.isEmpty()) {
           __light->switchOff();
-          glMatrixMode(GL_PROJECTION);
-          glLoadIdentity();
+          __ogl->glMatrixMode(GL_PROJECTION);
+          __ogl->glLoadIdentity();
           int w = width();
           int h = height();
           int minw = w * 0.52, maxw = w * 0.98;
@@ -790,22 +807,22 @@ void ViewGLFrame::paintGL()
           int htext = nblines * fmheigth;
           int maxh = max(h * 0.3, h * 0.2 + htext);
 
-          glOrtho(0,w,0,h,-50,50);
-          glMatrixMode(GL_MODELVIEW);
-          glLoadIdentity();
-          glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-          glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
-          glBegin(GL_QUADS);
-          glColor4f(0.5,0.1,0.1,0.5*__msg_transparency);
-          glVertex3f(minw,minh,0);
-          glColor4f(0.9,0.1,0.1,0.9*__msg_transparency);
-          glVertex3f(maxw,minh,0);
-          glColor4f(0.5,0.1,0.1,0.5*__msg_transparency);
-          glVertex3f(maxw,maxh,0);
-          glColor4f(0.2,0.2,0.2,0.1*__msg_transparency);
-          glVertex3f(minw,maxh,0);
-          glEnd();
-          glColor4f(1,1,1,0.5+0.5*__msg_transparency);
+          __ogl->glOrtho(0,w,0,h,-50,50);
+          __ogl->glMatrixMode(GL_MODELVIEW);
+          __ogl->glLoadIdentity();
+          __ogl->glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+          __ogl->glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+          __ogl->glBegin(GL_QUADS);
+          __ogl->glColor4f(0.5,0.1,0.1,0.5*__msg_transparency);
+          __ogl->glVertex3f(minw,minh,0);
+          __ogl->glColor4f(0.9,0.1,0.1,0.9*__msg_transparency);
+          __ogl->glVertex3f(maxw,minh,0);
+          __ogl->glColor4f(0.5,0.1,0.1,0.5*__msg_transparency);
+          __ogl->glVertex3f(maxw,maxh,0);
+          __ogl->glColor4f(0.2,0.2,0.2,0.1*__msg_transparency);
+          __ogl->glVertex3f(minw,maxh,0);
+          __ogl->glEnd();
+          __ogl->glColor4f(1,1,1,0.5+0.5*__msg_transparency);
           int avgWidth = fm.averageCharWidth();
           int hmargin = (maxh-minh-htext)/2;
           int currenth = maxh - hmargin - fm.ascent();
@@ -882,26 +899,26 @@ void ViewGLFrame::selectGL()
   GLsizei bufsize = 512;
   GLuint selectBuf[512];
 
-  glSelectBuffer(bufsize,selectBuf);
-  (void)glRenderMode(GL_SELECT);
+  __ogl->glSelectBuffer(bufsize,selectBuf);
+  (void)__ogl->glRenderMode(GL_SELECT);
 
   GL_ERROR;
 
-  glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  __ogl->glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   // transformations induites dans le repere du labo a partir
   // des coord de la souris dans le repere de la GL
 
   __camera->beginSelectGL(__mouse);
 
-  glLineWidth(1);
-  glPointSize(1);
+  __ogl->glLineWidth(1);
+  __ogl->glPointSize(1);
 
   __rotCenter->paintGL();
   __clippingPlane->paintGL();
 
-  glLineWidth(__linewidth);
-  glPointSize(__linewidth);
+  __ogl->glLineWidth(__linewidth);
+  __ogl->glPointSize(__linewidth);
 
   GL_ERROR;
 
@@ -911,7 +928,7 @@ void ViewGLFrame::selectGL()
 
   GL_ERROR;
 
-  hits = glRenderMode(GL_RENDER);
+  hits = __ogl->glRenderMode(GL_RENDER);
   GLuint names, *ptr;
   ptr = (GLuint *) selectBuf;
   uint_t val, selectedval;
@@ -949,12 +966,12 @@ void ViewGLFrame::multipleSelectGL(const QPoint& p)
   GLsizei bufsize = 400000;
   GLuint selectBuf[400000];
 
-  glSelectBuffer(bufsize,selectBuf);
-  (void)glRenderMode(GL_SELECT);
+  __ogl->glSelectBuffer(bufsize,selectBuf);
+  (void)__ogl->glRenderMode(GL_SELECT);
 
   GL_ERROR;
 
-  glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  __ogl->glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   // transformations induites dans le repere du labo a partir
   // des coord de la souris dans le repere de la GL
@@ -964,14 +981,14 @@ void ViewGLFrame::multipleSelectGL(const QPoint& p)
                                 abs(__mouse.x()-p.x()),
                                 abs(__mouse.y()-p.y())));
 
-  glLineWidth(1);
-  glPointSize(1);
+  __ogl->glLineWidth(1);
+  __ogl->glPointSize(1);
 
   __rotCenter->paintGL();
   __clippingPlane->paintGL();
 
-  glLineWidth(__linewidth);
-  glPointSize(__linewidth);
+  __ogl->glLineWidth(__linewidth);
+  __ogl->glPointSize(__linewidth);
 
   GL_ERROR;
 
@@ -981,7 +998,7 @@ void ViewGLFrame::multipleSelectGL(const QPoint& p)
 
   GL_ERROR;
 
-  hits = glRenderMode(GL_RENDER);
+  hits = __ogl->glRenderMode(GL_RENDER);
   GLuint names, *ptr;
   ptr = (GLuint *) selectBuf;
   uint_t val;
@@ -1042,23 +1059,23 @@ ViewGLFrame::castRays( const Vector3& position,
             Vector3 delta = dx*i+dy*j;
             __camera->lookIn(position+delta,direction);
 
-            glSelectBuffer(bufsize,selectBuf);
-            (void)glRenderMode(GL_SELECT);
+            __ogl->glSelectBuffer(bufsize,selectBuf);
+            (void)__ogl->glRenderMode(GL_SELECT);
             GL_ERROR;
 
-            glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            __ogl->glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             __camera->beginSelectGL(QPoint(width()/2,height()/2));
             __clippingPlane->paintGL();
 
-            glLineWidth(__linewidth);
-            glPointSize(__linewidth);
+            __ogl->glLineWidth(__linewidth);
+            __ogl->glPointSize(__linewidth);
             GL_ERROR;
 
             if (__scene)__scene->selectGL();
             __camera->endSelectGL();
 
             GL_ERROR;
-            hits = glRenderMode(GL_RENDER);
+            hits = __ogl->glRenderMode(GL_RENDER);
 
             if(hits > 0){
                 res->setAt(i,j,selectBuf,hits,position+delta);
@@ -1193,7 +1210,7 @@ int ViewGLFrame::getProjectionPixel(){
 
         int nbpix = w*h;
         float  * zvalues = new float[nbpix];
-        glReadPixels(0,0,w,h,GL_DEPTH_COMPONENT, GL_FLOAT, zvalues);
+        __ogl->glReadPixels(0,0,w,h,GL_DEPTH_COMPONENT, GL_FLOAT, zvalues);
 
         float  * zvaluesiter = zvalues;
         for(uint_t i = 0; i < nbpix; ++i,++zvaluesiter)
@@ -1250,7 +1267,7 @@ ViewGLFrame::getProjectionPixelPerColor(double* pixelwidth)
     if(mode)__camera->setOrthographicMode();
     makeItCurrent();
     paintGL();
-    glFlush();
+    __ogl->glFlush();
 
     if(pixelwidth) *pixelwidth = getPixelWidth();
 
@@ -1635,7 +1652,7 @@ bool ViewGLFrame::event(QEvent *e){
         printf("** gl ** receive pgl event\n");
     // else printf("** gl ** receive event\n");
 #endif
-    return QOpenGLWidget::event(e);
+    return QOpenGLBaseWidget::event(e);
 }
 
 void ViewGLFrame::customEvent(QEvent *e)
@@ -1875,6 +1892,7 @@ ViewGLFrame::addOtherToolBar(QMainWindow * menu)
   __linedialog->hide();
 }
 
+#include <plantgl/gui/viewer/geomscenegl.h>
 
 void
 ViewGLFrame::addProperties(QTabWidget * tab)
@@ -1888,12 +1906,12 @@ ViewGLFrame::addProperties(QTabWidget * tab)
     tab->addTab( mtab, tr( "GL Options" ) );
 
     makeCurrent();
-    GLboolean glb = glIsEnabled(GL_CULL_FACE);
+    GLboolean glb = __ogl->glIsEnabled(GL_CULL_FACE);
 
     GLint * res = new GLint;
     if(glb == GL_FALSE)glform.NoCullingButton->setChecked(true);
     else {
-      glGetIntegerv(GL_CULL_FACE_MODE ,res);
+      __ogl->glGetIntegerv(GL_CULL_FACE_MODE ,res);
       if(*res == GL_BACK)glform.BackFaceButton->setChecked(true);
       else if(*res == GL_FRONT)glform.FrontFaceButton->setChecked(true);
       else {
@@ -1901,28 +1919,28 @@ ViewGLFrame::addProperties(QTabWidget * tab)
       }
     }
 
-    glGetIntegerv(GL_SHADE_MODEL,res);
+    __ogl->glGetIntegerv(GL_SHADE_MODEL,res);
     if(*res == GL_FLAT)glform.FlatButton->setChecked(true);
     else if(*res == GL_SMOOTH)glform.SmoothButton->setChecked(true);
 
     QObject::connect(glform.FlatButton,SIGNAL(toggled(bool)),this,SLOT(glFlatShadeModel(bool)));
     QObject::connect(glform.SmoothButton,SIGNAL(toggled(bool)),this,SLOT(glSmoothShadeModel(bool)));
 
-    glb = glIsEnabled(GL_DITHER);
+    glb = __ogl->glIsEnabled(GL_DITHER);
     if(glb == GL_TRUE)glform.DitheringButton->setChecked(true);
     QObject::connect(glform.DitheringButton,SIGNAL(toggled(bool)),this,SLOT(glDithering(bool)));
 
-    glb = glIsEnabled(GL_DEPTH_TEST);
+    glb = __ogl->glIsEnabled(GL_DEPTH_TEST);
     if(glb == GL_TRUE)glform.DepthTestButton->setChecked(true);
     QObject::connect(glform.DepthTestButton,SIGNAL(toggled(bool)),this,SLOT(glDepthTest(bool)));
 
-  glb = glIsEnabled(GL_NORMALIZE);
-  if(glb == GL_TRUE)glform.NormalizationButton->setChecked(true);
-  QObject::connect(glform.NormalizationButton,SIGNAL(toggled(bool)),this,SLOT(glNormalization(bool)));
+    glb = __ogl->glIsEnabled(GL_NORMALIZE);
+    if(glb == GL_TRUE)glform.NormalizationButton->setChecked(true);
+    QObject::connect(glform.NormalizationButton,SIGNAL(toggled(bool)),this,SLOT(glNormalization(bool)));
 
-  glGetBooleanv(GL_LIGHT_MODEL_TWO_SIDE,&glb);
-  if(glb == GL_TRUE)glform.TwoSideLightButton->setChecked(true);
-  QObject::connect(glform.TwoSideLightButton,SIGNAL(toggled(bool)),this,SLOT(glTwoSideShadeModel(bool)));
+    __ogl->glGetBooleanv(GL_LIGHT_MODEL_TWO_SIDE,&glb);
+    if(glb == GL_TRUE)glform.TwoSideLightButton->setChecked(true);
+    QObject::connect(glform.TwoSideLightButton,SIGNAL(toggled(bool)),this,SLOT(glTwoSideShadeModel(bool)));
 
     glform.FPSButton->setChecked(__fpsDisplay);
     QObject::connect(glform.FPSButton,SIGNAL(toggled(bool)),this,SLOT(setFPSDisplay(bool)));
@@ -1936,6 +1954,19 @@ ViewGLFrame::addProperties(QTabWidget * tab)
     QObject::connect(glform.OcclusionQueryButton,SIGNAL(toggled(bool)),this,SLOT(useOcclusionQuery(bool)));
     QObject::connect(glform.PixelBufferButton,SIGNAL(toggled(bool)),this,SLOT(usePixelBuffer(bool)));
 
+    ViewGeomSceneGL * vgsc = dynamic_cast<ViewGeomSceneGL *>(__scene);
+    if (vgsc) {
+      glform.UseDisplayList->setChecked(vgsc->getDisplayListUse());
+      QObject::connect(glform.UseDisplayList,SIGNAL(toggled(bool)),vgsc,SLOT(useDisplayList(bool)));
+      glform.UseVertexArray->setChecked(vgsc->isVertexArrayUsed());
+      QObject::connect(glform.UseVertexArray,SIGNAL(toggled(bool)),vgsc,SLOT(useVertexArray(bool)));
+  
+    }
+    else {
+      glform.UseDisplayList->hide();
+      glform.UseVertexArray->hide();
+    }
+
     delete res;
 }
 
@@ -1944,55 +1975,55 @@ ViewGLFrame::addProperties(QTabWidget * tab)
 
 void
 ViewGLFrame::glCullNoFace(bool b){
-  if(b){ makeItCurrent(); GL_COM(glDisable(GL_CULL_FACE)); redrawGL();}
+  if(b){ makeItCurrent(); GL_COM(__ogl->glDisable(GL_CULL_FACE)); redrawGL();}
 }
 
 void
 ViewGLFrame::glCullBackFace(bool b){
-  if(b){ makeItCurrent(); glEnable(GL_CULL_FACE); GL_COM(glCullFace(GL_BACK));redrawGL();}
+  if(b){ makeItCurrent(); __ogl->glEnable(GL_CULL_FACE); GL_COM(__ogl->glCullFace(GL_BACK));redrawGL();}
 }
 
 void
 ViewGLFrame::glCullFrontFace(bool b){
-  if(b){ makeItCurrent(); glEnable(GL_CULL_FACE); GL_COM(glCullFace(GL_FRONT));redrawGL();}
+  if(b){ makeItCurrent(); __ogl->glEnable(GL_CULL_FACE); GL_COM(__ogl->glCullFace(GL_FRONT));redrawGL();}
 }
 
 void
 ViewGLFrame::glSmoothShadeModel(bool b){
-  if(b){ makeItCurrent(); GL_COM(glShadeModel(GL_SMOOTH));redrawGL();}
+  if(b){ makeItCurrent(); GL_COM(__ogl->glShadeModel(GL_SMOOTH));redrawGL();}
 }
 
 void
 ViewGLFrame::glFlatShadeModel(bool b){
-  if(b){ makeItCurrent(); GL_COM(glShadeModel(GL_FLAT));redrawGL();}
+  if(b){ makeItCurrent(); GL_COM(__ogl->glShadeModel(GL_FLAT));redrawGL();}
 }
 
 void
 ViewGLFrame::glTwoSideShadeModel(bool b){
-  makeItCurrent(); GL_COM(glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, (b?GL_TRUE:GL_FALSE)));redrawGL();
+  makeItCurrent(); GL_COM(__ogl->glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, (b?GL_TRUE:GL_FALSE)));redrawGL();
 }
 
 void
 ViewGLFrame::glDithering(bool b){
   makeItCurrent();
-  if(b){GL_COM(glEnable(GL_DITHER));}
-  else {GL_COM(glDisable(GL_DITHER));}
+  if(b){GL_COM(__ogl->glEnable(GL_DITHER));}
+  else {GL_COM(__ogl->glDisable(GL_DITHER));}
   redrawGL();
 }
 
 void
 ViewGLFrame::glDepthTest(bool b){
   makeItCurrent();
-  if(b){GL_COM(glEnable(GL_DEPTH_TEST));}
-  else {GL_COM(glDisable(GL_DEPTH_TEST));}
+  if(b){GL_COM(__ogl->glEnable(GL_DEPTH_TEST));}
+  else {GL_COM(__ogl->glDisable(GL_DEPTH_TEST));}
   redrawGL();
 }
 
 void
 ViewGLFrame::glNormalization(bool b){
   makeItCurrent();
-  if(b){GL_COM(glEnable(GL_NORMALIZE));}
-  else {GL_COM(glDisable(GL_NORMALIZE));}
+  if(b){GL_COM(__ogl->glEnable(GL_NORMALIZE));}
+  else {GL_COM(__ogl->glDisable(GL_NORMALIZE));}
   redrawGL();
 }
 

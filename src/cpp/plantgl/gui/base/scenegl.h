@@ -97,7 +97,7 @@ class VIEW_API ViewRendererGL  : public ViewObjectGL
 public :
 
   /// Constructor
-  ViewRendererGL(QOpenGLWidget * parent=0, const char * name=0);
+  ViewRendererGL(QOpenGLBaseWidget * parent=0, const char * name=0, PGLOpenGLFunctionsPtr ogl = NULL);
 
   /// Destructor.
   virtual ~ViewRendererGL();
@@ -106,7 +106,7 @@ public :
   virtual void connectTo(ViewStatusBar *);
 
   /// Connect this to a GL Widget.
-  virtual void connectTo(QOpenGLWidget *);
+  virtual void connectTo(QOpenGLBaseWidget *);
 
   /// Connect this to a error dialog.
   virtual void connectTo(ViewErrorDialog *);
@@ -258,8 +258,9 @@ public :
   /// Constructor.
   ViewSceneRendererGL(ViewCameraGL * camera=0,
               ViewLightGL * light=0,
-              QOpenGLWidget * parent=0,
-              const char * name=0);
+              QOpenGLBaseWidget * parent=0,
+              const char * name=0, 
+              PGLOpenGLFunctionsPtr ogl = NULL);
 
   /// Destructor.
   virtual ~ViewSceneRendererGL();

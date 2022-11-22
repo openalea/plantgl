@@ -128,21 +128,6 @@ void PglTurtle::interpolateTextureBaseColors(int val1, int val2, real_t alpha){
     setTextureBaseColor(Color4(icol3,m1->getTransparency()*(1-alpha) + m2->getTransparency()*alpha ));
 }
 
-
-void PglTurtle::clearColorList(){
-   __appList.clear();
-}
-
-const vector<AppearancePtr>&
-PglTurtle::getColorList() const{
-   return __appList;
-}
-
-void
-PglTurtle::setColorList(const std::vector<AppearancePtr>& applist){
-    __appList = applist;
-}
-
 void PglTurtle::clearSurfaceList(){
    __surfList.clear();
 }
@@ -154,7 +139,6 @@ PglTurtle::getSurfaceList() const {
 
 void PglTurtle::defaultValue(){
   __appList.clear();
-  __surfList.clear();
   __appList.push_back(AppearancePtr(new Material("Color_0")));
   __appList.push_back(AppearancePtr(new Material("Color_1",Color3(65,45,15),3))); // Brown
   __appList.push_back(AppearancePtr(new Material("Color_2",Color3(30,60,10),3))); // Green
@@ -162,6 +146,8 @@ void PglTurtle::defaultValue(){
   __appList.push_back(AppearancePtr(new Material("Color_4",Color3(60,60,15),3)));// Yellow
   __appList.push_back(AppearancePtr(new Material("Color_5",Color3(0,0,60),3)));    // Blue
   __appList.push_back(AppearancePtr(new Material("Color_6",Color3(60,0,60),3))); // Purple
+
+  __surfList.clear();
   Point3ArrayPtr points= Point3ArrayPtr(new Point3Array(7,Vector3(0,0,0.5)));
   points->setAt(1,Vector3(0,0,0));
   points->setAt(2,Vector3(0,-0.25,1./3));
@@ -179,11 +165,6 @@ void PglTurtle::defaultValue(){
   __surfList["l"] = GeometryPtr(new TriangleSet(points, indices));
 }
 
-/*
-void PglTurtle::plot() const{
-  PGLViewerApplication::display(__scene);
-}
-*/
 
 void PglTurtle::appendMaterial(const AppearancePtr& mat)
 { if(mat)__appList.push_back(mat); }
@@ -192,11 +173,11 @@ void PglTurtle::insertMaterial(size_t pos, const AppearancePtr& mat)
 { if(mat)__appList.insert(__appList.begin()+pos,mat); }
 
 void PglTurtle::setMaterial(size_t pos, const AppearancePtr& mat){
-  while (__appList.size() < pos)
-    __appList.push_back(AppearancePtr(new Material("Color_"+TOOLS(number(pos)))));
-  if (__appList.size() == pos)
-    __appList.push_back(mat);
-  else __appList[pos] = mat;
+    while (__appList.size() < pos)
+        __appList.push_back(AppearancePtr(new Material("Color_"+TOOLS(number(pos)))));
+    if (__appList.size() == pos)
+        __appList.push_back(mat);
+    else __appList[pos] = mat;
 }
 
 AppearancePtr PglTurtle::getMaterial(size_t pos){
@@ -208,40 +189,36 @@ AppearancePtr PglTurtle::getMaterial(size_t pos){
     return __appList[pos];
 }
 
+
 void PglTurtle::setColorAt(size_t pos, const Color3& mat){
-  size_t i = __appList.size();
-  while (i < pos)
-    __appList.push_back(AppearancePtr(new Material("Color_"+TOOLS(number(i++)))));
-  if (__appList.size() == pos)
-    __appList.push_back(AppearancePtr(new Material("Color_"+TOOLS(number(__appList.size())),mat)));
-  else __appList[pos] = AppearancePtr(new Material("Color_"+TOOLS(number(pos)),mat));
+    size_t i = __appList.size();
+    while (i < pos)
+        __appList.push_back(AppearancePtr(new Material("Color_"+TOOLS(number(i++)))));
+    if (__appList.size() == pos)
+        __appList.push_back(AppearancePtr(new Material("Color_"+TOOLS(number(__appList.size())),mat)));
+    else __appList[pos] = AppearancePtr(new Material("Color_"+TOOLS(number(pos)),mat));
 }
 
-void
-PglTurtle::appendColor(uint_t red, uint_t green, uint_t blue)
+void PglTurtle::appendColor(uint_t red, uint_t green, uint_t blue)
 { appendColor(Color3(red,green,blue)); }
 
-void
-PglTurtle::appendColor(float red, float green, float blue)
+void PglTurtle::appendColor(float red, float green, float blue)
 { appendColor(Color3((uchar_t)red*255,(uchar_t)green*255,(uchar_t)blue*255)); }
 
-void
-PglTurtle::appendColor(const Color3& mat)
+void PglTurtle::appendColor(const Color3& mat)
 { __appList.push_back(AppearancePtr(new Material(mat))); }
 
-void
-PglTurtle::setColorAt(size_t pos, uint_t red, uint_t green, uint_t blue )
+void PglTurtle::setColorAt(size_t pos, uint_t red, uint_t green, uint_t blue )
 { setColorAt(pos,Color3(red,green,blue)); }
 
-void
-PglTurtle::setColorAt(size_t pos, float red, float green, float blue )
+void PglTurtle::setColorAt(size_t pos, float red, float green, float blue )
 { setColorAt(pos,Color3((uchar_t)red*255,(uchar_t)green*255,(uchar_t)blue*255)); }
 
 
 void PglTurtle::removeColor(size_t pos){
-  if (__appList.size() > pos){
-    __appList.erase(__appList.begin()+pos);
-  }
+    if (__appList.size() > pos){
+        __appList.erase(__appList.begin()+pos);
+    }
 }
 
 void PglTurtle::removeSurface(const string& name){
@@ -324,6 +301,9 @@ ScenePtr PglTurtle::partialView(){
 }
 
 AppearancePtr PglTurtle::getCurrentMaterial() {
-    return __params->customMaterial;
+    if(__params->customMaterial) {
+        return __params->customMaterial;
+    } else {
+        return __appList.at(__params->color);
+    }
 }
-

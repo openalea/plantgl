@@ -46,6 +46,7 @@
 PGL_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
+#define GEOM_ASSERT_OBJ(obj) if (__ogltoinit) { init(); }
 
 
 #define GEOM_GLRENDERER_CHECK_APPEARANCE(app) \
@@ -69,13 +70,14 @@ PGL_USING_NAMESPACE
 
 GLTransitionRenderer::GLTransitionRenderer( Discretizer& discretizer,
 #ifndef PGL_CORE_WITHOUT_QT
-                                            QOpenGLWidget * widget,
+                                            QOpenGLBaseWidget * widget,
 #endif
-                                            uint_t step ) :
-  GLRenderer( discretizer
+                                            uint_t step, PGLOpenGLFunctionsPtr ogl ) :
+  GLRenderer( discretizer,
 #ifndef PGL_CORE_WITHOUT_QT
-    , widget
+    widget,
 #endif
+    ogl
     ),
   __totalstep(step),
   __laststep(step+1),
@@ -124,7 +126,7 @@ GLTransitionRenderer::endProcess(){
 /* ----------------------------------------------------------------------- */
 
 bool GLTransitionRenderer::process( Material * material ) {
-  GEOM_ASSERT(material);
+  GEOM_ASSERT_OBJ(material);
 
   GEOM_GLRENDERER_CHECK_APPEARANCE(material);
 
@@ -170,7 +172,7 @@ bool GLTransitionRenderer::process( Material * material ) {
 
 
 bool GLTransitionRenderer::process( MonoSpectral * monoSpectral ) {
-  GEOM_ASSERT(monoSpectral);
+  GEOM_ASSERT_OBJ(monoSpectral);
 
  GEOM_GLRENDERER_CHECK_APPEARANCE(monoSpectral);
 
@@ -195,7 +197,7 @@ bool GLTransitionRenderer::process( MonoSpectral * monoSpectral ) {
 
 
 bool GLTransitionRenderer::process( MultiSpectral * multiSpectral ) {
-  GEOM_ASSERT(multiSpectral);
+  GEOM_ASSERT_OBJ(multiSpectral);
 
   GEOM_GLRENDERER_CHECK_APPEARANCE(multiSpectral);
 

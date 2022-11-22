@@ -91,7 +91,7 @@ using namespace std;
 
 static QString default_style_name;
 
-ViewHelpMenu::ViewHelpMenu(QWidget * parent, QOpenGLWidget * glwidget, const char * name) :
+ViewHelpMenu::ViewHelpMenu(QWidget * parent, QOpenGLBaseWidget * glwidget, const char * name) :
   QMenu(parent),
   __glwidget(glwidget)
 {
@@ -154,7 +154,7 @@ void ViewHelpMenu::endEvent()
 }
 
 void
-ViewHelpMenu::setGLWidget(QOpenGLWidget * glwidget)
+ViewHelpMenu::setGLWidget(QOpenGLBaseWidget * glwidget)
 {
   __glwidget = glwidget;
 }

@@ -59,7 +59,8 @@
 #endif
 #include <QtCore/qtimer.h>
 #include <vector>
-class QOpenGLWidget;
+#include <plantgl/gui/pglqopenglwidget.h>
+
 class ViewAboutDialog;
 class QLabel;
 
@@ -83,7 +84,7 @@ class VIEW_API ViewHelpMenu : public QMenu
 
   /// Constructor
   ViewHelpMenu(QWidget * parent=0,
-       QOpenGLWidget * glwidget = 0,
+       QOpenGLBaseWidget * glwidget = 0,
        const char * name=0);
 
   /// Destructor
@@ -93,7 +94,7 @@ class VIEW_API ViewHelpMenu : public QMenu
   int getStyleId(const QString& name) const;
   QString getStyleName() const;
 
-  void setGLWidget(QOpenGLWidget * glwidget);
+  void setGLWidget(QOpenGLBaseWidget * glwidget);
 
 public slots:
 
@@ -136,7 +137,7 @@ protected :
   QMenu * __style;
   std::vector<QAction *>  __ids;
 
-  QOpenGLWidget * __glwidget;
+  QOpenGLBaseWidget * __glwidget;
   ViewAboutDialog * __about;
 
 };

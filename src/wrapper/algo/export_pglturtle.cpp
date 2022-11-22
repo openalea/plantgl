@@ -52,12 +52,13 @@ using namespace boost::python;
 PGL_USING_NAMESPACE
 
 boost::python::object getTurtleColorList(PglTurtle * turtle) {
-    return make_list(turtle->getColorList())();
+return make_list(turtle->getColorList())();
 }
 
 void setTurtleColorList(PglTurtle * turtle, boost::python::object applist) {
-    return turtle->setColorList(extract_vec<AppearancePtr>(applist)());
+return turtle->setColorList(extract_vec<AppearancePtr>(applist)());
 }
+
 
 boost::python::object getTurtleSurfaceList(PglTurtle * turtle) {
     return make_dict(turtle->getSurfaceList())();
@@ -68,13 +69,9 @@ void export_PglTurtle()
   class_< PglTurtle , boost::noncopyable, bases < Turtle > >("PglTurtle", init<optional<TurtleDrawerPtr,TurtleParam *>>("PglTurtle([TurtleDrawerPtr], [TurtleParam]) -> Create a Pgl Turtle"))
     .def("getScene",  &PglTurtle::getScene, return_value_policy<return_by_value>() )
     .def("partialView",  &PglTurtle::partialView, "Return the current turtle construction.")
-    .def("clearColorList",    &PglTurtle::clearColorList )
-    .def("clearSurfaceList",  &PglTurtle::clearSurfaceList )
-    .def("defaultValue",      &PglTurtle::defaultValue )
-    .def("removeColor",       &PglTurtle::removeColor )
-    .def("setSurface",        &PglTurtle::setSurface )
-    .def("removeSurface",     &PglTurtle::removeSurface )
 
+    .def("clearColorList",    &PglTurtle::clearColorList )
+    .def("removeColor",       &PglTurtle::removeColor )
     .def("appendMaterial",    (void(PglTurtle::*)(const AppearancePtr&))&PglTurtle::appendMaterial )
     .def("appendMaterial",    (void(PglTurtle::*)(const ImageTexturePtr&))&PglTurtle::appendMaterial )
     .def("insertMaterial",    (void(PglTurtle::*)(size_t,const AppearancePtr&))&PglTurtle::insertMaterial )
@@ -84,20 +81,20 @@ void export_PglTurtle()
 
     .def("getMaterial",       &PglTurtle::getMaterial )
 
-    .def("appendColor",       (void(PglTurtle::*)( uint_t, uint_t, uint_t))
-                              &PglTurtle::appendColor )
-    .def("appendColor",       (void(PglTurtle::*)( float, float, float))
-                              &PglTurtle::appendColor )
-    .def("setColorAt",          (void(PglTurtle::*)( size_t, uint_t, uint_t, uint_t))
-                              &PglTurtle::setColorAt )
-    .def("setColorAt",          (void(PglTurtle::*)( size_t, float, float, float))
-                              &PglTurtle::setColorAt )
-    .def("setColorAt",          (void(PglTurtle::*)( size_t,const Color3&))
-                              &PglTurtle::setColorAt )
-    .def("appendColor",       (void(PglTurtle::*)( const Color3&))
-                              &PglTurtle::appendColor )
+    .def("appendColor",       (void(PglTurtle::*)( uint_t, uint_t, uint_t))&PglTurtle::appendColor )
+    .def("appendColor",       (void(PglTurtle::*)( float, float, float))&PglTurtle::appendColor )
+    .def("setColorAt",        (void(PglTurtle::*)( size_t, uint_t, uint_t, uint_t))&PglTurtle::setColorAt )
+    .def("setColorAt",        (void(PglTurtle::*)( size_t, float, float, float))&PglTurtle::setColorAt )
+    .def("setColorAt",        (void(PglTurtle::*)( size_t,const Color3&))&PglTurtle::setColorAt )
+    .def("appendColor",       (void(PglTurtle::*)( const Color3&))&PglTurtle::appendColor )
     .def("getColorList",      &getTurtleColorList )
-    .def("setColorList",&setTurtleColorList )
+    .def("setColorList",      &setTurtleColorList )
+                                                                    
+    .def("clearSurfaceList",  &PglTurtle::clearSurfaceList )
+
+    .def("setSurface",        &PglTurtle::setSurface )
+    .def("removeSurface",     &PglTurtle::removeSurface )
+
     .def("getSurfaceList",    &getTurtleSurfaceList )
     .def("pglShape",    (void(PglTurtle::*)( const GeometryPtr, real_t))&PglTurtle::pglShape, "Insert a custom plantgl primitive at the turtle position and orientation", (bp::arg("geometry"),bp::arg("scale")=1), return_self<>() )
     .def("pglShape",    (void(PglTurtle::*)( const ShapePtr, real_t))&PglTurtle::pglShape, "Insert a custom plantgl primitive at the turtle position and orientation", (bp::arg("geometry"),bp::arg("scale")=1), return_self<>() )

@@ -62,6 +62,8 @@ typedef struct {
         const Vector3& scaling; 
         bool& screenprojection;              
     } FrameInfo;
+
+
 class TurtleDrawParameter {
 public:
 
@@ -94,8 +96,9 @@ class ALGO_API TurtleParam  : public TurtleDrawParameter {
 public:
     /// Constructor
     TurtleParam();
+    TurtleParam(const TurtleParam& origin);
 
-    /// Constructor
+    /// Destructor
     virtual ~TurtleParam();
 
     /// reset parameter to initial value

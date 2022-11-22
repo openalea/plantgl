@@ -78,7 +78,7 @@ QOpenGLWidget * get_fgl_mode(GLRenderer * rd)
 #ifndef PGL_WITHOUT_QT
 
 void py_setGLFrame(GLRenderer *rd, boost::python::object widget) {
-  rd->setGLFrame(extract_widget<QOpenGLWidget>(widget)());
+  rd->setGLFrame(extract_widget<QOpenGLBaseWidget>(widget)());
 }
 
 #endif
@@ -88,6 +88,7 @@ void export_GLRenderer() {
           ("GLRenderer", init<Discretizer &>(
                   "GLRenderer(Discretizer d [, QOpenGLWidget *]) An action which draws objects of type of Geometry or of type of Material to the current GL context."))
           .def("clear", &GLRenderer::clear)
+          .def("init", &GLRenderer::init)
           .def("beginSceneList", &GLRenderer::beginSceneList)
           .def("endSceneList", &GLRenderer::endSceneList)
           .def("clearSceneList", &GLRenderer::clearSceneList)

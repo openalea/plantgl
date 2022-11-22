@@ -13,86 +13,84 @@ about:
   summary: An open-source graphic toolkit for the creation, simulation and analysis of 3D virtual plants.
 
 build:
-  number: 1
+  number: 2
   preserve_egg_dir: True
 
 requirements:
   host:
-      - python x.x
-      - setuptools
-      - numpy x.x
-      - qt>=5.15
-      - pyqt
-      - sip<6.6
-      - libpng
-      - zlib
-      - eigen
-      - cgal-cpp>=5.4
-      - qhull
-      - ann
-      - boost>=1.74
-      - expat                              # [linux]
-      - libxcb                             # [linux]
-      - pthread-stubs                      # [linux]
-      - {{ cdt('mesa-libgl-devel') }}      # [linux]
-      - libglu                            # [linux]
-      - xorg-libxfixes                    # [linux]
-          
+    - python
+    - setuptools
+    - numpy {{numpy}}
+    - qt=6.2.2
+    - pyside6
+    - libpng
+    - zlib
+    - eigen
+    # - cgal-cpp>=5.4
+    - qhull
+    - ann
+    - boost>=1.77
+    - expat                              # [linux]
+    - libxcb                             # [linux]
+    - pthread-stubs                      # [linux]
+    - {{ cdt('mesa-libgl-devel') }}      # [linux]
+    - libglu                            # [linux]
+    - xorg-libxfixes                    # [linux]
+
   build:
-      - python x.x        
-      - binutils_impl_linux-64            # [linux]
-      - {{ compiler('cxx') }}
-      - bison                             # [unix]
-      - flex                              # [unix]
-      - m2-bison                          # [win]
-      - m2-flex                           # [win]
-      - menuinst                          # [win]
-      - cmake
-      - pkg-config                        # [linux]
-      - make                              # [unix]
-      - {{ cdt('mesa-libgl-devel') }}     # [linux]
-      - {{ cdt('mesa-dri-drivers') }}     # [linux]
-      - {{ cdt('libxext') }}              # [linux]
-      - {{ cdt('libselinux') }}           # [linux]
-      - {{ cdt('libxdamage') }}           # [linux]
-      - {{ cdt('libxfixes') }}            # [linux]
-      - {{ cdt('libxxf86vm') }}           # [linux]
-      - {{ cdt('libxcb') }}               # [linux]
-      - {{ cdt('expat-devel') }}          # [linux]
+    - python
+    - binutils_impl_linux-64            # [linux]
+    - {{ compiler('cxx') }}
+    - bison                             # [unix]
+    - flex                              # [unix]
+    - m2-bison                          # [win]
+    - m2-flex                           # [win]
+    - menuinst                          # [win]
+    - cmake
+    - pkg-config                        # [linux]
+    - make                              # [unix]
+    - {{ cdt('mesa-libgl-devel') }}     # [linux]
+    - {{ cdt('mesa-dri-drivers') }}     # [linux]
+    - {{ cdt('libxext') }}              # [linux]
+    - {{ cdt('libselinux') }}           # [linux]
+    - {{ cdt('libxdamage') }}           # [linux]
+    - {{ cdt('libxfixes') }}            # [linux]
+    - {{ cdt('libxxf86vm') }}           # [linux]
+    - {{ cdt('libxcb') }}               # [linux]
+    - {{ cdt('expat-devel') }}          # [linux]
 
   run:
-      - python x.x
-      - setuptools
-      - ipython
-      - {{ pin_compatible('numpy',    max_pin='x.x') }}
-      - {{ pin_compatible('boost',    max_pin='x.x.x') }} 
-      - {{ pin_compatible('qhull',    max_pin='x.x') }} 
-      - {{ pin_compatible('eigen',    max_pin='x.x') }} 
-      - {{ pin_compatible('cgal-cpp', max_pin='x.x') }} 
-      - {{ pin_compatible('ann',      max_pin='x.x') }} 
-      - {{ pin_compatible('qt',       max_pin='x.x') }} 
-      - {{ pin_compatible('libpng',   max_pin='x.x') }} 
-      - {{ pin_compatible('zlib',     max_pin='x.x') }} 
-      - pyqt
-      - qt>=5.15
-      - pyopengl
-      - pyqglviewer=1.3
-      - xorg-libxfixes                     # [linux]
-      - libglu                             # [linux]
+    - python
+    - setuptools
+    - ipython
+    - {{ pin_compatible('numpy',    max_pin='x.x') }}
+    - {{ pin_compatible('boost',    max_pin='x.x.x') }}
+    - {{ pin_compatible('qhull',    max_pin='x.x') }}
+    - {{ pin_compatible('eigen',    max_pin='x.x') }}
+    # - {{ pin_compatible('cgal-cpp', max_pin='x.x') }}
+    - {{ pin_compatible('ann',      max_pin='x.x') }}
+    - {{ pin_compatible('qt',       max_pin='x.x') }}
+    - {{ pin_compatible('libpng',   max_pin='x.x') }}
+    - {{ pin_compatible('zlib',     max_pin='x.x') }}
+    - pyside6
+    # - qt=6.2
+    # - pyopengl
+    - xorg-libxfixes                     # [linux]
+    - libglu                             # [linux]
 
 test:
-   requires:
-     - pytest
-     - matplotlib-base
-     - pandas
-   imports:
-     - openalea.plantgl
-     - openalea.plantgl.all
-   source_files:
-     - test/**
-     - share/**
-   commands:
-     - cd test
-     - pytest -v --ignore=tofix --ignore=ui --ignore=oatest  # [unix]
-     - pytest -v --ignore=tofix --ignore=ui --ignore=oatest --ignore=test_shared_data.py  # [win]
+  requires:
+    - pytest
+    - matplotlib-base
+    - pandas
+  imports:
+    - openalea.plantgl
+    - openalea.plantgl.all
+  source_files:
+    - test/**
+    - share/**
+  commands:
+    - cd test
+    - pytest -v --ignore=tofix --ignore=ui --ignore=oatest  # [unix]
+    - pytest -v --ignore=tofix --ignore=ui --ignore=oatest --ignore=test_shared_data.py  # [win]
 

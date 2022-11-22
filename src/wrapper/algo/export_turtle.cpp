@@ -44,6 +44,9 @@
 #include <plantgl/python/export_property.h>
 
 #include <boost/python.hpp>
+#include <plantgl/python/export_list.h>
+#include <plantgl/python/extract_list.h>
+
 using namespace boost::python;
 #define bp boost::python
 PGL_USING_NAMESPACE
@@ -151,13 +154,14 @@ void export_Turtle()
 
     .def("getColorListSize",  &Turtle::getColorListSize )
 
+    .def("defaultValue",      &Turtle::defaultValue )
+
     .def("reset", &Turtle::reset)
     .def("resetValues", &Turtle::resetValues)
     .def("dump", &Turtle::dump)
 
     .def("push", &Turtle::push, return_self<>())
     .def("pop", &Turtle::pop, return_self<>())
-
 
     .def("left",   (void (Turtle::*) ())    &Turtle::left , return_self<>())
     .def("left",   (void (Turtle::*) (real_t))&Turtle::left , return_self<>())

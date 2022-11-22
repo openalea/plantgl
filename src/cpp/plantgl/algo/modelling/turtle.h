@@ -89,9 +89,6 @@ public:
     inline const TurtleParam& getParameters() const
     { return *__params; }
 
-    //TODO: come back later
-    virtual AppearancePtr getCurrentMaterial() {return __params->customMaterial;}
-
     /// test validity of self
     bool isValid() const ;
 
@@ -336,19 +333,6 @@ public:
     inline void divScale()
     { divScale(Vector3(scale_multiplier,scale_multiplier,scale_multiplier)); }
 
-    virtual void setColor(int val);
-
-    inline void incColor()
-    { setColor( getColor() + color_increment ); }
-
-    inline void decColor()
-    {  setColor( getColor() - color_increment ); }
-
-    virtual void interpolateColors(int val1, int val2, real_t alpha = 0.5);
-
-    void setCustomAppearance(const AppearancePtr app);
-    inline void removeCustomAppearance() { setCustomAppearance(AppearancePtr()); }
-
     virtual void setWidth(real_t val);
 
     inline void incWidth()
@@ -368,10 +352,6 @@ public:
 
     /// stop Generalized Cylinder
     virtual void stopGC();
-
-
-    virtual size_t getColorListSize() const
-      { return 0; }
 
     inline void sphere()
     { __drawer->sphere(this->getIdPair(), this->getCurrentMaterial(), __params->frame_info, __params->width, __params->sectionResolution); }
@@ -427,10 +407,6 @@ public:
                                   real_t utranslation, real_t vtranslation,
                                   real_t angle, real_t urotcenter, real_t vrotcenter)
     { setTextureTransformation(Vector2(uscaling,vscaling),Vector2(utranslation,vtranslation), angle, Vector2(urotcenter, vrotcenter)); }
-
-    virtual void setTextureBaseColor(const Color4& v);
-    virtual void setTextureBaseColor(int v);
-    virtual void interpolateTextureBaseColors(int val1, int val2, real_t alpha = 0.5);
 
     inline void setDefaultStep(real_t val)
     { default_step = (val > 0 ? val : - val); }
@@ -512,6 +488,34 @@ public:
         __drawer = new_drawer;
     }
 
+// ------ Colors and Materials -----------------------------------------------------------------------------------------
+    virtual void setColor(int val);
+
+    inline void incColor()
+    { setColor( getColor() + color_increment ); }
+
+    inline void decColor()
+    {  setColor( getColor() - color_increment ); }
+
+    virtual AppearancePtr getCurrentMaterial() { return __params->customMaterial; };
+    virtual void setCustomAppearance(const AppearancePtr app);
+    inline void removeCustomAppearance() { setCustomAppearance(AppearancePtr()); }
+
+
+    virtual void clear();
+
+    virtual void interpolateColors(int val1, int val2, real_t alpha = 0.5);
+
+    virtual void setTextureBaseColor(const Color4& v);
+    virtual void setTextureBaseColor(int v);
+    virtual void interpolateTextureBaseColors(int val1, int val2, real_t alpha = 0.5);
+
+    virtual void defaultValue();
+
+    virtual size_t getColorListSize() const
+    { return 0; }
+
+
 protected:
 
     id_pair getIdPair();
@@ -544,6 +548,7 @@ protected:
 
     PushPopHandlerList __pushpophandlerlist;
     TurtleDrawerPtr __drawer;
+
 
 };
 

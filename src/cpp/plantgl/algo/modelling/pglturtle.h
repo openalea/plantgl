@@ -58,68 +58,76 @@ public:
     // static Polyline2DPtr DEFAULT_CROSS_SECTION;
     typedef pgl_hash_map_string<GeometryPtr> SurfaceMap;
 
-    PglTurtle(TurtleDrawerPtr drawer = TurtleDrawerPtr(new PglTurtleDrawer()), 
+    explicit PglTurtle(TurtleDrawerPtr drawer = TurtleDrawerPtr(new PglTurtleDrawer()),
               TurtleParam * param = NULL);
 
-    virtual ~PglTurtle();
+    ~PglTurtle() override;
 
-    virtual void reset();
+    void reset() override;
 
-    void clear();
+    void clear() override;
 
     ScenePtr partialView();
 
-    virtual void interpolateColors(int val1, int val2, real_t alpha = 0.5);
+    void defaultValue() override;
 
-    virtual void setTextureBaseColor(const Color4& v);
-    virtual void setTextureBaseColor(int v);
-    virtual void interpolateTextureBaseColors(int val1, int val2, real_t alpha = 0.5);
+    virtual void appendMaterial(const AppearancePtr& mat);
 
-    void clearColorList();
+    virtual void setMaterial(size_t pos, const AppearancePtr& mat);
 
-    const std::vector<AppearancePtr>& getColorList() const;
-
-    void setColorList(const std::vector<AppearancePtr>&);
-
-    void clearSurfaceList();
-
-    const SurfaceMap& getSurfaceList() const;
-
-    void defaultValue();
-
-    size_t getColorListSize() const
-    { return __appList.size(); }
-
-    void appendMaterial(const AppearancePtr& mat);
-
-    void setMaterial(size_t pos, const AppearancePtr& mat);
-
-    void insertMaterial(size_t pos, const AppearancePtr& mat);
+    virtual void insertMaterial(size_t pos, const AppearancePtr& mat);
 
     inline void appendMaterial(const ImageTexturePtr& mat)
     { appendMaterial(AppearancePtr(new Texture2D(mat))); }
 
-    void setMaterial(size_t pos, const ImageTexturePtr& mat)
+    inline void setMaterial(size_t pos, const ImageTexturePtr& mat)
     { setMaterial(pos,AppearancePtr(new Texture2D(mat))); }
 
-    void insertMaterial(size_t pos, const ImageTexturePtr& mat)
+    inline void insertMaterial(size_t pos, const ImageTexturePtr& mat)
     { insertMaterial(pos,AppearancePtr(new Texture2D(mat))); }
 
-    AppearancePtr getMaterial(size_t pos);
+    virtual AppearancePtr getMaterial(size_t pos);
+    virtual AppearancePtr getCurrentMaterial()  override;
 
-    void appendColor(uint_t red, uint_t green, uint_t blue);
+    virtual void appendColor(uint_t red, uint_t green, uint_t blue);
 
-    void appendColor(float red, float green, float blue);
+    virtual void appendColor(float red, float green, float blue);
 
-    void appendColor(const Color3& mat);
+    virtual void appendColor(const Color3& mat);
 
-    void setColorAt(size_t pos, uint_t red, uint_t green, uint_t blue );
+    virtual void setColorAt(size_t pos, uint_t red, uint_t green, uint_t blue );
 
-    void setColorAt(size_t pos, float red, float green, float blue );
+    virtual void setColorAt(size_t pos, float red, float green, float blue );
 
-    void setColorAt(size_t pos, const Color3& mat);
+    virtual void setColorAt(size_t pos, const Color3& mat);
 
-    void removeColor(size_t pos);
+    virtual void removeColor(size_t pos);
+
+    inline void clearColorList() {
+        __appList.clear();
+    }
+
+    virtual inline size_t getColorListSize() const override
+    { return __appList.size(); }
+
+    inline const std::vector<AppearancePtr>& getColorList() const {
+        return __appList;
+    }
+
+    inline void setColorList(const std::vector<AppearancePtr>& applist) {
+        __appList = applist;
+    }
+
+    virtual void interpolateColors(int val1, int val2, real_t alpha = 0.5) override;
+
+    virtual void setTextureBaseColor(const Color4& v) override;
+    virtual void setTextureBaseColor(int v) override;
+    virtual void interpolateTextureBaseColors(int val1, int val2, real_t alpha = 0.5) override;
+
+
+    void clearSurfaceList();
+
+    const PglTurtle::SurfaceMap& getSurfaceList() const;
 
     void setSurface(const std::string& name, const GeometryPtr& surf)
     {  __surfList[name] = surf; }
@@ -133,21 +141,12 @@ public:
     void pglShape(const ScenePtr shape, real_t scale = 1.0);
 
     /// draw the surface identified by name, scaled by a factor scale
-    virtual void surface(const std::string& name,real_t scale);
-
-    AppearancePtr getCurrentMaterial() override;
+    void surface(const std::string& name,real_t scale) override;
 
     void customGeometry(const GeometryPtr smb, real_t scale=1);
 protected:
-
-
-    SurfaceMap __surfList;
     std::vector<AppearancePtr> __appList;
-
-    AppearancePtr getCurrentMaterial() const;
-    AppearancePtr getCurrentInitialMaterial() const;
-
-    GeometryPtr getCircle(real_t radius) const;
+    SurfaceMap __surfList;
 
     // ScenePtr __scene;
     

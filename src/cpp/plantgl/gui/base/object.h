@@ -55,7 +55,9 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QPoint>
-#include <QOpenGLWidget>
+#include <plantgl/gui/pglqopenglwidget.h>
+#include <plantgl/algo/opengl/util_gl.h>
+
 
 class QMenu;
 class QToolBar;
@@ -82,10 +84,10 @@ class VIEW_API ViewObjectGL  : public QObject
 public:
 
   /// Constructor.
-  ViewObjectGL(QObject * parent=0, const char * name=0);
+  ViewObjectGL(QObject * parent=0, const char * name=0, PGLOpenGLFunctionsPtr ogl = NULL);
 
   /// Constructor. Connect GL Frame to \e this.
-  ViewObjectGL(QOpenGLWidget * parent, const char * name=0);
+  ViewObjectGL(QOpenGLBaseWidget * parent, const char * name=0, PGLOpenGLFunctionsPtr ogl = NULL);
 
   /// Destructor.
   virtual ~ViewObjectGL();
@@ -103,7 +105,7 @@ public:
   virtual void connectTo(ViewStatusBar *);
 
   /// Connect this to a GL Widget.
-  virtual void connectTo(QOpenGLWidget *);
+  virtual void connectTo(QOpenGLBaseWidget *);
 
   /// Connect this to a error dialog.
   virtual void connectTo(ViewErrorDialog *);
@@ -129,6 +131,8 @@ public:
   /// Test if there is any gl error.
   static bool glError( QWidget * widget, const char * file = NULL, int line = 0 ) ;
   static bool BATCHMODE;
+
+  void setOpenGLFunctions(PGLOpenGLFunctionsPtr ogl) { __ogl = ogl; openGLFunctionsChanged();}
 
 public slots:
 
@@ -176,8 +180,12 @@ signals:
 
 protected:
 
+  virtual void openGLFunctionsChanged();
+
   /// frame GL.
-  QOpenGLWidget * __frame;
+  QOpenGLBaseWidget * __frame;
+
+  PGLOpenGLFunctionsPtr __ogl;
 
 };
 
@@ -206,10 +214,10 @@ class VIEW_API ViewRelativeObjectGL  : public ViewObjectGL
 public:
 
   /// Constructor.
-  ViewRelativeObjectGL(ViewCameraGL *camera, QObject * parent=0, const char * name=0);
+  ViewRelativeObjectGL(ViewCameraGL *camera, QObject * parent=0, const char * name=0, PGLOpenGLFunctionsPtr ogl = NULL);
 
   /// Constructor.
-  ViewRelativeObjectGL(ViewCameraGL *camera, QOpenGLWidget * parent, const char * name=0);
+  ViewRelativeObjectGL(ViewCameraGL *camera, QOpenGLBaseWidget * parent, const char * name=0, PGLOpenGLFunctionsPtr ogl = NULL);
 
 
 
@@ -228,7 +236,7 @@ public:
   virtual void connectTo(ViewStatusBar *);
 
   /// Connect this to a GL Widget.
-  virtual void connectTo(QOpenGLWidget *);
+  virtual void connectTo(QOpenGLBaseWidget *);
 
   /// Connect this to a error dialog.
   virtual void connectTo(ViewErrorDialog *);
