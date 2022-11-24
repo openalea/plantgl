@@ -1,3 +1,7 @@
+boost:
+  - 1.74                   # [win]
+  - 1.80                   # [osx]
+  - 1.80                   # [linux]
 cxx_compiler:
   - gxx                        # [linux]
   - clangxx                    # [osx]
@@ -12,9 +16,6 @@ MACOSX_DEPLOYMENT_TARGET:  # [osx]
   - '10.12'                # [osx]
 MACOSX_SDK_VERSION:        # [osx and x86_64]
   - '10.12'                # [osx and x86_64]
-boost:
-  - 1.74                   # [win]
-  - 1.80                   # [osx and linux]
 pin_run_as_build:
   numpy: x.x
   boost: x.x
