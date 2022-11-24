@@ -8,3 +8,20 @@ compiler_version:
 cxx_compiler_version:
   - 11                         # [osx]
   - 11.2.0                     # [linux]
+MACOSX_DEPLOYMENT_TARGET:  # [osx]
+  - '10.12'                # [osx]
+MACOSX_SDK_VERSION:        # [osx and x86_64]
+  - '10.12'                # [osx and x86_64]
+boost:
+  - 1.74                   # [win]
+  - 1.80                   # [osx and linux]
+pin_run_as_build:
+  numpy: x.x
+  boost: x.x
+  qhull: x.x
+  eigen: x.x
+  cgap-cpp: x.x
+  ann: x.x
+  qt-main: x.x
+  libpng: x.x
+  zlib: x.x

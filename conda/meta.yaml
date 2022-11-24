@@ -30,8 +30,7 @@ requirements:
       - cgal-cpp>=5.4
       - qhull
       - ann
-      - boost>=1.74                        # [linux]
-      - boost=1.74                         # [win]
+      - boost {{ boost }}                    
       - expat                              # [linux]
       - libxcb                             # [linux]
       - pthread-stubs                      # [linux]
@@ -63,17 +62,17 @@ requirements:
 
   run:
       - python x.x
+      - numpy
       - setuptools
       - ipython
-      - {{ pin_compatible('numpy',    max_pin='x.x') }}
-      - {{ pin_compatible('boost',    max_pin='x.x.x') }} 
-      - {{ pin_compatible('qhull',    max_pin='x.x') }} 
-      - {{ pin_compatible('eigen',    max_pin='x.x') }} 
-      - {{ pin_compatible('cgal-cpp', max_pin='x.x') }} 
-      - {{ pin_compatible('ann',      max_pin='x.x') }} 
-      - {{ pin_compatible('qt-main',  max_pin='x.x') }} 
-      - {{ pin_compatible('libpng',   max_pin='x.x') }} 
-      - {{ pin_compatible('zlib',     max_pin='x.x') }} 
+      - boost {{ boost }}
+      - qhull
+      - eigen
+      - cgal-cpp
+      - ann
+      - qt-main
+      - libpng
+      - zlib
       - pyqt
       - pyopengl
       - pyqglviewer>=1.3
