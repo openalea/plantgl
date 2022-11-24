@@ -8,11 +8,11 @@ environment:
   matrix:
   # Add here environement variables to control the Travis CI build
     - CONDA_PY: 38
-      CONDA_NPY: 116
+      CONDA_NPY: 122
     - CONDA_PY: 39
-      CONDA_NPY: 119
+      CONDA_NPY: 122
     - CONDA_PY: 310
-      CONDA_NPY: 121
+      CONDA_NPY: 122
 
 install:
   - git clone https://github.com/OpenAlea/appveyor-ci.git appveyor-ci

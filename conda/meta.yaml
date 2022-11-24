@@ -62,7 +62,7 @@ requirements:
 
   run:
       - python x.x
-      - numpy
+      - numpy x.x
       - setuptools
       - ipython
       - boost {{ boost }}
