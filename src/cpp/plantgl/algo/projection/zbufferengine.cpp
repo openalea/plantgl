@@ -970,8 +970,34 @@ real_t pixweigth(const Vector2& a, const Vector2& b, real_t raywidth) {
                     points->push_back(point);
                     if (getRenderingStyle() & eColorBased)
                         colors->push_back(getFrameBufferAt(i,j));
-                    if (getRenderingStyle() & eIdBased)
-                        ids->push_back(__idBuffer->getAt(i,j));
+                    if (getRenderingStyle() & eIdBased){
+                        uint32_t cid = __idBuffer->getAt(i,j);
+                        if (cid == __defaultid){
+                            typedef pgl_hash_map<int32_t,real_t> IdMap;
+                            IdMap idcounts; 
+                            for (int ii = pglMax<int32_t>(0,i-raynbpix); ii <= pglMin<int32_t>(width-1,i+raynbpix); ++ii){
+                                for (int jj = pglMax<int32_t>(0,j-raynbpix); jj <= pglMin<int32_t>(height-1,j+raynbpix); ++jj){
+                                    real_t lcz = __depthBuffer->getAt(ii,jj);
+                                    if (__camera->isInZRange(lcz)) {
+                                        real_t w = pixweigth(Vector2(i,j),Vector2(ii,jj),raywidth);
+                                        if (w > GEOM_EPSILON) {
+                                            uint32_t lid = __idBuffer->getAt(ii,jj);
+                                            idcounts[lid] = (idcounts.find(lid) == idcounts.end()? 0 : idcounts[lid]) + w;
+                                        }
+                                    }
+                                }
+                            }
+                            cid = idcounts.begin()->first;
+                            real_t cw = idcounts.begin()->second;
+                            for(IdMap::const_iterator itid = idcounts.begin() ; itid != idcounts.end() ; ++itid){
+                                if (cw < itid->second){
+                                    cw = itid->second;
+                                    cid = itid->first;
+                                }
+                            }
+                        }
+                        ids->push_back(cid);
+                    }
                 }   
                 else {
                     printf("invalid points\n");

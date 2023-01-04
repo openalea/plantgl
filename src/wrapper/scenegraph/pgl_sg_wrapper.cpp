@@ -230,6 +230,7 @@ void module_sg()
     scope().attr("PGL_VERSION_STR") = getPGLVersionString();
     scope().attr("PGL_VERSION") = PGL_VERSION;
     def("get_pgl_version",&getPGLVersion);
+    def("get_pgl_version_string",&getPGLVersionString);
     def("get_pgl_supported_extensions",&py_get_pgl_supported_extensions,"Gives all extensions supported by current version of PlantGL.");
     def("pgl_support_extension",&pgl_support_extension, args("ext"),"Tell wether PlantGL support a given extension");
     def("get_pgl_python_error_style",&get_python_error_style);

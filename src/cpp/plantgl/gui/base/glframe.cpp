@@ -290,7 +290,7 @@ ViewGLFrame::ViewGLFrame( QWidget* parent, const char* name, ViewRendererGL * r)
 ViewGLFrame::~ViewGLFrame() {
 
   delete __scene;
-  delete __pixelbuffer;
+  if(__pixelbuffer) delete __pixelbuffer;
 
 #ifdef  PGL_DEBUG
     cout << "GL Frame deleted" << endl;
@@ -621,7 +621,15 @@ void ViewGLFrame::activatePBuffer(bool b){
           __pixelbuffer = new QOpenGLFramebufferObject(size()); // ,format()); //TOCHECK which format ?
       }
       //__pixelbuffer->makeCurrent(); ?? TOCHECK ->bind() ?? 
+      __pixelbuffer->bind();
+      printf("attach\n");
       reinitializeGL();
+   }
+   else {
+      __pixelbuffer->release();
+      printf("release\n");
+      if(__pixelbuffer) delete __pixelbuffer;
+      __pixelbuffer = NULL;
    }
 }
 
