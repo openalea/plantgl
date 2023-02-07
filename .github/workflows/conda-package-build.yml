@@ -9,6 +9,6 @@ on:
 
 jobs:
   build:
-    uses: fredboudon/github-action-conda-build/.github/workflows/conda-package-build.yml@main
+    uses: fredboudon/github-action-conda-build/.github/workflows/conda-package-build-custom-vc.yml@main
     secrets:
       token: ${{ secrets.ANACONDA_TOKEN }}
