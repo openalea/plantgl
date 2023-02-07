@@ -122,6 +122,12 @@ boost::python::object py_histogram(Image * img){
 }
 
 
+boost::python::object py_getpixelat(Image * img, uint_t x, uint_t y){
+   if (img->nbChannels() == 3) { return boost::python::object(img->getPixel3At(x,y)); }
+   else return boost::python::object(img->getPixelAt(x,y));
+}
+
+
 void export_Image()
 {
   class_< Image, ImagePtr, bases< RefCountObject > , boost::noncopyable >
@@ -137,7 +143,10 @@ void export_Image()
         .def( "__init__", make_constructor( img_from_array ) )
 #endif
         .def( "setPixelAt", (void (Image::*)(uint_t , uint_t, const Color4 &))&Image::setPixelAt )
-        .def( "getPixelAt", &Image::getPixelAt )
+        .def( "setPixelAt", (void (Image::*)(uint_t , uint_t, const Color3 &, uchar_t))&Image::setPixelAt )
+        .def( "getPixelAt", &py_getpixelat )
+        .def( "getPixel4At", &Image::getPixelAt )
+        .def( "getPixel3At", &Image::getPixel3At )
         .def( "width", &Image::width )
         .def( "height", &Image::height )
         .def( "nbChannels", &Image::nbChannels )

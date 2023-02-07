@@ -42,7 +42,7 @@ using namespace std;
 
 boost::python::object py_grabZBufferPoints(ZBufferEngine * ze, real_t jitter = 0, real_t raywidth = 0){
     std::tuple<Point3ArrayPtr,Color3ArrayPtr,Uint32Array1Ptr> bufpoints = ze->grabZBufferPoints(jitter, raywidth);
-    if (ze->getRenderingStyle() & ZBufferEngine::eIdAndColorBased)
+    if (ze->getRenderingStyle() == ZBufferEngine::eIdAndColorBased)
         return boost::python::make_tuple(std::get<0>(bufpoints),std::get<1>(bufpoints),std::get<2>(bufpoints));
     else {
         if (ze->getRenderingStyle() & ZBufferEngine::eIdBased)
@@ -50,7 +50,7 @@ boost::python::object py_grabZBufferPoints(ZBufferEngine * ze, real_t jitter = 0
         else if (ze->getRenderingStyle() & ZBufferEngine::eColorBased)
             return boost::python::make_tuple(std::get<0>(bufpoints),std::get<1>(bufpoints));
         else
-            return boost::python::make_tuple(std::get<0>(bufpoints));
+            return boost::python::object(std::get<0>(bufpoints));
     }
 }
 

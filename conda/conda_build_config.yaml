@@ -22,7 +22,6 @@ pin_run_as_build:
   numpy: x.x
   boost: x.x
   qhull: x.x
-  eigen: x.x
   cgap-cpp: x.x
   ann: x.x
   qt-main: x.x

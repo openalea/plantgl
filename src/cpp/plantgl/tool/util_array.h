@@ -467,6 +467,22 @@ inline const_iterator getMin( ) const {
         return std::min_element(this->__A.begin(),this->__A.end());
 }
 
+/// Returns an iterator at the mean value of \e self.
+inline T getSum( ) const {
+        T sum = 0;
+        for(const_iterator _i = this->__A.cbegin();
+            _i != this->__A.cend();
+            _i++) {
+                sum += *_i;
+        }
+        return sum;
+}
+
+/// Returns an iterator at the mean value of \e self.
+inline real_t getMean( ) const {
+        return real_t(this->getSum())/this->size();
+}
+
 /** Returns an iterator first at the minimum value, second at the
     maximum value of \e self. */
 inline std::pair<const_iterator,const_iterator> getMinAndMax(bool filterinf = false) const {

@@ -373,7 +373,7 @@ class PglViewer (QGLViewer):
             halfWidth, halfHeight = camera.getOrthoWidthHeight()
             z.setOrthographicCamera(-halfWidth, halfWidth, -halfHeight, halfHeight, znear,zfar)
         elif self.cameratype == eHemispheric:
-            z.setHemisphericCamera(self.hemisphericangle)
+            z.setSphericalCamera(self.hemisphericangle)
         elif self.cameratype == eCylindrical:
             #halfHeight = znear * tan(camera.fieldOfView()/2.);
             halfWidth, halfHeight = camera.getOrthoWidthHeight()

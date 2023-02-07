@@ -210,6 +210,10 @@ real_t ra_getMin(RealArray * a) {
     return *a->getMin();
 }
 
+real_t ra_getMean(RealArray * a) {
+    return a->getMean();
+}
+
 size_t ra_getMinIndex(RealArray * a) {
     return std::distance<RealArray::const_iterator>(a->begin(),a->getMin());
 }
@@ -301,6 +305,8 @@ void export_arrays()
     .def( "getMaxIndex", &ra_getMaxIndex )
     .def("cut", &py_cut, (arg("bins"),arg("filteremptygroups")=true))
     .def("isValid",&ra_is_valid)
+    .def( "getMean", &RealArray::getMean )
+    .def( "getSum", &RealArray::getSum )
     EXPORT_ARRAY_IO_FUNC( RealArray )
 
     DEFINE_NUMPY( ra );

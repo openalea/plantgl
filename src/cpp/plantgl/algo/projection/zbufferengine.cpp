@@ -687,7 +687,7 @@ void ZBufferEngine::process(ScenePtr scene)
         if(__triangleshaderset != NULL) delete [] __triangleshaderset;
         __triangleshaderset = new TriangleShaderPtr[nbthreads];
         for (size_t j = 0 ; j < nbthreads ; ++j){
-            __triangleshaderset[j] = TriangleShaderPtr(__triangleshader->copy(true));
+            __triangleshaderset[j] = TriangleShaderPtr(is_valid_ptr(__triangleshader) ? __triangleshader->copy(true) : NULL);
         }
 
 
@@ -1005,7 +1005,6 @@ real_t pixweigth(const Vector2& a, const Vector2& b, real_t raywidth) {
             }
         }
     }
-
     return  std::tuple<PGL(Point3ArrayPtr),PGL(Color3ArrayPtr),PGL(Uint32Array1Ptr)> (points, colors, ids);
   }
 
