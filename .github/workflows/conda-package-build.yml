@@ -67,11 +67,11 @@ jobs:
         if_true: 'true'
         if_false: 'false'
     - name: Build and Publish
-      uses: openalea/action-build-publish-anaconda@v0.1.3
+      uses: openalea/action-build-publish-anaconda@v0.1.4
       with:
         conda: conda
         mamba: true
-        numpy: '20.0'
+        numpy: '20'
         python: ${{ matrix.python-minor-version }}
         channels: openalea3, conda-forge
         token: ${{ secrets.ANACONDA_TOKEN }}
