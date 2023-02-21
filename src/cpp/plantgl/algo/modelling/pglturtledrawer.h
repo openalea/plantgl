@@ -67,6 +67,9 @@ public:
     const ScenePtr& getScene() const
     { return __scene;  }
 
+    virtual void  reset();
+
+
     virtual void cylinder(const id_pair ids,
                           AppearancePtr appearance,
                           const FrameInfo& frameinfo,
@@ -152,7 +155,6 @@ public:
                        AppearancePtr appearance,
                        const FrameInfo& frameinfo,
                        const std::string& text,
-                       bool screenCoordinates, 
                        int size = -1);
 
     virtual void customGeometry(const id_pair ids,

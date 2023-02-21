@@ -187,7 +187,8 @@ Turtle::str() const {
 }
 
 void Turtle::reset(){
-  resetValues();
+    resetValues();
+    if(__drawer) __drawer->reset();
 }
 
 void Turtle::resetValues(){
@@ -236,7 +237,7 @@ void Turtle::stop(){
   if(__params->isGeneralizedCylinderOn()){
       if(__params->pointList->size() > 1){
         __drawer->generalizedCylinder(getIdPair(),
-                           getCurrentMaterial(),
+                           getCurrentInitialMaterial(),
                            __params->frameInfo(),
                            __params->pointList,
                            __params->leftList,
@@ -267,7 +268,7 @@ void Turtle::stop(){
     if (__params->isGeneralizedCylinderOn()){
         if(__params->pointList->size() > 1){
             __drawer->generalizedCylinder(getIdPair(),
-                                          getCurrentMaterial(),
+                                          getCurrentInitialMaterial(),
                                           __params->frameInfo(),
                                           __params->pointList,
                                           __params->leftList,
@@ -692,7 +693,7 @@ void Turtle::oLineTo(const Vector3& v, real_t topradius )
       if(__params->pointList->size() > 2) {
           __drawer->polygon(
                   getIdPair(),
-                  getCurrentMaterial(),
+                  getCurrentInitialMaterial(),
                   __params->frameInfo(),
                   __params->pointList,
                   concavetest
@@ -719,7 +720,7 @@ void Turtle::stopGC(){
     if(__params->pointList->size() > 1){
         __drawer->generalizedCylinder(
                 getIdPair(),
-                getCurrentMaterial(),
+                getCurrentInitialMaterial(),
                 __params->frameInfo(),
                 __params->pointList,
                 __params->leftList,

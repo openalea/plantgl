@@ -497,7 +497,9 @@ public:
     inline void decColor()
     {  setColor( getColor() - color_increment ); }
 
-    virtual AppearancePtr getCurrentMaterial() { return __params->customMaterial; };
+    virtual AppearancePtr getCurrentMaterial() const { return __params->customMaterial; };
+    virtual AppearancePtr getCurrentInitialMaterial() const { return __params->initial.customMaterial; };
+    
     virtual void setCustomAppearance(const AppearancePtr app);
     inline void removeCustomAppearance() { setCustomAppearance(AppearancePtr()); }
 

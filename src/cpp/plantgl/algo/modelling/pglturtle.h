@@ -63,8 +63,6 @@ public:
 
     ~PglTurtle() override;
 
-    void reset() override;
-
     void clear() override;
 
     ScenePtr partialView();
@@ -87,7 +85,8 @@ public:
     { insertMaterial(pos,AppearancePtr(new Texture2D(mat))); }
 
     virtual AppearancePtr getMaterial(size_t pos);
-    virtual AppearancePtr getCurrentMaterial()  override;
+    virtual AppearancePtr getCurrentMaterial() const  override;
+    virtual AppearancePtr getCurrentInitialMaterial() const override;
 
     virtual void appendColor(uint_t red, uint_t green, uint_t blue);
 

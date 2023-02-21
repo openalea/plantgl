@@ -67,6 +67,8 @@ public:
 
     virtual ~TurtleDrawer() = default;
 
+    virtual void  reset() { }
+
     virtual void cylinder(const id_pair ids,
                           AppearancePtr appearance,
                           const FrameInfo& frameinfo,

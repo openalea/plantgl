@@ -145,6 +145,8 @@ AppearancePtr PglTurtle::getCurrentInitialMaterial() const{
 }
 */
 
+void  PglTurtleDrawer::reset() { __scene = ScenePtr(new Scene()); }
+
 void PglTurtleDrawer::customGeometry(const id_pair ids,
                                 AppearancePtr appearance,
                                 const FrameInfo& frameinfo, 
@@ -496,11 +498,10 @@ PglTurtleDrawer::label(const id_pair ids,
                        AppearancePtr appearance,
                        const FrameInfo& frameinfo,
                        const std::string& text, 
-                       bool screenCoordinates,
                        int size) {
   FontPtr font;
   if (size > 0) font = FontPtr(new Font("",size));
-  if (screenCoordinates){
+  if (frameinfo.screenprojection){
     Vector3 p = (frameinfo.position + Vector3(1,1,1))*50;
      _addToScene(GeometryPtr(new Text(text, Vector3(p.y(),p.z(),p.x()) , true, font)),ids, appearance, false);
 
