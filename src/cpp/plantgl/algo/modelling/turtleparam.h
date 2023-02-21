@@ -182,6 +182,8 @@ public:
   Vector3 scale;
   Vector3 reflection;
 
+  FrameInfo frame_info;
+
   real_t width;
 
   uint_t customId;
