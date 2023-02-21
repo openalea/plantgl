@@ -269,6 +269,7 @@ void export_Turtle()
     .def("_register_pushpop",&py_register_pushpop)
     .def("getDrawer", (TurtleDrawerPtr(Turtle::*)()) &Turtle::getDrawer) //TODO: cannot find converter for this value -> to fix
     .def("setDrawer", (void(Turtle::*)(TurtleDrawerPtr)) &Turtle::setDrawer, return_self<>())
+    .def("getScene",  &Turtle::getScene, return_value_policy<return_by_value>() )
 
 /*    .def("_frustum",&Turtle::_frustum )
     .def("_cylinder",&Turtle::_cylinder )

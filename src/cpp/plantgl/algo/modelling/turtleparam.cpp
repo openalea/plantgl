@@ -107,8 +107,7 @@ TurtleParam::TurtleParam() :
   customId(Shape::NOID),
   customParentId(Shape::NOID),
   sectionResolution(Cylinder::DEFAULT_SLICES),
-  initial(),
-  frame_info{position, heading, left, up, scale, screenCoordinates}
+  initial()
 {
 }
 
@@ -133,8 +132,7 @@ TurtleParam::TurtleParam(const TurtleParam& origin) :
         customId(origin.customId),
         customParentId(origin.customParentId),
         sectionResolution(origin.sectionResolution),
-        initial(origin.initial),
-        frame_info{position, heading, left, up, scale, screenCoordinates}
+        initial(origin.initial)
 {
 }
 

@@ -241,12 +241,12 @@ void PglTurtle::customGeometry(const GeometryPtr smb, real_t scale)
       _addToScene(transform(GeometryPtr(new Scaled(getScale()*scale,GeometryPtr(new Oriented(Vector3(0,1,0),Vector3(0,0,1),smb)))),false));
     else _addToScene(transform(GeometryPtr(new Scaled(getScale()*scale,smb)),false));
   }*/
-    __drawer->customGeometry(getIdPair(), getCurrentMaterial(), __params->frame_info, smb, scale);
+    __drawer->customGeometry(getIdPair(), getCurrentMaterial(), __params->frameInfo(), smb, scale);
 }
 
 void PglTurtle::pglShape(const GeometryPtr smb, real_t scale)
 {
-    __drawer->customGeometry(getIdPair(), getCurrentMaterial(), __params->frame_info, smb, scale);
+    __drawer->customGeometry(getIdPair(), getCurrentMaterial(), __params->frameInfo(), smb, scale);
 }
 
 void PglTurtle::pglShape(const ShapePtr shape, real_t scale)
@@ -254,7 +254,7 @@ void PglTurtle::pglShape(const ShapePtr shape, real_t scale)
 
     AppearancePtr prevapp  = __params->customMaterial;
     setCustomAppearance(shape->getAppearance());
-    __drawer->customGeometry(getIdPair(), getCurrentMaterial(), __params->frame_info, shape->getGeometry());
+    __drawer->customGeometry(getIdPair(), getCurrentMaterial(), __params->frameInfo(), shape->getGeometry());
     setCustomAppearance(prevapp);
 }
 void PglTurtle::pglShape(const ScenePtr scene, real_t scale)
@@ -264,7 +264,7 @@ void PglTurtle::pglShape(const ScenePtr scene, real_t scale)
         ShapePtr sh = dynamic_pointer_cast<Shape>(*it);
         if (sh) {
             setCustomAppearance(sh->getAppearance());
-            __drawer->customGeometry(getIdPair(), getCurrentMaterial(), __params->frame_info, sh->getGeometry());
+            __drawer->customGeometry(getIdPair(), getCurrentMaterial(), __params->frameInfo(), sh->getGeometry());
         }
     }
     setCustomAppearance(prevapp);
@@ -277,7 +277,7 @@ void PglTurtle::surface(const string& name, real_t scale){
     error("Unknown surface '" + name + '\'');
   }
   if(scale < -GEOM_EPSILON) warning("Invalid scale for surface");
-  __drawer->customGeometry(getIdPair(), getCurrentMaterial(), __params->frame_info, it->second, scale);
+  __drawer->customGeometry(getIdPair(), getCurrentMaterial(), __params->frameInfo(), it->second, scale);
 }
 
 #include "plantgl/algo/base/tesselator.h"
@@ -288,7 +288,7 @@ ScenePtr PglTurtle::partialView(){
         return drawer->partialView(
                 getIdPair(),
                 getCurrentMaterial(),
-                __params->frame_info,
+                __params->frameInfo(),
                 __params->isGeneralizedCylinderOn(),
                 __params->sectionResolution,
                 __params->pointList,

@@ -60,7 +60,7 @@ typedef struct {
         const Vector3& left;
         const Vector3& up;
         const Vector3& scaling; 
-        bool& screenprojection;              
+        const bool& screenprojection;              
     } FrameInfo;
 
 
@@ -171,6 +171,8 @@ public:
 
     void setCrossSection(const Curve2DPtr& curve, bool ccw = false, bool defaultSection = false);
 
+    const FrameInfo frameInfo() const { return FrameInfo{position, heading, left, up, scale, screenCoordinates};}
+
 public:
 
   Vector3 position;
@@ -179,8 +181,6 @@ public:
   Vector3 up;
   Vector3 scale;
   Vector3 reflection;
-
-  FrameInfo frame_info;
 
   real_t width;
 

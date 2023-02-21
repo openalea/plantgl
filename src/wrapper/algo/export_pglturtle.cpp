@@ -67,7 +67,6 @@ boost::python::object getTurtleSurfaceList(PglTurtle * turtle) {
 void export_PglTurtle()
 {
   class_< PglTurtle , boost::noncopyable, bases < Turtle > >("PglTurtle", init<optional<TurtleDrawerPtr,TurtleParam *>>("PglTurtle([TurtleDrawerPtr], [TurtleParam]) -> Create a Pgl Turtle"))
-    .def("getScene",  &PglTurtle::getScene, return_value_policy<return_by_value>() )
     .def("partialView",  &PglTurtle::partialView, "Return the current turtle construction.")
 
     .def("clearColorList",    &PglTurtle::clearColorList )
@@ -99,7 +98,5 @@ void export_PglTurtle()
     .def("pglShape",    (void(PglTurtle::*)( const GeometryPtr, real_t))&PglTurtle::pglShape, "Insert a custom plantgl primitive at the turtle position and orientation", (bp::arg("geometry"),bp::arg("scale")=1), return_self<>() )
     .def("pglShape",    (void(PglTurtle::*)( const ShapePtr, real_t))&PglTurtle::pglShape, "Insert a custom plantgl primitive at the turtle position and orientation", (bp::arg("geometry"),bp::arg("scale")=1), return_self<>() )
     .def("pglShape",    (void(PglTurtle::*)( const ScenePtr, real_t))&PglTurtle::pglShape, "Insert a custom plantgl primitive at the turtle position and orientation", (bp::arg("geometry"),bp::arg("scale")=1), return_self<>() )
-    .def("getDrawer", (TurtleDrawerPtr(PglTurtle::*)()) &PglTurtle::getDrawer) //TODO: cannot find converter for this value -> to fix
-    .def("setDrawer", (void(PglTurtle::*)(TurtleDrawerPtr)) &PglTurtle::setDrawer, return_self<>())
     ;
 }

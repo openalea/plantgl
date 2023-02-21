@@ -185,9 +185,9 @@ protected:
     // GeometryPtr getCircle(real_t radius) const;
 
     GeometryPtr transform(const FrameInfo& frameinfo,
-                          const GeometryPtr& obj) const;
+                          GeometryPtr obj) const;
 
-    GeometryPtr transform_n_scale(const FrameInfo& frameinfo, const GeometryPtr& obj) const;
+    GeometryPtr transform_n_scale(const FrameInfo& frameinfo, GeometryPtr obj) const;
 
 
     void _addToScene(const GeometryPtr geom, const id_pair ids, AppearancePtr app = NULL, bool projection = true);

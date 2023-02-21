@@ -54,50 +54,9 @@ PGL_USING_NAMESPACE
 void export_PglTurtleDrawer()
 {
   class_< PglTurtleDrawer , boost::noncopyable, bases<TurtleDrawer> >("PglTurtleDrawer", init<>("PglTurtleDrawer() -> Create PglTurtleDrawer"))
-
-    .def("cylinder",
-         (void (PglTurtleDrawer::*) (const id_pair, const FrameInfo&, AppearancePtr, real_t, real_t, uint_t)) &PglTurtleDrawer::cylinder,
-         return_self<>())
-    .def("frustum",
-         (void (PglTurtleDrawer::*) (const id_pair, AppearancePtr, const FrameInfo&, real_t, real_t, real_t, uint_t)) &PglTurtleDrawer::frustum,
-         return_self<>())
-    .def("generalizedCylinder",
-         (void (PglTurtleDrawer::*) (const id_pair, AppearancePtr, const FrameInfo&, const Point3ArrayPtr&,
-                 const std::vector<Vector3>&, const std::vector<real_t>&, const Curve2DPtr&, bool, uint_t)) &PglTurtleDrawer::generalizedCylinder,
-         return_self<>())
-    .def("sphere",
-         (void (PglTurtleDrawer::*) (const id_pair, AppearancePtr, const FrameInfo&, real_t, uint_t)) &PglTurtleDrawer::sphere,
-         return_self<>() )
-    .def("circle",
-         (void (PglTurtleDrawer::*) (const id_pair, AppearancePtr, const FrameInfo&, real_t, uint_t)) &PglTurtleDrawer::circle,
-         return_self<>() )
-    .def("box",
-         (void (PglTurtleDrawer::*) (const id_pair, AppearancePtr, const FrameInfo&, real_t, real_t, real_t)) &PglTurtleDrawer::box,
-         return_self<>())
-    .def("quad",
-         (void (PglTurtleDrawer::*) (const id_pair, AppearancePtr, const FrameInfo&, real_t, real_t, real_t)) &PglTurtleDrawer::quad,
-         return_self<>())
-    .def("polygon",
-       (void (PglTurtleDrawer::*) (const id_pair, const FrameInfo&, AppearancePtr, const Point3ArrayPtr&, bool)) &PglTurtleDrawer::polygon,
-       return_self<>())
-    .def("arrow",
-       (void (PglTurtleDrawer::*) (const id_pair, AppearancePtr, const FrameInfo&, real_t, real_t, real_t, real_t, uint_t)) &PglTurtleDrawer::arrow,
-       return_self<>())
-    .def("arrow_color",
-       (void (PglTurtleDrawer::*) (const id_pair, const FrameInfo&, real_t, real_t, real_t, real_t, real_t, real_t, uint_t)) &PglTurtleDrawer::arrow,
-       return_self<>())
-    .def("frame",
-       (void (PglTurtleDrawer::*) (const id_pair, const FrameInfo&, real_t, real_t, real_t, real_t, real_t, real_t, uint_t)) &PglTurtleDrawer::frame,
-       return_self<>() )
-    .def("label",
-       (void (PglTurtleDrawer::*) (const id_pair, AppearancePtr, const FrameInfo&, const std::string&, bool, int)) &PglTurtleDrawer::label,
-       return_self<>() )
-    .def("customGeometry",
-       (void (PglTurtleDrawer::*) (const id_pair, AppearancePtr, const FrameInfo&, const GeometryPtr, real_t)) &PglTurtleDrawer::customGeometry,
-       return_self<>())
-    .def("smallSweep",
-       (void (PglTurtleDrawer::*) (const id_pair, AppearancePtr, const FrameInfo&, const real_t length, const real_t,
-               const real_t, const Curve2DPtr&, bool, uint_t)) &PglTurtleDrawer::smallSweep,
-       return_self<>())
+    .def("getScene", &PglTurtleDrawer::getScene, return_value_policy<return_by_value>() )
     ;
+
+     implicitly_convertible<PglTurtleDrawerPtr, TurtleDrawerPtr>();
+
 }

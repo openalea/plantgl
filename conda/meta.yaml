@@ -23,7 +23,7 @@ requirements:
       - numpy x.x
       - qt-main>=5.15
       - pyqt
-      - sip
+      - sip<6.6
       - libpng
       - zlib
       - eigen
@@ -39,26 +39,26 @@ requirements:
       - xorg-libxfixes                    # [linux]
           
   build:
-    - python
-    - binutils_impl_linux-64            # [linux]
-    - {{ compiler('cxx') }}
-    - bison                             # [unix]
-    - flex                              # [unix]
-    - m2-bison                          # [win]
-    - m2-flex                           # [win]
-    - menuinst                          # [win]
-    - cmake
-    - pkg-config                        # [linux]
-    - make                              # [unix]
-    - {{ cdt('mesa-libgl-devel') }}     # [linux]
-    - {{ cdt('mesa-dri-drivers') }}     # [linux]
-    - {{ cdt('libxext') }}              # [linux]
-    - {{ cdt('libselinux') }}           # [linux]
-    - {{ cdt('libxdamage') }}           # [linux]
-    - {{ cdt('libxfixes') }}            # [linux]
-    - {{ cdt('libxxf86vm') }}           # [linux]
-    - {{ cdt('libxcb') }}               # [linux]
-    - {{ cdt('expat-devel') }}          # [linux]
+      - python x.x        
+      - binutils_impl_linux-64            # [linux]
+      - {{ compiler('cxx') }}
+      - bison                             # [unix]
+      - flex                              # [unix]
+      - m2-bison                          # [win]
+      - m2-flex                           # [win]
+      - menuinst                          # [win]
+      - cmake
+      - pkg-config                        # [linux]
+      - make                              # [unix]
+      - {{ cdt('mesa-libgl-devel') }}     # [linux]
+      - {{ cdt('mesa-dri-drivers') }}     # [linux]
+      - {{ cdt('libxext') }}              # [linux]
+      - {{ cdt('libselinux') }}           # [linux]
+      - {{ cdt('libxdamage') }}           # [linux]
+      - {{ cdt('libxfixes') }}            # [linux]
+      - {{ cdt('libxxf86vm') }}           # [linux]
+      - {{ cdt('libxcb') }}               # [linux]
+      - {{ cdt('expat-devel') }}          # [linux]
 
   run:
       - python x.x
@@ -80,18 +80,17 @@ requirements:
       - libglu                             # [linux]
 
 test:
-  requires:
-    - pytest
-    - matplotlib-base
-    - pandas
-  imports:
-    - openalea.plantgl
-    - openalea.plantgl.all
-  source_files:
-    - test/**
-    - share/**
-  commands:
-    - cd test
-    - pytest -v --ignore=tofix --ignore=ui --ignore=oatest  # [unix]
-    - pytest -v --ignore=tofix --ignore=ui --ignore=oatest --ignore=test_shared_data.py  # [win]
-
+   requires:
+     - pytest
+     - matplotlib-base
+     - pandas
+   imports:
+     - openalea.plantgl
+     - openalea.plantgl.all
+   source_files:
+     - test/**
+     - share/**
+   commands:
+     - cd test
+     - pytest -v --ignore=tofix --ignore=ui --ignore=oatest  # [unix]
+     - pytest -v --ignore=tofix --ignore=ui --ignore=oatest --ignore=test_shared_data.py  # [win]
