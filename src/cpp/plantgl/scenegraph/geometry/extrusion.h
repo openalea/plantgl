@@ -339,6 +339,12 @@ class SG_API Extrusion : public ParametricModel
   // Get the next matrix frame value at u+du.
   Matrix3 getNextFrameAt(real_t u, Matrix3 m, real_t du) const;
 
+  // Get the derivative matrix frame value at u+du.
+  Matrix3 getFrameDerivativeAt(real_t u, real_t du = 0.01) const;
+
+  // Get the derivative matrix frame value at u+du.
+  Matrix3 getFrameDerivativeAt(real_t u, Matrix3 m, real_t du = 0.01) const;
+
   // Compute the derivative.
   Vector3 getSecondDerivativeUUAt(real_t u, real_t v) const;
 
@@ -356,7 +362,14 @@ class SG_API Extrusion : public ParametricModel
 
   // Compute the derivative.
   Vector3 getSecondDerivativeVVAt(real_t u, real_t v, const Matrix3& frame) const;
-  
+
+  real_t getUToTransformationU(real_t u) const;
+
+  /*!
+    Compute a section line of the patch corresponding to a constant u value
+   */
+  LineicModelPtr getIsoUSectionAt(real_t u) const;
+    
 protected:
 
     /// The axis of the extrusion.

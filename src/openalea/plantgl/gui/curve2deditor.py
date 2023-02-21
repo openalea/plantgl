@@ -3,7 +3,7 @@ from openalea.plantgl.algo import *
 from openalea.plantgl.math import *
 from math import pow,log
 
-from openalea.plantgl.gui.qt import QtCore, QtGui, QtOpenGL
+from openalea.plantgl.gui.qt import QtCore, QtGui, QtWidgets, QtOpenGL
 from openalea.plantgl.gui.qt.QtCore import QEvent, QObject, QPoint, Qt, Signal, qWarning
 from openalea.plantgl.gui.qt.QtGui import QColor, QImage, QFont
 #from openalea.plantgl.gui.qt.QtOpenGL import QOpenGLWidget
@@ -74,12 +74,20 @@ class Curve2DAccessor:
         pass
     def getPoint(self,index):
         pass
+    def setPointWeight(self,index,npoint):
+        pass
+    def getPointWeight(self,index):
+        return 1
     def delPoint(self,index):
         pass
     def findClosest(self,p):
         pass
     def bounds(self):
         pass
+    def hasWeights(self):
+        return False
+    def hasStride(self):
+        return False
 
 class Bezier2DAccessor (Curve2DAccessor):
     def __init__(self,curve):
@@ -96,10 +104,15 @@ class Bezier2DAccessor (Curve2DAccessor):
         self.curve.ctrlPointList.insert(index,Vector3(npoint,1))
         self.setKnotList()
     def setPoint(self,index,npoint):
-        self.curve.ctrlPointList[index] = Vector3(npoint,1)
+        self.curve.ctrlPointList[index] = Vector3(npoint,self.getPointWeight(index))
     def getPoint(self,index):
         a = self.curve.ctrlPointList[index]
         return (a[0],a[1])
+    def setPointWeight(self,index,nweight):
+        self.curve.ctrlPointList[index].z = nweight
+    def getPointWeight(self,index):
+        a = self.curve.ctrlPointList[index]
+        return a[2]
     def delPoint(self,index):
         nbp = self.nbPoints()
         if  nbp > self.minpointnb() and not index in [0,nbp-1]:
@@ -117,6 +130,10 @@ class Bezier2DAccessor (Curve2DAccessor):
     def bounds(self):
         minp,maxp = self.curve.ctrlPointList.getBounds()
         return minp.project(),maxp.project()
+    def hasWeights(self):
+        return True
+    def hasStride(self):
+        return True
 
 class Nurbs2DAccessor (Bezier2DAccessor):
     def __init__(self,curve):
@@ -160,14 +177,18 @@ from PyQGLViewer import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
-class Curve2DEditor (QGLViewer):
+class Curve2DEditorView (QGLViewer):
     BLACK_THEME = {'Curve' : (255,255,255), 'BackGround' : (51,51,51), 'Text' : (255,255,255), 'CtrlCurve' : (122,122,0), 'GridStrong' : (102,102,102), 'GridFade' : (51,51,51) , 'Points' : (250,30,30), 'FirstPoint' : (250,30,250), 'SelectedPoint' : (30,250,30), 'DisabledBackGround' : (150,150,150) }
     WHITE_THEME = {'Curve' : (255,0,0), 'BackGround' : (255,255,255), 'Text' : (0,0,0), 'CtrlCurve' : (25,0,25), 'GridStrong' : (102,102,102), 'GridFade' : (153,153,153) , 'Points' : (30,250,30), 'FirstPoint' : (250,30,250), 'SelectedPoint' : (30,250,30), 'DisabledBackGround' : (150,150,150)}
+
     valueChanged = Signal()
+    nbCtrlPointsChanged = Signal(int)
+    selectionChanged = Signal()
 
     def __init__(self,parent,constraints=Curve2DConstraint()):
         QGLViewer.__init__(self,parent)
         self.selection = -1
+        self.lastselection = -1
         self.setStateFileName('.curveeditor.xml')
         
         self.sphere = Sphere(radius=0.02)
@@ -209,6 +230,12 @@ class Curve2DEditor (QGLViewer):
     def newDefaultCurve(self):
         return self.pointsConstraints.defaultCurve()
 
+    def hasSelection(self):
+        return self.selection != -1
+
+    def hasLastSelection(self):
+        return self.lastselection != -1
+
     def init(self):
         self.updateSceneDimension()
         #self.setHandlerKeyboardModifiers(QGLViewer.CAMERA, Qt.AltModifier)
@@ -242,6 +269,8 @@ class Curve2DEditor (QGLViewer):
 
     def setCurve(self,curve):
         """ Set the edited curve """
+        self.selection = -1
+        self.lastselection = -1
         self.curveshape.geometry = curve
         curve.width=2
         self.curveAccessor = self.accessorType[type(curve)](curve)
@@ -373,12 +402,12 @@ class Curve2DEditor (QGLViewer):
         self.end = self.pointOnEditionPlane(QPoint(self.width()-1,0))
         self.sphere.radius = (self.end[0]-self.start[0])/80
         self.discretizer.clear()
+        self.drawGrid()
         self.curveshape.apply(self.renderer)
         try:    glColor4fv(self.ctrlCurveColor)
         except: pass
         self.curveshape.apply(self.ctrlrenderer)
         self.ctrlpts.apply(self.renderer)
-        self.drawGrid()
 
     def mRenderText(self, x, y, text):
         #error = glGetError()
@@ -491,6 +520,7 @@ class Curve2DEditor (QGLViewer):
         if event.modifiers()  != Qt.ControlModifier:
             self.select(event.pos())
             self.selection = self.selectedName()
+            self.lastselection = self.selection
             if self.selection != -1:
                 p = self.curveAccessor.getPoint(self.selection)
                 self.manipulator.setPosition(Vec(p[0],p[1],0))
@@ -498,9 +528,11 @@ class Curve2DEditor (QGLViewer):
                 self.createControlPointsRep()
                 self.setInteractionMode(True)
                 self.updateGL()
+                self.selectionChanged.emit()
                 QGLViewer.mousePressEvent(self,event)
             else:
                 QGLViewer.mousePressEvent(self,event)
+                self.selectionChanged.emit()
         else:
             return QGLViewer.mousePressEvent(self,event)
 
@@ -508,40 +540,52 @@ class Curve2DEditor (QGLViewer):
         if event.modifiers() == Qt.NoModifier:
             if event.button()  == Qt.LeftButton:
                 self.select(event.pos())
-                selection = self.selectedName()
-                if selection == -1:
+                self.selection = self.selectedName()
+                if self.selection == -1:
                     npoint = self.pointOnEditionPlane(event.pos())
                     res = self.pointsConstraints.addPointEvent(npoint,self.curveAccessor)
                     if res:
                         index,npoint = res
                         self.curveAccessor.insertPoint(index,npoint)
+                        self.lastselection = index
+                        self.nbCtrlPointsChanged.emit(self.curveAccessor.nbPoints())
                         self.valueChanged.emit()
+                self.selectionChanged.emit()
             elif event.button()  == Qt.RightButton:
                 self.select(event.pos())
-                selection = self.selectedName()
-                if selection != -1 :
-                    self.curveAccessor.delPoint(selection)
+                self.selection = self.selectedName()
+                if self.selection != -1 :
+                    self.curveAccessor.delPoint(self.selection)
+                    self.nbCtrlPointsChanged.emit(self.curveAccessor.nbPoints())
                     self.valueChanged.emit()
+                    self.selection = -1
+                    self.lastselection = -1
+                self.selectionChanged.emit()
             self.createControlPointsRep()
             self.updateGL()
         elif event.modifiers() == Qt.ShiftModifier:
             self.select(event.pos())
-            selection = self.selectedName()
-            if selection != -1 :
-                self.curveAccessor.delPoint(selection)
+            self.selection = self.selectedName()
+            if self.selection != -1 :
+                self.curveAccessor.delPoint(self.selection)
+                self.nbCtrlPointsChanged.emit(self.curveAccessor.nbPoints())
                 self.valueChanged.emit()
                 self.createControlPointsRep()
                 self.updateGL()
+                self.selection = -1
+                self.lastselection = -1
+            self.selectionChanged.emit()
         else:
             QGLViewer.mouseDoubleClickEvent(self,event)
 
     def mouseReleaseEvent(self,event):
         if self.selection != -1:
-                self.selection = -1
-                self.setInteractionMode(False)
+            self.selection = -1
+            self.setInteractionMode(False)
         self.createControlPointsRep()
         self.updateSceneDimension()
         self.updateGL()
+        self.selectionChanged.emit()
         QGLViewer.mouseReleaseEvent(self,event)
 
     def changeEvent(self,event):
@@ -570,6 +614,127 @@ class Curve2DEditor (QGLViewer):
             self.ctrlpts[self.selection].appearance = self.selectedPointColor
         if self.selection != 0:
             self.ctrlpts[0].appearance = self.firstPointColor
+
+    def setStride(self, value):
+        self.curveshape.geometry.stride = value
+        self.valueChanged.emit() 
+        self.update()
+
+class Curve2DEditor(QtWidgets.QWidget):
+    valueChanged = Signal()
+
+    def __init__(self, parent,constraints=Curve2DConstraint()):
+        QtWidgets.QWidget.__init__(self, parent)
+        self.gridLayout = QtWidgets.QGridLayout(self)
+        self.gridLayout.setContentsMargins(2, 0, 11, 2)
+
+        self.view = Curve2DEditorView(self,constraints)
+        self.view.valueChanged.connect(self.propagate_valuechanged)
+        self.view.nbCtrlPointsChanged.connect(self.adaptStrideSelection)
+
+        self.gridLayout.addWidget(self.view, 0, 0, 2, 2)
+        self.view.selectionChanged.connect(self.selectionEvent)
+
+        self.weightSpinBox = QtWidgets.QDoubleSpinBox(self)
+        self.weightSpinBox.setMinimum(-100)
+        self.weightSpinBox.setMaximum(100)
+        self.weightSpinBox.valueChanged.connect(self.setWeigthToSelection)
+        self.weightSpinBox.setEnabled(False)
+        self.gridLayout.addWidget(self.weightSpinBox, 0, 2, 1, 1)
+
+        self.weigthSlider = QtWidgets.QSlider(self)
+        self.weigthSlider.setMinimum(-200)
+        self.weigthSlider.setMaximum(200)
+        self.weigthSlider.setOrientation(QtCore.Qt.Vertical)
+        self.weigthSlider.setValue(0)
+        self.weigthSlider.sliderPressed.connect(self.weigthSliderPressed)
+        self.weigthSlider.sliderReleased.connect(self.weigthSliderReleased)
+        self.weigthSlider.sliderMoved.connect(self.setWeigthRatioToSelection)
+        self.weigthSlider.setEnabled(False)
+        self.gridLayout.addWidget(self.weigthSlider, 1, 2, 1, 1)
+
+        self.discrlabel = QtWidgets.QLabel(self)
+        self.discrlabel.setText( "Discretization")
+        self.gridLayout.addWidget(self.discrlabel, 2, 0, 1, 1)
+        self.sliders = []
+
+        self.strideSlider = QtWidgets.QSlider(self)
+        self.strideSlider.setMinimum(2)
+        self.strideSlider.setMaximum(50)
+        self.strideSlider.setOrientation(QtCore.Qt.Horizontal)
+        self.strideSlider.setValue(self.view.getCurve().stride)
+        self.strideSlider.valueChanged.connect(self.view.setStride)
+        self.gridLayout.addWidget(self.strideSlider, 2, 1, 1, 1)
+        spacerItem = QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        self.gridLayout.addItem(spacerItem, 2, 2, 1, 1)
+
+
+    def propagate_valuechanged(self):
+        self.valueChanged.emit()
+
+    def selectionEvent(self):
+        active = self.view.hasLastSelection() 
+        self.weightSpinBox.setEnabled(active)
+        self.weigthSlider.setEnabled(active)
+        if active:
+            self.weigthSlider.setValue(0)
+            self.weightSpinBox.setValue(self.view.curveAccessor.getPointWeight(self.view.lastselection))
+
+
+    def weigthSliderPressed(self):
+        if self.view.hasLastSelection():
+            self.cweight = self.view.curveAccessor.getPointWeight(self.view.lastselection)
+        else:
+            self.cweight = 1
+
+    def weigthSliderReleased(self):
+        self.weigthSlider.setValue(0)
+
+    def setWeigthRatioToSelection(self, value):
+        ratio = 1+(value / 100.)
+        self.weightSpinBox.setValue(self.cweight*ratio)
+        self.setWeigthToSelection(self.cweight*ratio)
+
+    def setWeigthToSelection(self, value):
+        self.view.curveAccessor.setPointWeight(self.view.lastselection,value)
+        self.view.update()
+
+    def setCurve(self, nurbsObject):
+        self.view.setCurve(nurbsObject)
+        if self.view.curveAccessor.hasWeights():
+            self.weightSpinBox.show()
+            self.weigthSlider.show()
+            self.selectionEvent()
+        else:
+            self.weightSpinBox.hide()
+            self.weigthSlider.hide()
+        if self.view.curveAccessor.hasStride():
+            self.strideSlider.setValue(self.view.getCurve().stride)
+            self.adaptStrideSelection()
+            self.discrlabel.show()
+            self.strideSlider.show()
+        else:
+            self.discrlabel.hide()
+            self.strideSlider.hide()
+
+    def adaptStrideSelection(self, nbPoints = None):
+        strideValue = self.view.getCurve().stride
+        if nbPoints is None:
+            nbPoints = self.view.curveAccessor.nbPoints()
+            newmax = max(50,strideValue,nbPoints*10)
+        else:
+            ratio = float(strideValue) / self.strideSlider.maximum()
+            newmax = max(50,strideValue,nbPoints*10)
+            strideValue = int(ratio * newmax)
+        self.strideSlider.setMaximum(newmax)
+        self.strideSlider.setValue(strideValue)
+
+
+    def getCurve(self):
+        return self.view.getCurve()
+
+    def newDefaultCurve(self):
+        self.setCurve(self.view.newDefaultCurve())
 
 if __name__ == '__main__':
     qapp = QApplication([])
