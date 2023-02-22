@@ -1174,9 +1174,11 @@ bool Discretizer::process( Extrusion * extrusion ){
 
     Vector3 _oldBinormal;
     Vector3 _normal( extrusion->getInitialNormalValue() );
+    Matrix3 _frame = extrusion->getFrameAt(_start);
 
     for (uint_t _i = 0; _i < _size; _i++) {
         Vector3 _center = _axis->getPointAt(_start);
+        /*
         Vector3 _velocity = _axis->getTangentAt(_start);
         if(_i!=0) {
             _normal = cross(_oldBinormal,_velocity);
@@ -1194,6 +1196,7 @@ bool Discretizer::process( Extrusion * extrusion ){
         _oldBinormal = _binormal;
 
         Matrix3 _frame(_normal,_binormal,_velocity);
+        */
         OrthonormalBasis3D _transf(_frame);
         Point3ArrayPtr _newPoint = _crossPoints;
         if(_useTransf){
@@ -1227,19 +1230,26 @@ bool Discretizer::process( Extrusion * extrusion ){
                 _k++;
             }
         }
-        _start += _step;
-        _starttransf += _steptransf;
+        if (_i != _size -1) {
+          _frame = extrusion->getNextFrameAt(_start, _frame, _step);
+          _start += _step;
+          _starttransf += _steptransf;
+        }
     };
+
+    _frame = extrusion->getNextFrameAt(_axis->getLastKnot(), _frame, _axis->getLastKnot()-_start);
     _start= _axis->getLastKnot();
     if(_useTransf){
         _starttransf = _profileTransf->getUMax();
     }
+    /*
     Vector3 _velocity = _axis->getTangentAt(_start);
     _normal = cross(_oldBinormal,_velocity);
     _velocity.normalize();
     _normal.normalize();
     Vector3 _binormal = cross(_velocity,_normal);
     Matrix3 _frame(_normal,_binormal,_velocity);
+    */
     OrthonormalBasis3D _transf(_frame);
     Vector3 _center = _axis->getPointAt(_start);
     Point3ArrayPtr _newPoint;

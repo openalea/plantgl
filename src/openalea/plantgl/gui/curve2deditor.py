@@ -88,6 +88,8 @@ class Curve2DAccessor:
         return False
     def hasStride(self):
         return False
+    def sewPoints(self, idx0 = 0, idx1 = -1):
+        pass
 
 class Bezier2DAccessor (Curve2DAccessor):
     def __init__(self,curve):
@@ -134,6 +136,8 @@ class Bezier2DAccessor (Curve2DAccessor):
         return True
     def hasStride(self):
         return True
+    def sewPoints(self, idx0 = 0, idx1 = -1):
+        self.curve.ctrlPointList[idx1] = self.curve.ctrlPointList[idx0]
 
 class Nurbs2DAccessor (Bezier2DAccessor):
     def __init__(self,curve):
@@ -171,6 +175,9 @@ class Polyline2DAccessor (Curve2DAccessor):
         return u
     def bounds(self):
         return self.curve.pointList.getBounds()
+    def sewPoints(self, idx0 = 0, idx1 = -1):
+        print('sewPoint',idx0, idx1, self.curve.pointList[idx0])
+        self.curve.pointList[idx1] = self.curve.pointList[idx0]
 
 
 from PyQGLViewer import *
@@ -189,6 +196,7 @@ class Curve2DEditorView (QGLViewer):
         QGLViewer.__init__(self,parent)
         self.selection = -1
         self.lastselection = -1
+        self.closedCurve = False
         self.setStateFileName('.curveeditor.xml')
         
         self.sphere = Sphere(radius=0.02)
@@ -225,7 +233,7 @@ class Curve2DEditorView (QGLViewer):
         self.setTheme(theme)
         if self.isVisible(): 
             self.createControlPointsRep()
-            self.updateGL()
+            self.update()
 
     def newDefaultCurve(self):
         return self.pointsConstraints.defaultCurve()
@@ -235,6 +243,21 @@ class Curve2DEditorView (QGLViewer):
 
     def hasLastSelection(self):
         return self.lastselection != -1
+
+    def closeCurveEnabled(self):
+        return self.closedCurve
+
+    def toggleCurveClosing(self):
+        self.enableCurveClosing(not self.closedCurve)
+
+    def enableCurveClosing(self, enabled):
+        self.closedCurve = enabled
+        if enabled:
+            self.curveAccessor.sewPoints()
+            self.createControlPointsRep()
+            self.update()
+            self.valueChanged.emit()
+            self.curveshape.geometry.closed = enabled
 
     def init(self):
         self.updateSceneDimension()
@@ -267,10 +290,13 @@ class Curve2DEditorView (QGLViewer):
         minp,maxp = Vector3(minp,0),Vector3(maxp,0)
         self.setSceneBoundingBox(Vec(*minp),Vec(*maxp))
 
-    def setCurve(self,curve):
+    def setCurve(self, curve, closed = None):
         """ Set the edited curve """
         self.selection = -1
         self.lastselection = -1
+        if hasattr(curve,'closed'):
+            print(curve.closed)
+        self.closedCurve = curve.closed if hasattr(curve,'closed') else (closed if not closed is None else False)
         self.curveshape.geometry = curve
         curve.width=2
         self.curveAccessor = self.accessorType[type(curve)](curve)
@@ -604,16 +630,24 @@ class Curve2DEditorView (QGLViewer):
             p = (p[0],p[1])
             p = self.pointsConstraints.movePointEvent(p,self.selection,self.curveAccessor)
             self.curveAccessor.setPoint(self.selection,p)
+            if self.closedCurve :
+                lastpoint = self.curveAccessor.nbPoints()-1
+                if self.selection == 0 :
+                    self.curveAccessor.sewPoints(0,lastpoint)
+                elif self.selection == lastpoint :
+                    self.curveAccessor.sewPoints(lastpoint,0)
             self.createControlPointsRep()
-            self.updateGL()
+            self.update()
             self.valueChanged.emit()
 
     def createControlPointsRep(self):
-        self.ctrlpts = Scene([Shape(Translated(Vector3(p[0],p[1],0),self.sphere),self.pointColor,id=i) for i,p in enumerate(self.curveAccessor.points())])
+        idpoints = list(reversed(list(enumerate(self.curveAccessor.points()))))
+        self.ctrlpts = Scene([Shape(Translated(Vector3(p[0],p[1],0),self.sphere),self.pointColor,id=i) for i,p in idpoints])
+        nbpoints = len(idpoints)
         if self.selection != -1:
-            self.ctrlpts[self.selection].appearance = self.selectedPointColor
+            self.ctrlpts[nbpoints-self.selection-1].appearance = self.selectedPointColor
         if self.selection != 0:
-            self.ctrlpts[0].appearance = self.firstPointColor
+            self.ctrlpts[nbpoints-1].appearance = self.firstPointColor
 
     def setStride(self, value):
         self.curveshape.geometry.stride = value
@@ -699,8 +733,8 @@ class Curve2DEditor(QtWidgets.QWidget):
         self.view.curveAccessor.setPointWeight(self.view.lastselection,value)
         self.view.update()
 
-    def setCurve(self, nurbsObject):
-        self.view.setCurve(nurbsObject)
+    def setCurve(self, nurbsObject, closed = False):
+        self.view.setCurve(nurbsObject, closed)
         if self.view.curveAccessor.hasWeights():
             self.weightSpinBox.show()
             self.weigthSlider.show()
@@ -718,16 +752,17 @@ class Curve2DEditor(QtWidgets.QWidget):
             self.strideSlider.hide()
 
     def adaptStrideSelection(self, nbPoints = None):
-        strideValue = self.view.getCurve().stride
-        if nbPoints is None:
-            nbPoints = self.view.curveAccessor.nbPoints()
-            newmax = max(50,strideValue,nbPoints*10)
-        else:
-            ratio = float(strideValue) / self.strideSlider.maximum()
-            newmax = max(50,strideValue,nbPoints*10)
-            strideValue = int(ratio * newmax)
-        self.strideSlider.setMaximum(newmax)
-        self.strideSlider.setValue(strideValue)
+        if self.view.curveAccessor.hasStride():
+            strideValue = self.view.getCurve().stride
+            if nbPoints is None:
+                nbPoints = self.view.curveAccessor.nbPoints()
+                newmax = max(50,strideValue,nbPoints*10)
+            else:
+                ratio = float(strideValue) / self.strideSlider.maximum()
+                newmax = max(50,strideValue,nbPoints*10)
+                strideValue = int(ratio * newmax)
+            self.strideSlider.setMaximum(newmax)
+            self.strideSlider.setValue(strideValue)
 
 
     def getCurve(self):
@@ -736,10 +771,22 @@ class Curve2DEditor(QtWidgets.QWidget):
     def newDefaultCurve(self):
         self.setCurve(self.view.newDefaultCurve())
 
-if __name__ == '__main__':
+    def closeCurveEnabled(self):
+        return self.view.closeCurveEnabled()
+
+    def toggleCurveClosing(self):
+        self.view.toggleCurveClosing()
+
+    def enableCurveClosing(self, enabled):
+        self.view.enableCurveClosing(enabled)
+
+def main():
     qapp = QApplication([])
-    mv = Curve2DEditor(None,FuncConstraint())
+    mv = Curve2DEditor(None) #,FuncConstraint())
     mv.setEnabled(True)
-    #mv.setCurve(Polyline2D([(0,0),(1,1)]))
+    mv.setCurve(Polyline2D([(0,0),(1,1)]))
     mv.show()
     qapp.exec_()
+
+if __name__ == '__main__':
+    main()

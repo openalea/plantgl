@@ -503,6 +503,7 @@ Vector3 Extrusion::getPointAt(real_t u, real_t v, const Matrix3& frame) const {
 LineicModelPtr Extrusion::getIsoUSectionAt(real_t u) const
 {
   Matrix3 frame = getFrameAt(u);
+  Vector3 ref = getAxis()->getPointAt(u);
   if(getProfileTransformation()){
     real_t u_trans = getUToTransformationU(u);
     Matrix3TransformationPtr trans = dynamic_pointer_cast<Matrix3Transformation>((*getProfileTransformation())(u_trans));
@@ -517,7 +518,8 @@ LineicModelPtr Extrusion::getIsoUSectionAt(real_t u) const
     Point3Array::const_iterator itS = csection->getCtrlPointList()->begin();
     Point4Array::iterator itT = ctrlpts->begin();
     for(;itT != ctrlpts->end(); ++itT, ++itS){
-      *itT = Vector4(frame*(*itS),1);
+
+      *itT = Vector4(ref+frame*(Vector3(itS->x(),itS->y(),0)),itS->z());
     }
     NurbsCurve2DPtr csectionN = dynamic_pointer_cast<NurbsCurve2D>(__crossSection);
     if (is_valid_ptr(csectionN)) {
@@ -534,13 +536,36 @@ LineicModelPtr Extrusion::getIsoUSectionAt(real_t u) const
       Point2Array::const_iterator itS = csectionP->getPointList()->begin();
       Point3Array::iterator itT = ctrlpts->begin();
       for(;itT != ctrlpts->end(); ++itT, ++itS){
-        *itT = frame*Vector3(*itS,0);
+        *itT = ref+frame*Vector3(*itS,0);
       }
       return LineicModelPtr(new Polyline(ctrlpts, csectionP->getWidth()));
     }
   }
   return LineicModelPtr();
 }
+
+  LineicModelPtr Extrusion::getIsoVSectionAt(real_t v) const
+  {
+    real_t _start = __axis->getFirstKnot();
+    uint_t _size =  __axis->getStride();
+    real_t _step =  (__axis->getLastKnot()-_start) / (real_t) _size;
+    Point3ArrayPtr points(new Point3Array(_size+1));
+    Matrix3 frame = getFrameAt(_start);
+    Point3Array::iterator itP = points->begin();
+    for(uint32_t _i = 0; _i < _size; ++_i, ++itP)
+    {
+      *itP = getPointAt(_start, v, frame);
+      Point3Array::iterator itP2 = itP;
+      if (_i != _size-1) {
+        frame = getNextFrameAt(_start, frame, _step);
+        _start += _step;
+      }
+    }
+    frame = getNextFrameAt(_start, frame,__axis->getLastKnot()- _start);
+    *itP = getPointAt(__axis->getLastKnot(), v, frame);
+    return LineicModelPtr(new Polyline(points, __axis->getWidth()));
+  }
+
 
 Vector3 Extrusion::getUTangentAt(real_t u, real_t v) const {
   return getUTangentAt(u, v, getFrameAt(u));

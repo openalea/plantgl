@@ -370,6 +370,11 @@ class SG_API Extrusion : public ParametricModel
    */
   LineicModelPtr getIsoUSectionAt(real_t u) const;
     
+  /*!
+    Compute a section line of the patch corresponding to a constant v value
+   */
+  LineicModelPtr getIsoVSectionAt(real_t v) const;
+    
 protected:
 
     /// The axis of the extrusion.
