@@ -40,41 +40,23 @@
 
 
 
-/*! \file view_viewer.h
-    \brief Definition of the main viewer class : Viewer.
-*/
+#include <plantgl/algo/modelling/pglturtledrawer.h>
+#include <plantgl/python/export_property.h>
+#include <plantgl/python/export_list.h>
+#include <plantgl/python/extract_list.h>
+
+#include <boost/python.hpp>
+using namespace boost::python;
+#define bp boost::python
+PGL_USING_NAMESPACE
 
 
-
-#include "pglviewer.h"
-#include "editgeomscenegl.h"
-#include "geomevent.h"
-
-/* ----------------------------------------------------------------------- */
-
-
-  /// Constructor.
-PGLViewer::PGLViewer(  QWidget * parent, Qt::WindowFlags f ):
-    Viewer(parent,"PGLViewer",new ViewMultiscaleEditGeomSceneGL(NULL,NULL), f)
+void export_PglTurtleDrawer()
 {
+  class_< PglTurtleDrawer , boost::noncopyable, bases<TurtleDrawer> >("PglTurtleDrawer", init<>("PglTurtleDrawer() -> Create PglTurtleDrawer"))
+    .def("getScene", &PglTurtleDrawer::getScene, return_value_policy<return_by_value>() )
+    ;
+
+     implicitly_convertible<PglTurtleDrawerPtr, TurtleDrawerPtr>();
+
 }
-
-  /// Constructor.
-PGLViewer::PGLViewer( int argc, char ** argv ):
-    Viewer(argc, argv,new ViewMultiscaleEditGeomSceneGL(NULL,NULL))
-{
-    setObjectName("PGLViewer");
-}
-
-/// Destructor.
-PGLViewer::~PGLViewer()
-{
-}
-
-void PGLViewer::changeScene( const PGL(ScenePtr)& s )
-{
-  GeomSceneChangeEvent k( s );
-  getSceneRenderer()->sceneChangeEvent( &k );
-}
-
-

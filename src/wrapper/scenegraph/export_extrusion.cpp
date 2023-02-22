@@ -97,6 +97,8 @@ void export_Extrusion()
     .def("getSecondDerivativeVVAt",(Vector3 (Extrusion::*)(real_t,real_t,const Matrix3&) const)&Extrusion::getSecondDerivativeVVAt)
     .def("getSecondDerivativeUVAt",(Vector3 (Extrusion::*)(real_t,real_t) const)&Extrusion::getSecondDerivativeUVAt)
     .def("getSecondDerivativeUVAt",(Vector3 (Extrusion::*)(real_t,real_t,const Matrix3&) const)&Extrusion::getSecondDerivativeUVAt)
+    .def("getIsoUSectionAt",&Extrusion::getIsoUSectionAt)
+    .def("getIsoVSectionAt",&Extrusion::getIsoVSectionAt)
     ;
   implicitly_convertible<ExtrusionPtr, ParametricModelPtr>();
 }

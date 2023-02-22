@@ -42,6 +42,7 @@
 #define __PGL_TURTLE_H__
 
 #include "turtleparam.h"
+#include "pglturtledrawer.h"
 
 #include <string>
 #include <stack>
@@ -75,7 +76,7 @@ public:
 
     void registerPushPopHandler(PushPopHandlerPtr handler);
 
-    Turtle(TurtleParam * params = NULL);
+    Turtle(TurtleDrawerPtr drawer = TurtleDrawerPtr(new PglTurtleDrawer()), TurtleParam * params = NULL);
     virtual ~Turtle();
 
     virtual std::string str() const;
@@ -129,7 +130,7 @@ public:
 
     inline int getColor() const
     { return __params->color; }
-
+    
     inline uint_t getId() const
     { return id; }
 
@@ -332,19 +333,6 @@ public:
     inline void divScale()
     { divScale(Vector3(scale_multiplier,scale_multiplier,scale_multiplier)); }
 
-    virtual void setColor(int val);
-
-    inline void incColor()
-    { setColor( getColor() + color_increment ); }
-
-    inline void decColor()
-    {  setColor( getColor() - color_increment ); }
-
-    virtual void interpolateColors(int val1, int val2, real_t alpha = 0.5);
-
-    void setCustomAppearance(const AppearancePtr app);
-    inline void removeCustomAppearance() { setCustomAppearance(AppearancePtr()); }
-
     virtual void setWidth(real_t val);
 
     inline void incWidth()
@@ -365,17 +353,13 @@ public:
     /// stop Generalized Cylinder
     virtual void stopGC();
 
-
-    virtual size_t getColorListSize() const
-      { return 0; }
-
     inline void sphere()
-    { _sphere(getWidth()); }
+    { __drawer->sphere(this->getIdPair(), this->getCurrentMaterial(), __params->frameInfo(), __params->width, __params->sectionResolution); }
 
     void sphere(real_t radius );
 
     inline void circle()
-    { _circle(getWidth()); }
+    { __drawer->circle(this->getIdPair(), this->getCurrentMaterial(), __params->frameInfo(), __params->width, __params->sectionResolution); }
 
     void circle(real_t radius );
 
@@ -396,6 +380,9 @@ public:
 
     inline void arrow() { arrow(default_step); }
     virtual void arrow(real_t heigth, real_t cap_heigth_ratio = 0.2, real_t cap_radius_ratio = 2);
+
+    inline void vector() { vector(default_step); }
+    virtual void vector(real_t heigth, real_t cap_heigth_ratio = 0.2, real_t cap_radius_ratio = 2, real_t color = 1.0, real_t transparency = 0.0);
 
     inline void setTextureScale(real_t u, real_t v) { setTextureScale(Vector2(u,v)); }
     virtual void setTextureScale(const Vector2& s);
@@ -420,10 +407,6 @@ public:
                                   real_t utranslation, real_t vtranslation,
                                   real_t angle, real_t urotcenter, real_t vrotcenter)
     { setTextureTransformation(Vector2(uscaling,vscaling),Vector2(utranslation,vtranslation), angle, Vector2(urotcenter, vrotcenter)); }
-
-    virtual void setTextureBaseColor(const Color4& v);
-    virtual void setTextureBaseColor(int v);
-    virtual void interpolateTextureBaseColors(int val1, int val2, real_t alpha = 0.5);
 
     inline void setDefaultStep(real_t val)
     { default_step = (val > 0 ? val : - val); }
@@ -495,38 +478,49 @@ public:
     void upReflection();
     void headingReflection();
 
+
+    const ScenePtr& getScene() const;
+
+    const TurtleDrawerPtr getDrawer() const
+    { return __drawer; }
+
+    void setDrawer(TurtleDrawerPtr new_drawer) {
+        __drawer = new_drawer;
+    }
+
+// ------ Colors and Materials -----------------------------------------------------------------------------------------
+    virtual void setColor(int val);
+
+    inline void incColor()
+    { setColor( getColor() + color_increment ); }
+
+    inline void decColor()
+    {  setColor( getColor() - color_increment ); }
+
+    virtual AppearancePtr getCurrentMaterial() const { return __params->customMaterial; };
+    virtual AppearancePtr getCurrentInitialMaterial() const { return __params->initial.customMaterial; };
+    
+    virtual void setCustomAppearance(const AppearancePtr app);
+    inline void removeCustomAppearance() { setCustomAppearance(AppearancePtr()); }
+
+
+    virtual void clear();
+
+    virtual void interpolateColors(int val1, int val2, real_t alpha = 0.5);
+
+    virtual void setTextureBaseColor(const Color4& v);
+    virtual void setTextureBaseColor(int v);
+    virtual void interpolateTextureBaseColors(int val1, int val2, real_t alpha = 0.5);
+
+    virtual void defaultValue();
+
+    virtual size_t getColorListSize() const
+    { return 0; }
+
+
 protected:
-    void _setCrossSection(const Curve2DPtr& curve, bool ccw = false, bool defaultSection = false);
 
-    virtual void _frustum(real_t length, real_t topradius){}
-    virtual void _cylinder(real_t length){}
-
-    virtual void _sweep(real_t length, real_t topradius);
-
-    virtual void _polygon(const Point3ArrayPtr& points, bool concavetest = false){}
-
-    virtual void _generalizedCylinder(const Point3ArrayPtr& points,
-                                      const std::vector<Vector3>& left,
-                                      const std::vector<real_t>& radius,
-                                      const Curve2DPtr& crossSection,
-                                      bool crossSectionCCW,
-                                      bool currentcolor = false){}
-
-    virtual void _sphere(real_t radius){}
-
-    virtual void _circle(real_t radius){}
-
-    virtual void _box(real_t radius, real_t botradius, real_t topradius){}
-
-    virtual void _quad(real_t radius, real_t botradius, real_t topradius){}
-
-    virtual void _surface(const std::string& name, real_t scale){}
-
-    virtual void _frame(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius_ratio, real_t color, real_t transparency) { }
-
-    virtual void _arrow(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius_ratio) { }
-
-    virtual void _label(const std::string& text, int size = -1){}
+    id_pair getIdPair();
 
     TurtleParam& getParameters()
       { return *__params; }
@@ -540,7 +534,7 @@ protected:
 
     uint_t popId();
 
-    TurtleParam *        __params;
+    TurtleParam *__params = nullptr;
 
     std::stack<TurtleParam *> __paramstack;
 
@@ -555,6 +549,8 @@ protected:
     PathInfoMap __pathinfos;
 
     PushPopHandlerList __pushpophandlerlist;
+    TurtleDrawerPtr __drawer;
+
 
 };
 

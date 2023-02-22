@@ -44,6 +44,9 @@
 #include <plantgl/python/export_property.h>
 
 #include <boost/python.hpp>
+#include <plantgl/python/export_list.h>
+#include <plantgl/python/extract_list.h>
+
 using namespace boost::python;
 #define bp boost::python
 PGL_USING_NAMESPACE
@@ -87,7 +90,7 @@ void export_Turtle()
     Turtle::register_warning_handler(&py_warning_handler);
 
 
-  class_< Turtle , boost::noncopyable>("Turtle", init< optional<TurtleParam * > >("Turtle([TurtleParam]) -> Create Turtle"))
+  class_< Turtle , boost::noncopyable>("Turtle", init<optional<TurtleDrawerPtr,TurtleParam *>>("Turtle([TurtleDrawerPtr], [TurtleParam]) -> Create Turtle"))
 
     .def("f", (void (Turtle::*) ())         &Turtle::f, return_self<>() )
     .def("f", (void (Turtle::*) (real_t))     &Turtle::f, return_self<>() )
@@ -151,13 +154,14 @@ void export_Turtle()
 
     .def("getColorListSize",  &Turtle::getColorListSize )
 
+    .def("defaultValue",      &Turtle::defaultValue )
+
     .def("reset", &Turtle::reset)
     .def("resetValues", &Turtle::resetValues)
     .def("dump", &Turtle::dump)
 
     .def("push", &Turtle::push, return_self<>())
     .def("pop", &Turtle::pop, return_self<>())
-
 
     .def("left",   (void (Turtle::*) ())    &Turtle::left , return_self<>())
     .def("left",   (void (Turtle::*) (real_t))&Turtle::left , return_self<>())
@@ -263,6 +267,9 @@ void export_Turtle()
     .def_readwrite("path_info_cache_enabled",&Turtle::path_info_cache_enabled)
 
     .def("_register_pushpop",&py_register_pushpop)
+    .def("getDrawer", (TurtleDrawerPtr(Turtle::*)()) &Turtle::getDrawer) //TODO: cannot find converter for this value -> to fix
+    .def("setDrawer", (void(Turtle::*)(TurtleDrawerPtr)) &Turtle::setDrawer, return_self<>())
+    .def("getScene",  &Turtle::getScene, return_value_policy<return_by_value>() )
 
 /*    .def("_frustum",&Turtle::_frustum )
     .def("_cylinder",&Turtle::_cylinder )

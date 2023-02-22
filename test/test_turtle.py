@@ -70,7 +70,7 @@ def test_turtle_customgeometry():
     p = pgl.PglTurtle()
     p.move(0,10,0)
     a = pgl.AsymmetricHull()
-    p.customGeometry(a)
+    p.pglShape(a)
     assert len(p.getScene()) == 1
     a2 = retrieve_primitive(p.getScene()[0])
     assert isinstance(a2, pgl.AsymmetricHull) 

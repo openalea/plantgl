@@ -308,6 +308,8 @@ protected:
         QOpenGLBuffer *indexBuf;
     };
 
+  void processbuffer(const BufferInfo buffer);
+
   typedef Cache<ExplicitModelPtr> GeometryCache;
   GeometryCache __geometrycache;
 
