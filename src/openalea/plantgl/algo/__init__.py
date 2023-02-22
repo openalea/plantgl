@@ -3,13 +3,20 @@ from ._pglalgo import *
 from copy import deepcopy
 
 def pushEvent(self):
-    self._pystack.append([c(getattr(self,p)) for p,c in self._params.items()])
+    self._pystack.append(dict([(p,(c,c(getattr(self,p)))) for p,c in self._params.items()]))
 
 def popEvent(self):
-    assert len(self._pystack) > 0 and "Cannot pop attributes of turtle"
-    pparams = self._pystack.pop(-1)
-    for (p,c),v in zip(self._params.items(),pparams):
-        setattr(self, p, v)
+    if len(self._pystack) > 0 :
+        pparams = self._pystack.pop(-1)
+        _pparams = {}
+        for p,(c,v) in pparams.items():
+            setattr(self, p, v)
+            _pparams[p] = c
+        for p in set(self._params).difference(_pparams):
+            delattr(self,p)
+        self._params = _pparams
+    else:
+        self.clear_parameters()
 
 Turtle.pushEvent = pushEvent
 Turtle.popEvent = popEvent
