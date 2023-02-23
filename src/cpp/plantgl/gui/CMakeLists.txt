@@ -47,4 +47,4 @@ install(TARGETS pglgui LIBRARY DESTINATION "lib")
 # --- Viewer Program
 
 add_subdirectory("exe")
-add_subdirectory("exe2")
+#add_subdirectory("exe2")
