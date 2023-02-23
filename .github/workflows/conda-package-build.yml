@@ -2,9 +2,11 @@ name: Building Package
 
 on:
   push:
-    branches: [ * ]
+    branches: 
+      - '**'
   pull_request:
-    branches: [ * ]
+    branches: 
+      - '**'
 
 
 jobs:
