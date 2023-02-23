@@ -192,7 +192,7 @@ protected:
     GeometryPtr transform_n_scale(const FrameInfo& frameinfo, GeometryPtr obj) const;
 
 
-    void _addToScene(const GeometryPtr geom, const id_pair ids, AppearancePtr app = NULL, bool projection = true);
+    void _addToScene(const GeometryPtr geom, const id_pair ids, AppearancePtr app = NULL, bool projection = false);
 
     ScenePtr __scene;
 
