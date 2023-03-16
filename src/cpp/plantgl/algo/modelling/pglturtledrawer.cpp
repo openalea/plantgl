@@ -153,11 +153,11 @@ void PglTurtleDrawer::customGeometry(const id_pair ids,
                                 const GeometryPtr smb, 
                                 real_t scale)
 {
-    if( FABS(norm(frameinfo.scaling)) > GEOM_EPSILON){
+    if( FABS(norm(frameinfo.scaling)*scale) > GEOM_EPSILON){
         PlanarModelPtr _2Dtest = dynamic_pointer_cast<PlanarModel>(smb); 
         if (is_valid_ptr(_2Dtest) && frameinfo.screenprojection)
-            _addToScene(transform(frameinfo, GeometryPtr(new Oriented(Vector3(0,1,0),Vector3(0,0,1),smb))), ids, appearance, frameinfo.screenprojection);
-        else    _addToScene(transform(frameinfo, smb), ids, appearance, frameinfo.screenprojection);
+            _addToScene(transform(frameinfo, GeometryPtr(new Oriented(Vector3(0,1,0),Vector3(0,0,1),GeometryPtr(new Scaled(frameinfo.scaling*scale,smb))))), ids, appearance, frameinfo.screenprojection);
+        else    _addToScene(transform(frameinfo, GeometryPtr(new Scaled(frameinfo.scaling*scale,smb))), ids, appearance, frameinfo.screenprojection);
     }
 }
 
