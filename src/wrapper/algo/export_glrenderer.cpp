@@ -100,9 +100,10 @@ void export_GLRenderer() {
           .add_property("selectionMode", &get_sel_mode, &GLRenderer::setSelectionMode)
                   // .add_property("frameGL",&get_fgl_mode,&GLRenderer::setGLFrame)
           .def("getDiscretizer", &GLRenderer::getDiscretizer, return_internal_reference<>())
-          .def("registerTexture", &GLRenderer::registerTexture,
-               (bp::arg("texture"), bp::arg("id"), bp::arg("erasePreviousIfExists") = true))
-          .def("getTextureId", &GLRenderer::getTextureId);
+          // .def("registerTexture", &GLRenderer::registerTexture,
+          //     (bp::arg("texture"), bp::arg("id"), bp::arg("erasePreviousIfExists") = true))
+          // .def("getTextureId", &GLRenderer::getTextureId);
+          ;
 
   enum_<GLRenderer::RenderingMode>("RenderingMode")
           .value("Normal", GLRenderer::Normal)

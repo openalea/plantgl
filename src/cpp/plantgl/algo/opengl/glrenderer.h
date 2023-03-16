@@ -58,6 +58,7 @@
 #include <plantgl/gui/pglqopenglwidget.h>
 #undef PGL_QT_FWD_DECL
 
+class QOpenGLTexture;
 /* ----------------------------------------------------------------------- */
 
 PGL_BEGIN_NAMESPACE
@@ -81,6 +82,11 @@ class ALGO_API GLRenderer : public Action
 
 public:
 
+#ifndef PGL_WITHOUT_QT
+  typedef Cache<QOpenGLTexture *> TextureCache;
+#else
+  typedef Cache<GLuint> TextureCache;
+#endif
 
   /** Constructs a GLRenderer with the Discretizer \e discretizer. */
   GLRenderer( Discretizer& discretizer,
@@ -293,8 +299,8 @@ public:
   void update(size_t id, GLuint displaylist);
   const AppearancePtr& getAppearanceCache() const { return __appearance; }
 
-  void registerTexture(ImageTexture * texture, GLuint id, bool erasePreviousIfExists = true);
-  GLuint getTextureId(ImageTexture * texture);
+  void registerTexture(ImageTexture * texture, QOpenGLTexture * gltexture, bool erasePreviousIfExists = true);
+  QOpenGLTexture * getTextureId(ImageTexture * texture);
 
   void useVertexArray(bool value) { __withvertexarray = value; }
   bool isVertexArrayUsed() const { return __withvertexarray; }
@@ -305,7 +311,7 @@ protected:
   Cache<GLuint> __cache;
 
   /// A cache used to store texture.
-  Cache<GLuint> __cachetexture;
+  TextureCache __cachetexture;
 
   /// A cache used to store display list of all scene.
   GLuint __scenecache;

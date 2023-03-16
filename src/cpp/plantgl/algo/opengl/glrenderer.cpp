@@ -284,31 +284,7 @@ bool GLRenderer::setGLFrameFromId(WId wid) {
 
 #endif
 
-#ifndef PGL_OLD_MIPMAP_STYLE
-#ifndef __APPLE__ // It is already defined on Mac Os X
-#ifndef GL_VERSION_3_0
-typedef void (* PFNGLGENERATEMIPMAPPROC) (GLenum target);
-#endif
-
-static PFNGLGENERATEMIPMAPPROC glGenerateMipmap = NULL;
-static int HasGenerateMipmap = -1;
-
-#else
-static int HasGenerateMipmap = 1;
-#endif
-#endif
-
 void GLRenderer::init() {
-#ifndef PGL_OLD_MIPMAP_STYLE
-#ifndef __APPLE__
-
-  if (HasGenerateMipmap == -1) {
-      glGenerateMipmap = (PFNGLGENERATEMIPMAPPROC)QOpenGLContext::currentContext()->getProcAddress("glGenerateMipmap");
-      HasGenerateMipmap = (glGenerateMipmap?1:0);
-  }
-
-#endif
-#endif
   if (__ogltoinit) {
     __ogl->initializeOpenGLFunctions();
     __ogltoinit = false;
@@ -329,10 +305,14 @@ void GLRenderer::clear() {
     __ogl->glDeleteLists(__scenecache, 1);
     __scenecache = 0;
   }
-  for (Cache<GLuint>::Iterator _it2 = __cachetexture.begin();
+  for (TextureCache::Iterator _it2 = __cachetexture.begin();
        _it2 != __cachetexture.end();
        _it2++) {
-    if (_it2->second) __ogl->glDeleteTextures(1, &(_it2->second));
+    if (_it2->second) {
+      _it2->second->destroy();
+      delete _it2->second;
+    }
+    // __ogl->glDeleteTextures(1, &(_it2->second));
   }
   __cachetexture.clear();
   __currentdisplaylist = false;
@@ -400,21 +380,25 @@ void GLRenderer::update(size_t id, GLuint displaylist) {
   }
 }
 
-void GLRenderer::registerTexture(ImageTexture *texture, GLuint id, bool erasePreviousIfExists) {
-  Cache<GLuint>::Iterator it = __cachetexture.find(texture->getObjectId());
+void GLRenderer::registerTexture(ImageTexture *texture, QOpenGLTexture * gltexture, bool erasePreviousIfExists) {
+  TextureCache::Iterator it = __cachetexture.find(texture->getObjectId());
   if (it != __cachetexture.end()) {
-    GLuint oldid = it->second;
-    if (erasePreviousIfExists)__ogl->glDeleteTextures(1, &(it->second));
-    it->second = id;
+    QOpenGLTexture * oldtexture = it->second;
+    if (erasePreviousIfExists){
+      oldtexture->destroy();
+      delete oldtexture;
+   
+    } 
+    it->second = gltexture;
   }
   else {
-    __cachetexture.insert(texture->getObjectId(), id);
+    __cachetexture.insert(texture->getObjectId(), gltexture);
   }
 }
 
 
-GLuint GLRenderer::getTextureId(ImageTexture *texture) {
-  Cache<GLuint>::Iterator it = __cachetexture.find(texture->getObjectId());
+QOpenGLTexture * GLRenderer::getTextureId(ImageTexture *texture) {
+  TextureCache::Iterator it = __cachetexture.find(texture->getObjectId());
   if (it != __cachetexture.end()) return it->second;
   else return 0;
 }
@@ -1124,11 +1108,10 @@ bool GLRenderer::process(ImageTexture * texture) {
   GEOM_ASSERT_OBJ(texture);
 
 
-  Cache<GLuint>::Iterator it = __cachetexture.find(texture->getObjectId());
+  TextureCache::Iterator it = __cachetexture.find(texture->getObjectId());
   if (it != __cachetexture.end()) {
-    //  printf("bind texture : %i\n", it->second);
     __ogl->glEnable(GL_TEXTURE_2D);
-    __ogl->glBindTexture(GL_TEXTURE_2D, it->second);
+    it->second->bind();
   } 
   else {
 #ifndef PGL_CORE_WITHOUT_QT
@@ -1136,64 +1119,15 @@ bool GLRenderer::process(ImageTexture * texture) {
     if (img.load(texture->getFilename().c_str())) {
       bool notUsingMipmap = (!texture->getMipmaping()) && isPowerOfTwo(img.width()) && isPowerOfTwo(img.height());
       __ogl->glEnable(GL_TEXTURE_2D);
-      QOpenGLTexture qgl_texture(img);
-      //img = QGLWidget::convertToGLFormat(img);
-      
-      GLuint id;
-      __ogl->glGenTextures(1, &id);
-      if (id != 0) {
-        __ogl->glBindTexture(GL_TEXTURE_2D, id);
 
-        __ogl->glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-//    glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL  );
-//    glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND  );
-//    glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE  );
-
-        __ogl->glTexParameterf(GL_TEXTURE_2D,
-                        GL_TEXTURE_WRAP_S,
-                        texture->getRepeatS() ? GL_REPEAT : GL_CLAMP);
-
-        __ogl->glTexParameterf(GL_TEXTURE_2D,
-                        GL_TEXTURE_WRAP_T,
-                        texture->getRepeatT() ? GL_REPEAT : GL_CLAMP);
-
-        __ogl->glTexParameterf(GL_TEXTURE_2D,
-                        GL_TEXTURE_MAG_FILTER,
-                        GL_LINEAR);
-
-        if (notUsingMipmap) {
-         __ogl->glTexParameterf(GL_TEXTURE_2D,
-                          GL_TEXTURE_MIN_FILTER,
-                          GL_LINEAR);
-
-          qgl_texture.bind();
-          //glTexImage2D(GL_TEXTURE_2D, 0, 4, img.width(), img.height(), 0,
-          //             GL_RGBA, GL_UNSIGNED_BYTE, img.bits());
-        } else {
-#ifndef PGL_OLD_MIPMAP_STYLE
-          if (HasGenerateMipmap) {
-            __ogl->glTexParameterf(GL_TEXTURE_2D,
-                            GL_TEXTURE_MIN_FILTER,
-                            GL_LINEAR_MIPMAP_NEAREST);
-
-            __ogl->glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
-
-            qgl_texture.bind();
-            qgl_texture.generateMipMaps();
-            //glTexImage2D(GL_TEXTURE_2D, 0, 4, img.width(), img.height(), 0,
-            //             GL_RGBA, GL_UNSIGNED_BYTE, img.bits());
-
-            // __ogl->glGenerateMipmap(GL_TEXTURE_2D);
-          }
-#else
-          __ogl->gluBuild2DMipmaps( GL_TEXTURE_2D, 4, img.width(), img.height(),
-                     GL_RGBA, GL_UNSIGNED_BYTE, img.bits() );
-#endif
-        }
-        // printf("gen texture : %i\n",id);
-        // registerTexture(texture,id);
-        __cachetexture.insert(texture->getObjectId(), id);
-      }
+      QOpenGLTexture * qgl_texture = new QOpenGLTexture(img);
+      qgl_texture->setWrapMode(QOpenGLTexture::DirectionS, texture->getRepeatS() ? QOpenGLTexture::Repeat : QOpenGLTexture::ClampToEdge);
+      qgl_texture->setWrapMode(QOpenGLTexture::DirectionT, texture->getRepeatT() ? QOpenGLTexture::Repeat : QOpenGLTexture::ClampToEdge);
+      qgl_texture->setMinMagFilters(QOpenGLTexture::LinearMipMapNearest, QOpenGLTexture::LinearMipMapNearest);
+      qgl_texture->generateMipMaps();
+      qgl_texture->create();
+      qgl_texture->bind();
+      __cachetexture.insert(texture->getObjectId(), qgl_texture);
     }
 #endif
   }
