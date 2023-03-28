@@ -26,6 +26,8 @@ PglTurtle.popEvent = popEvent
 del pushEvent
 del popEvent
 
+PglTurtle.customGeometry = PglTurtle.pglShape
+
 def add_parameter(self, name, value, copy = deepcopy):
     """ Add a parameter to the Turtle that will be push and pop. For this a copy function is asked """
     setattr(self, name, value)
