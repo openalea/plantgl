@@ -131,7 +131,13 @@ def projectedBBox(bbx, direction, up):
 
 
 
-def directionalInterception(scene, directions, north = 0, horizontal = False, screenresolution = None, verbose = False, multithreaded = True):
+def directionalInterception(scene, directions, 
+                            north = 0, 
+                            horizontal = False, 
+                            screenresolution = None, 
+                            verbose = False, 
+                            multithreaded = True,
+                            infinitize = None):
 
   bbox=pgl.BoundingBox( scene )
   d_factor = max(bbox.getXRange() , bbox.getYRange() , bbox.getZRange())
@@ -162,6 +168,15 @@ def directionalInterception(scene, directions, north = 0, horizontal = False, sc
     eyepos = bbox.getCenter() - dir* d_factor * 2
     z.lookAt(eyepos, bbox.getCenter(), up) 
     z.process(scene)
+    if not infinitize is None:
+        assert len(infinitize) == 3
+        center = bbox.getCenter()
+        for i in range(2):
+            if infinitize[0] > 0 : z.periodizeBuffer(center, center+pgl.Vector3(infinitize[0],0,0)) #, False)
+            if infinitize[1] > 0 : z.periodizeBuffer(center, center+pgl.Vector3(0,infinitize[1],0))
+            if infinitize[2] > 0 : z.periodizeBuffer(center, center+pgl.Vector3(0,0,infinitize[2]))
+ 
+
     values = z.idhistogram(False)
     if not values is None:
         for shid, val in values:
@@ -169,8 +184,8 @@ def directionalInterception(scene, directions, north = 0, horizontal = False, sc
   
   return shapeLight
 
-
-def scene_irradiance(scene, directions, north = 0, horizontal = False, scene_unit = 'm', screenresolution = None, verbose = False):
+def scene_irradiance(scene, directions, north = 0, horizontal = False, scene_unit = 'm', screenresolution = None, verbose = False,
+                            infinitize = None):
     """
     Compute the irradiance received by all the shapes of a given scene.
    :Parameters:
@@ -191,7 +206,7 @@ def scene_irradiance(scene, directions, north = 0, horizontal = False, scene_uni
     conv_unit2 = conv_unit**2
 
 
-    res = directionalInterception(scene = scene, directions = directions, north = north, horizontal = horizontal, screenresolution=screenresolution, verbose=verbose)
+    res = directionalInterception(scene = scene, directions = directions, north = north, horizontal = horizontal, screenresolution=screenresolution, infinitize=infinitize, verbose=verbose)
     res = { sid : conv_unit2 * value for sid, value in res.items() }
 
     surfaces = dict([(sid, conv_unit2*sum([pgl.surface(sh.geometry) for sh in shapes])) for sid, shapes in scene.todict().items()])
