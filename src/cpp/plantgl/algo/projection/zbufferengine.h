@@ -130,13 +130,29 @@ public :
     friend class Shader;
     friend class IdBasedShader;
 
+    enum eFaceCulling {
+        eNoCulling         = 0,
+        eBackFaceCulling   = 1,
+        eFrontFaceCulling  = 2,
+        eBothFaceCulling   = 3
+    };
+
     enum eRenderingStyle {
         eDepthOnly  = 0,
         eColorBased = 1,
         eIdBased    = 2,
-        eIdAndColorBased = 3
+        eIdAndColorBased = 3,
+        eOrientationBased = 4,
+        eColorAndOrientationBased = 5,
+        eIdAndOrientationBased = 6,
+        eIdAndColorAndOrientationBased = 7,
     } ;
 
+    enum eFaceIntersection {
+        eBackFaceIntersection   = -1,
+        eNoIntersection         = 0,
+        eFrontFaceIntersection  = 1,
+    };
 
   /*! Default constructor. 
   */
@@ -145,7 +161,8 @@ public :
                 eRenderingStyle style = eColorBased,
                 const Color3& backGroundColor = Color3::BLACK,
                 uint32_t defaultId = Shape::NOID,
-                bool multithreaded = true);
+                bool multithreaded = true, 
+                eFaceCulling culling = ZBufferEngine::eNoCulling);
         
   /// Destructor
   virtual ~ZBufferEngine();
@@ -188,6 +205,7 @@ public :
    RealArray2Ptr getDepthBuffer() const { return __depthBuffer; }
    Uint32Array2Ptr getIdBuffer() const { return __idBuffer; }
    ImagePtr getIdBufferAsImage(Color4::eColor4Format conversionformat = Color4::eARGB) const;
+   BoolArray2Ptr getOrientationBuffer() const { return __orientationBuffer; }
 
    inline bool isTotallyTransparent(const Color4& c) const { return isTotallyTransparent(c.getAlpha()); }
    bool isTotallyTransparent(const real_t alpha) const ;
@@ -220,28 +238,33 @@ public :
   bool isMultiThreaded() const { return __multithreaded; }
   void setMultiThreaded(bool value) { __multithreaded = value; }
 
+  void setFaceCulling(eFaceCulling culling) { __culling = culling; }
+  const eFaceCulling getFaceCulling() const { return __culling; }
+
   virtual void process(ScenePtr scene);
 
   std::tuple<PGL(Point3ArrayPtr),PGL(Color3ArrayPtr),PGL(Uint32Array1Ptr)> grabZBufferPoints(real_t jitter = 0, real_t raywidth = 0) const;
   ScenePtr grabSortedZBufferPoints(real_t jitter = 0, real_t raywidth = 0) const;
   
   pgl_hash_map<uint32_t,uint32_t> idhistogram(bool solidangle = true) const;
+  
 protected :
     struct Fragment {
 
         real_t x,y,z;
         Color4 color;
         uint32_t id;
+        bool orientation;
 
-        Fragment(real_t _x, real_t _y, real_t _z, const Color4& _color, uint32_t _id):
-         x(_x),y(_y),z(_z),color(_color),id(_id)
+        Fragment(real_t _x, real_t _y, real_t _z, const Color4& _color, uint32_t _id, bool _orientation):
+         x(_x),y(_y),z(_z),color(_color),id(_id),orientation(_orientation)
         { 
         }
     };
 
   typedef std::queue<Fragment> FragmentQueue;
 
-  bool _tryRenderRaster(uint32_t x, uint32_t y, real_t z, const Color4& rasterColor, const uint32_t id = Shape::NOID);
+  bool _tryRenderRaster(uint32_t x, uint32_t y, real_t z, const Color4& rasterColor, const uint32_t id = Shape::NOID, const bool orientation = true);
   void _tryRenderRaster(const struct Fragment& fragment, FragmentQueue& failqueue);
 
   void _renderSegment(uchar dim, const TOOLS(Vector3)& v0Raster, const TOOLS(Vector3)& v1Raster, const Color4& c0, const Color4& c1, const uint32_t width, const uint32_t id);
@@ -250,14 +273,12 @@ protected :
   void rasterize(int32_t x0, int32_t x1, int32_t y0, int32_t y1,
                  TOOLS(Vector3) v0Raster, TOOLS(Vector3) v1Raster, TOOLS(Vector3) v2Raster, 
                  TOOLS(Vector3) v0Cam, TOOLS(Vector3) v1Cam, TOOLS(Vector3) v2Cam, 
-                 bool ccw, const uint32_t id, 
+                 const uint32_t id, 
                  const TriangleShaderPtr& shader, const ProjectionCameraPtr& camera);
   void rasterizeMT(const Index4& rect,
                    const std::tuple<Vector3,Vector3,Vector3>& vRasters, const std::tuple<Vector3,Vector3,Vector3>& vCams,
-                 //const TOOLS(Vector3)& v0Raster, const TOOLS(Vector3)& v1Raster, const TOOLS(Vector3)& v2Raster, 
-                 // const TOOLS(Vector3)& v0Cam, const TOOLS(Vector3)& v1Cam, const TOOLS(Vector3)& v2Cam, 
-                 bool ccw, const uint32_t id, 
-                 const TriangleShaderPtr& shader, const ProjectionCameraPtr& camera);
+                   const uint32_t id, 
+                   const TriangleShaderPtr& shader, const ProjectionCameraPtr& camera);
 
   void processScene(Scene::const_iterator scene_begin, Scene::const_iterator scene_end, ProjectionCameraPtr camera, uint32_t threadid = 0);
   void processSceneMT(Scene::const_iterator scene_begin, Scene::const_iterator scene_end, ProjectionCameraPtr camera, uint32_t threadid = 0);
@@ -268,10 +289,12 @@ protected :
 
   LightPtr __light;
   eRenderingStyle __style;
+  eFaceCulling __culling;
 
   RealArray2Ptr __depthBuffer;
   FrameBufferManagerPtr __frameBuffer;
   Uint32Array2Ptr __idBuffer;
+  BoolArray2Ptr __orientationBuffer;
 
   real_t __alphathreshold;
   uint32_t __defaultid;
@@ -287,6 +310,8 @@ protected :
 
   static ImageMutexPtr getImageMutex(uint16_t imageWidth, uint16_t imageHeight);
 
+  eFaceIntersection intersectionSignTest(real_t w0, real_t w1, real_t w2) const;
+  eFaceIntersection culling(eFaceIntersection intersection) const;
 
 private:
     static ImageMutexPtr IMAGEMUTEX;

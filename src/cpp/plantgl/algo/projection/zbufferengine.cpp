@@ -58,7 +58,8 @@ ZBufferEngine::ZBufferEngine(uint16_t imageWidth,
                              eRenderingStyle style,
                              const Color3& backGroundColor,
                              uint32_t defaultid,
-                             bool multithreaded ):
+                             bool multithreaded,
+                             eFaceCulling culling ):
     ImageProjectionEngine(imageWidth,imageHeight),
     __light(new Light()),
     __style(style),
@@ -67,10 +68,12 @@ ZBufferEngine::ZBufferEngine(uint16_t imageWidth,
     __depthBuffer(new RealArray2(uint_t(imageWidth), uint_t(imageHeight), REAL_MAX)),
     __frameBuffer((style & eColorBased) ? new PglFrameBufferManager(imageWidth, imageHeight, 3, backGroundColor) : NULL),
     __idBuffer((style & eIdBased) ? new Uint32Array2(uint_t(imageWidth), uint_t(imageHeight), defaultid) : NULL),
+    __orientationBuffer((style & eOrientationBased) ? new BoolArray2(uint_t(imageWidth), uint_t(imageHeight), defaultid) : NULL),
     __imageMutex(),
     __triangleshader((style != eDepthOnly) ? new TriangleShaderSelector(this) : NULL),
     __triangleshaderset(NULL),
-    __multithreaded(multithreaded)
+    __multithreaded(multithreaded),
+    __culling(culling)
 {
     beginProcess();
 }    
@@ -222,11 +225,11 @@ bool ZBufferEngine::renderRaster(uint32_t x, uint32_t y, real_t z, const Color4&
 
 void ZBufferEngine::_tryRenderRaster(const struct Fragment& fragment, FragmentQueue& failqueue)
 {
-    if (!_tryRenderRaster(fragment.x, fragment.y, fragment.z, fragment.color, fragment.id))
+    if (!_tryRenderRaster(fragment.x, fragment.y, fragment.z, fragment.color, fragment.id, fragment.orientation))
         failqueue.push(fragment);
 }
 
-bool ZBufferEngine::_tryRenderRaster(uint32_t x, uint32_t y, real_t z, const Color4& rasterColor, const uint32_t id)
+bool ZBufferEngine::_tryRenderRaster(uint32_t x, uint32_t y, real_t z, const Color4& rasterColor, const uint32_t id, const bool orientation)
 {
     if (isTotallyTransparent(rasterColor.getAlpha())) return false;
 
@@ -238,6 +241,9 @@ bool ZBufferEngine::_tryRenderRaster(uint32_t x, uint32_t y, real_t z, const Col
             }
             if(__style & eIdBased){
                 __idBuffer->setAt(x, y, id);
+            }
+            if(__style & eOrientationBased){
+                __idBuffer->setAt(x, y, orientation);
             }
         }
         unlock(x,y);
@@ -304,9 +310,15 @@ void ZBufferEngine::iprocess(TriangleSetPtr triangles, AppearancePtr appearance,
 }
 
 
-void ZBufferEngine::renderShadedTriangle(const TOOLS(Vector3)& v0, const TOOLS(Vector3)& v1, const TOOLS(Vector3)& v2, bool ccw, const uint32_t id, const TriangleShaderPtr& shader,  const ProjectionCameraPtr& camera)
+void ZBufferEngine::renderShadedTriangle(const TOOLS(Vector3)& v0, const TOOLS(Vector3)& v1_, const TOOLS(Vector3)& v2_, bool ccw, const uint32_t id, const TriangleShaderPtr& shader,  const ProjectionCameraPtr& camera)
 {
-    
+    Vector3 v1 = v1_;
+    Vector3 v2 = v2_;
+    if (ccw == false) {
+        v1 = v2_;
+        v2 = v1_;
+    }
+
      // Projection in camera space
     Vector3 v0Cam = camera->worldToCamera(v0);
     Vector3 v1Cam = camera->worldToCamera(v1);
@@ -375,12 +387,11 @@ void ZBufferEngine::renderShadedTriangle(const TOOLS(Vector3)& v0, const TOOLS(V
 
         ThreadManager::get().new_task(boost::bind(&ZBufferEngine::rasterizeMT, this, Index4(x0,x1,y0,y1), 
                                                   // v0Raster, v1Raster, v2Raster, v0Cam,v1Cam,v2Cam,
-                                                  vRasters,vCams,
-                                                  ccw, id, 
+                                                  vRasters, vCams, id, 
                                                   (getRenderingStyle() & eColorBased) ? TriangleShaderPtr(shader->copy()) : shader, ProjectionCameraPtr(camera->copy())));
     }
     else {
-        rasterize(x0,x1,y0,y1,v0Raster,v1Raster,v2Raster,v0Cam,v1Cam,v2Cam,ccw,id,shader,camera);
+        rasterize(x0,x1,y0,y1,v0Raster,v1Raster,v2Raster,v0Cam,v1Cam,v2Cam,id,shader,camera);
     }
 }
 
@@ -389,16 +400,14 @@ void ZBufferEngine::renderShadedTriangle(const TOOLS(Vector3)& v0, const TOOLS(V
 void ZBufferEngine::rasterizeMT(const Index4& rect,
                                 const std::tuple<Vector3,Vector3,Vector3>& vRasters, 
                                 const std::tuple<Vector3,Vector3,Vector3>& vCams,
-                              // const TOOLS(Vector3)& v0Raster, const TOOLS(Vector3)& v1Raster, const TOOLS(Vector3)& v2Raster, 
-                            // const TOOLS(Vector3)& v0Cam,    const TOOLS(Vector3)& v1Cam,    const TOOLS(Vector3)& v2Cam,
-                              bool ccw, const uint32_t id, 
-                              const TriangleShaderPtr& shader, const ProjectionCameraPtr& camera)
+                                const uint32_t id, 
+                                const TriangleShaderPtr& shader, const ProjectionCameraPtr& camera)
 {
     rasterize(rect[0],rect[1],rect[2],rect[3],
               std::get<0>(vRasters),std::get<1>(vRasters),std::get<2>(vRasters),
               std::get<0>(vCams),std::get<1>(vCams),std::get<2>(vCams),
              // v1Raster,v2Raster,v0Cam,v1Cam,v2Cam,
-              ccw,id,shader,camera);  
+              id,shader,camera);  
 }
 
 void findorder(real_t * zs, int& firstpoint, int& secpoint, int& thirdpoint){
@@ -408,31 +417,53 @@ void findorder(real_t * zs, int& firstpoint, int& secpoint, int& thirdpoint){
     if (zs[firstpoint] < zs[secpoint]) std::swap(firstpoint, secpoint);
 }
 
+ZBufferEngine::eFaceIntersection ZBufferEngine::intersectionSignTest(real_t w0, real_t w1, real_t w2) const {
+    if (w0 > -GEOM_EPSILON && w1 > -GEOM_EPSILON && w2 > -GEOM_EPSILON) return eFrontFaceIntersection;
+    else if (w0 < GEOM_EPSILON && w1 < GEOM_EPSILON && w2 < GEOM_EPSILON) return eBackFaceIntersection;
+    else return eNoIntersection;
+}
+
+ZBufferEngine::eFaceIntersection ZBufferEngine::culling(ZBufferEngine::eFaceIntersection intersection) const {
+    if (__culling == eBothFaceCulling)
+        return eNoIntersection;
+    else if (__culling == eFrontFaceCulling && intersection == eFrontFaceIntersection)
+        return eNoIntersection;
+    else if (__culling == eBackFaceCulling && intersection == eBackFaceIntersection)
+        return eNoIntersection;
+    return intersection;
+}
+
 void ZBufferEngine::rasterize(int32_t x0, int32_t x1, int32_t y0, int32_t y1,
                               TOOLS(Vector3) v0Raster, TOOLS(Vector3) v1Raster, TOOLS(Vector3) v2Raster, 
-                              TOOLS(Vector3) v0Cam, TOOLS(Vector3) v1Cam, TOOLS(Vector3) v2Cam, 
-                              bool ccw, const uint32_t id, 
+                              TOOLS(Vector3) v0Cam, TOOLS(Vector3) v1Cam, TOOLS(Vector3) v2Cam, const uint32_t id, 
                               const TriangleShaderPtr& shader, const ProjectionCameraPtr& camera)
 {
 
-    // printf("rasterize [%i,%i]*[%i,%i]\n",x0,x1,y0,y1);
-    // printf("rasterize [%f,%f] - [%f,%f] - [%f,%f]\n",v0Raster.x(),v0Raster.y(),v1Raster.x(),v1Raster.y(),v2Raster.x(),v2Raster.y());
+    if (__culling == ZBufferEngine::eBothFaceCulling) return;
 
     real_t z0 = v0Raster.z();
     real_t z1 = v1Raster.z();
     real_t z2 = v2Raster.z();
 
-    // Precompute reciprocal of vertex z-coordinate
+    Vector3 normal = cross(v1Cam-v0Cam, v2Cam-v0Cam);
+
+    if (camera->methodType() == ProjectionCamera::eProjection){
+        bool orientation = normal.z() > -GEOM_EPSILON;
+        if ( __culling == eFrontFaceCulling && orientation) return;
+        else if ( __culling == eBackFaceCulling && !orientation) return;
+    }
+
+    // Precompute area of triangle
     real_t area;
     if (camera->methodType() == ProjectionCamera::eRayIntersection){
-        area = norm(cross(v0Cam-v1Cam, v0Cam-v2Cam));
+        area = norm(normal);
     }
     else {
         v0Raster.z() = 1. / v0Raster.z();
         v1Raster.z() = 1. / v1Raster.z();
         v2Raster.z() = 1. / v2Raster.z();
 
-        area = edgeFunction(v0Raster, v1Raster, v2Raster, ccw);
+        area = edgeFunction(v0Raster, v1Raster, v2Raster);
     }
 
     FragmentQueue fragqueue;
@@ -442,7 +473,7 @@ void ZBufferEngine::rasterize(int32_t x0, int32_t x1, int32_t y0, int32_t y1,
         if (camera->isValidPixel(x0,y0,__imageWidth, __imageHeight)){
             real_t z = (z0+z1+z2)/3;
             real_t w0 = 1/3.;
-            _tryRenderRaster(Fragment(x0,y0,z, is_valid_ptr(shader) ? shader->process(x0, y0, z, (w0 * z / z0), (w0 * z / z1), (w0 * z / z2)) : Color4::BLACK, id), fragqueue );
+            _tryRenderRaster(Fragment(x0,y0,z, is_valid_ptr(shader) ? shader->process(x0, y0, z, (w0 * z / z0), (w0 * z / z1), (w0 * z / z2)) : Color4::BLACK, id, true), fragqueue );
         }
     }
     else {
@@ -453,13 +484,15 @@ void ZBufferEngine::rasterize(int32_t x0, int32_t x1, int32_t y0, int32_t y1,
                 if (camera->methodType() == ProjectionCamera::eProjection){
 
                     // find weight of pixel
-                    real_t w0 = edgeFunction(v1Raster, v2Raster, pixelSample, ccw);
-                    real_t w1 = edgeFunction(v2Raster, v0Raster, pixelSample, ccw);
-                    real_t w2 = edgeFunction(v0Raster, v1Raster, pixelSample, ccw);
+                    real_t w0 = edgeFunction(v1Raster, v2Raster, pixelSample);
+                    real_t w1 = edgeFunction(v2Raster, v0Raster, pixelSample);
+                    real_t w2 = edgeFunction(v0Raster, v1Raster, pixelSample);
 
                     // printf("%i %i : %f %f %f\n", x,y,w0,w1,w2);
 
-                    if ((w0 > -GEOM_EPSILON && w1 > -GEOM_EPSILON && w2 > -GEOM_EPSILON) || (w0 < GEOM_EPSILON && w1 < GEOM_EPSILON && w2 < GEOM_EPSILON)) {
+                    eFaceIntersection intersection = culling(intersectionSignTest(w0,w1,w2));
+
+                    if (intersection != eNoIntersection){
                         w0 /= area;
                         w1 /= area;
                         w2 /= area;
@@ -469,20 +502,26 @@ void ZBufferEngine::rasterize(int32_t x0, int32_t x1, int32_t y0, int32_t y1,
 
                         // Depth-buffer test
                         if (camera->isInZRange(z)){
-                            _tryRenderRaster(Fragment(x,y,z, is_valid_ptr(shader) ? shader->process(x, y, z, (w0 * z / z0), (w1 * z / z1), (w2 * z / z2)) : Color4::BLACK, id), fragqueue );
+                            _tryRenderRaster(Fragment(x,y,z, is_valid_ptr(shader) ? shader->process(x, y, z, (w0 * z / z0), (w1 * z / z1), (w2 * z / z2)) : Color4::BLACK, id, intersection == eFrontFaceIntersection), fragqueue );
                         }
                     }
                 }
                 else {
                     if (camera->isValidPixel(pixelSample.x(),pixelSample.y(),__imageWidth, __imageHeight)){
                         Vector3 intersection;
-                        int intersected = __camera->rasterToCameraRay(pixelSample.x(), pixelSample.y(), __imageWidth, __imageHeight).intersect(v0Cam, v1Cam, v2Cam, intersection);
+                        Ray ray = __camera->rasterToCameraRay(pixelSample.x(), pixelSample.y(), __imageWidth, __imageHeight);
+                        int intersected = ray.intersect(v0Cam, v1Cam, v2Cam, intersection);
+
+                        bool orientation = dot(normal, ray.getDirection()) < GEOM_EPSILON;
+                        if ( __culling == eFrontFaceCulling && orientation) continue;
+                        else if ( __culling == eBackFaceCulling && !orientation) continue;
+
                         if (intersected == 1){
                             real_t w0 = norm(cross(v1Cam-v2Cam, v1Cam-intersection));
                             real_t w1 = norm(cross(v2Cam-v0Cam, v2Cam-intersection));
                             real_t w2 = norm(cross(v0Cam-v1Cam, v0Cam-intersection));
                             real_t z = norm(intersection);
-                            _tryRenderRaster(Fragment(x,y,z, is_valid_ptr(shader) ? shader->process(x, y, z, (w0 / area), (w1 / area), (w2 / area)) : Color4::BLACK, id), fragqueue );
+                            _tryRenderRaster(Fragment(x,y,z, is_valid_ptr(shader) ? shader->process(x, y, z, (w0 / area), (w1 / area), (w2 / area)) : Color4::BLACK, id, orientation), fragqueue );
                         }
                     }
                 }

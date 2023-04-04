@@ -197,7 +197,8 @@ class PglViewer (QGLViewer):
         self.setAnimation(eAnimatedPrimitives)
         self.bufferDuplication = False
         self.renderingStyle = eColorBased
-        self.renderingMultithreaded = False
+        self.renderingMultithreaded = True
+        self.renderingCulling = eNoCulling
         self.hemisphericangle = 180
         self.scanshowed = False
         if hasattr(self,'updateGL'):
@@ -214,6 +215,7 @@ class PglViewer (QGLViewer):
         self.setKeyDescription(Qt.Key_M, 'Toogle Multithread')
         self.setKeyDescription(Qt.Key_F, 'Export to Povray')
         self.setKeyDescription(Qt.Key_S, 'Export Scan View to 3D Scene')
+        self.setKeyDescription(Qt.Key_C, 'Swith Culling mode')
         pos = ogl.glGetLightfv(ogl.GL_LIGHT0, ogl.GL_POSITION)
         self.lighManipulator.setPosition(pos[0], pos[1], pos[2])
         self.lighManipulator.manipulated.connect(self.setLightPosition)
@@ -263,6 +265,12 @@ class PglViewer (QGLViewer):
             self.renderingMultithreaded = not self.renderingMultithreaded
             print('Multithread',self.renderingMultithreaded)
             self.update()
+        elif event.key() == Qt.Key_C:
+            values = list(eFaceCulling.values.values())
+            self.renderingCulling = values[(values.index(self.renderingCulling)+1)%len(values)]
+            print('Culling',self.renderingCulling.name)
+            self.update()
+            self.renderingCulling
         else:
             QGLViewer.keyPressEvent(self, event)
 
@@ -295,6 +303,17 @@ class PglViewer (QGLViewer):
 
     def draw(self): 
         self.updateLight()
+        if self.renderingCulling == eNoCulling:
+            ogl.glDisable(ogl.GL_CULL_FACE)
+        else:
+            ogl.glEnable(ogl.GL_CULL_FACE)
+            if self.renderingCulling == eBackFaceCulling:
+                ogl.glCullFace(ogl.GL_BACK)
+            elif self.renderingCulling == eFrontFaceCulling:
+                ogl.glCullFace(ogl.GL_FRONT)
+            elif self.renderingCulling == eBothFaceCulling:
+                ogl.glCullFace(ogl.GL_FRONT_AND_BACK)
+
         if self.scene and self.glrenderer.beginSceneList():
             self.glrenderer.beginProcess()
             self.scene.apply(self.glrenderer)
@@ -363,7 +382,7 @@ class PglViewer (QGLViewer):
         #if self.renderingStyle == eIdBased:
         #    z = ZBufferEngine(self.width(),self.height(), toC4(self.backgroundColor()).toUint(eABGR), eABGR)
         #else:
-        z = ZBufferEngine(self.width(),self.height(), self.renderingStyle, toC3(self.backgroundColor()))
+        z = ZBufferEngine(self.width(),self.height(), self.renderingStyle, toC3(self.backgroundColor()),faceculling=self.renderingCulling)
         z.multithreaded = self.renderingMultithreaded
         znear, zfar = camera.zNear(), camera.zFar()
         #if self.camera().type() == Camera.PERSPECTIVE:
@@ -450,6 +469,7 @@ class PglViewer (QGLViewer):
             self.povlabel = QLabel(self.parent())
             self.povlabel.setMinimumSize(self.minimumSize())
             self.povlabel.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
+            self.parent().layout().addWidget(self.povlabel,0,2)
             #self.povlabel.setSizePolicy(QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed))
         import qimage2ndarray as qn
         qimage = qn.array2qimage(img)                                                                                                                                                                 
@@ -459,16 +479,19 @@ class PglViewer (QGLViewer):
 
 def main():
     qapp = QApplication([])
-    hSplit  = QSplitter(Qt.Horizontal)
+    #hSplit  = QSplitter(Qt.Horizontal)
+    widget = QWidget()
+    hSplit  = QGridLayout(widget)
+    widget.setLayout(hSplit)
     
-    #scene = Scene([Shape(Sphere(10),Material((200,50,100),2))])
+    scene = Scene([Shape(Sphere(10),Material((200,50,100),2))])
     #scene = Scene([Shape(Cylinder(1,10),Material((100,25,50),4))])
     points = [(0,0,0),(0,20,0),(0,0,-10)]
     #scene = Scene([Shape(TriangleSet(points, [range(3)], colorList=[(255,0,0,0),(0,255,0,0),(0,0,255,0)],colorPerVertex=True),id=3), Shape(PointSet(points, width=10),id=100)])
     #scene = Scene([Shape(Polyline([(0,0,0),(1,0,1)], width=3),Material((200,50,100),2))])
     #scene = Scene('data/cow.obj')
     #scene = Scene('../share/plantgl/database/advancedgraphics/tulipa.geom')
-    scene = Scene('../share/plantgl/database/advancedgraphics/mango.bgeom')
+    #scene = Scene('../share/plantgl/database/advancedgraphics/mango.bgeom')
     #scene = Scene('../share/plantgl/database/examples/snowmanshape.geom')
     #scene = Scene('/Users/fboudon/Dropbox/mtpellier_training/project/benchmark_data/GDR_12_r1.txt')
     #scene[0].geometry.geometry.width=10
@@ -477,21 +500,23 @@ def main():
 
 
     # Instantiate the viewers.
-    right  = PglViewer(hSplit)
+    right  = PglViewer(widget)
     right.setMinimumSize(QSize(w,h))
     right.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
     #right.setSizePolicy(QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed))
     right.setScene(scene)
+    hSplit.addWidget(right,0,0)
 
-    left   = MLabel(hSplit, right)
+    left   = MLabel(widget, right)
     left.setMinimumSize(QSize(w,h))
     left.setSizePolicy(QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding))
     #left.setSizePolicy(QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed))
+    hSplit.addWidget(left,0,1)
 
     right.label = left
     
-    hSplit.setWindowTitle("multiView")    
-    hSplit.show()
+    widget.setWindowTitle("multiView")    
+    widget.show()
     #right.show()
     qapp.exec_()
 

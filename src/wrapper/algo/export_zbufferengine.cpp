@@ -70,12 +70,32 @@ void export_ZBufferEngine()
     .value("eIdBased",ZBufferEngine::eIdBased)
     .value("eDepthOnly",ZBufferEngine::eDepthOnly)
     .value("eIdAndColorBased",ZBufferEngine::eIdAndColorBased)
+    .value("eOrientationBased",ZBufferEngine::eIdAndColorBased)
+    .value("eColorAndOrientationBased",ZBufferEngine::eColorAndOrientationBased)
+    .value("eIdAndOrientationBased",ZBufferEngine::eIdAndOrientationBased)
+    .value("eIdAndColorAndOrientationBased",ZBufferEngine::eIdAndColorAndOrientationBased)
       .export_values()
       ;
 
 
+   enum_<ZBufferEngine::eFaceCulling>("eFaceCulling")
+    .value("eNoCulling",ZBufferEngine::eNoCulling)
+    .value("eBackFaceCulling",ZBufferEngine::eBackFaceCulling)
+    .value("eFrontFaceCulling",ZBufferEngine::eFrontFaceCulling)
+    .value("eBothFaceCulling",ZBufferEngine::eBothFaceCulling)
+    .export_values()
+    ;
+
+
   class_< ZBufferEngine, bases<ProjectionEngine>, boost::noncopyable > 
-      ("ZBufferEngine", init<uint16_t, uint16_t, ZBufferEngine::eRenderingStyle, const Color3&, uint32_t, bool>("Construct a ZBufferEngine.",(bp::arg("imageWidth")=800, bp::arg("imageHeight")=600, bp::arg("renderingStyle") = ZBufferEngine::eColorBased, bp::arg("backGroundColor")=Color3(0,0,0), bp::arg("defaultId")=Shape::NOID, bp::arg("multithreaded")=true)) )
+      ("ZBufferEngine", init<uint16_t, uint16_t, ZBufferEngine::eRenderingStyle, const Color3&, uint32_t, bool, ZBufferEngine::eFaceCulling>("Construct a ZBufferEngine.",
+                        (bp::arg("imageWidth")=800, 
+                         bp::arg("imageHeight")=600, 
+                         bp::arg("renderingStyle") = ZBufferEngine::eColorBased, 
+                         bp::arg("backGroundColor")=Color3(0,0,0), 
+                         bp::arg("defaultId")=Shape::NOID, 
+                         bp::arg("multithreaded")=true, 
+                         bp::arg("faceculling")=ZBufferEngine::eNoCulling)))
       .def("setLight", (void(ZBufferEngine::*)(const Vector3&, const Color3&, bool))&ZBufferEngine::setLight, (bp::arg("position"), bp::arg("color")=Color3(255,255,255), bp::arg("directional")=false))
       .def("setLight", (void(ZBufferEngine::*)(const Vector3&, const Color3&, const Color3&, const Color3&, bool))&ZBufferEngine::setLight, (bp::arg("position"), bp::arg("ambient")=Color3(255,255,255), bp::arg("diffuse")=Color3(255,255,255), bp::arg("specular")=Color3(255,255,255), bp::arg("directional")=false))
       .def("setHemisphericCamera", &ZBufferEngine::setHemisphericCamera, (bp::arg("near")=0,bp::arg("far")=REAL_MAX))
@@ -86,7 +106,9 @@ void export_ZBufferEngine()
       .def("getDepthBuffer", &ZBufferEngine::getDepthBuffer)
       .def("getIdBuffer", &ZBufferEngine::getIdBuffer)
       .def("getIdBufferAsImage", &ZBufferEngine::getIdBufferAsImage,(bp::arg("conversionFormat")=Color4::eARGB))
+      .def("getOrientationBuffer", &ZBufferEngine::getOrientationBuffer)
       .add_property("multithreaded",&ZBufferEngine::isMultiThreaded, &ZBufferEngine::setMultiThreaded)
+      .add_property("faceculling",&ZBufferEngine::getFaceCulling, &ZBufferEngine::setFaceCulling)
 
 
       .def("duplicateBuffer", (void(ZBufferEngine::*)(const Vector3&, const Vector3&, bool, const Color3&))&ZBufferEngine::duplicateBuffer,(bp::arg("from"), bp::arg("to")=600, bp::arg("useDefaultColor")=true, bp::arg("defaultcolor")=Color3(0,0,0)))
