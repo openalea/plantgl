@@ -49,6 +49,12 @@ if PGL_QT_VERSION == 6:
     except ImportError as ie:
         print("cannot import PySide6  FIX IT !!")
 
+elif PGL_QT_VERSION == 5:
+        try :
+            import PySide2
+            os.environ[QT_API] = PYSIDE2_API[0]
+        except ImportError as ie:
+            os.environ[QT_API] = PYQT5_API[0]
 elif PGL_QT_VERSION == 4:
         try :
             import PySide

@@ -6,7 +6,7 @@ Provides QtGui classes and functions.
     this package as if it was ``PyQt5.QtGui`` module.
 """
 import os
-from openalea.plantgl.gui.qt import QT_API, PYQT5_API, PYQT4_API, PYSIDE_API, PYSIDE6_API
+from openalea.plantgl.gui.qt import QT_API, PYQT5_API, PYQT4_API, PYSIDE_API, PYSIDE2_API, PYSIDE6_API
 
 if os.environ[QT_API] in PYSIDE6_API:
     from PySide6.QtWidgets import *

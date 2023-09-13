@@ -1137,7 +1137,7 @@ RealArray2Ptr PGL(formFactors)(const Point3ArrayPtr& points,
         Vector3 normal = (is_valid_ptr(normals) ? normals->getAt(id) : cross(v1-v0,v2-v0));
         if(normal.normalize() > GEOM_EPSILON){
             Vector3 up = v0-center;
-            ZBufferEngine ze(discretization,discretization,ZBufferEngine::eIdBased, Color3::BLACK, Shape::NOID, false);
+            ZBufferEngine ze(discretization,discretization,ZBufferEngine::eIdBased, Color3::BLACK, Shape::NOID, true);
             ze.setHemisphericCamera();
             ze.lookAt(center, center+normal, up);
             uint32_t id2 = 0;

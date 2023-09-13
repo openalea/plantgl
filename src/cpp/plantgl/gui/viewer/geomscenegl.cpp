@@ -587,11 +587,11 @@ ViewGeomSceneGL::selectionEvent(uint_t id)
   if(_it!=__selectedShapes.end()){
     ShapePtr ptr = dynamic_pointer_cast<Shape>(get_item_value(_it));
     __selectedShapes.erase(_it);
-    uint_t _id = (ptr->getId() == Shape::NOID?id:ptr->getObjectId());
-    info("*** Comment : "+tr("Shape")+" " +QString::number(_id)+ " "+tr("unselected")+".");
+    QString _id = (ptr->getId() != Shape::NOID?QString::number(ptr->getId()):QString("NOID"));
+    info("*** Comment : "+tr("Shape")+" " +QString::number(ptr->getObjectId())+ " "+tr("unselected")+".");
     status(tr("Shape")+" "
-      + (ptr->isNamed()?QString((ptr->getName()+" ").c_str()):"")+"(Id=" +QString::number(_id)
-      + ") "+tr("unselected")+".",20000);
+      + (ptr->isNamed()?QString((ptr->getName()+" ").c_str()):"")+"(Id=" +_id
+      + ") (Uid="+QString::number(ptr->getObjectId())+") "+tr("unselected")+".",20000);
   }
   else {
     ShapePtr ptr;
@@ -600,11 +600,11 @@ ViewGeomSceneGL::selectionEvent(uint_t id)
       if((ptr = dynamic_pointer_cast<Shape>(*_it)) &&
         ((uint_t)ptr->getObjectId() == id)){
         __selectedShapes[id]=ptr;
-        uint_t _id = (ptr->getId() == Shape::NOID?id:ptr->getObjectId());
-        info("*** Comment : "+tr("Shape")+" " +QString::number(_id)+ " "+tr("selected")+".");
+    QString _id = (ptr->getId() != Shape::NOID?QString::number(ptr->getId()):QString("NOID"));
+        info("*** Comment : "+tr("Shape")+" " +QString::number(ptr->getObjectId())+ " "+tr("selected")+".");
         status(tr("Shape")+" "
-               + (ptr->isNamed()?QString((ptr->getName()+" ").c_str()):"")+"(Id=" +QString::number(_id)
-               + ") "+tr("selected")+".",20000);
+               + (ptr->isNamed()?QString((ptr->getName()+" ").c_str()):"")+"(Id=" +_id
+               + ") (Uid="+QString::number(ptr->getObjectId())+") "+tr("selected")+".",20000);
         emit selectionChanged(ptr->getName().c_str());
         break;
       }

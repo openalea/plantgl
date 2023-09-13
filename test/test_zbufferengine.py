@@ -161,7 +161,7 @@ def test_formfactors():
     tr.apply(t)
     tr = t.result
     print(tr.pointList,tr.indexList)
-    result = formFactors(tr.pointList,tr.indexList,ccw=True,solidangle=True)
+    result = formFactors(tr.pointList,tr.indexList,ccw=True,solidangle=False)
     print(result)
 
 def test_solidangle(view = False):
@@ -183,8 +183,29 @@ def test_solidangle(view = False):
         plt.colorbar(p)
         plt.show()
 
+def test_doublesphere(view = False):
+    s = Scene([Shape(Sphere(0.5,32,32),id=2), Shape(Translated(-5,0.5,0, Sphere(0.5,32,32)),id=5)])
+    cam = (-10,0,0)
+    z = ZBufferEngine(800,800, renderingStyle=eIdAndColorBased)
+    z.setPerspectiveCamera(60,1,0.1,1000) 
+    z.lookAt(cam,(0,0,0),(0,0,1))
+    z.process(s)
+    #print('getImage')
+    #i = z.getImage()
+    #if view:
+    #    plt.imshow(i.to_array())
+    #    plt.show()
+    ## Virtual Scan
+    points, colors, ids = z.grabZBufferPoints(0.05, 0.8)
+    if view:
+        Viewer.display(PointSet(points, Color4Array(list(map(Color4,colors)))))
+    ## Light Interception
+    
+
+
 if __name__ == '__main__':
-    test_solidangle()
+    #test_solidangle()
     #test_formfactors()
     #test_hemispheric_point()
     #test_projected_sphere(True)
+    test_doublesphere(True)

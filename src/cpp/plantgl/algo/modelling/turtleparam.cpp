@@ -111,31 +111,6 @@ TurtleParam::TurtleParam() :
 {
 }
 
-TurtleParam::TurtleParam(const TurtleParam& origin) :
-        TurtleDrawParameter(origin),
-        position(origin.position),
-        heading(origin.heading),
-        left(origin.left),
-        up(origin.up),
-        scale(origin.scale),
-        reflection(origin.reflection),
-        lastId(origin.lastId),
-        width(origin.width),
-        tropism(origin.tropism),
-        elasticity(origin.elasticity),
-        screenCoordinates(origin.screenCoordinates),
-        __polygon(origin.__polygon),
-        __generalizedCylinder(origin.__generalizedCylinder),
-        pointList(new Point3Array(*origin.pointList.get())),
-        leftList(origin.leftList),
-        radiusList(origin.radiusList),
-        customId(origin.customId),
-        customParentId(origin.customParentId),
-        sectionResolution(origin.sectionResolution),
-        initial(origin.initial)
-{
-}
-
 TurtleParam::~TurtleParam() {}
 
 void
@@ -166,7 +141,10 @@ TurtleParam::reset(){
 
 TurtleParam * TurtleParam::copy(){
   TurtleParam * t = new TurtleParam(*this);
-  if(t->guide)t->guide = t->guide->copy();
+  if(t->guide){
+    t->guide = t->guide->copy();
+    printf("TurtleParam>Copy>Guide:%s\n",(t->guide?"True":"False"));
+  }
   if(!__polygon)t->pointList = new Point3Array(*t->pointList);
   return t;
 }

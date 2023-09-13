@@ -96,7 +96,7 @@ class ALGO_API TurtleParam  : public TurtleDrawParameter {
 public:
     /// Constructor
     TurtleParam();
-    TurtleParam(const TurtleParam& origin);
+    // TurtleParam(const TurtleParam& origin);
 
     /// Destructor
     virtual ~TurtleParam();

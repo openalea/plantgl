@@ -86,3 +86,4 @@ _pgl*.dylib
 
 .vscode
 test/geomprinteroutput.geom
+examples/povray

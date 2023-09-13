@@ -262,10 +262,10 @@ IndexArrayPtr py_cut(RealArray * a, RealArrayPtr bins, bool filteremptygroups = 
 
 void export_arrays()
 {
-  EXPORT_ARRAY_CT( c3a, Color3Array, "Color3Array([Index3(i,j,k),...])" )
+  EXPORT_ARRAY_CT( c3a, Color3Array, "Color3Array([Color3(i,j,k),...])" )
     DEFINE_NUMPY( c3a );
   EXPORT_CONVERTER(Color3Array);
-  EXPORT_ARRAY_CT( c4a, Color4Array, "Color4Array([Index4(i,j,k,l),...])" )
+  EXPORT_ARRAY_CT( c4a, Color4Array, "Color4Array([Color4(i,j,k,l),...])" )
     DEFINE_NUMPY( c4a );
   EXPORT_CONVERTER(Color4Array);
 
