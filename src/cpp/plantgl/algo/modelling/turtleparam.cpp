@@ -143,7 +143,6 @@ TurtleParam * TurtleParam::copy(){
   TurtleParam * t = new TurtleParam(*this);
   if(t->guide){
     t->guide = t->guide->copy();
-    printf("TurtleParam>Copy>Guide:%s\n",(t->guide?"True":"False"));
   }
   if(!__polygon)t->pointList = new Point3Array(*t->pointList);
   return t;
