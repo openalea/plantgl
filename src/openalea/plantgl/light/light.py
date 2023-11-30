@@ -191,7 +191,7 @@ def scene_irradiance(scene, directions, north = 0, horizontal = False, scene_uni
    :Parameters:
     - `scene` : scene for which the irradiance has to be computed
     - `directions` : list of tuple composed of the an azimuth, an elevation and an irradiance (in J.s-1.m-2)
-    - `north` : the angle between the north direction of the azimuths (in degrees)
+    - `north` : the angle between the north direction of the azimuths (in degrees-counter clockwise). Warning: it is given in clockwise in Caribu.
     - `horizontal` : specify if the irradiance use an horizontal convention (True) or a normal direction (False)
     - `scene_unit` : specify the units in which the scene is built. Convert then all the result in m.
 
