@@ -1,6 +1,9 @@
 cd build
-export SDKPATH=`xcrun --show-sdk-path`
-export SDKPATH=/Users/fboudon/Develop/SDK/MacOSX10.13.sdk
+
+#export SDKPATH=/Users/fboudon/Develop/SDK/MacOSX10.13.sdk
+if [ -z "${SDKPATH}" ]; then 
+    export SDKPATH=`xcrun --show-sdk-path`
+fi
 
 cmake -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX} \
       -DCMAKE_PREFIX_PATH=${CONDA_PREFIX} \
@@ -20,7 +23,3 @@ make
 make install
 cd ..
 python setup.py install
-
-{
-    
-}
