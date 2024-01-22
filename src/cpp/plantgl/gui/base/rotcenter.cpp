@@ -47,6 +47,9 @@
 #include "util_qwidget.h"
 
 #include <plantgl/scenegraph/geometry/boundingbox.h>
+#include <plantgl/scenegraph/geometry/sphere.h>
+#include <plantgl/algo/base/discretizer.h>
+#include <plantgl/algo/opengl/glrenderer.h>
 #include <plantgl/math/util_math.h>
 
 #include <QtCore/qfile.h>
@@ -69,7 +72,7 @@
     #include <QtGui/qmainwindow.h>
 #endif
 
-#include <QtOpenGL/qgl.h>
+#include <QOpenGLWidget>
 #include <plantgl/algo/opengl/util_glut.h>
 
 PGL_USING_NAMESPACE
@@ -77,9 +80,9 @@ PGL_USING_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 ViewRotCenterGL::ViewRotCenterGL(ViewCameraGL *camera,
-                 QGLWidget * parent,
-                 const char * name):
-  ViewRelativeObjectGL(camera,parent,name),
+                 QOpenGLBaseWidget * parent,
+                 const char * name, PGLOpenGLFunctionsPtr ogl):
+  ViewRelativeObjectGL(camera,parent,name, ogl),
   __active(false),
   __visible(false),
   __position(0,0,0),
@@ -350,28 +353,32 @@ void
 ViewRotCenterGL::initializeGL()
 {
   if (__displayList) {
-    glDeleteLists(__displayList,1);
+    __ogl->glDeleteLists(__displayList,1);
   }
 
-  __displayList = glGenLists(1);
-  glNewList(__displayList,GL_COMPILE);
+  GeometryPtr msphere(new Sphere(0.1,8,8));
+  Discretizer d;
+  GLRenderer renderer(d, NULL, __ogl);
+
+  __displayList = __ogl->glGenLists(1);
+  __ogl->glNewList(__displayList,GL_COMPILE);
   GLfloat color[] =   { 1.0, 1.0, 0.0, 1.0 };
-  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
-  glutSolidSphere(0.1,8,8);
-  glColor3f(1,1,0);
-  glBegin(GL_LINES);
-  glVertex3f(0,0,0.2f);
-  glVertex3f(0,0,-0.2f);
-  glEnd();
-  glBegin(GL_LINES);
-  glVertex3f(0,0.2f,0);
-  glVertex3f(0,-0.2f,0);
-  glEnd();
-  glBegin(GL_LINES);
-  glVertex3f(0.2f,0,0);
-  glVertex3f(-0.2f,0,0);
-  glEnd();
-  glEndList();
+  __ogl->glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
+  msphere->apply(renderer);
+  __ogl->glColor3f(1,1,0);
+  __ogl->glBegin(GL_LINES);
+  __ogl->glVertex3f(0,0,0.2f);
+  __ogl->glVertex3f(0,0,-0.2f);
+  __ogl->glEnd();
+  __ogl->glBegin(GL_LINES);
+  __ogl->glVertex3f(0,0.2f,0);
+  __ogl->glVertex3f(0,-0.2f,0);
+  __ogl->glEnd();
+  __ogl->glBegin(GL_LINES);
+  __ogl->glVertex3f(0.2f,0,0);
+  __ogl->glVertex3f(-0.2f,0,0);
+  __ogl->glEnd();
+  __ogl->glEndList();
 
   GEOM_GL_ERROR;
 
@@ -381,13 +388,13 @@ void
 ViewRotCenterGL::paintGL()
 {
   if(__active)
-    glTranslatef(-__position.x(),-__position.y(),-__position.z());
+    __ogl->glTranslatef(-__position.x(),-__position.y(),-__position.z());
   if(__visible){
-    glPushMatrix();
-    glTranslatef(__position.x(),__position.y(),__position.z());
-    glScalef(float(getStep()),float(getStep()),float(getStep()));
-    glCallList(__displayList);
-    glPopMatrix();
+    __ogl->glPushMatrix();
+    __ogl->glTranslatef(__position.x(),__position.y(),__position.z());
+    __ogl->glScalef(float(getStep()),float(getStep()),float(getStep()));
+    __ogl->glCallList(__displayList);
+    __ogl->glPopMatrix();
   }
   if(__active || __visible)  GEOM_GL_ERROR;
 }

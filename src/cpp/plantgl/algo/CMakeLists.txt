@@ -4,7 +4,7 @@ set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(BIN_DIR ${CMAKE_CURRENT_BINARY_DIR})
 
 if (BISON_FOUND AND FLEX_FOUND)
-    set(GENERATE_PARSER OM)
+    set(GENERATE_PARSER ON)
 endif()
 
 if (GENERATE_PARSER)
@@ -59,8 +59,9 @@ endif()
 
 target_link_libraries(pglalgo pgltool pglmath pglsg)
 
-if (QT5_FOUND)
-    target_link_libraries(pglalgo Qt5::Core Qt5::Widgets Qt5::OpenGL)
+target_link_libraries(pglalgo Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::OpenGL)
+if (Qt6_FOUND)
+    target_link_libraries(pglalgo Qt${QT_VERSION_MAJOR}::OpenGLWidgets)
 endif()
 
 if (CGAL_FOUND)
@@ -73,6 +74,7 @@ target_link_libraries(pglalgo ${ANN_LIBRARIES})
 target_link_libraries(pglalgo ${QHULL_LIBRARIES})
 
 if(APPLE)
+  target_link_libraries(pglalgo "-framework Metal")
   target_link_libraries(pglalgo "-framework AGL")
   target_link_libraries(pglalgo "-framework OpenGL")
 else(APPLE)

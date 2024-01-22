@@ -6,9 +6,9 @@ add_library(pgltool SHARED ${SRC_FILES})
 
 # --- Linked Libraries
 
-if (QT5_FOUND)
-    target_link_libraries(pgltool Qt5::Core)
-endif()
+#if (Qt6_FOUND)
+    target_link_libraries(pgltool Qt${QT_VERSION_MAJOR}::Core)
+#endif()
 
 if (NOT MSVC)
     target_link_libraries(pgltool Boost::system Boost::thread Boost::chrono)

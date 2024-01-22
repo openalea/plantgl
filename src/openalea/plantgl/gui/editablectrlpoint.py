@@ -3,7 +3,7 @@ from PyQGLViewer import *
 from openalea.plantgl.all import *
 
 
-from openalea.plantgl.gui.qt.QtCore import QObject,pyqtSignal
+from openalea.plantgl.gui.qt.QtCore import QObject,Signal
 
 class Pos3Setter:
     def __init__(self,ctrlpointset,index):
@@ -26,8 +26,8 @@ class CtrlPoint(ManipulatedFrame):
         The user can grab them and move them dynamically. 
         Change of value is automatically propagate to the initial structure using the position_setter function """   
 
-    translated = pyqtSignal("PyQt_PyObject","PyQt_PyObject")
-    valueChanged = pyqtSignal(int) 
+    translated = Signal("PyQt_PyObject","PyQt_PyObject")
+    valueChanged = Signal(int) 
 
     def __init__(self, position, position_setter, color = (30,30,250),id = 0):
         """Constructor 
@@ -134,7 +134,7 @@ class SelectionAxis (ManipulatedFrame):
     O,X,Y,Z = (Vec(0,0,0), Vec(1,0,0), Vec(0,1,0),  Vec(0,0,1)) # predefined axis direction
     AxisLength = 0.2  # length of axis representation
 
-    translated = pyqtSignal('PyQt_PyObject')
+    translated = Signal('PyQt_PyObject')
     
     def __init__(self, parent, direction= Vec(), material =Material(), selectionMaterial = Material((0,0,0),1)):
         """Constructor 
@@ -191,7 +191,7 @@ class SelectionAxis (ManipulatedFrame):
 
 class SelectionManipulator (ManipulatedFrame):
     
-    valueChanged = pyqtSignal()
+    valueChanged = Signal()
 
     def __init__(self):
         ManipulatedFrame.__init__(self)

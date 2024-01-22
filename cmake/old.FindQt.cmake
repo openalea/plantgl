@@ -6,7 +6,7 @@ find_package(Qt5PrintSupport CONFIG)
 
 if (Qt5Core_FOUND AND Qt5OpenGL_FOUND AND Qt5Network_FOUND AND Qt5Widgets_FOUND AND Qt5PrintSupport_FOUND)
     # Build with Qt5
-    set(QT5_FOUND ON)
+    set(Qt6_FOUND ON)
     message(STATUS "Found Qt5: Version ${Qt5Core_VERSION}")
 
     define_cpp_macro(PGL_QT_VERSION 5)
@@ -31,7 +31,7 @@ if (Qt5Core_FOUND AND Qt5OpenGL_FOUND AND Qt5Network_FOUND AND Qt5Widgets_FOUND 
     endif()
     
 else()
-    set(QT5_FOUND OFF)
+    set(Qt6_FOUND OFF)
     message(STATUS "Building without Qt - Library not found.")
     
     define_cpp_macro(PGL_WITHOUT_QT 1)

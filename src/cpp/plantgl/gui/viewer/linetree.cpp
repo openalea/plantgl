@@ -47,7 +47,7 @@
 
 #include <QtGlobal>
 #include <QtCore/qtextstream.h>
-#include <QtCore/qregexp.h>
+#include <QRegularExpression>
 #include <QtGui/qevent.h>
 #include <QtCore/qvariant.h>
 #if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
@@ -336,20 +336,20 @@ void ViewReadLinetree::setLigFile( const QString& f ){
   editLig->setText(f);
   if(__open){
     QString dta = f;
-    dta = dta.replace(QRegExp("\\.lig"),".dta");
+    dta = dta.replace(QRegularExpression("\\.lig"),".dta");
     if(QFileInfo(dta).exists()){
         setDtaFile(dta);
     }
     else {
       dta = f;
-      dta = dta.replace(QRegExp("[0-9]*\\.lig"),".dta");
+      dta = dta.replace(QRegularExpression("[0-9]*\\.lig"),".dta");
       if(QFileInfo(dta).exists())
         setDtaFile(dta);
     }
   }
   else {
     QString dta = f;
-    dta = dta.replace(QRegExp("[0-9]*\\.lig"),".dta");
+    dta = dta.replace(QRegularExpression("[0-9]*\\.lig"),".dta");
     setDtaFile(dta);
   }
   testEndianess();

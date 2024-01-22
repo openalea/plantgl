@@ -45,11 +45,7 @@
 #include <plantgl/tool/readline.h>
 #include <plantgl/algo/opengl/util_glu.h>
 
-#include <QtCore/qvariant.h>
-#include <QtCore/QSysInfo>
-#include <QtCore/qtextcodec.h>
-#include <QtCore/qfile.h>
-#include <QtCore/qtextstream.h>
+#include <QtCore>
 
 #include <QtGui/qpainter.h>
 #include <QtGui/qimage.h>
@@ -79,6 +75,17 @@
     #include <QtGui/QTreeWidget>
 #endif
 
+#include <QtGlobal>
+#include <QString>
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+namespace Qt
+{
+    static auto endl = ::endl;
+    static auto SkipEmptyParts = QString::SkipEmptyParts;
+}
+#endif
+
 //#ifdef QT3_SUPPORT
 //#include <Qt3Support/q3listview.h>
 //#endif
@@ -99,14 +106,14 @@
 #include <unistd.h>
 #endif
 #endif
-#include <QtOpenGL/qgl.h>
+#include <plantgl/gui/pglqopenglwidget.h>
 //#include <GL/gl.h>
 
 #ifdef  __GNUC__
 #if defined(__MINGW32__) || defined(__APPLE__)
 #else
 #include <GL/glx.h>
-#include <QX11Info>
+//#include <QX11Info>
 #endif
 #endif
 
@@ -456,7 +463,7 @@ static const char * wheel_logo[] = {
 
 /* ----------------------------------------------------------------------- */
 
-ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name, bool modal, Qt::WindowFlags fl )
+ViewSysInfo::ViewSysInfo( QWidget* parent, QOpenGLBaseWidget * frameGL, const char* name, bool modal, Qt::WindowFlags fl )
   : QDialog( parent, fl )
 {
 /* ----------------------------------------------------------------------- */
@@ -892,19 +899,19 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
 
     QPixmap opengl_pix( ( const char** ) opengl_logo );
 
-    const QGLContext * context = NULL;
+    const QOpenGLBaseContext * context = NULL;
     bool _defaultgl = false;
     if(frameGL != NULL){
                 context = frameGL->context();
     }
     if(context == NULL){
-                context = QGLContext::currentContext();
+                context = QOpenGLBaseContext::currentContext();
                 if(context == 0){
                         _defaultgl = true;
-                        frameGL = new QGLWidget(this);
+                        frameGL = new QOpenGLBaseWidget(this);
                         frameGL->setGeometry(0,0,0,0);
                         frameGL->makeCurrent();
-                        context = QGLContext::currentContext();
+                        context = QOpenGLBaseContext::currentContext();
                 }
     }
 
@@ -913,7 +920,7 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
 
     if( frameGL != NULL){
                 QString _clname = frameGL->metaObject()->className();
-                if(_clname != "QGLWidget" )
+                if(_clname != "QOpenGLWidget" )
                         item4->setText( 0, tr( "GL Widget")+" (" + _clname +')'   );
                 else item4->setText( 0, tr( "GL Widget" ) );
     }
@@ -933,50 +940,66 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
 
     item = new QTreeWidgetItem( itemfgl1, item );
     item->setText( 0, tr( "Shared" ) );
-    item->setText( 1, tr( (context->isSharing() ? "Yes" : "No" ) ));
+#ifdef PGL_USE_QOPENGLWIDGET
+   item->setText( 1, tr( (context->shareContext() ? "Yes" : "No" ) ));
+#else
+   item->setText( 1, tr( (context->isSharing() ? "Yes" : "No" ) ));
+#endif
 
 /* ----------------------------------------------------------------------- */
 
-    QGLFormat _glformat;
+    QOpenGLBaseFormat _glformat;
     if(context != NULL) _glformat = context->format();
-    else _glformat = QGLFormat::defaultFormat();
+    else _glformat = QOpenGLBaseFormat::defaultFormat();
 
     QTreeWidgetItem * itemfgl2 = new QTreeWidgetItem( item4, itemfgl1 );
     itemfgl2->setText( 0, tr( "GL Format" ) );
     if(_defaultgl)itemfgl2->setText( 1, tr( "Default" ) );
 
     item = new QTreeWidgetItem( itemfgl2 );
+#ifndef PGL_USE_QOPENGLWIDGET
     item->setText( 0, tr( "Direct Rendering" ) );
     item->setText( 1, tr( (_glformat.directRendering() ? "Enable" : "Disable" ) ));
-    item = new QTreeWidgetItem( itemfgl2, item );
-    item->setText( 0, tr( "Double Buffer" ) );
-    item->setText( 1, tr( (_glformat.doubleBuffer() ? "Enable" : "Disable" )  ) );
+#else
+    item->setText( 0, tr( "Swap Behavior" ) );
+    int behav = _glformat.swapBehavior();
+    item->setText( 1, tr( QString::number(behav).toStdString().c_str() ) );
+#endif
     item = new QTreeWidgetItem( itemfgl2, item );
     item->setText( 0, tr( "Depth Buffer" ) );
-    item->setText( 1, tr( (_glformat.depth() ? "Enable" : "Disable" )  ) );
+    item->setText( 1, tr( (_glformat.depthBufferSize() ? "Enable" : "Disable" )  ) );
     item = new QTreeWidgetItem( itemfgl2, item );
     item->setText( 0, tr( "Alpha channel" ) );
+#ifndef PGL_USE_QOPENGLWIDGET
     item->setText( 1, tr( (_glformat.alpha() ? "Enable" : "Disable" )  ) );
+#else
+    item->setText( 1, tr( (_glformat.hasAlpha() ? "Enable" : "Disable" )  ) );
+#endif
     item = new QTreeWidgetItem( itemfgl2, item );
+#ifndef PGL_USE_QOPENGLWIDGET
     item->setText( 0, tr( "Accumulation buffer" ) );
     item->setText( 1, tr( (_glformat.accum() ? "Enable" : "Disable" )  ) );
+#endif
     item = new QTreeWidgetItem( itemfgl2, item );
     item->setText( 0, tr( "Stencil buffer" ) );
-    item->setText( 1, tr( (_glformat.stencil() ? "Enable" : "Disable" )  ) );
+    item->setText( 1, tr( (_glformat.stencilBufferSize() ? "Enable" : "Disable" )  ) );
     item = new QTreeWidgetItem( itemfgl2, item );
     item->setText( 0, tr( "Stereo buffering" ) );
     item->setText( 1, tr( (_glformat.stereo() ? "Enable" : "Disable" )  ) );
+#ifndef PGL_USE_QOPENGLWIDGET
     item = new QTreeWidgetItem( itemfgl2, item );
     item->setText( 0, tr( "Overlay Plane" ) );
     item->setText( 1, tr( (_glformat.hasOverlay() ? "Enable" : "Disable" )  ) );
     item = new QTreeWidgetItem( itemfgl2, item );
     item->setText( 0, tr( "Plane" ) );
     item->setText( 1, QString::number(_glformat.plane() ) );
+#endif
 
 /* ----------------------------------------------------------------------- */
+#ifndef PGL_USE_QOPENGLWIDGET
 
     if( frameGL !=0 ){
-                const QGLContext * ocontext = frameGL->overlayContext();
+                const QOpenGLBaseContext * ocontext = frameGL->overlayContext();
                 QTreeWidgetItem * itemfgl3 = new QTreeWidgetItem( item4, itemfgl2 );
                 itemfgl3->setText( 0, tr( "Overlay GL Context" ) );
                 if(ocontext == NULL) itemfgl3->setText( 1, tr( "None" ) );
@@ -991,7 +1014,7 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
 
 /* ----------------------------------------------------------------------- */
 
-                        QGLFormat _oglformat = ocontext->format();
+                        QOpenGLBaseFormat _oglformat = ocontext->format();
 
                         QTreeWidgetItem * itemfgl4 = new QTreeWidgetItem( item4, itemfgl3 );
                         itemfgl4->setText( 0, tr( "Overlay GL Format" ) );
@@ -999,21 +1022,23 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
                         item = new QTreeWidgetItem( itemfgl4 );
                         item->setText( 0, tr( "Direct Rendering" ) );
                         item->setText( 1, tr( (_oglformat.directRendering() ? "Enable" : "Disable" ) ));
-                        item = new QTreeWidgetItem( itemfgl4, item );
-                        item->setText( 0, tr( "Double Buffer" ) );
-                        item->setText( 1, tr( (_oglformat.doubleBuffer() ? "Enable" : "Disable" )  ) );
+                        // item = new QTreeWidgetItem( itemfgl4, item );
+                        // item->setText( 0, tr( "swap Behavior" ) );
+                        // int behav = _oglformat.swapBehavior();
+                        // item->setText( 1, tr( QString::number(behav).toStdString().c_str() ) );
                         item = new QTreeWidgetItem( itemfgl4, item );
                         item->setText( 0, tr( "Depth Buffer" ) );
-                        item->setText( 1, tr( (_oglformat.depth() ? "Enable" : "Disable" )  ) );
+                        item->setText( 1, tr( (_oglformat.depthBufferSize() ? "Enable" : "Disable" )  ) );
                         item = new QTreeWidgetItem( itemfgl4, item );
                         item->setText( 0, tr( "Alpha channel" ) );
                         item->setText( 1, tr( (_oglformat.alpha() ? "Enable" : "Disable" )  ) );
                         item = new QTreeWidgetItem( itemfgl4, item );
                         item->setText( 0, tr( "Accumulation buffer" ) );
+                        item->setText(1, tr(" ?? "));
                         item->setText( 1, tr( (_oglformat.accum() ? "Enable" : "Disable" )  ) );
                         item = new QTreeWidgetItem( itemfgl4, item );
                         item->setText( 0, tr( "Stencil buffer" ) );
-                        item->setText( 1, tr( (_oglformat.stencil() ? "Enable" : "Disable" )  ) );
+                        item->setText( 1, tr( (_oglformat.stencilBufferSize() ? "Enable" : "Disable" )  ) );
                         item = new QTreeWidgetItem( itemfgl4, item );
                         item->setText( 0, tr( "Stereo buffering" ) );
                         item->setText( 1, tr( (_oglformat.stereo() ? "Enable" : "Disable" )  ) );
@@ -1025,7 +1050,7 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
                         item->setText( 1, QString::number(_oglformat.plane() )   );
                 }
     }
-
+#endif
 /* ----------------------------------------------------------------------- */
 
     QTreeWidgetItem * item5 = new QTreeWidgetItem( RootItem, item4 );
@@ -1164,7 +1189,7 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
 #ifdef __GNUC__
 #if defined(__MINGW32__) || defined(__APPLE__)
 #else
-
+/*
     Display * dpy = QX11Info::display();
 
   if(dpy != NULL){
@@ -1175,6 +1200,7 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
 
 /* ----------------------------------------------------------------------- */
 
+ /*
     QTreeWidgetItem * item81 = new QTreeWidgetItem( item8 );
     item81->setText( 0, tr( "Client" ) );
     AttView->collapseItem(item81);
@@ -1208,7 +1234,7 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
     else item81bis->setText( 1, tr( "None" ) );
 
 /* ----------------------------------------------------------------------- */
-
+/*
     QTreeWidgetItem * item82 = new QTreeWidgetItem( item8, item81 );
     item82->setText( 0, tr( "Server" ) );
     AttView->collapseItem(item82);
@@ -1255,7 +1281,7 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
         LastItem = item8;
 
 /* ----------------------------------------------------------------------- */
-
+/*
     QPixmap x_pix( ( const char** ) x_logo );
     QTreeWidgetItem * item9 = new QTreeWidgetItem( RootItem, item8 );
     item9->setIcon( 0, x_pix );
@@ -1519,9 +1545,9 @@ ViewSysInfo::saveAsFile(const QString& file) const {
                 while(current != NULL){
                         stream << indent << current->text(0) << '\t' << current->text(1);
 #ifdef _WIN32
-                        stream << char(13) << endl;
+                        stream << char(13) << Qt::endl;
 #else
-                        stream <<  endl;
+                        stream << Qt::endl;
 #endif
                         QTreeWidgetItem* nextsibling;
                         if(current->childCount() != 0){

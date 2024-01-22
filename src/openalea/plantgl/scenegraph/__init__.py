@@ -202,7 +202,9 @@ del __pol_getinitargs__
 def _toQImage(self):
     """ Convert self into a QImage """
     from openalea.plantgl.config import PGL_QT_VERSION
-    if PGL_QT_VERSION == 5:
+    if PGL_QT_VERSION == 6:
+        from PySide6.QtGui import QImage
+    elif PGL_QT_VERSION == 5:
         from PyQt5.QtGui import QImage
     else:
         from PyQt4.QtGui import QImage

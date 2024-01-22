@@ -46,27 +46,39 @@
 PGL_USING_NAMESPACE
 
 
-Light::Light(const Vector3& position, const Color3& ambient, const Color3& diffuse , const Color3& specular):
-    RefCountObject(), __enabled(true), __position(position), __ambient(ambient), __diffuse(diffuse), __specular(specular) 
+Light::Light(const Vector3& position, const Color3& ambient, const Color3& diffuse , const Color3& specular, bool directional):
+    RefCountObject(), __enabled(true), __position(position), __ambient(ambient), __diffuse(diffuse), __specular(specular), __directional(directional) 
     {}
 
 Light::~Light()
 {}
 
-void Light::set(const Vector3& position, const Color3& color )
+void Light::set(const Vector3& position, const Color3& color, bool directional )
 {
     __position = position;
     __ambient = color;
     __diffuse = color;
     __specular = color;
+    __directional = directional;
 }
 
-void Light::set(const Vector3& position, const Color3& ambient, const Color3& diffuse, const Color3& specular)
+void Light::set(const Vector3& position, const Color3& ambient, const Color3& diffuse, const Color3& specular, bool directional)
 {
     __position = position;
     __ambient = ambient;
     __diffuse = diffuse;
     __specular = specular;
+    __directional = directional;
+}
+
+Vector3 Light::direction(const Vector3& fromPosition) const
+{
+    if (__directional) {
+        return __position.normed();
+    }
+    else {
+        return (__position - fromPosition).normed();
+    }
 }
 
 

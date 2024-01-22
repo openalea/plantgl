@@ -73,6 +73,14 @@
 PGL_USING_NAMESPACE
 
 #ifdef PGL_WITH_BISONFLEX
+#include "scne_scanner.h"   /// Initialisation des noms des classes de scanner
+                            /// [ par redefinition de yyFlexLexer et GENERIC_LEXER ]
+#include <plantgl/tool/gparser.h>  /// Instanciation des classes de scans.
+                               /// et instanciation de la classe template de parser.
+
+#undef YYLEX_PARAM
+#define YYLEX_PARAM param
+
 /// structure de donnees pour parser les sceneobjects.
 #ifdef PGL_BISON_HPP
 #include "scne_parser.hpp"
@@ -80,11 +88,6 @@ PGL_USING_NAMESPACE
 #include "scne_parser.cpp.h"
 #endif
 
-#include "scne_scanner.h"   /// Initialisation des noms des classes de scanner
-                            /// [ par redefinition de yyFlexLexer et GENERIC_LEXER ]
-
-#include <plantgl/tool/gparser.h>  /// Instanciation des classes de scans.
-                               /// et instanciation de la classe template de parser.
 
 #endif
 

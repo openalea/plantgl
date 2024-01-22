@@ -3,8 +3,8 @@
 function(detect_plantgl_version pgldir)
     message(STATUS ${pgldir}/plantgl/version.h)
     file(STRINGS "${pgldir}/plantgl/version.h" PGL_VERSION
-      REGEX "#define[ ]+PGL_VERSION[ ]+0x[0-9]+")
-    string(REGEX MATCH "0x[0-9]+" PGL_VERSION ${PGL_VERSION})
+      REGEX "#define[ ]+PGL_VERSION[ ]+0x[0-9A-F]+")
+    string(REGEX MATCH "0x[0-9A-F]+" PGL_VERSION ${PGL_VERSION})
     set(PGL_VERSION ${PGL_VERSION} PARENT_SCOPE)
 
     if (PGL_VERSION)

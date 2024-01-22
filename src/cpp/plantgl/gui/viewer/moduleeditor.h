@@ -67,7 +67,7 @@ class VIEW_API GeomModuleEditor : public QWidget
 
 public:
   /// Constructor.
-    GeomModuleEditor( QWidget* parent = 0, Qt::WindowFlags f = 0 ) :
+    GeomModuleEditor( QWidget* parent = 0, Qt::WindowFlags f=Qt::Widget ) :
     QWidget( parent ,  f ){
   }
 

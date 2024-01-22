@@ -54,9 +54,11 @@
 #ifdef PGL_WITH_BOOST
 #include <boost/version.hpp>
 
+#ifndef _MSC_VER // 
 #if BOOST_VERSION >= 104900
     #include <boost/heap/fibonacci_heap.hpp>
     #define PGL_USE_FIBONACCI_HEAP
+#endif
 #endif
 #endif
 #endif

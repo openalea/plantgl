@@ -30,7 +30,7 @@ This module should be fully compatible with:
 
 import os
 import sys
-from openalea.plantgl.gui.qt import QT_API, PYQT4_API, PYQT5_API, PYSIDE_API
+from openalea.plantgl.gui.qt import QT_API, PYQT4_API, PYQT5_API, PYSIDE_API, PYSIDE6_API
 from openalea.plantgl.gui.qt import QtCore
 
 try:
@@ -40,8 +40,18 @@ except ImportError:
 else:
     FilePath = DirPath = Path
 
+if os.environ[QT_API] in PYSIDE6_API:
+    from PySide6.QtWidgets import QFileDialog, QTabWidget
+    _tab_position = {
+        0: QTabWidget.TabPosition.North,
+        1: QTabWidget.TabPosition.South,
+        2: QTabWidget.TabPosition.West,
+        3: QTabWidget.TabPosition.East,
+    }
+    for idx, position in list(_tab_position.items()):
+        setattr(QTabWidget, position.name.decode("utf-8"), position)
 
-if os.environ[QT_API] in PYQT5_API:
+elif os.environ[QT_API] in PYQT5_API:
     from openalea.plantgl.gui.qt.QtWidgets import QFileDialog, QTabWidget
     _tab_position = {
         0: QTabWidget.North,

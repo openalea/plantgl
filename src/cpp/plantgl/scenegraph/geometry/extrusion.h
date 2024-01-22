@@ -295,20 +295,38 @@ class SG_API Extrusion : public ParametricModel
   // Get the point value at u,v.
   Vector3 getPointAt(real_t u, real_t v) const;
 
+  // Get the point value at u,v.
+  Vector3 getPointAt(real_t u, real_t v, const Matrix3& frame) const;
+
   /* Returns the \e Tangent for u = \e u and v = \e v.
      \pre
       - \e u, \e v must be in [0,1];*/
-    Vector3 getUTangentAt(real_t u,real_t v) const;
+  Vector3 getUTangentAt(real_t u,real_t v) const;
+
+  /* Returns the \e Tangent for u = \e u and v = \e v.
+     \pre
+      - \e u, \e v must be in [0,1];*/
+  Vector3 getUTangentAt(real_t u,real_t v, const Matrix3& frame) const;
 
   /* Returns the \e Tangent for u = \e u and v = \e v.
      \pre
       - \e u, \e v must be in [0,1];*/
   Vector3 getVTangentAt(real_t u,real_t v) const;
 
+  /* Returns the \e Tangent for u = \e u and v = \e v.
+     \pre
+      - \e u, \e v must be in [0,1];*/
+  Vector3 getVTangentAt(real_t u,real_t v, const Matrix3& frame) const;
+
   /* Returns the principal \e Normal for u,v = \e u, \e v.
      \pre
       - \e u, \e v must be in [0,1];*/
   Vector3 getNormalAt(real_t u,real_t v) const;
+
+  /* Returns the principal \e Normal for u,v = \e u, \e v.
+     \pre
+      - \e u, \e v must be in [0,1];*/
+  Vector3 getNormalAt(real_t u,real_t v, const Matrix3& frame) const;
 
   /*! Returns the \e derivative of degree \e d for u = \e u, v = \e v.
      \pre
@@ -321,15 +339,42 @@ class SG_API Extrusion : public ParametricModel
   // Get the next matrix frame value at u+du.
   Matrix3 getNextFrameAt(real_t u, Matrix3 m, real_t du) const;
 
+  // Get the derivative matrix frame value at u+du.
+  Matrix3 getFrameDerivativeAt(real_t u, real_t du = 0.01) const;
+
+  // Get the derivative matrix frame value at u+du.
+  Matrix3 getFrameDerivativeAt(real_t u, Matrix3 m, real_t du = 0.01) const;
+
   // Compute the derivative.
   Vector3 getSecondDerivativeUUAt(real_t u, real_t v) const;
+
+  // Compute the derivative.
+  Vector3 getSecondDerivativeUUAt(real_t u, real_t v, const Matrix3& frame) const;
 
   // Compute the derivative.
   Vector3 getSecondDerivativeUVAt(real_t u, real_t v) const;
 
   // Compute the derivative.
+  Vector3 getSecondDerivativeUVAt(real_t u, real_t v, const Matrix3& frame) const;
+
+  // Compute the derivative.
   Vector3 getSecondDerivativeVVAt(real_t u, real_t v) const;
 
+  // Compute the derivative.
+  Vector3 getSecondDerivativeVVAt(real_t u, real_t v, const Matrix3& frame) const;
+
+  real_t getUToTransformationU(real_t u) const;
+
+  /*!
+    Compute a section line of the patch corresponding to a constant u value
+   */
+  LineicModelPtr getIsoUSectionAt(real_t u) const;
+    
+  /*!
+    Compute a section line of the patch corresponding to a constant v value
+   */
+  LineicModelPtr getIsoVSectionAt(real_t v) const;
+    
 protected:
 
     /// The axis of the extrusion.

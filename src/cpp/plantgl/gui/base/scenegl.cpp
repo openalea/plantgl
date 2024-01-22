@@ -53,13 +53,13 @@
     #include <QtGui/qfiledialog.h>
     #include <QtGui/qmessagebox.h>
 #endif
-#include <QtOpenGL/qgl.h>
+#include <QOpenGLWidget>
 
 /* ----------------------------------------------------------------------- */
 
-ViewRendererGL::ViewRendererGL(QGLWidget * parent,
-                   const char * name):
-  ViewObjectGL(parent,name),
+ViewRendererGL::ViewRendererGL(QOpenGLBaseWidget * parent,
+                   const char * name, PGLOpenGLFunctionsPtr ogl):
+  ViewObjectGL(parent,name, ogl),
     __readTime(QDateTime::currentDateTime())
 {
 }
@@ -71,7 +71,7 @@ ViewRendererGL::~ViewRendererGL()
 bool ViewRendererGL::isEmpty() const { return true; }
 
 void
-ViewRendererGL::connectTo(QGLWidget *g)
+ViewRendererGL::connectTo(QOpenGLBaseWidget *g)
 {
   ViewObjectGL::connectTo(g);
   __frame = g;
@@ -349,9 +349,9 @@ ViewRendererGL::getGlobalBoundingBox() const
 
 ViewSceneRendererGL::ViewSceneRendererGL(ViewCameraGL * camera,
                      ViewLightGL * light,
-                     QGLWidget * parent,
-                     const char * name):
-  ViewRendererGL(parent,name),
+                     QOpenGLBaseWidget * parent,
+                     const char * name, PGLOpenGLFunctionsPtr ogl):
+  ViewRendererGL(parent,name, ogl),
   __camera(camera),
   __light(light),
   __animated(eStatic)

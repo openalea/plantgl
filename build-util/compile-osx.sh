@@ -1,6 +1,9 @@
 cd build
-export SDKPATH=`xcrun --show-sdk-path`
-export SDKPATH=/Users/fboudon/Develop/SDK/MacOSX10.9.sdk
+
+#export SDKPATH=/Users/fboudon/Develop/SDK/MacOSX10.13.sdk
+if [ -z "${SDKPATH}" ]; then 
+    export SDKPATH=`xcrun --show-sdk-path`
+fi
 
 cmake -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX} \
       -DCMAKE_PREFIX_PATH=${CONDA_PREFIX} \
@@ -14,12 +17,9 @@ cmake -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX} \
       -LAH ..
 
 #cmake -DCMAKE_BUILD_TYPE=Release -DBoost_INCLUDE_DIR=/opt/local/include ..
+#cmake -DCMAKE_BUILD_TYPE=Release -DBoost_INCLUDE_DIR=`readlink /opt/local/include/boost`/.. .. 
 
 make
 make install
 cd ..
 python setup.py install
-
-{
-    
-}

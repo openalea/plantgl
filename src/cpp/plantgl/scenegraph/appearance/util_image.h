@@ -85,6 +85,7 @@ public:
     void setPixelAt(uint_t x, uint_t y, const uchar_t * alpha );
 
     Color4 getPixelAt(uint_t x, uint_t y) const;
+    Color3 getPixel3At(uint_t x, uint_t y) const;
     const uchar_t * getPixelDataAt(uint_t x, uint_t y) const;
 
     Color4 getPixelAtUV(real_t u, real_t v, bool repeatu = true, bool repeatv = true) const;

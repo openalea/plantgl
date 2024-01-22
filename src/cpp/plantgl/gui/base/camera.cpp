@@ -98,7 +98,7 @@ ViewCameraMenu::ViewCameraMenu(ViewCameraGL * camera,QWidget * parent, const cha
   QPixmap linked(ViewerIcon::getPixmap(ViewerIcon::linked));
   QPixmap eyef(ViewerIcon::getPixmap(ViewerIcon::eyef));
 
-  QAction * action = addAction(home,tr("Home"),      camera,SLOT(home()), Qt::CTRL+Qt::Key_I);
+  QAction * action = addAction(home,tr("Home"),      camera,SLOT(home()), Qt::CTRL | Qt::Key_I);
 
   addAction(tr("&Front View (YZ)"),camera,SLOT(YZView()));
   addAction(tr("&Right View (XZ)"),camera,SLOT(XZView()));
@@ -119,7 +119,7 @@ ViewCameraMenu::ViewCameraMenu(ViewCameraGL * camera,QWidget * parent, const cha
   idPerspective = __projectionMenu->addAction(persp,tr("&Perspective"),  camera,SLOT(setPerspectiveMode()));
   idOrtho       = __projectionMenu->addAction(ortho,tr("Ort&hographic"), camera,SLOT(setOrthographicMode()));
   __projectionMenu->addSeparator();
-  __projectionMenu->addAction(tr("&Change"),       camera,SLOT(changeCameraMode()),Qt::CTRL+Qt::Key_D);
+  __projectionMenu->addAction(tr("&Change"),       camera,SLOT(changeCameraMode()),Qt::CTRL | Qt::Key_D);
   idPerspective->setCheckable(true);
   idOrtho->setCheckable(true);
   __projectionMenu->setTitle(tr("Projection"));
@@ -161,8 +161,8 @@ ViewCameraMenu::setCoordSys(int b)
 /* ----------------------------------------------------------------------- */
 
 
-ViewCameraGL::ViewCameraGL(QGLWidget * parent, const char * name) :
-  ViewObjectGL(parent,name),
+ViewCameraGL::ViewCameraGL(QOpenGLBaseWidget * parent, const char * name, PGLOpenGLFunctionsPtr ogl) :
+  ViewObjectGL(parent,name, ogl),
   __azimuth(0),
   __elevation(0),
   __stepMove(1),
@@ -184,8 +184,8 @@ ViewCameraGL::ViewCameraGL(QGLWidget * parent, const char * name) :
     init();
 }
 
-ViewCameraGL::ViewCameraGL(QObject * parent, const char * name) :
-  ViewObjectGL(parent,name),
+ViewCameraGL::ViewCameraGL(QObject * parent, const char * name,  PGLOpenGLFunctionsPtr ogl) :
+  ViewObjectGL(parent,name, ogl),
   __azimuth(0),
   __elevation(0),
   __stepMove(1),
@@ -598,7 +598,7 @@ ViewCameraGL::resizeGL(int w, int h)
   __width = w;
   __height = h;
 
-  glViewport( 0, 0, (GLint)w, (GLint)h );
+  __ogl->glViewport( 0, 0, (GLint)w, (GLint)h );
 
   updateActualViewAngle();
 
@@ -627,9 +627,9 @@ ViewCameraGL::beginSelectGL(const QPoint& point)
 {
   GEOM_GL_ERROR;
 
-  glMatrixMode(GL_PROJECTION);
-  glPushMatrix();
-  glLoadIdentity();
+  __ogl->glMatrixMode(GL_PROJECTION);
+  __ogl->glPushMatrix();
+  __ogl->glLoadIdentity();
 
   geomPickMatrix(point);
 
@@ -654,9 +654,9 @@ ViewCameraGL::beginSelectGL(const QRect& region)
 
   // printf("%i %i %i %i\n",x,y,region.width(),region.height());
 
-  glMatrixMode(GL_PROJECTION);
-  glPushMatrix();
-  glLoadIdentity();
+  __ogl->glMatrixMode(GL_PROJECTION);
+  __ogl->glPushMatrix();
+  __ogl->glLoadIdentity();
 
   geomPickMatrix(region);
 
@@ -670,8 +670,8 @@ ViewCameraGL::beginSelectGL(const QRect& region)
 void
 ViewCameraGL::endSelectGL()
 {
-  glMatrixMode(GL_PROJECTION);
-  glPopMatrix();
+  __ogl->glMatrixMode(GL_PROJECTION);
+  __ogl->glPopMatrix();
 }
 
 
@@ -685,8 +685,8 @@ ViewCameraGL::paintGL()
 void
 ViewCameraGL::glInitModelViewMatrix()
 {
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
+  __ogl->glMatrixMode(GL_MODELVIEW);
+  __ogl->glLoadIdentity();
   glPushModelViewMatrix();
 }
 
@@ -694,14 +694,14 @@ void
 ViewCameraGL::glPushModelViewMatrix()
 {
   if( __geomsys){ /// Geom Sys Coordinates
-                glGeomTranslate(__translation);
-                glGeomRotate(Vector3::OY,__elevation);
-                glGeomRotate(Vector3::OZ,-__azimuth);
+                __ogl->glGeomTranslate(__translation);
+                __ogl->glGeomRotate(Vector3::OY,__elevation);
+                __ogl->glGeomRotate(Vector3::OZ,-__azimuth);
   }
   else { /// GL Coordinates
-                glGeomTranslate(geom2gl(__translation));
-                glGeomRotate(Vector3::OX,__elevation);
-                glGeomRotate(Vector3::OY,-__azimuth);
+                __ogl->glGeomTranslate(geom2gl(__translation));
+                __ogl->glGeomRotate(Vector3::OX,__elevation);
+                __ogl->glGeomRotate(Vector3::OY,-__azimuth);
   }
   GEOM_GL_ERROR;
 }
@@ -709,8 +709,8 @@ ViewCameraGL::glPushModelViewMatrix()
 void
 ViewCameraGL::glInitProjectionMatrix()
 {
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
+  __ogl->glMatrixMode(GL_PROJECTION);
+  __ogl->glLoadIdentity();
   glPushProjectionMatrix();
 }
 
@@ -738,7 +738,7 @@ ViewCameraGL::glPushProjectionMatrix()
     double bottom = - l;
     double top = l;
 
-    glOrtho(left,rigth,bottom,top,__near_plane-dep,__far_plane-dep);
+    __ogl->glOrtho(left,rigth,bottom,top,__near_plane-dep,__far_plane-dep);
   }
 
   // passage du repere GL dans repere labo
@@ -1134,7 +1134,7 @@ ViewCameraGL::addProperties(QTabWidget * tab)
   tab2->ResizePolicyBox->setCurrentIndex(int(__resizePolicy));
   QObject::connect(tab2->ResizePolicyBox,SIGNAL(activated(int)),this,SLOT(setResizePolicy(int)));
   /*Matrix4 m;
-  glGeomGetMatrix(GL_PROJECTION_MATRIX,m);
+  __ogl->glGeomGetMatrix(GL_PROJECTION_MATRIX,m);
   CameraProp2 * tab3 = new CameraProp2( tab, "Camera Prop2" );
   tab3->MA00->setText(QString::number((fabs(m(0,0)) < GEOM_EPSILON?0:m(0,0))));
   tab3->MA01->setText(QString::number((fabs(m(0,1)) < GEOM_EPSILON?0:m(0,1))));
@@ -1155,7 +1155,7 @@ ViewCameraGL::addProperties(QTabWidget * tab)
   tab3->MA31->setText(QString::number((fabs(m(3,1)) <GEOM_EPSILON?0:m(3,1))));
   tab3->MA32->setText(QString::number((fabs(m(3,2)) <GEOM_EPSILON?0:m(3,2))));
   tab3->MA33->setText(QString::number((fabs(m(3,3)) <GEOM_EPSILON?0:m(3,3))));
-  glGeomGetMatrix(GL_MODELVIEW_MATRIX,m);
+  __ogl->glGeomGetMatrix(GL_MODELVIEW_MATRIX,m);
   tab3->MB00->setText(QString::number((fabs(m(0,0)) <GEOM_EPSILON?0:m(0,0))));
   tab3->MB01->setText(QString::number((fabs(m(0,1)) <GEOM_EPSILON?0:m(0,1))));
   tab3->MB02->setText(QString::number((fabs(m(0,2)) <GEOM_EPSILON?0:m(0,2))));

@@ -96,7 +96,17 @@ void Image::setPixelAt(uint_t x, uint_t y, const Color4 & pixel)
 }
 
 void Image::setPixelAt(uint_t x, uint_t y, const Color3 & pixel, uchar_t alpha ){
-    setPixelAt(x,y,Color4(pixel,alpha));
+    if (__nbchannels == 3){
+        GEOM_ASSERT(x < __width && y < __height);
+        std::vector<uchar_t>::iterator itCol = __data.begin();
+        itCol += __nbchannels*(y * __width + x);
+        *itCol = pixel.getRed();
+        ++itCol; *itCol = pixel.getGreen();
+        ++itCol; *itCol = pixel.getBlue();
+    }
+    else {
+        setPixelAt(x,y,Color4(pixel,alpha));
+    }
 }
 
 void Image::setPixelAt(uint_t x, uint_t y, const uchar_t * data){
@@ -115,6 +125,15 @@ Color4 Image::getPixelAt(uint_t x, uint_t y) const {
                   __nbchannels>1?*(itCol+1):0,
                   __nbchannels>2?*(itCol+2):0,
                   __nbchannels>3?*(itCol+3):0);
+}
+
+Color3 Image::getPixel3At(uint_t x, uint_t y) const {
+    GEOM_ASSERT(x < __width && y < __height);
+    std::vector<uchar_t>::const_iterator itCol = __data.begin();
+    itCol += __nbchannels*(y * __width + x);
+    return Color3(__nbchannels>0?*itCol:0,
+                  __nbchannels>1?*(itCol+1):0,
+                  __nbchannels>2?*(itCol+2):0);
 }
 
 Color4 Image::getPixelAtUV(real_t u, real_t v, bool repeatu, bool repeatv) const {
@@ -299,7 +318,11 @@ pgl_hash_map<uint_t,uint_t> Image::histogram() const
 
     for (uint_t y = 0 ; y < __height ; ++y) {
         for (uint_t x = 0 ; x < __width ; ++x) {
-            uint_t pid = getPixelAt(x,y).toUint();
+            uint_t pid = 0;
+            if (nbChannels() == 3)
+                pid = getPixel3At(x,y).toUint();
+            else 
+                pid = getPixelAt(x,y).toUint();
             pgl_hash_map<uint_t,uint_t>::iterator itId = histo.find(pid);
             if (itId == histo.end()){
                 histo[pid] = 1;

@@ -30,6 +30,8 @@ import os
 QT_API = 'QT_API'
 #: names of the expected PyQt5 api
 PYQT5_API = ['pyqt5']
+#: names of the expected PyQt6 api
+PYQT6_API = ['pyqt6']
 #: names of the expected PyQt4 api
 PYQT4_API = [
     'pyqt',  # name used in IPython.qt
@@ -38,9 +40,22 @@ PYQT4_API = [
 #: names of the expected PySide api
 PYSIDE_API = ['pyside']
 PYSIDE2_API = ['pyside2']
+PYSIDE6_API = ['pyside6']
 
+if PGL_QT_VERSION == 6:
+    try: 
+        import PySide6
+        os.environ[QT_API] = PYSIDE6_API[0]
+    except ImportError as ie:
+        print("cannot import PySide6  FIX IT !!")
 
-if PGL_QT_VERSION == 4:
+elif PGL_QT_VERSION == 5:
+        try :
+            import PySide2
+            os.environ[QT_API] = PYSIDE2_API[0]
+        except ImportError as ie:
+            os.environ[QT_API] = PYQT5_API[0]
+elif PGL_QT_VERSION == 4:
         try :
             import PySide
             os.environ[QT_API] = PYSIDE_API[0]

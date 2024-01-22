@@ -53,7 +53,7 @@
 
 #ifndef PGL_WITHOUT_QT
 
-#include <QtOpenGL/qgl.h>
+#include <QOpenGLWidget>
 #include <plantgl/python/extract_widget.h>
 
 #endif
@@ -71,14 +71,14 @@ GLRenderer::RenderingMode get_rd_mode(GLRenderer *rd) { return rd->getRenderingM
 GLRenderer::SelectionId get_sel_mode(GLRenderer *rd) { return rd->getSelectionMode(); }
 
 /*
-QGLWidget * get_fgl_mode(GLRenderer * rd)
+QOpenGLWidget * get_fgl_mode(GLRenderer * rd)
 { return rd->getGLFrame();}
 */
 
 #ifndef PGL_WITHOUT_QT
 
 void py_setGLFrame(GLRenderer *rd, boost::python::object widget) {
-  rd->setGLFrame(extract_widget<QGLWidget>(widget)());
+  rd->setGLFrame(extract_widget<QOpenGLBaseWidget>(widget)());
 }
 
 #endif
@@ -86,8 +86,9 @@ void py_setGLFrame(GLRenderer *rd, boost::python::object widget) {
 void export_GLRenderer() {
   scope glrenderer = class_<GLRenderer, bases<Action>, boost::noncopyable>
           ("GLRenderer", init<Discretizer &>(
-                  "GLRenderer(Discretizer d [, QGLWidget *]) An action which draws objects of type of Geometry or of type of Material to the current GL context."))
+                  "GLRenderer(Discretizer d [, QOpenGLWidget *]) An action which draws objects of type of Geometry or of type of Material to the current GL context."))
           .def("clear", &GLRenderer::clear)
+          .def("init", &GLRenderer::init)
           .def("beginSceneList", &GLRenderer::beginSceneList)
           .def("endSceneList", &GLRenderer::endSceneList)
           .def("clearSceneList", &GLRenderer::clearSceneList)
@@ -99,9 +100,10 @@ void export_GLRenderer() {
           .add_property("selectionMode", &get_sel_mode, &GLRenderer::setSelectionMode)
                   // .add_property("frameGL",&get_fgl_mode,&GLRenderer::setGLFrame)
           .def("getDiscretizer", &GLRenderer::getDiscretizer, return_internal_reference<>())
-          .def("registerTexture", &GLRenderer::registerTexture,
-               (bp::arg("texture"), bp::arg("id"), bp::arg("erasePreviousIfExists") = true))
-          .def("getTextureId", &GLRenderer::getTextureId);
+          // .def("registerTexture", &GLRenderer::registerTexture,
+          //     (bp::arg("texture"), bp::arg("id"), bp::arg("erasePreviousIfExists") = true))
+          // .def("getTextureId", &GLRenderer::getTextureId);
+          ;
 
   enum_<GLRenderer::RenderingMode>("RenderingMode")
           .value("Normal", GLRenderer::Normal)

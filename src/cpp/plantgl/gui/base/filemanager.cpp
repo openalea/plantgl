@@ -53,7 +53,6 @@
 #include <QtCore/qtextstream.h>
 #include <QtCore/qfile.h>
 #include <QtCore/qstringlist.h>
-#include <QtCore/qregexp.h>
 
 #include <QtGui/qbitmap.h>
 #include <QtGui/qimage.h>
@@ -61,17 +60,8 @@
 #include <QtGui/qimagewriter.h>
 
 #if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
-    #include <QtWidgets/qfiledialog.h>
-    #include <QtWidgets/qmessagebox.h>
-    #include <QtWidgets/qtoolbutton.h>
-    #include <QtWidgets/qcombobox.h>
-    #include <QtWidgets/qlabel.h>
-    #include <QtWidgets/qstatusbar.h>
-    #include <QtWidgets/qapplication.h>
-    #include <QtWidgets/qwhatsthis.h>
-    #include <QtWidgets/qinputdialog.h>
-    #include <QtWidgets/qdesktopwidget.h>
-    #include <QtWidgets/qmainwindow.h>
+    #include <QtWidgets>
+    #include <QOpenGLWidget>
 #else
     #include <QtGui/qfiledialog.h>
     #include <QtGui/qmessagebox.h>
@@ -86,7 +76,6 @@
     #include <QtGui/qmainwindow.h>
 #endif
 
-#include <QtOpenGL/qgl.h>
 
 #include "grid.h"
 #include "camera.h"
@@ -162,7 +151,7 @@ ViewFileManager::initialize(){
 
   // Open File Menu
   __OpenFileMenu->clear();
-  act = __OpenFileMenu->addAction( openIcon , tr("&Open File"),this,SLOT(openFile()),Qt::CTRL+Qt::Key_O);
+  act = __OpenFileMenu->addAction( openIcon , tr("&Open File"),this,SLOT(openFile()),Qt::CTRL | Qt::Key_O);
   act->setWhatsThis("<b>Open File</b><br><br>Load 3D scene from a file.<br>");
 
   scene->addOpenEntries(__OpenFileMenu);
@@ -192,7 +181,7 @@ ViewFileManager::initialize(){
       }
   addMenu( __SaveFileMenu );
 
-  act = __SaveFileMenu->addAction( saveIcon , tr("&Save"),scene,SLOT(save()),Qt::CTRL+Qt::Key_S);
+  act = __SaveFileMenu->addAction( saveIcon , tr("&Save"),scene,SLOT(save()),Qt::CTRL | Qt::Key_S);
     if (act) {
   act->setWhatsThis("<b>Save</b><br>Save current scene.<br>");
   }
@@ -221,21 +210,21 @@ ViewFileManager::initialize(){
       }
   addMenu( __screenshot );
 
-  act = __screenshot->addAction( savePicIcon , tr("Save as Bitmap"),this,SLOT(saveImage()),Qt::CTRL+Qt::Key_B);
+  act = __screenshot->addAction( savePicIcon , tr("Save as Bitmap"),this,SLOT(saveImage()),Qt::CTRL | Qt::Key_B);
   act->setWhatsThis("<b>Save ScreenShot as Bitmap</b><br><br>Take a screenshot and save it on one of the various picture formats.<br>");
 
-  act = __screenshot->addAction( savePicIcon , tr("Save as Bitmap with Alpha"),this,SLOT(saveImageWithAlpha()),Qt::CTRL+Qt::SHIFT+Qt::Key_B);
+  act = __screenshot->addAction( savePicIcon , tr("Save as Bitmap with Alpha"),this,SLOT(saveImageWithAlpha()),Qt::CTRL | Qt::SHIFT | Qt::Key_B);
   act->setWhatsThis("<b>Save ScreenShot as Bitmap</b><br><br>Take a screenshot and save it on one of the various picture formats.<br>");
 
-  act = __screenshot->addAction( copyPicIcon , tr("Copy To Clipboard"),__GLFrame,SLOT(copyImageToClipboard()),Qt::CTRL+Qt::Key_C);
+  act = __screenshot->addAction( copyPicIcon , tr("Copy To Clipboard"),__GLFrame,SLOT(copyImageToClipboard()),Qt::CTRL | Qt::Key_C);
   act->setWhatsThis("<b>Copy ScreenShot to Clipboard</b><br><br>Take a screenshot and copy it on the global clipboard.<br>");
 
-  act = __screenshot->addAction( copyPicIcon , tr("Copy To Clipboard with Alpha"),__GLFrame,SLOT(copyImageToClipboardWithAlpha()),Qt::CTRL+Qt::SHIFT+Qt::Key_C);
+  act = __screenshot->addAction( copyPicIcon , tr("Copy To Clipboard with Alpha"),__GLFrame,SLOT(copyImageToClipboardWithAlpha()),Qt::CTRL | Qt::SHIFT | Qt::Key_C);
   act->setWhatsThis("<b>Copy ScreenShot to Clipboard</b><br><br>Take a screenshot and copy it on the global clipboard.<br>");
 
   addSeparator();
 
-  // Recent Files Menu
+  // Recent Files Menu  
   __RecentFilesMenu->setIcon(openIcon);
   __RecentFilesMenu->setTitle(tr("Recents"));
   addMenu(__RecentFilesMenu );
@@ -265,7 +254,7 @@ ViewFileManager::initialize(){
   addSeparator();
 
   // Properties icon
-  act = addAction( doc ,  tr("Properties"), this,SLOT(properties()),Qt::CTRL+Qt::Key_P);
+  act = addAction( doc ,  tr("Properties"), this,SLOT(properties()),Qt::CTRL | Qt::Key_P);
   act->setWhatsThis("<b>Properties</b><br><br>Properties of the current scene,<br> selected shapes, file, camera, ... .<br>");
   addSeparator();
 
@@ -280,7 +269,7 @@ ViewFileManager::initialize(){
 
   // Exit icon
   addSeparator();
-  act = addAction( exitIcon , tr("Exit"), parent(), SLOT(close()), Qt::CTRL+Qt::Key_Q );
+  act = addAction( exitIcon , tr("Exit"), parent(), SLOT(close()), Qt::CTRL | Qt::Key_Q );
   act->setWhatsThis("<b>Exit</b><br><br>Quit current application.<br>");
 
   QObject::connect(__locatToolBar->__Location,SIGNAL(activated(const QString&)),this,SLOT(openFile(const QString&)));

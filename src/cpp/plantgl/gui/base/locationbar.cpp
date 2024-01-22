@@ -86,7 +86,7 @@ ViewLocationBar::ViewLocationBar(const QString &label,
     __Location->setProperty("minimumHeight",25);
     __Location->setProperty("minimumWidth",50);
     __Location->setEditable( true );
-    __Location->setAutoCompletion ( true );
+    //__Location->setAutoCompletion ( true ); //setCompleter( QCompleter *c)
     __Location->setCursor( QCursor( Qt::IBeamCursor ) );
     __Location->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Fixed);
 

@@ -59,9 +59,10 @@
 
 ViewModalRendererGL::ViewModalRendererGL(ViewCameraGL * camera,
                      ViewLightGL * light,
-                     QGLWidget * parent,
-                     const char * name) :
-  ViewSceneRendererGL(camera,light,parent,name),
+                     QOpenGLBaseWidget * parent,
+                     const char * name, 
+                     PGLOpenGLFunctionsPtr ogl) :
+  ViewSceneRendererGL(camera,light,parent,name, ogl),
   __renderingMode(1),
   __actions(0)
 {

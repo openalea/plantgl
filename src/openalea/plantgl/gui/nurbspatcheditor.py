@@ -11,7 +11,7 @@ import numpy as np
 import itertools
 
 
-from openalea.plantgl.gui.qt.QtCore import QObject, QRect, Qt, pyqtSignal
+from openalea.plantgl.gui.qt.QtCore import QObject, QRect, Qt, Signal
 from openalea.plantgl.gui.qt.QtWidgets import QApplication
 
 helpstr = """<h2>N u r b s  E d i t o r</h2>
@@ -47,9 +47,9 @@ class AbstractNurbsObjectEditorView(QGLViewer):
     """ The class NurbsPatchEditor is the viewer of the scene, it contains all the informations about the NurbsPatch, that's why a getter and a setter have been created, the NubrsPatch is defined by a 2 dimensional Array of 3d Vectors"""
    
     Edit,Rotate = list(range(2))
-    valueChanged = pyqtSignal()
-    manipulated = pyqtSignal()
-    selectionChanged = pyqtSignal()
+    valueChanged = Signal()
+    manipulated = Signal()
+    selectionChanged = Signal()
     
     def __init__(self,parent):
         """ Constructor 
@@ -148,6 +148,9 @@ class AbstractNurbsObjectEditorView(QGLViewer):
         self.setKeyDescription(Qt.Key_K, "Toggles control point wire display")
         self.setKeyDescription(Qt.Key_G, "Toggles patch display")
 
+        #self.glrenderer.init()
+        #self.ctrlrenderer.init()
+
     def setFocus(self,point):
         """ Set focus to given control point """
         if self.focus:
@@ -186,7 +189,7 @@ class AbstractNurbsObjectEditorView(QGLViewer):
             elif event.button() == Qt.RightButton :
                 self.clearSelectionManipulator()
                 self.selectionChanged.emit()
-            self.updateGL()
+            self.update()
         else:
             pointSelection = False
             if not self.selectionManipulator is None:
@@ -203,7 +206,7 @@ class AbstractNurbsObjectEditorView(QGLViewer):
                                 self.setManipulatedFrame(cCtrlPoint)
                             break
             self.setInteractionMode(pointSelection)
-            self.updateGL()
+            self.update()
             
         QGLViewer.mousePressEvent(self,event)
 
@@ -265,7 +268,7 @@ class AbstractNurbsObjectEditorView(QGLViewer):
         #rectangular selection
         if self.selectionRect:
             self.__rectangle =  QRect(self.__rectangleInit,event.pos()).normalized()
-            self.updateGL()
+            self.update()
         
         # by default camera or manipulated frame is manipulated
         QGLViewer.mouseMoveEvent(self,event);
@@ -289,7 +292,7 @@ class AbstractNurbsObjectEditorView(QGLViewer):
                 self.__rectangle = QRect(event.pos().x()-5,event.pos().y()-5,10,10)
             self.selectionFromRect(self.__rectangle)
         self.setInteractionMode(False)
-        self.updateGL()
+        self.update()
 
     def selectionFromRect(self,rect):
         """ check if control point projections are in the given rectangle. If yes, put point in selection """
@@ -315,10 +318,10 @@ class AbstractNurbsObjectEditorView(QGLViewer):
         # That's why we use imbricated if...else and a "handled" boolean.
         if ((e.key()==Qt.Key_K) and (modifiers==Qt.NoModifier)):
             self._drawGrid = not self._drawGrid
-            self.updateGL()
+            self.update()
         elif (e.key()==Qt.Key_G) and (modifiers==Qt.NoModifier):
             self._drawNurbsObject = not self._drawNurbsObject
-            self.updateGL()
+            self.update()
         else:
             QGLViewer.keyPressEvent(self,e)
 
@@ -492,7 +495,7 @@ class AbstractNurbsObjectEditorView(QGLViewer):
     def setUStride(self, value):
         self.nurbsObject.ustride = value
         self.valueChanged.emit() 
-        self.updateGL()
+        self.update()
 
     def setWeigthToSelection(self, value):
         if self.selectionManipulator:
@@ -507,7 +510,7 @@ class AbstractNurbsObjectEditorView(QGLViewer):
                 for p in self.selectionManipulator.selection:
                     p.position_setter.weight = value
                     p.__propagate_position_change__()
-        self.updateGL()
+        self.update()
 
 
 class NurbsPatch2DEditorView(AbstractNurbsObjectEditorView):
@@ -520,7 +523,7 @@ class NurbsPatch2DEditorView(AbstractNurbsObjectEditorView):
     def setVStride(self, value):
         self.nurbsObject.vstride = value
         self.valueChanged.emit() 
-        self.updateGL()
+        self.update()
  
     def applyScaling(self, scale):
         nurbscurve = self.getNurbsObject()
@@ -656,7 +659,7 @@ class NurbsPatch3DEditorView(NurbsPatch2DEditorView):
     def setWStride(self, value):
         self.nurbsObject.wstride = value
         self.valueChanged.emit() 
-        self.updateGL()
+        self.update()
 
 DimensionViewClass[3] = NurbsPatch3DEditorView 
 
@@ -722,13 +725,13 @@ class NurbsCurveEditorView(AbstractNurbsObjectEditorView):
     def setUStride(self, value):
         self.nurbsObject.stride = value
         self.valueChanged.emit() 
-        self.updateGL()
+        self.update()
 
 DimensionViewClass[1] = NurbsCurveEditorView
 
 class NurbsObjectEditor(QtWidgets.QWidget):
-    valueChanged = pyqtSignal()
-    manipulated = pyqtSignal()
+    valueChanged = Signal()
+    manipulated = Signal()
 
     def __init__(self, parent, dimension = 2):
         QtWidgets.QWidget.__init__(self, parent)
