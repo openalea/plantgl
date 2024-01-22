@@ -210,6 +210,10 @@ real_t ra_getMin(RealArray * a) {
     return *a->getMin();
 }
 
+real_t ra_getMean(RealArray * a) {
+    return a->getMean();
+}
+
 size_t ra_getMinIndex(RealArray * a) {
     return std::distance<RealArray::const_iterator>(a->begin(),a->getMin());
 }
@@ -258,10 +262,10 @@ IndexArrayPtr py_cut(RealArray * a, RealArrayPtr bins, bool filteremptygroups = 
 
 void export_arrays()
 {
-  EXPORT_ARRAY_CT( c3a, Color3Array, "Color3Array([Index3(i,j,k),...])" )
+  EXPORT_ARRAY_CT( c3a, Color3Array, "Color3Array([Color3(i,j,k),...])" )
     DEFINE_NUMPY( c3a );
   EXPORT_CONVERTER(Color3Array);
-  EXPORT_ARRAY_CT( c4a, Color4Array, "Color4Array([Index4(i,j,k,l),...])" )
+  EXPORT_ARRAY_CT( c4a, Color4Array, "Color4Array([Color4(i,j,k,l),...])" )
     DEFINE_NUMPY( c4a );
   EXPORT_CONVERTER(Color4Array);
 
@@ -301,6 +305,8 @@ void export_arrays()
     .def( "getMaxIndex", &ra_getMaxIndex )
     .def("cut", &py_cut, (arg("bins"),arg("filteremptygroups")=true))
     .def("isValid",&ra_is_valid)
+    .def( "getMean", &RealArray::getMean )
+    .def( "getSum", &RealArray::getSum )
     EXPORT_ARRAY_IO_FUNC( RealArray )
 
     DEFINE_NUMPY( ra );

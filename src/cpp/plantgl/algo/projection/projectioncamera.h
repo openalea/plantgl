@@ -55,6 +55,7 @@
 #include <plantgl/math/util_matrix.h>
 #include <plantgl/tool/rcobject.h>
 #include <plantgl/scenegraph/geometry/boundingbox.h>
+#include <plantgl/algo/raycasting/ray.h>
 #include <stack>
 
 
@@ -98,36 +99,48 @@ typedef RCPtr<ProjectionCamera> ProjectionCameraPtr;
 
 class ALGO_API ProjectionCamera : public RefCountObject{
 public:
-    enum eProjectionType {
+   enum eProjectionType {
         eOrthographic,
-        ePerspective
+        ePerspective,
+        eHemispheric,
+        eCylindrical
     };
 
-   ProjectionCamera(real_t left, real_t right, real_t bottom, real_t top, real_t near, real_t far, eProjectionType projection = eOrthographic);
+   enum eProjectionMethodType {
+        eProjection,
+        eRayIntersection,
+    };
+
+
+   ProjectionCamera(real_t near, real_t far, eProjectionType type, eProjectionMethodType methodtype);
 
    virtual ~ProjectionCamera();
 
    Vector3 worldToRaster(const Vector3& vertexWorld, const uint16_t imageWidth, const uint16_t imageHeight) const;
-
    Vector3 worldToCamera(const Vector3& vertexWorld) const;
-   Vector3 cameraToNDC(const Vector3& vertexCamera) const;
+   
+   virtual Vector3 cameraToNDC(const Vector3& vertexCamera) const = 0;
+   virtual Vector3 NDCToCamera(const Vector3& vertexCamera) const = 0;
+
    inline Vector3 NDCToRaster(const Vector3& vertexNDC, const uint16_t imageWidth, const uint16_t imageHeight) const
     { return NDCtoRasterSpace(vertexNDC, imageWidth, imageHeight); }
 
    Vector3 cameraToRaster(const Vector3& vertexCamera, const uint16_t imageWidth, const uint16_t imageHeight) const;
+   Vector3 rasterToCamera(const Vector3& vertexRaster, const uint16_t imageWidth, const uint16_t imageHeight) const;
 
    Vector3 rasterToWorld(const Vector3& raster, const uint16_t imageWidth, const uint16_t imageHeight) const;
+
+   virtual Ray rasterToCameraRay(uint16_t x, uint16_t y, const uint16_t imageWidth, const uint16_t imageHeight) const;
+   virtual Ray rasterToWorldRay(uint16_t x, uint16_t y, const uint16_t imageWidth, const uint16_t imageHeight) const;
 
    inline Vector3 rasterToNDC(const Vector3& raster, const uint16_t imageWidth, const uint16_t imageHeight ) const 
    { return rasterSpaceToNDC(raster, imageWidth, imageHeight);}
 
-   Vector3 NDCToCamera(const Vector3& vertexCamera) const ;
    Vector3 cameraToWorld(const Vector3& vertexCamera) const;
 
-   BoundingBoxPtr getBoundingBoxView() const;
+   // BoundingBoxPtr getBoundingBoxView() const;
 
    Matrix4 getWorldToCameraMatrix() const { return __worldToCamera; }
-   //  Matrix4 getCameraToWorldMatrix() const { return __cameraToWorld; }
 
    void transformModel(const Matrix4& transform);
    void pushModelTransformation();
@@ -141,26 +154,63 @@ public:
 
    bool isInZRange(real_t z) const ;
    bool isInZRange(real_t zmin, real_t zmax) const;
+   virtual bool isValidPixel(uint16_t x, uint16_t y, const uint16_t imageWidth, const uint16_t imageHeight) const {
+     return (x < imageWidth) && (y < imageHeight);
+   }
 
    void lookAt(const Vector3& eyePosition3D, const Vector3& center3D, const Vector3& upVector3D);
 
+   static ProjectionCameraPtr perspectiveCamera(real_t verticalAngleOfView, real_t aspectRatio, real_t near, real_t far);
+   static ProjectionCameraPtr frustumCamera(real_t left, real_t right, real_t bottom, real_t top, real_t near, real_t far);
+   static ProjectionCameraPtr orthographicCamera(real_t left, real_t right, real_t bottom, real_t top, real_t near, real_t far);
+   static ProjectionCameraPtr hemisphericCamera(real_t near, real_t far);
+   static ProjectionCameraPtr sphericalCamera(real_t viewAngle, real_t near, real_t far);
+   static ProjectionCameraPtr cylindricalCamera(real_t viewAngle, real_t bottom, real_t top, real_t near, real_t far);
+
+   real_t near;
+   real_t far;
+
+   eProjectionType type() const { return __type; }
+   eProjectionMethodType methodType() const { return __methodtype; }
+
+   virtual ProjectionCameraPtr copy() = 0;
+
+   const Vector3& position() const { return __position; }
+
+   virtual real_t projectedArea(uint16_t x, uint16_t y, real_t z, const uint16_t imageWidth, const uint16_t imageHeight);
+   virtual real_t solidAngle(uint16_t x, uint16_t y, const uint16_t imageWidth, const uint16_t imageHeight);
+
+   // virtual bool fitViewTo(const BoundingBoxPtr bbx, uint16_t margin) = 0;
+
+protected:
+   
+   eProjectionType __type;
+   eProjectionMethodType __methodtype;
+   Vector3 __position;
+
+   Matrix4 __worldToCamera;
+   std::stack<Matrix4> __modelMatrixStack;
+   Matrix4 __currentModelMatrix;
+   Matrix4 __currentWorldToCamera;
+};
+
+/* ----------------------------------------------------------------------- */
+
+class ALGO_API FrustumCamera : public ProjectionCamera {
+public:
+
+   FrustumCamera(real_t left, real_t right, real_t bottom, real_t top, real_t near, real_t far, eProjectionType type);
+
+   virtual ~FrustumCamera();
+
+   BoundingBoxPtr getBoundingBoxView() const;
+
+   void setFrustum(real_t left, real_t right, real_t bottom, real_t top);
 
    real_t left;
    real_t right;
    real_t bottom;
    real_t top;
-   real_t near;
-   real_t far;
-   eProjectionType type;
-
-   static ProjectionCameraPtr perspectiveCamera(real_t verticalAngleOfView, real_t aspectRatio, real_t near, real_t far);
-   static ProjectionCameraPtr frustumCamera(real_t left, real_t right, real_t bottom, real_t top, real_t near, real_t far);
-   static ProjectionCameraPtr orthographicCamera(real_t left, real_t right, real_t bottom, real_t top, real_t near, real_t far);
-
-   const Vector3& position() const { return __position; }
-
-
-    ProjectionCameraPtr copy();
 
 protected:
    Vector3 screen2NDC(const real_t& xScreen, const real_t& yScreen, const real_t z) const ;
@@ -171,16 +221,122 @@ protected:
    real_t __yscale;
    real_t __yconstant;
 
-   Vector3 __position;
+};
 
-   // Matrix4 __cameraToWorld;
-   Matrix4 __worldToCamera;
-   std::stack<Matrix4> __modelMatrixStack;
-   Matrix4 __currentModelMatrix;
-   Matrix4 __currentWorldToCamera;
+typedef RCPtr<FrustumCamera> FrustumCameraPtr;
 
+/* ----------------------------------------------------------------------- */
+
+class ALGO_API PerspectiveCamera : public FrustumCamera {
+public:
+
+   PerspectiveCamera(real_t left, real_t right, real_t bottom, real_t top, real_t near, real_t far);
+   PerspectiveCamera(real_t verticalAngleOfView, real_t aspectRatio, real_t near, real_t far);
+
+   virtual ~PerspectiveCamera();
+
+   virtual Vector3 cameraToNDC(const Vector3& vertexCamera) const;
+   virtual Vector3 NDCToCamera(const Vector3& vertexCamera) const;
+
+   virtual ProjectionCameraPtr copy();
+
+   virtual Ray rasterToCameraRay(uint16_t x, uint16_t y, const uint16_t imageWidth, const uint16_t imageHeight) const;
+   virtual Ray rasterToWorldRay(uint16_t x, uint16_t y, const uint16_t imageWidth, const uint16_t imageHeight) const;
+
+   // virtual bool fitViewTo(const BoundingBoxPtr bbx, uint16_t margin) ;
 
 };
+
+typedef RCPtr<PerspectiveCamera> PerspectiveCameraPtr;
+
+/* ----------------------------------------------------------------------- */
+
+class ALGO_API OrthographicCamera : public FrustumCamera {
+public:
+
+   OrthographicCamera(real_t left, real_t right, real_t bottom, real_t top, real_t near, real_t far);
+
+   virtual ~OrthographicCamera();
+
+   virtual Vector3 cameraToNDC(const Vector3& vertexCamera) const;
+   virtual Vector3 NDCToCamera(const Vector3& vertexCamera) const;
+
+   virtual ProjectionCameraPtr copy();
+
+   virtual real_t solidAngle(uint16_t x, uint16_t y, const uint16_t imageWidth, const uint16_t imageHeight) { return 0; }
+
+};
+
+typedef RCPtr<OrthographicCamera> OrthographicCameraPtr;
+
+/* ----------------------------------------------------------------------- */
+
+class ALGO_API SphericalCamera : public ProjectionCamera {
+public:
+
+   SphericalCamera(real_t viewAngle = 180, real_t near = 0, real_t far = REAL_MAX);
+
+   virtual ~SphericalCamera();
+
+   virtual Vector3 cameraToNDC(const Vector3& vertexCamera) const;
+   virtual Vector3 NDCToCamera(const Vector3& vertexCamera) const;
+
+   virtual ProjectionCameraPtr copy();
+
+   real_t getViewAngle() const ;
+   void setViewAngle(real_t angle);
+
+   virtual bool isValidPixel(uint16_t x, uint16_t y, const uint16_t imageWidth, const uint16_t imageHeight) const {
+        return (norm(Vector2(x-imageWidth/2,y-imageHeight/2)) <= pglMin(imageWidth,imageHeight)/2);
+   }
+   
+   virtual Ray rasterToCameraRay(uint16_t x, uint16_t y, const uint16_t imageWidth, const uint16_t imageHeight) const;
+   virtual Ray rasterToWorldRay(uint16_t x, uint16_t y, const uint16_t imageWidth, const uint16_t imageHeight) const;
+
+   Vector3::Spherical NDCToSpherical(const Vector3& vertexNDC) const;
+   Vector3 SphericalToNDC(const Vector3::Spherical& sph) const;
+
+
+protected:
+   real_t __viewAngle;
+
+};
+
+typedef RCPtr<SphericalCamera> SphericalCameraPtr;
+
+
+/* ----------------------------------------------------------------------- */
+
+class ALGO_API CylindricalCamera : public ProjectionCamera {
+public:
+
+   CylindricalCamera(real_t viewAngle = 180, real_t bottom = -1, real_t top = 1, real_t near = 0, real_t far = REAL_MAX);
+
+   virtual ~CylindricalCamera();
+
+   virtual Vector3 cameraToNDC(const Vector3& vertexCamera) const;
+   virtual Vector3 NDCToCamera(const Vector3& vertexCamera) const;
+
+   virtual ProjectionCameraPtr copy();
+
+   real_t getViewAngle() const ;
+   void setViewAngle(real_t angle);
+
+   virtual Ray rasterToCameraRay(uint16_t x, uint16_t y, const uint16_t imageWidth, const uint16_t imageHeight) const;
+
+   virtual real_t solidAngle(uint16_t x, uint16_t y, const uint16_t imageWidth, const uint16_t imageHeight) { return 0; }
+
+   real_t bottom;
+   real_t top;
+
+protected:
+   real_t __viewAngle;
+   real_t __yscale;
+   real_t __yconstant;
+
+};
+
+typedef RCPtr<CylindricalCamera> CylindricalCameraPtr;
 
 
 /* ----------------------------------------------------------------------- */

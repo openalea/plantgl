@@ -1,5 +1,5 @@
 from ._pglgui import *
-from .qt.QtGui import QApplication
+from .qt.QtWidgets import QApplication
 
 #if QApplication.instance() is None:
 #    qPglApp =  QApplication([])

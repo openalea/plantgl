@@ -56,6 +56,9 @@
 #include <QtGui/qclipboard.h>
 
 #if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
+  #include <QtCore>
+  #include <QtWidgets>
+#else
     #include <QtCore/QMimeData>
     #include <QtWidgets/qapplication.h>
     #include <QtWidgets/qstatusbar.h>
@@ -71,21 +74,6 @@
     #include <QtWidgets/qinputdialog.h>
     #include <QtWidgets/qsystemtrayicon.h>
     #include <QtWidgets/qdesktopwidget.h>
-#else
-    #include <QtGui/qapplication.h>
-    #include <QtGui/qstatusbar.h>
-    #include <QtGui/qprogressbar.h>
-    #include <QtGui/qspinbox.h>
-    #include <QtGui/qmenu.h>
-    #include <QtGui/qmenubar.h>
-    #include <QtGui/qtoolbar.h>
-    #include <QtGui/qfiledialog.h>
-    #include <QtGui/qmessagebox.h>
-    #include <QtGui/qlabel.h>
-    #include <QtGui/qwhatsthis.h>
-    #include <QtGui/qinputdialog.h>
-    #include <QtGui/qsystemtrayicon.h>
-    #include <QtGui/qdesktopwidget.h>
 #endif
 
 #include "viewer.h"
@@ -444,7 +432,7 @@ void Viewer::initialize()
   if(version != -1)
   {
     QRect rect = settings.value("Geometry",geometry()).toRect();
-    QRect maxrect = QApplication::desktop()->geometry();
+    QRect maxrect = QGuiApplication::primaryScreen()->geometry();
     if( maxrect.contains(rect) && rect.width() > 100 && rect.height() > 100){
         setGeometry(rect);
         //qDebug("MainWindow.setGeometry(%i,%i,%i,%i)", rect.x(),rect.y(),rect.width(),rect.height());
@@ -626,7 +614,7 @@ Viewer::dropEvent(QDropEvent* myevent)
 void
 Viewer::keyPressEvent ( QKeyEvent * e)
 {
-  if( e->key() == (Qt::SHIFT+Qt::Key_F1))       __HelpMenu->showHelp();
+  if( e->key() == (Qt::SHIFT | Qt::Key_F1))       __HelpMenu->showHelp();
   else if( e->key() == Qt::Key_F1)  __HelpMenu->showAbout();
   else if( e->key() == Qt::Key_F2)  __Browser->show();
   else if( e->key() == Qt::Key_F3)  __ErrorDialog->show();
@@ -1119,8 +1107,8 @@ void Viewer::setCustomFrameGLSize() {
   dialog.setModal(true);
   Ui::FrameGLDialog g;
   g.setupUi(&dialog);
-  g.width->setRange(50,qApp->desktop()->width());
-  g.height->setRange(50,qApp->desktop()->height());
+  g.width->setRange(50,QGuiApplication::primaryScreen()->geometry().width());
+  g.height->setRange(50,QGuiApplication::primaryScreen()->geometry().height());
 
   g.width->setValue(__GLFrame->width());
   g.height->setValue(__GLFrame->height());

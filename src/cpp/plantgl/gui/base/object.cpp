@@ -48,7 +48,6 @@
 #else
     #include <QtGui/qmessagebox.h>
 #endif
-#include <QtOpenGL/qgl.h>
 
 #include <plantgl/algo/opengl/util_gl.h>
 #include <plantgl/algo/opengl/util_glu.h>
@@ -60,16 +59,18 @@
 
 /* ----------------------------------------------------------------------- */
 
-ViewObjectGL::ViewObjectGL(QObject * parent, const char * name) :
+ViewObjectGL::ViewObjectGL(QObject * parent, const char * name, PGLOpenGLFunctionsPtr ogl) :
   QObject(parent),
-  __frame(NULL)
+  __frame(NULL),
+  __ogl(ogl)
 {
     if(name) setObjectName(name);
 }
 
-ViewObjectGL::ViewObjectGL(QGLWidget * parent, const char * name) :
+ViewObjectGL::ViewObjectGL(QOpenGLBaseWidget * parent, const char * name, PGLOpenGLFunctionsPtr ogl) :
   QObject(parent),
-  __frame(parent)
+  __frame(parent),
+  __ogl(ogl)
 {
   if(parent)
     QObject::connect (this,SIGNAL(valueChanged()),
@@ -149,7 +150,7 @@ ViewObjectGL::connectTo(ViewStatusBar * s)
 }
 
 void
-ViewObjectGL::connectTo(QGLWidget *g)
+ViewObjectGL::connectTo(QOpenGLBaseWidget *g)
 {
   if(g){
     QObject::connect (this,SIGNAL(valueChanged()),
@@ -253,10 +254,12 @@ ViewObjectGL::glError(QWidget * widget, const char * file, int line)
   return false;
 }
 
+void ViewObjectGL::openGLFunctionsChanged() {}
+
 /* ----------------------------------------------------------------------- */
 
-ViewRelativeObjectGL::ViewRelativeObjectGL(ViewCameraGL *camera, QObject * parent, const char * name):
-  ViewObjectGL(parent,name),
+ViewRelativeObjectGL::ViewRelativeObjectGL(ViewCameraGL *camera, QObject * parent, const char * name, PGLOpenGLFunctionsPtr ogl):
+  ViewObjectGL(parent,name,ogl),
   __step(1){
   if(camera){
     QObject::connect(camera,SIGNAL(stepMoveChanged(double)),this,SLOT(setStep(double)));
@@ -264,8 +267,8 @@ ViewRelativeObjectGL::ViewRelativeObjectGL(ViewCameraGL *camera, QObject * paren
   }
 }
 
-ViewRelativeObjectGL::ViewRelativeObjectGL(ViewCameraGL *camera, QGLWidget * parent, const char * name):
-  ViewObjectGL(parent,name),
+ViewRelativeObjectGL::ViewRelativeObjectGL(ViewCameraGL *camera, QOpenGLBaseWidget * parent, const char * name, PGLOpenGLFunctionsPtr ogl):
+  ViewObjectGL(parent,name, ogl),
   __step(1){
   if(camera){
     QObject::connect(camera,SIGNAL(stepMoveChanged(double)),this,SLOT(setStep(double)));
@@ -287,7 +290,7 @@ ViewRelativeObjectGL::connectTo(ViewStatusBar * s)
 }
 
 void
-ViewRelativeObjectGL::connectTo(QGLWidget *g)
+ViewRelativeObjectGL::connectTo(QOpenGLBaseWidget *g)
 {
   ViewObjectGL::connectTo(g);
 }

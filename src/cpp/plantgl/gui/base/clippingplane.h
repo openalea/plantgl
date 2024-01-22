@@ -76,7 +76,7 @@ class VIEW_API ViewClippingPlaneGL  : public ViewObjectGL
 public:
 
   /// Constructor.
-  ViewClippingPlaneGL(QGLWidget * parent=0, const char * name=0);
+  ViewClippingPlaneGL(QOpenGLBaseWidget * parent=0, const char * name=0, PGLOpenGLFunctionsPtr ogl = NULL);
 
   /// Destructor.
   virtual ~ViewClippingPlaneGL();

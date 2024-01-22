@@ -40,42 +40,6 @@ using namespace std;
 #define bp boost::python
 
 
-void export_ProjectionCamera()
-{
-
-     enum_<ProjectionCamera::eProjectionType>("eProjectionType")
-    .value("eOrthographic",ProjectionCamera::eOrthographic)
-    .value("ePerspective",ProjectionCamera::ePerspective)
-      .export_values()
-      ;
-
-  class_< ProjectionCamera, ProjectionCameraPtr, bases<RefCountObject>, boost::noncopyable  > 
-      ("ProjectionCamera", init<real_t , real_t , real_t , real_t , real_t , real_t , ProjectionCamera::eProjectionType> 
-        ("Construct a ProjectionCamera", (bp::arg("left"),bp::arg("right"),bp::arg("bottom"),bp::arg("top"),bp::arg("near"),bp::arg("far"),bp::arg("projection")=ProjectionCamera::eOrthographic)))
-
-      .def("worldToRaster", &ProjectionCamera::worldToRaster)
-      .def("worldToCamera", &ProjectionCamera::worldToCamera)
-      .def("cameraToNDC", &ProjectionCamera::cameraToNDC)
-      .def("NDCToRaster", &ProjectionCamera::NDCToRaster)
-      .def("cameraToRaster", &ProjectionCamera::cameraToRaster)
-
-      .def("rasterToWorld", &ProjectionCamera::rasterToWorld)
-      .def("rasterToNDC", &ProjectionCamera::rasterToNDC)
-      .def("NDCToCamera", &ProjectionCamera::NDCToCamera)
-      .def("cameraToWorld", &ProjectionCamera::cameraToWorld)
-      
-      .def("getBoundingBoxView", &ProjectionCamera::getBoundingBoxView)
-      .def("getWorldToCameraMatrix", &ProjectionCamera::getWorldToCameraMatrix)
-      // .def("getCameraToWorldMatrix", &ProjectionCamera::getCameraToWorldMatrix)
-      .def("getModelTransformationMatrix", &ProjectionCamera::getModelTransformationMatrix)
-
-
-      ;
-
-      implicitly_convertible< ProjectionCameraPtr, RefCountObjectPtr >();
-
-}
-
 ProjectionCameraPtr get_camera(ProjectionEngine * engine) { return engine->camera(); }
 
 void export_ProjectionEngine()
@@ -88,7 +52,7 @@ void export_ProjectionEngine()
       .def("setFrustumCamera", &ProjectionEngine::setFrustumCamera, bp::args("left","right","bottom", "top", "near", "far"))
       .def("setOrthographicCamera", &ProjectionEngine::setOrthographicCamera, bp::args("left","right","bottom", "top", "near", "far"))
       .def("lookAt", &ProjectionEngine::lookAt, bp::args("eye_position","target","up"))
-      .def("getBoundingBoxView", &ProjectionEngine::getBoundingBoxView)
+      // .def("getBoundingBoxView", &ProjectionEngine::getBoundingBoxView)
       .def("camera", &get_camera)
       
       .def("process", (void(ProjectionEngine::*)(TriangleSetPtr, AppearancePtr, uint32_t))&ProjectionEngine::process, (bp::arg("triangleset"),bp::arg("appearance"),bp::arg("id")))

@@ -3,4 +3,4 @@
 #)
 
 
-Sphere my_sphere { }
+Sphere my_sphere { Radius 2 }

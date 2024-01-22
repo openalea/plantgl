@@ -63,14 +63,17 @@ PGL_BEGIN_NAMESPACE
 
 class Light : public RefCountObject {
 public:
-    Light(const Vector3& position = Vector3(0,0,1), const Color3& ambient = Color3(255,255,255), const Color3& diffuse = Color3(255,255,255), const Color3& specular = Color3(255,255,255));
+    Light(const Vector3& position = Vector3(0,0,1), const Color3& ambient = Color3(255,255,255), const Color3& diffuse = Color3(255,255,255), const Color3& specular = Color3(255,255,255), bool directional = false);
     virtual ~Light();
 
-    void set(const Vector3& position, const Color3& color = Color3(255,255,255));
-    void set(const Vector3& position, const Color3& ambient, const Color3& diffuse, const Color3& specular = Color3(255,255,255));
+    void set(const Vector3& position, const Color3& color = Color3(255,255,255), bool directional = false);
+    void set(const Vector3& position, const Color3& ambient, const Color3& diffuse, const Color3& specular = Color3(255,255,255), bool directional = false);
 
     void setEnabled(bool enabled) { __enabled = enabled; }
     bool isEnabled() const { return __enabled ; }
+
+    void setDirectionnal(bool enabled) { __directional = enabled; }
+    bool isDirectionnal() const { return __directional ; }
 
     const Vector3& position() const { return __position; }
     Vector3& position() { return __position; }
@@ -84,8 +87,11 @@ public:
     const Color3& specular() const { return __specular; }
     Color3& specular() { return __specular; }
 
+    Vector3 direction(const Vector3& fromPosition) const;
+
 protected:
   bool __enabled;
+  bool __directional;
   Vector3 __position;
   Color3 __ambient;
   Color3 __diffuse;

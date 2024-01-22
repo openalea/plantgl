@@ -2,7 +2,8 @@ from openalea.plantgl.all import *
 import openalea.plantgl.all as pgl
 import  matplotlib.pyplot as plt
 from os.path import join, dirname, abspath, exists
-
+import numpy as np
+from math import *
 
 fname = abspath(join(dirname(__file__),'data/teapot.obj'))
 
@@ -18,7 +19,7 @@ def test_teapot(view = False):
     z.setPerspectiveCamera(60,1,0.1,1000)
     z.lookAt(cam,(0,0,0),(0,0,1))
     z.multithreaded = MT
-    print(z.getBoundingBoxView())
+    #print(z.getBoundingBoxView())
     print('render')
     z.process(tr, Material((0,0,200)),2)
     print('getImage')
@@ -38,7 +39,7 @@ def test_sphere(view = False):
     z.setPerspectiveCamera(60,4/3.,0.1,1000)
     z.lookAt(cam,(0,0,0),(0,0,1))
     z.multithreaded = MT
-    print(z.getBoundingBoxView())
+    #print(z.getBoundingBoxView())
     print('render')
     z.process(tr, Material((100,50,200)),2)
     print('getImage')
@@ -58,7 +59,7 @@ def test_cylinder(view = False):
     z.setPerspectiveCamera(60,1,1,1000)
     z.multithreaded = MT
     z.lookAt(cam,(0,0,-5),(0,0,1))
-    print(z.getBoundingBoxView())
+    #print(z.getBoundingBoxView())
     print('render')
     z.process(tr, Material((100,50,200)),2)
     print('getImage')
@@ -75,7 +76,7 @@ def test_point():
     cam = (300,0,0)
     z.multithreaded = MT
     z.lookAt(cam,(0,0,0),(0,0,1))
-    print(z.getBoundingBoxView())
+    #print(z.getBoundingBoxView())
     print(z.camera().getWorldToCameraMatrix())
     print()
     print('World : \t', Vector3(a))
@@ -121,7 +122,7 @@ def test_projected_sphere(view = False):
     #z.setOrthographicCamera(-1, 1, -1, 1, 0, 10)
     z.lookAt(cam,(0,0,0),(0,0,1))
     z.multithreaded = MT
-    print(z.getBoundingBoxView())
+    #print(z.getBoundingBoxView())
     print('render')
     z.process(s)
     print('getImage')
@@ -131,7 +132,80 @@ def test_projected_sphere(view = False):
         plt.imshow(i.to_array())
         plt.show()
 
+def test_hemispheric_point():
+    a = (0,100, 100)
+    z = ZBufferEngine(800,800)
+    z.setHemisphericCamera(1,1000)
+    cam = (0,0,0)
+    z.multithreaded = MT
+    z.lookAt(cam,(0,0,100),(1,0,0))
+    #print(z.getBoundingBoxView())
+    print(z.camera().getWorldToCameraMatrix())
+    print()
+    print('World : \t', Vector3(a))
+    b = z.camera().worldToCamera(a)    
+    print('Camera : \t', b)
+    c = z.camera().cameraToNDC(b)
+    print('NDC :   \t', c)
+    d = z.camera().NDCToRaster(c, 800, 800)    
+    print('Raster : \t', d)
+    e = z.camera().cameraToRaster(b, 800, 800)
+    print('Raster : \t', e)
+    f = z.camera().rasterToCamera(e, 800, 800)
+    print('Camera : \t', f)
+
+
+def test_formfactors():
+    tr = Scene('data/cube.obj')[0].geometry
+    t = Tesselator()
+    tr.apply(t)
+    tr = t.result
+    print(tr.pointList,tr.indexList)
+    result = formFactors(tr.pointList,tr.indexList,ccw=True,solidangle=False)
+    print(result)
+
+def test_solidangle(view = False):
+    angle = 359
+    rangle = radians(angle)
+    cam = SphericalCamera(angle)
+    d = 200
+    w, h = d, d
+    img = np.array([[cam.solidAngle(x,y,w,h) if cam.isValidPixel(x,y,w,h) else 0 for x in range(w)] for y in range(h)])
+
+
+
+    #img = np.array([[component(cam.NDCToSpherical(cam.rasterToNDC((x+1,y+1,1),w,h))) for x in range(w)] for y in range(h)])
+    #img = np.array([[sa(coord(x,y),coord2(x,y),coord3(x,y)) for x in range(w)] for y in range(h)])
+    print(img[d//2,d//2])
+    print(sum(sum(img)) )
+    if view:
+        p = plt.imshow(img) #,vmin=0.2,vmax=-0.2)
+        plt.colorbar(p)
+        plt.show()
+
+def test_doublesphere(view = False):
+    s = Scene([Shape(Sphere(0.5,32,32),id=2), Shape(Translated(-5,0.5,0, Sphere(0.5,32,32)),id=5)])
+    cam = (-10,0,0)
+    z = ZBufferEngine(800,800, renderingStyle=eIdAndColorBased)
+    z.setPerspectiveCamera(60,1,0.1,1000) 
+    z.lookAt(cam,(0,0,0),(0,0,1))
+    z.process(s)
+    #print('getImage')
+    #i = z.getImage()
+    #if view:
+    #    plt.imshow(i.to_array())
+    #    plt.show()
+    ## Virtual Scan
+    points, colors, ids = z.grabZBufferPoints(0.05, 0.8)
+    if view:
+        Viewer.display(PointSet(points, Color4Array(list(map(Color4,colors)))))
+    ## Light Interception
+    
+
 
 if __name__ == '__main__':
-    test_projected_sphere(True)
+    #test_solidangle()
+    #test_formfactors()
+    #test_hemispheric_point()
     #test_projected_sphere(True)
+    test_doublesphere(True)

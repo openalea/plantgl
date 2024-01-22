@@ -112,8 +112,8 @@ public :
       {  __camera->scaleModel(v);  }
 
 
-      BoundingBoxPtr getBoundingBoxView() const
-      {  return __camera->getBoundingBoxView();  }
+      // BoundingBoxPtr getBoundingBoxView() const
+      // {  return __camera->getBoundingBoxView();  }
 
       virtual void process(ScenePtr scene);
 

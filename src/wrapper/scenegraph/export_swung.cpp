@@ -46,6 +46,7 @@
 #include <plantgl/scenegraph/geometry/profile.h>
 #include <plantgl/scenegraph/geometry/swung.h>
 #include <plantgl/scenegraph/geometry/curve.h>
+#include <plantgl/scenegraph/geometry/polyline.h>
 #include <plantgl/scenegraph/geometry/profile.h>
 #include <plantgl/scenegraph/container/geometryarray2.h>
 
@@ -69,8 +70,8 @@ object pi_getSectionAt(ProfileInterpolation * pi, real_t u){
     if (u < pi->getUMin() | u > pi->getUMax())
        throw PythonExc_IndexError();
     if (!pi->check_interpolation()) pi->interpol();
-    if (pi->is2DInterpolMode())return object(pi->getSection2DAt(u));
-    else return object(pi->getSection3DAt(u));
+    if (pi->is2DInterpolMode())return object(Polyline2DPtr(new Polyline2D(pi->getSection2DAt(u))));
+    else return object(PolylinePtr(new Polyline(pi->getSection3DAt(u))));
 }
 
 void export_ProfileInterpolation()

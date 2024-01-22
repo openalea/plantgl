@@ -52,7 +52,6 @@
 #if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/qmessagebox.h>
     #include <QtWidgets/qapplication.h>
-    #include <QtWidgets/qdesktopwidget.h>
     #include <QtWidgets/qlabel.h>
     #include <QtWidgets/QTreeWidgetItem>
     #include <QtWidgets/qtextbrowser.h>
@@ -92,7 +91,7 @@ using namespace std;
 
 static QString default_style_name;
 
-ViewHelpMenu::ViewHelpMenu(QWidget * parent, QGLWidget * glwidget, const char * name) :
+ViewHelpMenu::ViewHelpMenu(QWidget * parent, QOpenGLBaseWidget * glwidget, const char * name) :
   QMenu(parent),
   __glwidget(glwidget)
 {
@@ -100,9 +99,9 @@ ViewHelpMenu::ViewHelpMenu(QWidget * parent, QGLWidget * glwidget, const char * 
     __about = new ViewAboutDialog(this, "About", 2000, false);
     QObject::connect(__about,SIGNAL(licenseView()),this,SLOT(showLicense()));
     addAction( tr("What's &This?"), parent->parent() , SLOT(whatsThis()), Qt::Key_F1);
-    addAction(QPixmap(ViewSysInfo::tools_logo),tr("&Help"),this,SLOT(showHelp()),Qt::SHIFT+Qt::Key_F1);
+    addAction(QPixmap(ViewSysInfo::tools_logo),tr("&Help"),this,SLOT(showHelp()),Qt::SHIFT | Qt::Key_F1);
     addSeparator();
-    addAction(QPixmap(ViewerIcon::getPixmap(ViewerIcon::flower)),tr("&About Viewer"),this,SLOT(showAbout()), Qt::CTRL+Qt::Key_F1);
+    addAction(QPixmap(ViewerIcon::getPixmap(ViewerIcon::flower)),tr("&About Viewer"),this,SLOT(showAbout()), Qt::CTRL | Qt::Key_F1);
     addAction(tr("&License"),this,SLOT(showLicense()));
     addAction(QPixmap(ViewSysInfo::qt_logo),tr("About &Qt"),this,SLOT(aboutQt()));
     // addAction(QPixmap(ViewSysInfo::qt_logo),tr("About &QGLViewer"),glwidget,SLOT(aboutQGLViewer()));
@@ -155,7 +154,7 @@ void ViewHelpMenu::endEvent()
 }
 
 void
-ViewHelpMenu::setGLWidget(QGLWidget * glwidget)
+ViewHelpMenu::setGLWidget(QOpenGLBaseWidget * glwidget)
 {
   __glwidget = glwidget;
 }
@@ -262,7 +261,7 @@ void ViewHelpMenu::showLicense()
   QString copyright((TOOLS(getPlantGLDir())+"/share/plantgl/LICENSE").c_str());
   if(QFileInfo(copyright).exists() )
       lictext->setSource(copyright);
-  QSize s = qApp->desktop()->size();
+  QSize s = QGuiApplication::primaryScreen()->size();
   s = s - b.size();
   s /= 2;
   b.move(s.width(),s.height());
@@ -454,7 +453,7 @@ void ViewAboutDialog::setIconPixmap( const QPixmap & icon){
   setPalette(palette);
   setMinimumSize(icon.size());
   setMaximumSize(icon.size());
-  QSize s = qApp->desktop()->size();
+  QSize s = QGuiApplication::primaryScreen()->size();
   s = s - icon.size();
   s /= 2;
   move(s.width(),s.height());
@@ -537,7 +536,11 @@ void
 ViewAboutDialog::mouseMoveEvent ( QMouseEvent * e )
 {
     if (e->button() == Qt::NoButton) changeLogo(e->pos());
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     else move(e->globalPos());
+#else
+    else move(e->globalPosition().toPoint());
+#endif
 }
 
 void

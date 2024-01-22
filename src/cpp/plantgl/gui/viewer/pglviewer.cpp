@@ -55,7 +55,7 @@
 
   /// Constructor.
 PGLViewer::PGLViewer(  QWidget * parent, Qt::WindowFlags f ):
-    Viewer(parent,"",new ViewMultiscaleEditGeomSceneGL(NULL,NULL), f)
+    Viewer(parent,"PGLViewer",new ViewMultiscaleEditGeomSceneGL(NULL,NULL), f)
 {
 }
 
@@ -63,6 +63,7 @@ PGLViewer::PGLViewer(  QWidget * parent, Qt::WindowFlags f ):
 PGLViewer::PGLViewer( int argc, char ** argv ):
     Viewer(argc, argv,new ViewMultiscaleEditGeomSceneGL(NULL,NULL))
 {
+    setObjectName("PGLViewer");
 }
 
 /// Destructor.

@@ -56,11 +56,7 @@
 #include <QtNetwork/qhostaddress.h>
 #include <QtNetwork/qtcpsocket.h>
 
-#include <QtCore/qtextstream.h>
-#include <QtCore/qfileinfo.h>
-#include <QtCore/qregexp.h>
-#include <QtCore/qtimer.h>
-#include <QtCore/qurl.h>
+#include <QtCore>
 
 
 /* ----------------------------------------------------------------------- */
@@ -98,7 +94,7 @@ void ViewerDaemon::readClient()
   if ( socket->canReadLine() ) {
     QString line = socket->readLine();
     emit receiveRequest(line);
-    QStringList tokens = line.split( QRegExp("[ \r\n][ \r\n]*") );
+    QStringList tokens = line.split( QRegularExpression("[ \r\n][ \r\n]*") );
     if ( tokens[0] == "GET" ) {
         QTextStream os( socket );
         os.setAutoDetectUnicode (true);
@@ -112,7 +108,7 @@ void ViewerDaemon::readClient()
 
         if(file[0]=='/')file = file.right(file.length()-1);
         file = QUrl::fromPercentEncoding(file.toLatin1());
-        QStringList tokens = file.split( QRegExp(" ") );
+        QStringList tokens = file.split( QRegularExpression(" ") );
         QString code = tokens[0];
         if(code == "SHOW")emit requestShow();
         else {

@@ -120,10 +120,10 @@ public:
    };
 
   /// Constructor.
-  ViewCameraGL(QGLWidget * parent=0, const char * name=0);
+  ViewCameraGL(QOpenGLBaseWidget * parent=0, const char * name=0, PGLOpenGLFunctionsPtr ogl = NULL);
 
   /// Constructor.
-  ViewCameraGL(QObject * parent, const char * name=0);
+  ViewCameraGL(QObject * parent, const char * name=0, PGLOpenGLFunctionsPtr ogl = NULL);
 
 
   /// Destructor.

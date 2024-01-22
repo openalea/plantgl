@@ -194,6 +194,54 @@ Point4Array * p4_from_p2(Point2ArrayPtr pts, real_t z, real_t w)
 Point4Array * p4_from_p3(Point3ArrayPtr pts,  real_t w)
 { return new Point4Array(*pts,w); }
 
+Point2ArrayPtr p2_from_p3(Point3Array * pts, uint_t idx1, uint_t idx2)
+{   
+    Point2ArrayPtr res(new Point2Array(pts->size()));
+    Point2Array::iterator itr = res->begin();
+    Point3Array::const_iterator its = pts->begin();
+    for(; itr != res->end(); ++itr, ++its) {
+        const Vector3& s = *its;
+        *itr = Vector2(s.getAt(idx1),s.getAt(idx2));
+    } 
+    return res; 
+}
+
+Point2ArrayPtr p2_from_p4(Point4Array * pts, uint_t idx1, uint_t idx2)
+{   
+    Point2ArrayPtr res(new Point2Array(pts->size()));
+    Point2Array::iterator itr = res->begin();
+    Point4Array::const_iterator its = pts->begin();
+    for(; itr != res->end(); ++itr, ++its) {
+        const Vector4& s = *its;
+        *itr = Vector2(s.getAt(idx1),s.getAt(idx2));
+    } 
+    return res; 
+}
+
+Point3ArrayPtr p3_from_p4(Point4Array * pts, uint_t idx1, uint_t idx2, uint_t idx3)
+{   
+    Point3ArrayPtr res(new Point3Array(pts->size()));
+    Point3Array::iterator itr = res->begin();
+    Point4Array::const_iterator its = pts->begin();
+    for(; itr != res->end(); ++itr, ++its) {
+        const Vector4& s = *its;
+        *itr = Vector3(s.getAt(idx1),s.getAt(idx2),s.getAt(idx3));
+    } 
+    return res; 
+}
+template<class T>
+RealArrayPtr ra_from_ps(T * pts, uint_t idx)
+{   
+    RealArrayPtr res(new RealArray(pts->size()));
+    RealArray::iterator itr = res->begin();
+    typename T::const_iterator its = pts->begin();
+    for(; itr != res->end(); ++itr, ++its) {
+        *itr = its->getAt(idx);
+    } 
+    return res; 
+}
+
+
 template<class T>
 int pa_xminindex(const T * pts){ if(pts->empty()) return -1; return distance(pts->begin(),pts->getXMin()); }
 
@@ -256,7 +304,7 @@ object pa_bounds(const T * pts){
 template<class T>
 void pa_translate(T * pts, typename T::element_type value){
     for(typename T::iterator iter = pts->begin(); iter != pts->end(); ++iter)
-        *iter += value;
+        (*iter) += value;
 }
 
 template<class T>
@@ -341,6 +389,7 @@ void export_pointarrays()
     .def( "swapCoordinates", &pa_swap_2D_coordinates,"Swap the two coordinates of the points. This is done INPLACE.")
     .def( "isValid", &Point2Array::isValid)
     .def( "filterCoordinates", &py_filter_coord<Point2Array>,"Filter array by looking at coordinate i.",args("i","coordmin","coordmax"))
+    .def( "sliceCoordinates", &ra_from_ps<Point2Array>,"Construct a RealArray using one of the coordinates.",args("idx"))
     DEFINE_NUMPY( p2a );
   EXPORT_CONVERTER(Point2Array);
 
@@ -377,6 +426,8 @@ void export_pointarrays()
     .def( "swapCoordinates", &pa_swap_coordinates<Point3Array>,"Swap the coordinate i with coordinate j of the points. This is done INPLACE.",args("i","j"))
     .def( "isValid", &Point3Array::isValid)
     .def( "filterCoordinates", &py_filter_coord<Point3Array>,"Filter array by looking at coordinate i.",args("i","coordmin","coordmax"))
+    .def( "sliceCoordinates", &p2_from_p3,"Construct a Point2Array using 2 of the coordinates.",args("idx0","idx1"))
+    .def( "sliceCoordinates", &ra_from_ps<Point3Array>,"Construct a RealArray using one of the coordinates.",args("idx"))
    DEFINE_NUMPY( p3a );
   EXPORT_CONVERTER(Point3Array);
 
@@ -417,6 +468,9 @@ void export_pointarrays()
     .def( "swapCoordinates", &pa_swap_coordinates<Point4Array>,"Swap the coordinate i with coordinate j of the points. This is done INPLACE.",args("i","j"))
     .def( "isValid", &Point4Array::isValid)
     .def( "filterCoordinates", &py_filter_coord<Point4Array>,"Filter array by looking at coordinate i.",args("i","coordmin","coordmax"))
+    .def( "sliceCoordinates", &p2_from_p4,"Construct a Point2Array using 2 of the coordinates.",args("idx0","idx1"))
+    .def( "sliceCoordinates", &p3_from_p4,"Construct a Point3Array using 3 of the coordinates.",args("idx0","idx1","idx2"))
+    .def( "sliceCoordinates", &ra_from_ps<Point4Array>,"Construct a RealArray using one of the coordinates.",args("idx"))
     DEFINE_NUMPY( p4a );
   EXPORT_CONVERTER(Point4Array);
 

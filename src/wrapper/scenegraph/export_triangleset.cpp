@@ -50,6 +50,10 @@ using namespace boost::python;
 
 DEF_POINTEE( TriangleSet )
 
+bp::object py_circumsphere(const Vector3& a, const Vector3& b, const Vector3& c){
+    std::pair<Vector3, real_t> result = circumsphere(a, b, c);
+    return bp::make_tuple(result.first, result.second);
+}
 
 void export_TriangleSet()
 {
@@ -62,5 +66,7 @@ void export_TriangleSet()
       ;
 
   implicitly_convertible<TriangleSetPtr, MeshPtr>();
+
+  def("circumsphere", &py_circumsphere);
 }
 

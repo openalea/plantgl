@@ -63,7 +63,7 @@ def process_tris_full(pts, pts2, visual = False, translation = 2, model = None):
         e = DepthSortEngine()
         e.setPerspectiveCamera(60,1,1,1000)
         e.lookAt(cam,(0,0,0),(0,0,1))
-        cammatrix = e.camera().getCameraToWorldMatrix()
+        cammatrix = e.camera().getWorldToCameraMatrix().inverse()
         print(cam)
         if visual : 
             vi = cammatrix.getColumn(0)
@@ -139,7 +139,7 @@ def process_scene_full(sc, visual = False, nbView = 1):
         e = DepthSortEngine()
         e.setPerspectiveCamera(60,1,1,1000)
         e.lookAt(cam,(0,0,0),(0,0,1))
-        cammatrix = e.camera().getCameraToWorldMatrix()
+        cammatrix = e.camera().getWorldToCameraMatrix().inverse()
         print(cam)
         if visual : 
             vi = cammatrix.getColumn(0)
@@ -269,6 +269,7 @@ if __name__ == '__main__':
     argv = list(sys.argv)    
     del argv[0]
     visual = '-v' in sys.argv
+    print(visual)
     if visual:
         del argv[argv.index('-v')]
     i = 1

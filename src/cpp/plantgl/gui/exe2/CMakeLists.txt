@@ -7,7 +7,7 @@ add_executable(pglviewer2 ${SRC_FILES})
 # --- Linked Libraries
 
 target_link_libraries(pglviewer2 pglgui)
-target_link_libraries(pglviewer2 Qt5::Core Qt5::Widgets Qt5::OpenGL)
+target_link_libraries(pglviewer2 Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::OpenGL)
 
 # --- Dependencies
 

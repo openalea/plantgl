@@ -19,10 +19,10 @@ add_library(pglgui SHARED ${UI_FILES_BASE} ${SRC_FILES_BASE} ${UI_FILES_VIEWER} 
 # --- Linked Libraries
 
 target_link_libraries(pglgui pgltool pglmath pglsg pglalgo)
-target_link_libraries(pglgui Qt5::Core Qt5::Widgets Qt5::OpenGL Qt5::Network Qt5::PrintSupport)
+target_link_libraries(pglgui Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::OpenGL Qt${QT_VERSION_MAJOR}::Network Qt${QT_VERSION_MAJOR}::PrintSupport)
 
 if (USE_QT5_X11EXTRAS)
-    target_link_libraries(pglgui Qt5::X11Extras)
+    target_link_libraries(pglgui Qt${QT_VERSION_MAJOR}::X11Extras)
 endif()
 
 # --- Dependencies

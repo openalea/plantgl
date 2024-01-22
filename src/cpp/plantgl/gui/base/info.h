@@ -66,14 +66,16 @@ class QLabel;
 class QTreeWidget;
 class QTreeWidgetItem;
 class QPushButton;
-class QGLWidget;
+#define PGL_QT_FWD_DECL
+#include <plantgl/gui/pglqopenglwidget.h>
+#undef PGL_QT_FWD_DECL
 
 /* ----------------------------------------------------------------------- */
 
 /**
     \class ViewSysInfo
     \brief A Dialog to display information of the system such as driver use by openGL.
-    Must be build with a QGLWidget to obtain all the information.
+    Must be build with a QOpenGLWidget to obtain all the information.
 */
 
 /* ----------------------------------------------------------------------- */
@@ -92,10 +94,10 @@ public:
    *  TRUE to construct a modal dialog.
    */
   ViewSysInfo( QWidget* parent = 0,
-             QGLWidget * FrameGL = 0,
+             QOpenGLBaseWidget * FrameGL = 0,
              const char* name = 0,
              bool modal = false,
-             Qt::WindowFlags fl = 0 );
+             Qt::WindowFlags fl = Qt::Widget );
 
   /*!  Destructor.
    *  Destroys the object and frees any allocated resources

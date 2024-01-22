@@ -80,8 +80,8 @@ void ViewerIcon::clearCache(){
 
 QPixmap ViewerIcon::getPixmap(const char * file){
   QPixmap pix;
-  if(!QPixmapCache::find(file,pix)){
-    QString filename(file);
+  QString filename(file);
+  if(!QPixmapCache::find(filename,&pix)){
     if(QFileInfo(filename).isRelative()){
       filename = TOOLS(getPlantGLDir()).c_str() + QString("/share/plantgl/pixmap/") + filename;
     }

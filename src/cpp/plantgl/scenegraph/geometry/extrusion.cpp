@@ -478,71 +478,158 @@ Vector3 Extrusion::getInitialNormalValue() const {
 
 // Get the point value at u,v.
 Vector3 Extrusion::getPointAt(real_t u, real_t v) const {
+  return getPointAt(u,v,getFrameAt(u));
+}
+
+// Get the point value at u,v.
+Vector3 Extrusion::getPointAt(real_t u, real_t v, const Matrix3& frame) const {
   Vector3 point = getCrossSection()->getPointAt(v);
   if(getProfileTransformation()){
-    real_t u_trans = getProfileTransformation()->getUMin() + (getProfileTransformation()->getUMax()-getProfileTransformation()->getUMin())*(u - getAxis()->getFirstKnot())/(getAxis()->getLastKnot() - getAxis()->getFirstKnot());
+    real_t u_trans = getUToTransformationU(u);
     Matrix3TransformationPtr trans = dynamic_pointer_cast<Matrix3Transformation>((*getProfileTransformation())(u_trans));
     if(trans){
       Matrix3 _transf2D = trans->getMatrix();
       point = _transf2D * point;
     }
   }
-  Matrix3 frame = getFrameAt(u);
   point = frame * point;
   point += getAxis()->getPointAt(u);
   return point;
 }
 
+  /*!
+    Compute a section line of the patch corresponding to a constant u value
+   */
+LineicModelPtr Extrusion::getIsoUSectionAt(real_t u) const
+{
+  Matrix3 frame = getFrameAt(u);
+  Vector3 ref = getAxis()->getPointAt(u);
+  if(getProfileTransformation()){
+    real_t u_trans = getUToTransformationU(u);
+    Matrix3TransformationPtr trans = dynamic_pointer_cast<Matrix3Transformation>((*getProfileTransformation())(u_trans));
+    if(trans){
+      frame = frame * trans->getMatrix();
+    }
+  }
+
+  BezierCurve2DPtr csection = dynamic_pointer_cast<BezierCurve2D>(__crossSection);
+  if (is_valid_ptr(csection)) {
+    Point4ArrayPtr ctrlpts(new Point4Array(csection->getCtrlPointList()->size()));
+    Point3Array::const_iterator itS = csection->getCtrlPointList()->begin();
+    Point4Array::iterator itT = ctrlpts->begin();
+    for(;itT != ctrlpts->end(); ++itT, ++itS){
+
+      *itT = Vector4(ref+frame*(Vector3(itS->x(),itS->y(),0)),itS->z());
+    }
+    NurbsCurve2DPtr csectionN = dynamic_pointer_cast<NurbsCurve2D>(__crossSection);
+    if (is_valid_ptr(csectionN)) {
+      return LineicModelPtr(new NurbsCurve(ctrlpts, csectionN->getDegree(), csectionN->getKnotList(),csection->getStride(),csection->getWidth()));
+    }
+    else {
+      return LineicModelPtr(new BezierCurve(ctrlpts, csection->getStride(),csection->getWidth()));
+    }
+  }
+  else {
+    Polyline2DPtr csectionP = dynamic_pointer_cast<Polyline2D>(__crossSection);
+    if (is_valid_ptr(csection)) {
+      Point3ArrayPtr ctrlpts(new Point3Array(csectionP->getPointList()->size()));
+      Point2Array::const_iterator itS = csectionP->getPointList()->begin();
+      Point3Array::iterator itT = ctrlpts->begin();
+      for(;itT != ctrlpts->end(); ++itT, ++itS){
+        *itT = ref+frame*Vector3(*itS,0);
+      }
+      return LineicModelPtr(new Polyline(ctrlpts, csectionP->getWidth()));
+    }
+  }
+  return LineicModelPtr();
+}
+
+  LineicModelPtr Extrusion::getIsoVSectionAt(real_t v) const
+  {
+    real_t _start = __axis->getFirstKnot();
+    uint_t _size =  __axis->getStride();
+    real_t _step =  (__axis->getLastKnot()-_start) / (real_t) _size;
+    Point3ArrayPtr points(new Point3Array(_size+1));
+    Matrix3 frame = getFrameAt(_start);
+    Point3Array::iterator itP = points->begin();
+    for(uint32_t _i = 0; _i < _size; ++_i, ++itP)
+    {
+      *itP = getPointAt(_start, v, frame);
+      Point3Array::iterator itP2 = itP;
+      if (_i != _size-1) {
+        frame = getNextFrameAt(_start, frame, _step);
+        _start += _step;
+      }
+    }
+    frame = getNextFrameAt(_start, frame,__axis->getLastKnot()- _start);
+    *itP = getPointAt(__axis->getLastKnot(), v, frame);
+    return LineicModelPtr(new Polyline(points, __axis->getWidth()));
+  }
+
+
 Vector3 Extrusion::getUTangentAt(real_t u, real_t v) const {
+  return getUTangentAt(u, v, getFrameAt(u));
+}
+
+Vector3 Extrusion::getUTangentAt(real_t u, real_t v, const Matrix3& frame) const {
   // A'(u) +(R'(u)S(u) + R(u)S'(u)) C(v)
   Vector3 avector = getAxis()->getTangentAt(u);
 
   real_t ds = 0.01;
+  if ((u+ds - getAxis()->getLastKnot()) > -GEOM_EPSILON){
+     u = getAxis()->getLastKnot()-ds-GEOM_EPSILON;
+  }
 
   Vector3 cvector = Vector3(getCrossSection()->getPointAt(v),0);
 
-  Matrix3 frame = getFrameAt(u);
-  Matrix3 framedu = getNextFrameAt(u, frame, ds);
-  Matrix3 dframeu = (framedu-frame)/ds;
-
+  Matrix3 deltaframe = getFrameDerivativeAt( u, frame, ds);
 
   if(getProfileTransformation()){
-    real_t u_trans = getProfileTransformation()->getUMin() + (getProfileTransformation()->getUMax()-getProfileTransformation()->getUMin())*(u - getAxis()->getFirstKnot())/(getAxis()->getLastKnot() - getAxis()->getFirstKnot());
+    real_t u_trans = getUToTransformationU(u);
+    real_t uds_trans = getUToTransformationU(u+ds);
     Matrix3TransformationPtr trans = dynamic_pointer_cast<Matrix3Transformation>((*getProfileTransformation())(u_trans));
     if (trans){ 
-      Matrix3 transf_u = trans->getMatrix();
-      trans = dynamic_pointer_cast<Matrix3Transformation>((*getProfileTransformation())(u+ds));
-      Matrix3 transf_du = (trans->getMatrix() - transf_u)/ds;
+      Matrix3 mattransf = trans->getMatrix();
+      trans = dynamic_pointer_cast<Matrix3Transformation>((*getProfileTransformation())(uds_trans));
+      Matrix3 deltamattransf = (trans->getMatrix() - mattransf)/(ds);
 
-      dframeu = dframeu * transf_u + frame * transf_du;
+      deltaframe = deltaframe * mattransf + frame * deltamattransf;
 
     }
   }
-  return avector + dframeu * cvector;
+  return avector  + deltaframe * cvector;
 }
 
 Vector3 Extrusion::getVTangentAt(real_t u, real_t v) const {
+  return getVTangentAt(u,v,getFrameAt(u));
+}
+
+Vector3 Extrusion::getVTangentAt(real_t u, real_t v, const Matrix3& frame) const {
   // R(u) S(u) C'(v)
   Vector3 vector = getCrossSection()->getTangentAt(v);
 
   if(getProfileTransformation()){
-    real_t u_trans = getProfileTransformation()->getUMin() + (getProfileTransformation()->getUMax()-getProfileTransformation()->getUMin())*(u - getAxis()->getFirstKnot())/(getAxis()->getLastKnot() - getAxis()->getFirstKnot());
+    real_t u_trans = getUToTransformationU(u);
     Matrix3TransformationPtr trans = dynamic_pointer_cast<Matrix3Transformation>((*getProfileTransformation())(u_trans));
     if (trans){ 
       Matrix3 _transf2D = trans->getMatrix();
       vector = _transf2D * vector;
     }
   }
-  Matrix3 frame = getFrameAt(u);
   vector = frame * vector;
   return vector;
 }
 
+
 Vector3 Extrusion::getNormalAt(real_t u, real_t v) const{
+    return getNormalAt(u,v,getFrameAt(u));
+}
+
+Vector3 Extrusion::getNormalAt(real_t u, real_t v, const Matrix3& frame) const{
     GEOM_ASSERT( u >= getFirstUKnot( ) && u <= getLastUKnot( ) && v>= getFirstVKnot( ) && v<=getLastVKnot( ));
-    Vector3 _utangent = getUTangentAt(u,v);
+    Vector3 _utangent = getUTangentAt(u,v,frame);
     _utangent.normalize();
-    Vector3 _vtangent = getVTangentAt(u,v);
+    Vector3 _vtangent = getVTangentAt(u,v,frame);
     _vtangent.normalize();
     return cross(_utangent,_vtangent);
 }
@@ -554,65 +641,65 @@ Matrix3 Extrusion::getFrameAt(real_t u) const {
     real_t _start = getAxis()->getFirstKnot();
     uint_t _size =  getAxis()->getStride();
     real_t _step =  (getAxis()->getLastKnot()-_start) / (real_t) _size;
-    uint_t nbsteps = (uint_t)(u / _step);
+    uint_t nbsteps = (uint_t)((u -_start)/ _step);
 
-    Vector3 _oldBinormal;
-    Vector3 _velocity;
-    Vector3 _binormal;
+    Vector3 _velocity = getAxis()->getTangentAt(_start);
     Vector3 _normal( getInitialNormalValue() );
+    _velocity.normalize();
+    _normal.normalize();
+    Vector3 _binormal = cross(_velocity,_normal);
+    Matrix3 result(_normal,_binormal,_velocity);
 
-    for (uint_t _i = 0; _i <= nbsteps; _i++) {
-        _velocity = getAxis()->getTangentAt(_start);
-        if(_i!=0) {
-            _normal = cross(_oldBinormal,_velocity);
-            real_t normnormal = norm(_normal);
-            if (normnormal == 0){
-              _normal = _velocity.anOrthogonalVector();
-              _normal.normalize();
-            }
-            else _normal /= normnormal;
-          }
-        _velocity.normalize();
-        _normal.normalize();
-        _binormal = cross(_velocity,_normal);
-        _binormal.normalize();
-        _oldBinormal = _binormal;
+    for (uint_t _i = 1; _i <= nbsteps; _i++) {
+        result = getNextFrameAt(_start, result, _step);
+        _start += _step;
     } 
 
     if(fabs(u-_start)>GEOM_EPSILON) {
-        _velocity = getAxis()->getTangentAt(u);
-        _normal = cross(_oldBinormal,_velocity);
-        real_t normnormal = norm(_normal);
-        if (normnormal == 0){
-            _normal = _velocity.anOrthogonalVector();
-            _normal.normalize();
-        }
-        else _normal /= normnormal;
-      _velocity.normalize();
-      _normal.normalize();
-      _binormal = cross(_velocity,_normal);
-      _binormal.normalize();
+        result = getNextFrameAt(_start, result, u-_start);
     }
-    return Matrix3(_normal,_binormal,_velocity);    
+    return result;    
 }
 
 // Get the next matrix frame value at u+du.
 Matrix3 Extrusion::getNextFrameAt(real_t u, Matrix3 m, real_t du) const
 {
-    Vector3 _oldBinormal = m.getColumn(1);
+    Vector3 _binormal = m.getColumn(1);
     Vector3 _velocity = getAxis()->getTangentAt(u+du);
-    Vector3 _normal = cross(_oldBinormal,_velocity);
+    _velocity.normalize();
+    Vector3 _normal = cross(_binormal,_velocity);
     real_t normnormal = norm(_normal);
     if (normnormal == 0){
         _normal = _velocity.anOrthogonalVector();
         _normal.normalize();
     }
     else _normal /= normnormal;
-    _velocity.normalize();
-    _normal.normalize();
-    Vector3 _binormal = cross(_velocity,_normal);
+    _binormal = cross(_velocity,_normal);
     _binormal.normalize();
     return Matrix3(_normal,_binormal,_velocity);    
+}
+
+  // Get the derivative matrix frame value at u+du.
+Matrix3 Extrusion::getFrameDerivativeAt(real_t u, real_t du) const
+{
+  return getFrameDerivativeAt(u, getFrameAt(u), du);
+}
+
+  // Get the derivative matrix frame value at u+du.
+Matrix3 Extrusion::getFrameDerivativeAt(real_t u, Matrix3 frame, real_t du) const
+{   if (fabs(u-__axis->getLastKnot()) < GEOM_EPSILON) {
+      Matrix3 framedu = getFrameAt(u-du);
+      return (frame-framedu)/du;
+    }
+    else {
+      Matrix3 framedu = getNextFrameAt(u, frame, du);
+      return (framedu - frame)/du;
+    }
+}
+real_t Extrusion::getUToTransformationU(real_t u) const
+{
+    return getProfileTransformation()->getUMin() + (getProfileTransformation()->getUMax()-getProfileTransformation()->getUMin())*(u - getAxis()->getFirstKnot())/(getAxis()->getLastKnot() - getAxis()->getFirstKnot());
+
 }
 
 NurbsCurvePtr get_nurbs_axis(LineicModelPtr axis){
@@ -625,17 +712,28 @@ NurbsCurvePtr get_nurbs_axis(LineicModelPtr axis){
   return NurbsCurvePtr(0);
 }
 
+
 // Compute the derivative.
 Vector3 Extrusion::getSecondDerivativeUUAt(real_t u, real_t v) const
 {
+    return getSecondDerivativeUUAt(u,v,getFrameAt(u));
+}
+
+// Compute the derivative.
+Vector3 Extrusion::getSecondDerivativeUUAt(real_t u, real_t v, const Matrix3& frame) const
+{
    // A''(u) +(R''(u)S(u) + 2 R'(u)'S(u) + R(u)S''(u)) C(v)
   real_t ds = 0.01;
+
+  if ((u+2*ds - getAxis()->getLastKnot()) > -GEOM_EPSILON){
+     u = getAxis()->getLastKnot()-ds-GEOM_EPSILON;
+  }
+
   NurbsCurvePtr axis = get_nurbs_axis(getAxis());
   if (is_valid_ptr(axis)) {
     Vector3 avector = axis->getDerivativeAt(u,2);
     Vector3 cvector = getCrossSection()->getPointAt(v);
 
-    Matrix3 frame = getFrameAt(u);
     Matrix3 framedu = getNextFrameAt(u, frame, ds);
     Matrix3 framedu2 = getNextFrameAt(u+ds, framedu, ds);
 
@@ -645,19 +743,20 @@ Vector3 Extrusion::getSecondDerivativeUUAt(real_t u, real_t v) const
     Matrix3 T = dframeu2;
 
     if(getProfileTransformation()){
-      real_t u_trans = getProfileTransformation()->getUMin() + (getProfileTransformation()->getUMax()-getProfileTransformation()->getUMin())*(u - axis->getFirstKnot())/(axis->getLastKnot() - axis->getFirstKnot());
+      real_t u_trans = getUToTransformationU(u);
+      real_t uds_trans = getUToTransformationU(u+ds);
+      real_t u2ds_trans = getUToTransformationU(u+2*ds);
       Matrix3TransformationPtr trans = dynamic_pointer_cast<Matrix3Transformation>((*getProfileTransformation())(u_trans));
       if (trans){ 
         Matrix3 transf_u = trans->getMatrix();
-        trans = dynamic_pointer_cast<Matrix3Transformation>((*getProfileTransformation())(u_trans+ds));
+        trans = dynamic_pointer_cast<Matrix3Transformation>((*getProfileTransformation())(uds_trans));
         Matrix3 transf_udu = trans->getMatrix();
-        trans = dynamic_pointer_cast<Matrix3Transformation>((*getProfileTransformation())(u_trans+2*ds));
+        trans = dynamic_pointer_cast<Matrix3Transformation>((*getProfileTransformation())(u2ds_trans));
         Matrix3 transf_u2du = trans->getMatrix();
 
         Matrix3 transf_du = (transf_u2du - (transf_udu*2) + transf_u)/(ds*ds);
 
         T = (dframeu2 * transf_u) + (dframeu * transf_udu*2) + (frame*transf_u2du);
-
       }
     }
 
@@ -679,20 +778,25 @@ NurbsCurve2DPtr get_nurbs_cross_section(Curve2DPtr section){
 // Compute the derivative.
 Vector3 Extrusion::getSecondDerivativeVVAt(real_t u, real_t v) const
 {
+    return getSecondDerivativeVVAt(u,v,getFrameAt(u));
+}
+
+// Compute the derivative.
+Vector3 Extrusion::getSecondDerivativeVVAt(real_t u, real_t v, const Matrix3& frame) const
+{
   // R(u) S(u) C''(v)
   NurbsCurve2DPtr csection = get_nurbs_cross_section(getCrossSection());
   if (is_valid_ptr(csection)) {
     Vector3 vector = Vector3(csection->getDerivativeAt(v,2),0);
 
     if(getProfileTransformation()){
-      real_t u_trans = getProfileTransformation()->getUMin() + (getProfileTransformation()->getUMax()-getProfileTransformation()->getUMin())*(u - getAxis()->getFirstKnot())/(getAxis()->getLastKnot() - getAxis()->getFirstKnot());
+      real_t u_trans = getUToTransformationU(u);
       Matrix3TransformationPtr trans = dynamic_pointer_cast<Matrix3Transformation>((*getProfileTransformation())(u_trans));
       if (trans){ 
         Matrix3 _transf2D = trans->getMatrix();
         vector = _transf2D * vector;
       }
     }
-    Matrix3 frame = getFrameAt(u);
     return frame * vector;
   }
   return Vector3();
@@ -701,23 +805,32 @@ Vector3 Extrusion::getSecondDerivativeVVAt(real_t u, real_t v) const
 // Compute the derivative.
 Vector3 Extrusion::getSecondDerivativeUVAt(real_t u, real_t v) const
 {
+    return getSecondDerivativeUVAt(u,v,getFrameAt(u));
+}
+
+// Compute the derivative.
+Vector3 Extrusion::getSecondDerivativeUVAt(real_t u, real_t v, const Matrix3& frame) const
+{
   // R(u)'S'(u) C'(v)
   real_t ds = 0.01;
+  if ((u+ds - getAxis()->getLastKnot()) > -GEOM_EPSILON){
+     u = getAxis()->getLastKnot()-ds-GEOM_EPSILON;
+  }
 
   Vector3 cvector = getCrossSection()->getTangentAt(v);
 
-  Matrix3 frame = getFrameAt(u);
   Matrix3 framedu = getNextFrameAt(u, frame, ds);
 
   Matrix3 dframeu = (framedu-frame)/ds;
 
 
   if(getProfileTransformation()){
-    real_t u_trans = getProfileTransformation()->getUMin() + (getProfileTransformation()->getUMax()-getProfileTransformation()->getUMin())*(u - getAxis()->getFirstKnot())/(getAxis()->getLastKnot() - getAxis()->getFirstKnot());
+    real_t u_trans = getUToTransformationU(u);
+    real_t uds_trans = getUToTransformationU(u+ds);
     Matrix3TransformationPtr trans = dynamic_pointer_cast<Matrix3Transformation>((*getProfileTransformation())(u_trans));
     if (trans){ 
       Matrix3 transf_u = trans->getMatrix();
-      trans = dynamic_pointer_cast<Matrix3Transformation>((*getProfileTransformation())(u+ds));
+      trans = dynamic_pointer_cast<Matrix3Transformation>((*getProfileTransformation())(uds_trans));
       Matrix3 transf_du = (trans->getMatrix() - transf_u)/ds;
 
       dframeu = dframeu * transf_du;
@@ -727,6 +840,7 @@ Vector3 Extrusion::getSecondDerivativeUVAt(real_t u, real_t v) const
 
   return dframeu * cvector;
 }
+
 
 
 /* ----------------------------------------------------------------------- */

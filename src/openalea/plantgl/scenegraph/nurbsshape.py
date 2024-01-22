@@ -62,13 +62,16 @@ def nurbEllipse(xradius = 1, yradius = 1):
     return NurbsCurve2D(ctrlPoints, knots)
 
 
-def nurbHalfEllipse(xradius = 1, yradius = 1):
+def nurbHalfEllipse(xradius = 1, yradius = 1, Yalignement = True): 
     knots = [0,0,0,0,1,1,1,1]
 
     def p(point,w) :
         return [pi*r for pi,r in zip(point,[xradius,yradius])]+[w]
 
-    ctrlPoints =  [ p((1,0),1), p((1,2),1/3), p((-1,2),1/3), p((-1,0),1)]
+    if Yalignement:
+        ctrlPoints =  [ p((1,0),1), p((1,2),1/3), p((-1,2),1/3), p((-1,0),1)]
+    else:
+        ctrlPoints =  [ p((0,1),1), p((2,1),1/3), p((2,-1),1/3), p((0,-1),1)]
 
     return NurbsCurve2D(ctrlPoints, knots)
 

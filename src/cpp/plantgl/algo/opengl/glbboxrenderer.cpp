@@ -53,6 +53,9 @@ PGL_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
+#define GEOM_ASSERT_OBJ(obj) if (__ogltoinit) { init(); }
+
+
 #define GEOM_GLBBOXRENDERER_CHECK_APPEARANCE(app) \
   if ((__appearance) && \
       (__appearance->getObjectId() == app->getObjectId())) return true;
@@ -62,18 +65,18 @@ PGL_USING_NAMESPACE
 
 
 #define GEOM_GLBBOXRENDERER_DRAW_BBOX(bbox) \
-  GEOM_ASSERT(bbox); \
-  glPushMatrix(); \
+  GEOM_ASSERT_OBJ(bbox); \
+  __ogl->glPushMatrix(); \
   Vector3 _bboxCenter = bbox->getCenter(); \
   Vector3 _bboxSize = bbox->getSize(); \
-  glGeomTranslate(_bboxCenter); \
-  glGeomScale(_bboxSize*2); \
+  __ogl->glGeomTranslate(_bboxCenter); \
+  __ogl->glGeomScale(_bboxSize*2); \
   glutSolidCube(1); \
-  glPopMatrix();
+  __ogl->glPopMatrix();
 
 
 #define GEOM_GLBBOXRENDERER(geom)\
-   GEOM_ASSERT(geom); \
+   GEOM_ASSERT_OBJ(geom); \
    if(geom->apply(__bboxComputer)){ \
     BoundingBoxPtr _bbox = __bboxComputer.getBoundingBox(); \
     GEOM_GLBBOXRENDERER_DRAW_BBOX(_bbox); \
@@ -85,8 +88,8 @@ PGL_USING_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 
-GLBBoxRenderer::GLBBoxRenderer( BBoxComputer& bboxComputer ) :
-  GLRenderer(bboxComputer.getDiscretizer()),
+GLBBoxRenderer::GLBBoxRenderer( BBoxComputer& bboxComputer, PGLOpenGLFunctionsPtr ogl ) :
+  GLRenderer(bboxComputer.getDiscretizer(), NULL, ogl),
   __bboxComputer(bboxComputer) {
 }
 
@@ -252,7 +255,7 @@ bool GLBBoxRenderer::process( Material * material ) {
 
 
 bool GLBBoxRenderer::process( MonoSpectral * monoSpectral ) {
-  GEOM_ASSERT(monoSpectral);
+  GEOM_ASSERT_OBJ(monoSpectral);
 
  GEOM_GLBBOXRENDERER_CHECK_APPEARANCE(monoSpectral);
 
@@ -274,7 +277,7 @@ bool GLBBoxRenderer::process( MonoSpectral * monoSpectral ) {
 
 
 bool GLBBoxRenderer::process( MultiSpectral * multiSpectral ) {
-  GEOM_ASSERT(multiSpectral);
+  GEOM_ASSERT_OBJ(multiSpectral);
 
   GEOM_GLBBOXRENDERER_CHECK_APPEARANCE(multiSpectral);
 
@@ -452,14 +455,14 @@ bool GLBBoxRenderer::process( Polyline2D * polyline  ) {
 /* ----------------------------------------------------------------------- */
 
 bool GLBBoxRenderer::process( Text * text ) {
-  GEOM_ASSERT(text);
+  GEOM_ASSERT_OBJ(text);
   return true;
 }
 
 /* ----------------------------------------------------------------------- */
 
 bool GLBBoxRenderer::process( Font * font ) {
-  GEOM_ASSERT(font);
+  GEOM_ASSERT_OBJ(font);
   return true;
 }
 

@@ -214,9 +214,10 @@ int editMaterialInDialog(MaterialPtr initial,QWidget * parent, const char * capt
 
 ViewEditGeomSceneGL::ViewEditGeomSceneGL(ViewCameraGL * camera,
                                          ViewLightGL * light,
-                                         QGLWidget * parent,
-                                         const char * name):
-ViewMultiGeomSceneGL(camera,light,parent,name),
+                                         QOpenGLBaseWidget * parent,
+                                         const char * name, 
+                                         PGLOpenGLFunctionsPtr ogl):
+ViewMultiGeomSceneGL(camera,light,parent,name,ogl),
 __appeclipboard(),
 __mateditor(0){
 }
@@ -463,9 +464,10 @@ ViewEditGeomSceneGL::pasteMaterial(){
 
 ViewMultiscaleEditGeomSceneGL::ViewMultiscaleEditGeomSceneGL(ViewCameraGL * camera,
                                          ViewLightGL * light,
-                                         QGLWidget * parent,
-                                         const char * name):
-ViewEditGeomSceneGL(camera,light,parent,name),
+                                         QOpenGLBaseWidget * parent,
+                                         const char * name, 
+                                         PGLOpenGLFunctionsPtr ogl):
+ViewEditGeomSceneGL(camera,light,parent,name,ogl),
 __appdialog(0),
 __appform(0),
 __matmacro(new Material(*dynamic_pointer_cast<Material>(Material::DEFAULT_MATERIAL))){

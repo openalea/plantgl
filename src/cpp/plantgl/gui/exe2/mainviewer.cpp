@@ -62,12 +62,20 @@ int main(int argc, char *argv[])
 
     app.setApplicationName("pglviewer2");
     app.setApplicationVersion("0.1");
+
 #ifndef QT_NO_OPENGL
     MainWidget widget;
     ScenePtr scene(new Scene());
+    if (argc > 1) {
+        printf("***** %s\n", argv[1]);
+        scene = new Scene(argv[1]);
+    }
+    else {
+        printf("***** default\n");
+        // scene->add(ShapePtr(new Shape(GeometryPtr(new Sphere(3, 128, 128)), AppearancePtr(new Material(Color3(50,10,10), 5)) )));
+        scene->add(ShapePtr(new Shape(GeometryPtr(new Cylinder(0.5, 3, false, 128)), AppearancePtr(new Material(Color3(50,10,10), 5)) )));
+    }
     widget.setScene(scene);
-    scene->add(ShapePtr(new Shape(GeometryPtr(new Sphere(3, 128, 128)), AppearancePtr(new Material(Color3(50,10,10), 5)) )));
-    // scene->add(ShapePtr(new Shape(GeometryPtr(new Cylinder(0.5, 3, false, 128)), AppearancePtr(new Material(Color3(50,10,10), 5)) )));
     widget.show();
 #else
     QLabel note("OpenGL Support required");

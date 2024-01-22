@@ -48,7 +48,7 @@
 
 #include <QtGui/qfont.h>
 #include <QtGui/qevent.h>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
     #include <QtWidgets/qmenu.h>
     #include <QtWidgets/qlabel.h>
     #include <QtWidgets/qlineedit.h>
@@ -58,15 +58,6 @@
     #include <QtWidgets/qtooltip.h>
     #include <QtWidgets/qwhatsthis.h>
     #include <QtWidgets/qcolordialog.h>
-#else
-    #include <QtGui/qlabel.h>
-    #include <QtGui/qlineedit.h>
-    #include <QtGui/qslider.h>
-    #include <QtGui/qtoolbutton.h>
-    #include <QtGui/qlayout.h>
-    #include <QtGui/qtooltip.h>
-    #include <QtGui/qwhatsthis.h>
-    #include <QtGui/qcolordialog.h>
 #endif
 
 #include <plantgl/scenegraph/geometry/sphere.h>
@@ -77,10 +68,12 @@ PGL_USING_NAMESPACE
 using namespace std;
 
 /*----------------------------------------------------------------------------*/
-ViewColorGL::ViewColorGL( QWidget * parent, const char * name, const QGLWidget * shareWidget, Qt::WindowFlags f ):
- QGLWidget(parent,shareWidget,f),
+ViewColorGL::ViewColorGL( QWidget * parent, const char * name, Qt::WindowFlags f ):
+ QOpenGLWidget(parent,f),
  __sphereobject(NULL),
- __r(__d){
+ __r(__d),
+ __ogl(new PGLOpenGLFunctions()){
+  __r.setOpenGLFunctions(__ogl);
     if(name) setObjectName(name);
 
   __range=1000;
@@ -105,35 +98,36 @@ ViewColorGL::~ViewColorGL(){
 
 void ViewColorGL::setAppearance(const AppearancePtr& mat){
     __M = mat;
-    updateGL();
+    update();
   }
 
 // -------------------- Rendering --------------------
 void ViewColorGL::initializeGL(){
-  glClearColor(0.0,0.0,0.0,1.0);
+  __ogl->initializeOpenGLFunctions();
+  __ogl->glClearColor(0.0,0.0,0.0,1.0);
 
-  glShadeModel(GL_SMOOTH);
-  glLightfv(GL_LIGHT0,GL_POSITION,__lightpos);
-  glLightModelfv(GL_LIGHT_MODEL_AMBIENT,__lightmodel);
-  glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+  __ogl->glShadeModel(GL_SMOOTH);
+  __ogl->glLightfv(GL_LIGHT0,GL_POSITION,__lightpos);
+  __ogl->glLightModelfv(GL_LIGHT_MODEL_AMBIENT,__lightmodel);
+  __ogl->glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
-  glEnable(GL_LIGHTING);
-  glEnable(GL_LIGHT0);
-  glEnable(GL_DEPTH_TEST);
-  glEnable(GL_BLEND);
+  __ogl->glEnable(GL_LIGHTING);
+  __ogl->glEnable(GL_LIGHT0);
+  __ogl->glEnable(GL_DEPTH_TEST);
+  __ogl->glEnable(GL_BLEND);
 
   __sphereobject = GeometryPtr(new Sphere(__radius,80,80));
 
-  __spheredrawlist=glGenLists(1);
-  glNewList(__spheredrawlist,GL_COMPILE);
+  __spheredrawlist=__ogl->glGenLists(1);
+  __ogl->glNewList(__spheredrawlist,GL_COMPILE);
   __sphereobject->apply(__r);
-  glEndList();
+  __ogl->glEndList();
 }
 
 void ViewColorGL::resizeGL(int,int){
-  glViewport(0,0,(GLsizei)width(),(GLsizei)height());
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
+  __ogl->glViewport(0,0,(GLsizei)width(),(GLsizei)height());
+  __ogl->glMatrixMode(GL_PROJECTION);
+  __ogl->glLoadIdentity();
 
   GLfloat scale;
 
@@ -158,63 +152,63 @@ void ViewColorGL::resizeGL(int,int){
     __ymax=0.5*__range;
   }
 
-  glOrtho(__xmin,__xmax,__ymin,__ymax,__Near,__Far);
+  __ogl->glOrtho(__xmin,__xmax,__ymin,__ymax,__Near,__Far);
 
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
+  __ogl->glMatrixMode(GL_MODELVIEW);
+  __ogl->glLoadIdentity();
 }
 
 void ViewColorGL::paintGL(){
 
-  glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-  glShadeModel(GL_SMOOTH);
+  __ogl->glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+  __ogl->glShadeModel(GL_SMOOTH);
 
   // traditional background for showing transparency
-  glDisable(GL_LIGHTING);
+  __ogl->glDisable(GL_LIGHTING);
   GLfloat lightcheck[]={0.9f,0.9f,0.9f};
   GLfloat darkcheck[]={0.5f,0.5f,0.5f};
 
-  glBegin(GL_QUADS);{
-    glColor3fv(lightcheck);
-    glVertex3f(__xmin,__ymax,-500);
-    glVertex3f(0,__ymax,-500);
-    glVertex3f(0,0,-500);
-    glVertex3f(__xmin,0,-500);
+  __ogl->glBegin(GL_QUADS);{
+    __ogl->glColor3fv(lightcheck);
+    __ogl->glVertex3f(__xmin,__ymax,-500);
+    __ogl->glVertex3f(0,__ymax,-500);
+    __ogl->glVertex3f(0,0,-500);
+    __ogl->glVertex3f(__xmin,0,-500);
 
-    glVertex3f(0,0,-500);
-    glVertex3f(__xmax,0,-500);
-    glVertex3f(__xmax,__ymin,-500);
-    glVertex3f(0,__ymin,-500);
+    __ogl->glVertex3f(0,0,-500);
+    __ogl->glVertex3f(__xmax,0,-500);
+    __ogl->glVertex3f(__xmax,__ymin,-500);
+    __ogl->glVertex3f(0,__ymin,-500);
 
-    glColor3fv(darkcheck);
-    glVertex3f(0,__ymax,-500);
-    glVertex3f(__xmax,__ymax,-500);
-    glVertex3f(__xmax,0,-500);
-    glVertex3f(0,0,-500);
+    __ogl->glColor3fv(darkcheck);
+    __ogl->glVertex3f(0,__ymax,-500);
+    __ogl->glVertex3f(__xmax,__ymax,-500);
+    __ogl->glVertex3f(__xmax,0,-500);
+    __ogl->glVertex3f(0,0,-500);
 
-    glVertex3f(__xmin,0,-500);
-    glVertex3f(0,0,-500);
-    glVertex3f(0,__ymin,-500);
-    glVertex3f(__xmin,__ymin,-500);
+    __ogl->glVertex3f(__xmin,0,-500);
+    __ogl->glVertex3f(0,0,-500);
+    __ogl->glVertex3f(0,__ymin,-500);
+    __ogl->glVertex3f(__xmin,__ymin,-500);
 
   }
-  glEnd();
+  __ogl->glEnd();
 
   // draw our sphere
-  glPushMatrix();
-  glEnable(GL_LIGHTING);
-  glShadeModel(GL_SMOOTH);
+  __ogl->glPushMatrix();
+  __ogl->glEnable(GL_LIGHTING);
+  __ogl->glShadeModel(GL_SMOOTH);
 
-  glRotatef(90.0,0.0,1.0,0.0);
-  glRotatef(45.0,1.0,0.0,0.0);
+  __ogl->glRotatef(90.0,0.0,1.0,0.0);
+  __ogl->glRotatef(45.0,1.0,0.0,0.0);
 
   paintAppearance();
 
-  glCallList(__spheredrawlist);
+  __ogl->glCallList(__spheredrawlist);
 
-  glPopMatrix();
+  __ogl->glPopMatrix();
 
-  glFlush();
+  __ogl->glFlush();
 }
 
 void ViewColorGL::paintAppearance(){
@@ -581,7 +575,7 @@ void MaterialEditor::setGeomName(const QString& name ){
 }
 
 void MaterialEditor::update(){
-  FrameGL->updateGL();
+  FrameGL->update();
 }
 
 void MaterialEditor::ambientChangedEvent(){

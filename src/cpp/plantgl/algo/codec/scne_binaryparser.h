@@ -443,7 +443,7 @@ public:
   std::string __comment;
 
   /// Memory reservation.
-  SceneObject * __mem[42];
+  SceneObject * __mem[45];
 
   /// sizes of memory reservation tabs.
   std::vector<uint_t> __sizes;

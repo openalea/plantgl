@@ -1,70 +1,18 @@
-name: build_publish_anaconda
+name: Building Package
 
 on:
   push:
+    branches: 
+      - '**'
     tags:
       - 'v*'
-    branches: [ master ]
   pull_request:
-    branches: [ master ]
-  workflow_dispatch: # allows you to trigger manually
-    
-jobs:
-  build-and-publish:
-    name: ${{ matrix.os }}, Python 3.${{ matrix.python-minor-version }} for conda deployment
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      max-parallel: 3
-      matrix:
-        os: [ ubuntu-latest , macos-latest , windows-latest]
-        python-minor-version: [7, 8, 9]
-        isMaster:
-          - ${{ github.ref == 'refs/heads/master' }}
-        exclude:
-          - isMaster: false
-            os: ubuntu-latest
-            python-minor-version: 7
-          - isMaster: false
-            os: ubuntu-latest
-            python-minor-version: 8
-          - isMaster: false
-            os: macos-latest
-            python-minor-version: 7
-          - isMaster: false
-            os: macos-latest
-            python-minor-version: 8
-          - isMaster: false
-            os: macos-latest
-            python-minor-version: 9
-          - isMaster: false
-            os: windows-latest
-            python-minor-version: 7
-          - isMaster: false
-            os: windows-latest
-            python-minor-version: 8
-          - isMaster: false
-            os: windows-latest
-            python-minor-version: 9            
+    branches: 
+      - '**'
 
-    steps:
-    - name: Chekout
-      uses: actions/checkout@v3
-    - name: Determine publish
-      uses: haya14busa/action-cond@v1
-      id: publish
-      with:
-        cond: ${{ startsWith(github.ref, 'refs/tags/v') }}
-        if_true: 'true'
-        if_false: 'false'
-    - name: Build and Publish
-      uses: openalea/action-build-publish-anaconda@v0.1.3
-      with:
-        conda: conda
-        mamba: true
-        numpy: '20.0'
-        python: ${{ matrix.python-minor-version }}
-        channels: openalea3, conda-forge
-        token: ${{ secrets.ANACONDA_TOKEN }}
-        publish: true
-        label: main
+
+jobs:
+  build:
+    uses: fredboudon/github-action-conda-build/.github/workflows/conda-package-build.yml@main
+    secrets: 
+      token: ${{ secrets.ANACONDA_TOKEN }}

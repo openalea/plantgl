@@ -9,6 +9,7 @@ cd build
 if [ `uname` = "Darwin" ]; then
     SYSTEM_DEPENDENT_ARGS=(
         "-DCMAKE_OSX_SYSROOT=${CONDA_BUILD_SYSROOT}"
+        # -DQHULL_LIBRARY=${CONDA_PREFIX}/lib/libqhull_r${SHLIB_EXT}"
    )
     export LDFLAGS="-undefined dynamic_lookup ${LDFLAGS}"
 
@@ -119,9 +120,9 @@ else
     export LDD='ldd'    
 fi
 
-${LDD} `${PYTHON} -c "import openalea.plantgl.math._pglmath as pm ; print(pm.__file__)"`
-${LDD} `${PYTHON} -c "import openalea.plantgl.scenegraph._pglsg as pm ; print(pm.__file__)"`
-${LDD} `${PYTHON} -c "import openalea.plantgl.algo._pglalgo as pm ; print(pm.__file__)"`
-${LDD} `${PYTHON} -c "import openalea.plantgl.gui._pglgui as pm ; print(pm.__file__)"`
+echo `${PYTHON} -c "import openalea.plantgl.math._pglmath as pm ; print(pm.__file__)"`
+echo `${PYTHON} -c "import openalea.plantgl.scenegraph._pglsg as pm ; print(pm.__file__)"`
+echo `${PYTHON} -c "import openalea.plantgl.algo._pglalgo as pm ; print(pm.__file__)"`
+echo `${PYTHON} -c "import openalea.plantgl.gui._pglgui as pm ; print(pm.__file__)"`
 
 echo "****** END OF BUILD PROCESS"

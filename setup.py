@@ -84,6 +84,7 @@ setup(
 
     # Scripts
     entry_points = {
+        'console_scripts': ['pgl2pov = openalea.plantgl.codec.translation:pgl2pov',],
         "wralea": [
             'plantgl.edition = openalea.plantgl.wralea.edition', 
             'plantgl.objects = openalea.plantgl.wralea.objects', 

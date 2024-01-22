@@ -54,9 +54,11 @@
 #include <plantgl/scenegraph/appearance/appearance.h>
 
 /* ----------------------------------------------------------------------- */
+#define PGL_QT_FWD_DECL
+#include <plantgl/gui/pglqopenglwidget.h>
+#undef PGL_QT_FWD_DECL
 
-class QGLWidget;
-
+class QOpenGLTexture;
 /* ----------------------------------------------------------------------- */
 
 PGL_BEGIN_NAMESPACE
@@ -80,11 +82,18 @@ class ALGO_API GLRenderer : public Action
 
 public:
 
-  /** Constructs a GLRenderer with the Discretizer \e discretizer. */
-  GLRenderer( Discretizer& discretizer
 #ifndef PGL_WITHOUT_QT
-    , QGLWidget * glframe = NULL
+  typedef Cache<QOpenGLTexture *> TextureCache;
+#else
+  typedef Cache<GLuint> TextureCache;
 #endif
+
+  /** Constructs a GLRenderer with the Discretizer \e discretizer. */
+  GLRenderer( Discretizer& discretizer,
+#ifndef PGL_WITHOUT_QT
+    QOpenGLBaseWidget * glframe = NULL,
+#endif
+    PGLOpenGLFunctionsPtr ogl = NULL
     );
 
 
@@ -152,13 +161,15 @@ public:
 
 #ifndef PGL_WITHOUT_QT
   /// Set the gl frame in which the scene must be rendered
-  void setGLFrame(QGLWidget * frame) { __glframe = frame; }
+  void setGLFrame(QOpenGLBaseWidget * frame) { __glframe = frame; }
 
   /// Get the gl frame in which the scene must be rendered
-  QGLWidget * getGLFrame() const { return __glframe; }
+  QOpenGLBaseWidget * getGLFrame() const { return __glframe; }
 
   /// Set the gl frame in which the scene must be rendered
   bool setGLFrameFromId(WId);
+
+  void setOpenGLFunctions(PGLOpenGLFunctionsPtr ogl) { __ogl = ogl; }
 #endif
 
   /// @name Pre and Post Processing
@@ -288,8 +299,11 @@ public:
   void update(size_t id, GLuint displaylist);
   const AppearancePtr& getAppearanceCache() const { return __appearance; }
 
-  void registerTexture(ImageTexture * texture, GLuint id, bool erasePreviousIfExists = true);
-  GLuint getTextureId(ImageTexture * texture);
+  void registerTexture(ImageTexture * texture, QOpenGLTexture * gltexture, bool erasePreviousIfExists = true);
+  QOpenGLTexture * getTextureId(ImageTexture * texture);
+
+  void useVertexArray(bool value) { __withvertexarray = value; }
+  bool isVertexArrayUsed() const { return __withvertexarray; }
 
 protected:
 
@@ -297,7 +311,7 @@ protected:
   Cache<GLuint> __cache;
 
   /// A cache used to store texture.
-  Cache<GLuint> __cachetexture;
+  TextureCache __cachetexture;
 
   /// A cache used to store display list of all scene.
   GLuint __scenecache;
@@ -316,8 +330,11 @@ protected:
   int __compil;
 
 #ifndef PGL_WITHOUT_QT
-  QGLWidget * __glframe;
+  QOpenGLBaseWidget * __glframe;
 #endif
+
+  PGLOpenGLFunctionsPtr __ogl;
+  bool __ogltoinit;
 
 private:
   template<class T>
@@ -330,6 +347,9 @@ private:
 
   int __precompildepth;
   int __maxprecompildepth;
+
+  bool __withvertexarray;
+
 };
 
 /* ----------------------------------------------------------------------- */

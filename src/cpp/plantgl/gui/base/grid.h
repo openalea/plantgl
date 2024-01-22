@@ -87,7 +87,7 @@ class VIEW_API ViewGridGL  : public ViewRelativeObjectGL
 public:
 
   /// Constructor.
-  ViewGridGL(ViewCameraGL *camera,QGLWidget * parent=0, const char * name=0);
+  ViewGridGL(ViewCameraGL *camera,QOpenGLBaseWidget * parent=0, const char * name=0, PGLOpenGLFunctionsPtr ogl = NULL);
 
   /// Destructor.
   virtual ~ViewGridGL();

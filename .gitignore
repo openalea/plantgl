@@ -10,7 +10,7 @@ src/openalea/plantgl/config.py
 # C extensions
 build-scons
 build-scons_noqt
-build-scons_qt4
+build-scons_qt6
 build-scons_qt5
 *.so
 *.dll
@@ -89,3 +89,4 @@ _pgl*.dylib
 
 .vscode
 test/geomprinteroutput.geom
+examples/povray

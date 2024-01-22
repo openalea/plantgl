@@ -59,8 +59,8 @@ PGL_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-ViewLightGL::ViewLightGL(ViewCameraGL *camera,QGLWidget * parent, const char * name):
-  ViewRelativeObjectGL(camera,parent,name),
+ViewLightGL::ViewLightGL(ViewCameraGL *camera,QOpenGLBaseWidget * parent, const char * name, PGLOpenGLFunctionsPtr ogl):
+  ViewRelativeObjectGL(camera,parent,name, ogl),
   __azimuth(0),
   __elevation(45),
   __distance(15),
@@ -281,11 +281,11 @@ ViewLightGL::initializeGL()
 {
   gllightMaterial();
   Vector3 pos(Vector3::Spherical(__distance,__azimuth*GEOM_RAD,(__elevation)*GEOM_RAD));
-  glGeomLightPosition(GL_LIGHT0,pos);
+  __ogl->glGeomLightPosition(GL_LIGHT0,pos);
 /*
   pos *= -1;
   pos.normalize();
-  glGeomLightDirection(GL_LIGHT0,pos);
+  __ogl->glGeomLightDirection(GL_LIGHT0,pos);
 */
 
 }
@@ -307,19 +307,19 @@ ViewLightGL::paintGL()
   if(fabs(pos.x()) < GEOM_EPSILON && fabs(pos.y()) < GEOM_EPSILON && fabs(pos.z()) < GEOM_EPSILON){
     pos = Vector3(0,0,1);
   }
-   glGeomLightPosition(GL_LIGHT0,pos);
+   __ogl->glGeomLightPosition(GL_LIGHT0,pos);
   Vector3 dir(pos);
   dir *= -1;
   dir.normalize();
-  glGeomLightDirection(GL_LIGHT0,dir);
+  __ogl->glGeomLightDirection(GL_LIGHT0,dir);
 
   switchOn();
   if(__show){
-    glPushMatrix();
-    glGeomTranslate(pos);
+    __ogl->glPushMatrix();
+    __ogl->glGeomTranslate(pos);
     glGeomMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, __ambient);
     glutSolidSphere(getStep()*0.1,8,8);
-    glPopMatrix();
+    __ogl->glPopMatrix();
   }
 
   GEOM_GL_ERROR;
@@ -343,18 +343,18 @@ void
 ViewLightGL::switchOn()
 {
     if (__enable){
-        glEnable(GL_LIGHTING);
-        glEnable(GL_LIGHT0);
+        __ogl->glEnable(GL_LIGHTING);
+        __ogl->glEnable(GL_LIGHT0);
     }
     else {
-        glDisable(GL_LIGHTING);
+        __ogl->glDisable(GL_LIGHTING);
     }
 }
 
 void
 ViewLightGL::switchOff()
 {
-  glDisable(GL_LIGHTING);
+  __ogl->glDisable(GL_LIGHTING);
 }
 
 bool
@@ -394,12 +394,12 @@ ViewLightGL::createToolsMenu(QWidget * parent)
     QMenu * menu = new QMenu(parent);
     QPixmap home(ViewerIcon::getPixmap(ViewerIcon::home));
     QPixmap _light(ViewerIcon::getPixmap(ViewerIcon::light));
-    menu->addAction(home,tr("&Home"),this,SLOT(home()),Qt::CTRL+Qt::SHIFT+Qt::Key_H);
-    menu->addAction(tr("on X axis"),this,SLOT(XAxis()),Qt::CTRL+Qt::SHIFT+Qt::Key_X);
-    menu->addAction(tr("on Y axis"),this,SLOT(YAxis()),Qt::CTRL+Qt::SHIFT+Qt::Key_Y);
-    menu->addAction(tr("on Z axis"),this,SLOT(ZAxis()),Qt::CTRL+Qt::SHIFT+Qt::Key_Z);
+    menu->addAction(home,tr("&Home"),this,SLOT(home()),Qt::CTRL | Qt::SHIFT | Qt::Key_H);
+    menu->addAction(tr("on X axis"),this,SLOT(XAxis()),Qt::CTRL | Qt::SHIFT | Qt::Key_X);
+    menu->addAction(tr("on Y axis"),this,SLOT(YAxis()),Qt::CTRL | Qt::SHIFT | Qt::Key_Y);
+    menu->addAction(tr("on Z axis"),this,SLOT(ZAxis()),Qt::CTRL | Qt::SHIFT | Qt::Key_Z);
     menu->addSeparator();
-    QAction * idVisibility = menu->addAction(_light,tr("Visible"),this,SLOT(changeVisibility()),Qt::CTRL+Qt::SHIFT+Qt::Key_S);
+    QAction * idVisibility = menu->addAction(_light,tr("Visible"),this,SLOT(changeVisibility()),Qt::CTRL |Qt::SHIFT | Qt::Key_S);
     idVisibility->setCheckable( true );
     idVisibility->setChecked( isVisible() );
     QObject::connect(this,SIGNAL(visibilityChanged( bool)),idVisibility,SLOT(setChecked(bool)));
