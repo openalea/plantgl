@@ -13,7 +13,7 @@ def getMetaInfo():
 
 globals().update(getMetaInfo())
 
-namepace = 'openalea'
+namespace = 'openalea'
 
 # Setup script
 version = HexVersion.from_cpp_define('PGL_VERSION',pj('src','cpp','plantgl','version.h')).to_string()
@@ -35,7 +35,7 @@ else:
         inc_dirs = { 'include' : pj(currentdir, build_prefix, 'include') },
         share_dirs = { 'share' : 'share'},
         postinstall_scripts = ['pgl_postinstall',],
-        namespace_packages = [namespace],
+        #namespace_packages = [namespace],
         create_namespaces = False,
     )
 
@@ -53,7 +53,7 @@ setup(
     # pure python packages
     #packages = find_namespace_packages(where='src',include=['openalea','openalea.*'])
     packages = [ 
-        namepace,
+        namespace,
         pkg_name, 
         pkg_name + '.math', 
         pkg_name + '.scenegraph', 
