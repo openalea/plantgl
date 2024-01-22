@@ -2,7 +2,7 @@
 __revision__ = "$Id$"
 
 import os, sys
-from setuptools import setup, find_packages
+from setuptools import setup, find_namespace_packages
 from hexversion import *
 pj = os.path.join
 
@@ -51,6 +51,7 @@ setup(
     license = license,
 
     # pure python packages
+    #packages = find_namespace_packages(where='src',include=['openalea','openalea.*'])
     packages = [ 
         namepace,
         pkg_name, 
