@@ -53,7 +53,6 @@ setup(
     # pure python packages
     #packages = find_namespace_packages(where='src',include=['openalea','openalea.*'])
     packages = [ 
-        namespace,
         pkg_name, 
         pkg_name + '.math', 
         pkg_name + '.scenegraph', 
