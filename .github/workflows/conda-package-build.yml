@@ -10,7 +10,6 @@ on:
     branches: 
       - '**'
 
-
 jobs:
   build:
     uses: openalea/github-action-conda-build/.github/workflows/conda-package-build.yml@main
