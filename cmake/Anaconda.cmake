@@ -3,7 +3,9 @@ if (DEFINED ENV{CONDA_PREFIX})
     # Anaconda Environment
     message(STATUS "Anaconda environment detected: " $ENV{CONDA_PREFIX})
     
-    
+    set(CMAKE_INCLUDE_PATH "$ENV{CONDA_PREFIX}/include" ${CMAKE_INCLUDE_PATH})
+    set(CMAKE_LIBRARY_PATH "$ENV{CONDA_PREFIX}/lib" ${CMAKE_LIBRARY_PATH})
+
     if (DEFINED ENV{PREFIX})
         file(TO_CMAKE_PATH $ENV{PREFIX} TMP_CONDA_ENV)
     else()
@@ -56,7 +58,9 @@ if (DEFINED ENV{CONDA_BUILD})
         list(APPEND CMAKE_FIND_ROOT_PATH $ENV{CONDA_BUILD_SYSROOT} )
     endif()
     if (WIN32)
-        list(APPEND CMAKE_FIND_ROOT_PATH $ENV{BUILD_PREFIX}/Library/usr)
+        list(APPEND CMAKE_FIND_ROOT_PATH $ENV{BUILD_PREFIX}/Library/usr $ENV{PREFIX}/Library/usr)
+        set(CMAKE_INCLUDE_PATH "$ENV{BUILD_PREFIX}/Library/usr/include" ${CMAKE_INCLUDE_PATH})
+        set(CMAKE_LIBRARY_PATH "$ENV{BUILD_PREFIX}/Library/usr/lib" ${CMAKE_LIBRARY_PATH})
     endif()
     if (UNIX)
         # I add both old stype and new style cdts : https://github.com/conda-forge/cdt-builds#old-stylelegacy-vs-new-style-cdts
