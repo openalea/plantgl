@@ -1,0 +1,9 @@
+sphinx
+sphinx_rtd_theme
+numpy
+pandas
+scipy
+jupyter
+jinja2
+nbsphinx
+nbsphinx_link
