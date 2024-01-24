@@ -30,7 +30,7 @@ requirements:
       - cgal-cpp>=5.4
       - qhull
       - ann
-      - boost {{ boost }}                    
+      - boost  {{ boost }}                   
       - expat                              # [linux]
       - libxcb                             # [linux]
       - pthread-stubs                      # [linux]

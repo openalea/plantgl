@@ -1,11 +1,5 @@
-numpy:
-  - 1.22                  # [win]
-  - 1.22                  # [osx]
-  - 1.22                  # [linux]
 boost:
-  - 1.74                   # [win]
-  - 1.78                   # [osx]
-  - 1.78                   # [linux]
+  - 1.84
 cxx_compiler:
   - gxx                        # [linux]
   - clangxx                    # [osx]
