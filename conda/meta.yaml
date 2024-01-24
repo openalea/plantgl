@@ -13,7 +13,7 @@ about:
   summary: An open-source graphic toolkit for the creation, simulation and analysis of 3D virtual plants.
 
 build:
-  number: 2
+  number: 0
   preserve_egg_dir: True
 
 requirements:
@@ -30,7 +30,7 @@ requirements:
       - cgal-cpp>=5.4
       - qhull
       - ann
-      - boost  {{ boost }}                   
+      - boost                    
       - expat                              # [linux]
       - libxcb                             # [linux]
       - pthread-stubs                      # [linux]
@@ -65,7 +65,7 @@ requirements:
       - numpy x.x
       - setuptools
       - ipython
-      - boost {{ boost }}
+      - boost 
       - qhull
       - eigen
       - cgal-cpp
