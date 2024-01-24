@@ -30,7 +30,7 @@ requirements:
       - cgal-cpp>=5.4
       - qhull
       - ann
-      - boost                     
+      - boost  {{ boost }}                   
       - expat                              # [linux]
       - libxcb                             # [linux]
       - pthread-stubs                      # [linux]
@@ -65,7 +65,7 @@ requirements:
       - numpy x.x
       - setuptools
       - ipython
-      - boost
+      - boost {{ boost }}
       - qhull
       - eigen
       - cgal-cpp
