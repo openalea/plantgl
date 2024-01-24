@@ -29,7 +29,7 @@ endif("${isSystemDir}" STREQUAL "-1")
 
 # ---  CXX11 Compilation
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG")
@@ -44,6 +44,9 @@ init_py_config("${CMAKE_CURRENT_SOURCE_DIR}/src/openalea/plantgl/config.py")
 if (MSVC)
     string(REGEX REPLACE "/W3" "/W0" ${CMAKE_CXX_FLAGS} "${${CMAKE_CXX_FLAGS}}") 
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MD")
+
+    # To fix compilation error with vc14 and boost
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /DHAVE_SNPRINTF")
 endif()
 
 
