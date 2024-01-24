@@ -121,13 +121,13 @@ html_theme_options = {
 # 'searchbox.html']``.
 #
 # html_sidebars = {}
-html_theme = 'sphinx_rtd_theme'
+#html_theme = 'sphinx_rtd_theme'
 
 
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'Plantgldoc'
+htmlhelp_basename = 'PlantGL'
 
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -153,7 +153,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
-latex_documents = [('contents', 'main.tex', namespace + ' documentation', authors, 'manual')]
+latex_documents = [('contents', 'main.tex', 'PlantGL documentation', authors, 'manual')]
 
 
 # -- Options for manual page output ------------------------------------------
