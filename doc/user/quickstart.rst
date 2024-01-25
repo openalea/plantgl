@@ -65,7 +65,7 @@ Finally, it is possible to save the current view in a PNG file. First, the backg
     :width: 50%
 
 
-Applying Algoirthms
+Applying Algorithms
 -------------------
 A number of algorithms are defined and can be applied to the geometric representation that have been created.
 For instance, to compute the boundingbox of the scene
