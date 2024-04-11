@@ -3,8 +3,8 @@ if (DEFINED ENV{CONDA_PREFIX})
     # Anaconda Environment
     message(STATUS "Anaconda environment detected: " $ENV{CONDA_PREFIX})
     
-    set(CMAKE_INCLUDE_PATH "$ENV{CONDA_PREFIX}/include" ${CMAKE_INCLUDE_PATH})
-    set(CMAKE_LIBRARY_PATH "$ENV{CONDA_PREFIX}/lib" ${CMAKE_LIBRARY_PATH})
+    list(APPEND CMAKE_INCLUDE_PATH "$ENV{CONDA_PREFIX}/include")
+    list(APPEND CMAKE_LIBRARY_PATH "$ENV{CONDA_PREFIX}/lib")
 
     if (DEFINED ENV{PREFIX})
         file(TO_CMAKE_PATH $ENV{PREFIX} TMP_CONDA_ENV)

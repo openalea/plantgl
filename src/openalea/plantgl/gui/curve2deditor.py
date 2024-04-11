@@ -5,7 +5,7 @@ from math import pow,log
 
 from openalea.plantgl.gui.qt import QtCore, QtGui, QtWidgets, QtOpenGL
 from openalea.plantgl.gui.qt.QtCore import QEvent, QObject, QPoint, Qt, Signal, qWarning
-from openalea.plantgl.gui.qt.QtGui import QColor, QImage, QFont
+from openalea.plantgl.gui.qt.QtGui import QColor, QImage, QFont, QOpenGLTexture
 #from openalea.plantgl.gui.qt.QtOpenGL import QOpenGLWidget
 from openalea.plantgl.gui.qt.QtWidgets import QFileDialog, QApplication, QOpenGLWidget
 
@@ -184,9 +184,10 @@ from PyQGLViewer import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
+BLACK_THEME = {'Curve' : (255,255,255), 'BackGround' : (51,51,51), 'Text' : (255,255,255), 'CtrlCurve' : (122,122,0), 'GridStrong' : (102,102,102), 'GridFade' : (51,51,51) , 'Points' : (250,30,30), 'FirstPoint' : (250,30,250), 'SelectedPoint' : (30,250,30), 'DisabledBackGround' : (150,150,150) }
+WHITE_THEME = {'Curve' : (255,0,0), 'BackGround' : (255,255,255), 'Text' : (0,0,0), 'CtrlCurve' : (25,0,25), 'GridStrong' : (102,102,102), 'GridFade' : (153,153,153) , 'Points' : (30,250,30), 'FirstPoint' : (250,30,250), 'SelectedPoint' : (30,250,30), 'DisabledBackGround' : (150,150,150)}
+
 class Curve2DEditorView (QGLViewer):
-    BLACK_THEME = {'Curve' : (255,255,255), 'BackGround' : (51,51,51), 'Text' : (255,255,255), 'CtrlCurve' : (122,122,0), 'GridStrong' : (102,102,102), 'GridFade' : (51,51,51) , 'Points' : (250,30,30), 'FirstPoint' : (250,30,250), 'SelectedPoint' : (30,250,30), 'DisabledBackGround' : (150,150,150) }
-    WHITE_THEME = {'Curve' : (255,0,0), 'BackGround' : (255,255,255), 'Text' : (0,0,0), 'CtrlCurve' : (25,0,25), 'GridStrong' : (102,102,102), 'GridFade' : (153,153,153) , 'Points' : (30,250,30), 'FirstPoint' : (250,30,250), 'SelectedPoint' : (30,250,30), 'DisabledBackGround' : (150,150,150)}
 
     valueChanged = Signal()
     nbCtrlPointsChanged = Signal(int)
@@ -229,6 +230,7 @@ class Curve2DEditorView (QGLViewer):
         self.firstPointColor = Material(theme['FirstPoint'],1)
         self.selectedPointColor = Material(theme['SelectedPoint'],1)
         self.curveshape.appearance = self.curveMaterial
+
     def applyTheme(self,theme = BLACK_THEME):
         self.setTheme(theme)
         if self.isVisible(): 
@@ -327,32 +329,41 @@ class Curve2DEditorView (QGLViewer):
         # load image
         img = QImage(imagefilename)
         
+        self.imageWidth = float(img.width())
+        self.imageHeight = float(img.height())
+
         if img.isNull():
             qWarning("Unable to load file, unsupported file format")
             return
 
         # qWarning("Loading " + imagefilename + " " + str(img.width()) + "x" + str(img.height()) +" pixels")
 
-        self.imageWidth = float(img.width())
-        self.imageHeight = float(img.height())
+        self.qgl_texture = QOpenGLTexture(img)
+        self.qgl_texture.setWrapMode(QOpenGLTexture.DirectionS, QOpenGLTexture.ClampToEdge)
+        self.qgl_texture.setWrapMode(QOpenGLTexture.DirectionT, QOpenGLTexture.ClampToEdge)
+        self.qgl_texture.setMinMagFilters(QOpenGLTexture.LinearMipMapNearest, QOpenGLTexture.LinearMipMapNearest)
+        self.qgl_texture.generateMipMaps()
+        self.qgl_texture.create()
+        self.qgl_texture.bind()
+
         # QQQ qWarning(str(self.imageWidth) + " " + str(self.imageHeight))
 
         # 1E-3 needed. Just try with width=128 and see !
-        newWidth  = 1<<(int)(1+log(img.width() -1+1E-3) / log(2.0))
-        newHeight = 1<<(int)(1+log(img.height()-1+1E-3) / log(2.0))
+        #newWidth  = 1<<(int)(1+log(img.width() -1+1E-3) / log(2.0))
+        #newHeight = 1<<(int)(1+log(img.height()-1+1E-3) / log(2.0))
         
-        self.u_max = img.width()  / float(newWidth)
-        self.v_max = img.height() / float(newHeight)
+        #self.u_max = img.width()  / float(newWidth)
+        #self.v_max = img.height() / float(newHeight)
 
-        if ((img.width()!=newWidth) or (img.height()!=newHeight)):
+        #if ((img.width()!=newWidth) or (img.height()!=newHeight)):
             #qWarning("Image size set to " + str(newWidth) + "x" + str(newHeight) + " pixels")
-            img = img.copy(0, 0, newWidth, newHeight)
+        #    img = img.copy(0, 0, newWidth, newHeight)
 
-        glImg = QImage(QOpenGLWidget.convertToGLFormat(img)) # flipped 32bit RGBA
+        #glImg = QImage(QOpenGLWidget.convertToGLFormat(img)) # flipped 32bit RGBA
 
         # Bind the img texture...
-        glTexImage2D(GL_TEXTURE_2D, 0, 4, glImg.width(), glImg.height(), 0,
-           GL_RGBA, GL_UNSIGNED_BYTE, glImg.bits().asstring(glImg.sizeInBytes()))
+        #glTexImage2D(GL_TEXTURE_2D, 0, 4, glImg.width(), glImg.height(), 0,
+        #   GL_RGBA, GL_UNSIGNED_BYTE, glImg.bits().asstring(glImg.sizeInBytes()))
         # Another way to bind img texture:
         # if self.textureId:
             # self.deleteTexture(self.textureId)
@@ -367,10 +378,10 @@ class Curve2DEditorView (QGLViewer):
         # code taken from the backgroundImage.cpp file that is part of the QGLViewer library
 
         # set texturing for background image
-        glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
-        glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+        #glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+        #glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
         # Nice texture coordinate interpolation
-        glHint (GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
+        #glHint (GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
 
         glDisable(GL_LIGHTING)
         glEnable(GL_TEXTURE_2D)
@@ -394,18 +405,23 @@ class Curve2DEditorView (QGLViewer):
         
         # Draws the quad in (0,0) to (1.0,imageHeight/imageWidth)
         self.startScreenCoordinatesSystem(True)
+        self.qgl_texture.bind()
         centre_x = self.width() * 0.5 - self.imageWidth*0.5
         centre_y = self.height() * 0.5 - self.imageHeight*0.5
 
         glNormal3f(0.0, 0.0, 1.0)
         glBegin(GL_QUADS)
-        glTexCoord2f(0.0, 1.0-self.v_max)
-        glVertex2f(centre_x,centre_y)
+
         glTexCoord2f(0.0, 1.0)
+        glVertex2f(centre_x,centre_y)
+
+        glTexCoord2f(0.0, 1.0-self.v_max)
         glVertex2f(centre_x,centre_y+self.imageHeight)
-        glTexCoord2f(self.u_max, 1.0)
-        glVertex2f(centre_x+self.imageWidth,centre_y+self.imageHeight)
+
         glTexCoord2f(self.u_max, 1.0-self.v_max)
+        glVertex2f(centre_x+self.imageWidth,centre_y+self.imageHeight)
+        
+        glTexCoord2f(self.u_max, 1.0)
         glVertex2f(centre_x+self.imageWidth,centre_y)
         glEnd()
         self.stopScreenCoordinatesSystem()
@@ -657,6 +673,9 @@ class Curve2DEditorView (QGLViewer):
 class Curve2DEditor(QtWidgets.QWidget):
     valueChanged = Signal()
 
+    BLACK_THEME = {'Curve' : (255,255,255), 'BackGround' : (51,51,51), 'Text' : (255,255,255), 'CtrlCurve' : (122,122,0), 'GridStrong' : (102,102,102), 'GridFade' : (51,51,51) , 'Points' : (250,30,30), 'FirstPoint' : (250,30,250), 'SelectedPoint' : (30,250,30), 'DisabledBackGround' : (150,150,150) }
+    WHITE_THEME = {'Curve' : (255,0,0), 'BackGround' : (255,255,255), 'Text' : (0,0,0), 'CtrlCurve' : (25,0,25), 'GridStrong' : (102,102,102), 'GridFade' : (153,153,153) , 'Points' : (30,250,30), 'FirstPoint' : (250,30,250), 'SelectedPoint' : (30,250,30), 'DisabledBackGround' : (150,150,150)}
+
     def __init__(self, parent,constraints=Curve2DConstraint()):
         QtWidgets.QWidget.__init__(self, parent)
         self.gridLayout = QtWidgets.QGridLayout(self)
@@ -764,6 +783,9 @@ class Curve2DEditor(QtWidgets.QWidget):
             self.strideSlider.setMaximum(newmax)
             self.strideSlider.setValue(strideValue)
 
+    def setStride(self, value):
+        self.view.setStride(value)
+        self.strideSlider.setValue(value)
 
     def getCurve(self):
         return self.view.getCurve()
@@ -779,6 +801,19 @@ class Curve2DEditor(QtWidgets.QWidget):
 
     def enableCurveClosing(self, enabled):
         self.view.enableCurveClosing(enabled)
+
+    def openImage(self):
+        self.view.openImage()
+
+    def closeImage(self):
+        self.view.closeImage()
+
+    def setBackgroundImage(self, imagefilename):
+        self.view.setBackgroundImage(imagefilename)
+
+    def applyTheme(self,theme = BLACK_THEME):
+        self.view.applyTheme(theme)
+
 
 def main():
     qapp = QApplication([])
