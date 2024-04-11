@@ -71,7 +71,7 @@
 	#endif
 #endif
 
-
+#include <string>
 
 template <class T>
 struct pgl_hash_map_string : public pgl_hash_map<std::string, T >{};
