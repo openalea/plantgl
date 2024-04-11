@@ -76,6 +76,7 @@ endif()
 find_package (Python3 COMPONENTS Interpreter Development NumPy REQUIRED)
 include_directories(${Python3_INCLUDE_DIRS})
 message(STATUS "Python version : " ${Python3_VERSION})
+message(STATUS "Python executable : " ${Python3_EXECUTABLE})
 message(STATUS "Python lib : " ${Python3_LIBRARIES})
 
 # --- Libraries

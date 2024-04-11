@@ -71,6 +71,7 @@
 	#endif
 #endif
 
+#include <string>
 
 typedef pgl_hash_set<std::string> pgl_hash_set_string ;
 typedef pgl_hash_set<uint_t> pgl_hash_set_uint32;

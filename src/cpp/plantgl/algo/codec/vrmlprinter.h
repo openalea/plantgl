@@ -68,7 +68,7 @@ typedef RCPtr<Appearance> AppearancePtr;
 
 /// struct for testing equality of 2 pairs
 
-#ifndef WIN32_STL_EXTENSION
+#ifdef USING_UNORDERED_MAP
 
 template <class type>
 struct eqpair
@@ -94,7 +94,9 @@ struct hashpair
 /// hash set of pairs
 typedef pgl_hash_set<std::pair< uint_t, uint_t>,hashpair<uint_t>,eqpair<uint_t> > SCache;
 
+
 #else
+#ifdef WIN32_STL_EXTENSION
 
 template <class type>
 struct less_pair
@@ -107,7 +109,7 @@ struct less_pair
 
 
 template <class type>
-struct hash_comp_pair : STDEXT::hash_compare<std::pair<type,type>,less_pair<type> >
+struct hash_comp_pair : pgl_hash<std::pair<type,type>,less_pair<type> >
 {
 
   size_t operator()(const std::pair<type,type>& a) const
@@ -120,11 +122,12 @@ struct hash_comp_pair : STDEXT::hash_compare<std::pair<type,type>,less_pair<type
     return ((a.first < b.first)||(a.second < b.second));
   }
 
-  STDEXT::hash_compare<type> H;
+  pgl_hash<type> H;
 };
 
 typedef pgl_hash_set<std::pair< uint_t, uint_t>, hash_comp_pair<uint_t> > SCache;
 
+#endif
 #endif
 
 
