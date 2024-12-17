@@ -1,7 +1,7 @@
 from openalea.core import *
 
 
-__name__ = "vplants.plantgl.visualization"
+__name__ = "openalea.plantgl.visualization"
 __alias__ = ["PlantGL.Visualization"]
 
 __version__ = '0.0.2'

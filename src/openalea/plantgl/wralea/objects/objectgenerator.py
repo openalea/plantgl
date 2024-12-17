@@ -1,6 +1,7 @@
 from openalea.core import ScriptLibrary
 from openalea.core.external import *
 import openalea.core.interface as intface
+
 from openalea.plantgl import math as mt
 from openalea.plantgl import scenegraph as sg
 from openalea.plantgl.wralea.edition.pgl_interface import ICurve2D
@@ -120,10 +121,10 @@ class QuantisedFunctionNode(Node):
         return (obj,)
 
 
-from new import classobj
+#from new import classobj
         
 def generatePglNode(pgltype):
-    globals()[pgltype.__name__+'Node'] = classobj(pgltype.__name__+'Node',(PglNode,),{'pgltype':pgltype})
+    globals()[pgltype.__name__+'Node'] = type(pgltype.__name__+'Node',(PglNode,),{'pgltype':pgltype})
 
 def getSceneGraphNodes(baseclass):
     cl = []
@@ -141,7 +142,7 @@ def getSceneGraphNodes(baseclass):
                 cl.append(c)
         except:
           pass
-    cl.sort(lambda x,y : cmp(x.__name__,y.__name__))
+    cl.sort(key=lambda x : x.__name__)
     return cl
     
 PGLCLASS = getSceneGraphNodes((sg.Geometry,sg.Shape3D,sg.Appearance))+[sg.Texture2DTransformation,sg.ImageTexture]
@@ -152,7 +153,11 @@ PGLCLASS = getSceneGraphNodes((sg.Geometry,sg.Shape3D,sg.Appearance))+[sg.Textur
 #sg.Polyline2D, sg.PointSet2D, sg.Disc, sg.Revolution, sg.Swung, sg.Text, sg.Font, sg.IFS, sg.AxisRotated,
 #sg.EulerRotated, sg.Oriented, sg.Scaled, sg.Translated, sg.Tapered, sg.Shape, sg.Material, sg.ImageTexture]
 
-map(lambda x : generatePglNode(x),PGLCLASS)
+#map(lambda x : generatePglNode(x),PGLCLASS)
+
+for klass in PGLCLASS:
+    #print(klass.__name__)
+    generatePglNode(klass)
 
 PGLCLASS+=[sg.QuantisedFunction]
 
