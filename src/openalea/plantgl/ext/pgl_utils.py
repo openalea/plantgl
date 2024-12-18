@@ -24,7 +24,7 @@
 """
 import math
 import random as rdm
-from scipy import array, arange
+from numpy import array, arange
 from copy import deepcopy
 import openalea.plantgl.all as pgl
 
