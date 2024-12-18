@@ -24,7 +24,7 @@ from openalea.plantgl.gui.qt import QtCore, QtGui
 from openalea.core.interface import * #IGNORE:W0614,W0401
 from openalea.core.observer import lock_notify
 from openalea.visualea.node_widget import NodeWidget
-from openalea.plantgl.gui.curve2deditor import Curve2DEditorView, Curve2DConstraint, FuncConstraint
+from openalea.plantgl.gui.curve2deditor import Curve2DEditorView #, Curve2DConstraint, FuncConstraint
 from openalea.plantgl.gui.nurbspatcheditor import NurbsPatch3DEditorView
 from openalea.plantgl.scenegraph import NurbsCurve2D
 from .pgl_interface import ICurve2D, INurbsPatch
@@ -94,13 +94,12 @@ class Curve2DWidget(NodeWidget, Curve2DEditorView):
         
         self.notify(node, ('input_modified',))
         
-        self.connect(self, QtCore.SIGNAL("valueChanged()"), \
-                     self.valueChanged)
+        self.valueChanged.connect(self.onValueChanged)
         
         self.window().setWindowTitle(node.get_caption())
 
     @lock_notify      
-    def valueChanged(self):
+    def onValueChanged(self):
         """ update value """
         crv = self.getCurve()
         if crv and not self.isDefault(crv):
@@ -190,13 +189,14 @@ class NurbsPatchWidget(NodeWidget, NurbsPatch3DEditorView):
         
         self.notify(node, ('input_modified',))
         
-        self.connect(self, QtCore.SIGNAL("valueChanged()"), \
-                     self.valueChanged)
-        
+        #self.connect(self, QtCore.SIGNAL("valueChanged()"), 
+        #             self.valueChanged)
+        self.valueChanged.connect(self.onValueChanged)
+
         self.window().setWindowTitle(node.get_caption())
 
     @lock_notify      
-    def valueChanged(self):
+    def onValueChanged(self):
         """ update value """
         patch = self.getNurbsObject()
         self.node.set_input(0, patch)
@@ -215,10 +215,10 @@ class NurbsPatchWidget(NodeWidget, NurbsPatch3DEditorView):
                 pass
             
             try:
-                crv = self.node.get_input(0)
+                patch = self.node.get_input(0)
             except:
-                crv = INurbsPatch.default()
-            if not crv:
-                crv = INurbsPatch.default()
-            self.setNurbsPatch(crv)
+                patch= INurbsPatch.default()
+            if not patch:
+                patch = INurbsPatch.default()
+            self.setNurbsObject(patch)
         

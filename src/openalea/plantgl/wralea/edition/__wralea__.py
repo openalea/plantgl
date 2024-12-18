@@ -5,9 +5,10 @@ from openalea.core import *
 __name__ = "openalea.plantgl.edition"
 __alias__ = ["vplants.plantgl.edition"]
 
+__editable__ = True
 __version__ = '0.0.2'
 __license__ = 'CECILL-V2'
-__authors__ = 'F. Boudon'
+__authors__ = 'F. Boudon, C. Pradal'
 __institutes__ = 'INRIA/CIRAD'
 __description__ = 'PlantGL Edition nodes.'
 __url__ =  'http://openalea.rtfd.io'
@@ -33,7 +34,7 @@ nurbs= Factory( name= "NurbsPatch",
                   nodeclass = "nurbs",
                   widgetmodule = "openalea.plantgl.wralea.edition.pgl_interface_widget",
                   widgetclass = "NurbsPatchWidget",
-                  inputs=(dict(name="nurbs", interface=None,),),
+                  inputs=(dict(name="nurbs", interface=None,),dict(name="curve", interface=None,)),
                   outputs=(dict(name="nurbs",),),
                   lazy = False
                   )
