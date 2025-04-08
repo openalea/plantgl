@@ -1120,7 +1120,7 @@ bool GLRenderer::process(ImageTexture * texture) {
       bool notUsingMipmap = (!texture->getMipmaping()) && isPowerOfTwo(img.width()) && isPowerOfTwo(img.height());
       __ogl->glEnable(GL_TEXTURE_2D);
 
-      QOpenGLTexture * qgl_texture = new QOpenGLTexture(img);
+      QOpenGLTexture * qgl_texture = new QOpenGLTexture(img.mirrored(false, true));
       qgl_texture->setWrapMode(QOpenGLTexture::DirectionS, texture->getRepeatS() ? QOpenGLTexture::Repeat : QOpenGLTexture::ClampToEdge);
       qgl_texture->setWrapMode(QOpenGLTexture::DirectionT, texture->getRepeatT() ? QOpenGLTexture::Repeat : QOpenGLTexture::ClampToEdge);
       qgl_texture->setMinMagFilters(QOpenGLTexture::LinearMipMapNearest, QOpenGLTexture::LinearMipMapNearest);
