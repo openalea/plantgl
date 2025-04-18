@@ -1,6 +1,6 @@
 from openalea.core import *
 
-__name__ = "vplants.plantgl.operator"
+__name__ = "openalea.plantgl.operator"
 __alias__= ["Geometric Operator"]
 
 __version__ = '0.0.1',

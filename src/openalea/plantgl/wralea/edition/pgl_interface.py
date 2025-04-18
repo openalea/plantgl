@@ -1,7 +1,7 @@
 # -*- python -*-
 #
 #
-#       Copyright 2006-2010 INRIA - CIRAD - INRA  
+#       Copyright 2006-2024 INRIA - CIRAD - INRAE
 #
 #       File author(s): Pradal, Boudon, Barbeau 
 #
@@ -14,9 +14,8 @@
 """declaration of curve2D interface and its widget """
 
 __license__ = "Cecill-C"
-__revision__ = " $Id: interface.py 2245 2010-02-08 17:11:34Z cokelaer $"
 
-from openalea.core.interface import IInterface, IInterfaceMetaClass
+from openalea.core.interface import IInterface
 from openalea.plantgl.scenegraph import Curve2D, NurbsCurve2D, NurbsPatch
 
 class ICurve2D(IInterface) :
