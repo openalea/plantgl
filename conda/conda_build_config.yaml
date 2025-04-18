@@ -3,10 +3,10 @@ cxx_compiler:
   - clangxx                    # [osx]
   - vs2019                     # [win]
 compiler_version:
-  - 18                         # [osx]
+  - 11                         # [osx]
   - 11.2.0                     # [linux]
 cxx_compiler_version:
-  - 18                         # [osx]
+  - 11                         # [osx]
   - 11.2.0                     # [linux]
 MACOSX_DEPLOYMENT_TARGET:  # [osx]
   - '13.3'                # [osx]
