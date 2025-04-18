@@ -32,7 +32,7 @@ requirements:
       - ann
       - boost                    
       - expat                              # [linux]
-      - libxcb                             # [linux]
+      - libxcb=1.15                             # [linux]
       - pthread-stubs                      # [linux]
       - {{ cdt('mesa-libgl-devel') }}      # [linux]
       - libglu                            # [linux]
@@ -59,7 +59,6 @@ requirements:
     - {{ cdt('libxdamage') }}           # [linux]
     - {{ cdt('libxfixes') }}            # [linux]
     - {{ cdt('libxxf86vm') }}           # [linux]
-    - {{ cdt('libxcb') }}               # [linux]
     - {{ cdt('expat-devel') }}          # [linux]
     - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
     - {{ cdt('libx11-devel') }}          # [linux]
