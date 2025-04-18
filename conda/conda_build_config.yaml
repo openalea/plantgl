@@ -3,15 +3,13 @@ cxx_compiler:
   - clangxx                    # [osx]
   - vs2019                     # [win]
 compiler_version:
-  - 11                         # [osx]
-  - 11.2.0                     # [linux]
+  - 18                         # [osx]
+  - 13                     # [linux]
 cxx_compiler_version:
-  - 11                         # [osx]
-  - 11.2.0                     # [linux]
+  - 18                         # [osx]
+  - 13                    # [linux]
 MACOSX_DEPLOYMENT_TARGET:  # [osx]
-  - '13.3'                # [osx]
-MACOSX_SDK_VERSION:        # [osx and x86_64]
-  - '13.3'                # [osx and x86_64]
+  - '10.13'                # [osx]
 pin_run_as_build:
   numpy: x.x
   boost: x.x
