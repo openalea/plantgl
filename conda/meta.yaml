@@ -60,7 +60,7 @@ requirements:
     - {{ cdt('libxxf86vm') }}           # [linux]
     - {{ cdt('libxcb') }}               # [linux]
     - {{ cdt('expat-devel') }}          # [linux]
-    - {{ cdt('libx11') }}           # [linux]
+    - {{ cdt('libx11-devel') }}           # [linux]
 
   run:
       - python x.x
