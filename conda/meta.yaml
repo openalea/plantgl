@@ -41,7 +41,7 @@ requirements:
   
           
   build:
-    - python x.x
+    - python
     - binutils_impl_linux-64            # [linux]
     - {{ compiler('cxx') }}
     - bison                             # [unix]
