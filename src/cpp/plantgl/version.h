@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright CIRAD/INRIA/INRA
+ *       Copyright CIRAD/INRIA/INRAe
  *
  *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
