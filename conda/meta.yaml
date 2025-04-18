@@ -38,6 +38,8 @@ requirements:
       - libglu                            # [linux]
       - xorg-libxfixes                    # [linux]
       - xorg-libx11                       # [linux]
+      - xorg-libxext                       # [linux]
+      - libglvnd                       # [linux]
           
   build:
     - python
