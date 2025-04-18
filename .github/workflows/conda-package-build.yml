@@ -15,7 +15,7 @@ jobs:
       max-parallel: 3
       matrix:
         os: [ ubuntu-latest, macos-13, windows-latest]
-        python-minor-version: [11]
+        python-minor-version: [10]
         isMaster:
           - ${{ github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/dev') }}
 
