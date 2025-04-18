@@ -23,7 +23,7 @@ requirements:
       - numpy x.x
       - qt-main>=5.15
       - pyqt
-      - sip
+      - sip<6.8
       - libpng
       - zlib
       - eigen
@@ -32,7 +32,7 @@ requirements:
       - ann
       - boost                    
       - expat                              # [linux]
-      - libxcb                             # [linux]
+      - libxcb=1.15                             # [linux]
       - pthread-stubs                      # [linux]
       - {{ cdt('mesa-libgl-devel') }}      # [linux]
       - libglu                            # [linux]
