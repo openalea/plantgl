@@ -15,7 +15,7 @@ jobs:
   build:
     uses: openalea/github-action-conda-build/.github/workflows/conda-package-build.yml@main
     with:
-      operating-system: 'macos-13', 'windows-latest'
+      operating-system: ['macos-13', 'windows-latest']
       python-minor-version: '12'
     secrets: 
       anaconda_token: ${{ secrets.ANACONDA_TOKEN }}
