@@ -23,7 +23,7 @@ requirements:
       - numpy x.x
       - qt-main>=5.15
       - pyqt
-      - sip
+      - sip<6.8
       - libpng
       - zlib
       - eigen
