@@ -30,7 +30,8 @@ requirements:
       - cgal-cpp>=5.4
       - qhull
       - ann
-      - boost                    
+      - boost
+      - vs2022_win-64                      # [win]
       - expat                              # [linux]
       - libxcb=1.15                             # [linux]
       - pthread-stubs                      # [linux]
