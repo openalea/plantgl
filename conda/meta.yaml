@@ -31,9 +31,8 @@ requirements:
       - qhull
       - ann
       - boost
-      - vs_win-64                          # [win]
       - expat                              # [linux]
-      - libxcb=1.15                             # [linux]
+      - libxcb=1.15                        # [linux]
       - pthread-stubs                      # [linux]
       - {{ cdt('mesa-libgl-devel') }}      # [linux]
       - libglu                            # [linux]
