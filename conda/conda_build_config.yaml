@@ -1,7 +1,7 @@
 cxx_compiler:
   - gxx                        # [linux]
   - clangxx                    # [osx]
-  - vs2019                     # [win]
+  - vs2022                     # [win]
 compiler_version:
   - 18                         # [osx]
   - 13                     # [linux]
