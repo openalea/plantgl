@@ -31,7 +31,7 @@ requirements:
       - qhull
       - ann
       - boost
-      - vs2022_win-64                      # [win]
+      - vs_win-64                          # [win]
       - expat                              # [linux]
       - libxcb=1.15                             # [linux]
       - pthread-stubs                      # [linux]
