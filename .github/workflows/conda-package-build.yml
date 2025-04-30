@@ -35,7 +35,6 @@ jobs:
         conda: conda
         mamba: 'true'
         python: ${{ matrix.python-minor-version }}
-        numpy: '22.0'
         buildoptions: "--no-test"
         channels: openalea3, conda-forge
         token: ${{ secrets.ANACONDA_TOKEN }}
