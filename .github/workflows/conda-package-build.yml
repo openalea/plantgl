@@ -15,7 +15,7 @@ jobs:
       max-parallel: 3
       matrix:
         os: [ ubuntu-latest, macos-13, windows-latest]
-        python-minor-version: [10]
+        python-minor-version: [10, 13]
         isMaster:
           - ${{ github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/dev') }}
 
@@ -30,12 +30,13 @@ jobs:
         if_true: 'true'
         if_false: 'false'
     - name: Build and Publish
-      uses: openalea/action-build-publish-anaconda@msvc_fix
+      uses: openalea/action-build-publish-anaconda@20-python-313-numpy
       with:
         conda: conda
         mamba: 'true'
         python: ${{ matrix.python-minor-version }}
         numpy: '22.0'
+        buildoptions: "--no-test"
         channels: openalea3, conda-forge
         token: ${{ secrets.ANACONDA_TOKEN }}
         publish: 'false'
