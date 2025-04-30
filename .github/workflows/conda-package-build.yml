@@ -2,9 +2,9 @@ name: build_publish_anaconda
 
 on:
   push:
-    branches: [ CI_fail ]
+    branches: [ python3.13 ]
   pull_request:
-    branches: [ CI_fail ]
+    branches: [ python3.13 ]
     
 jobs:
   build-and-publish:
