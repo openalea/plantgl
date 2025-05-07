@@ -1,42 +1,20 @@
-name: build_publish_anaconda
+name: Building Package
 
 on:
   push:
-    branches: [ CI_fail ]
+    branches:
+      - '**'
+    tags:
+      - 'v*'
   pull_request:
-    branches: [ CI_fail ]
-    
-jobs:
-  build-and-publish:
-    name: ${{ matrix.os }}, Python 3.${{ matrix.python-minor-version }} for conda deployment
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      max-parallel: 3
-      matrix:
-        os: [ ubuntu-latest, macos-13, windows-latest]
-        python-minor-version: [10]
-        isMaster:
-          - ${{ github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/dev') }}
+    branches:
+      - '**'
 
-    steps:
-    - name: Chekout
-      uses: actions/checkout@v3
-    - name: Determine publish
-      uses: haya14busa/action-cond@v1
-      id: publish
-      with:
-        cond: ${{ contains(github.ref, 'main') || startsWith(github.ref, 'refs/heads/v') }}
-        if_true: 'true'
-        if_false: 'false'
-    - name: Build and Publish
-      uses: openalea/action-build-publish-anaconda@msvc_fix
-      with:
-        conda: conda
-        mamba: 'true'
-        python: ${{ matrix.python-minor-version }}
-        numpy: '22.0'
-        channels: openalea3, conda-forge
-        token: ${{ secrets.ANACONDA_TOKEN }}
-        publish: 'false'
-        label: main
+
+jobs:
+  build:
+    uses: openalea/github-action-conda-build/.github/workflows/conda-package-build.yml@main
+    with:
+      operating-system: '["ubuntu-latest", "windows-latest", "macos-13"]'
+    secrets:
+      anaconda_token: ${{ secrets.ANACONDA_TOKEN }}
