@@ -2,17 +2,19 @@ name: Building Package
 
 on:
   push:
-    branches: 
+    branches:
       - '**'
     tags:
       - 'v*'
   pull_request:
-    branches: 
+    branches:
       - '**'
 
 
 jobs:
   build:
     uses: openalea/github-action-conda-build/.github/workflows/conda-package-build.yml@main
-    secrets: 
+    with:
+      operating-system: '["ubuntu-latest", "windows-latest", "macos-13"]'
+    secrets:
       anaconda_token: ${{ secrets.ANACONDA_TOKEN }}
