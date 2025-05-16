@@ -13,8 +13,10 @@ on:
 
 jobs:
   build:
-    uses: openalea/github-action-conda-build/.github/workflows/conda-package-build.yml@main
+    uses: openalea/github-action-conda-build/.github/workflows/conda-package-build.yml@label
     with:
       operating-system: '["ubuntu-latest", "windows-latest", "macos-13"]'
+      build-options: ""
+      label: latest
     secrets:
       anaconda_token: ${{ secrets.ANACONDA_TOKEN }}
