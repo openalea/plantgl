@@ -50,6 +50,9 @@ setup(
     url = url,
     license = license,
 
+    use_scm_version=True,
+    setup_requires=['setuptools_scm'],
+
     # pure python packages
     #packages = find_namespace_packages(where='src',include=['openalea','openalea.*'])
     packages = [ 
