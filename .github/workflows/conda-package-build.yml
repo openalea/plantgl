@@ -21,5 +21,3 @@ jobs:
     uses: openalea/action-build-publish-anaconda/.github/workflows/openalea_ci.yml@main
     secrets:
       anaconda_token: ${{ secrets.ANACONDA_TOKEN }}
-    with:
-      operating-system: '["ubuntu-latest", "windows-latest", "macos-13"]'
