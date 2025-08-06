@@ -3,8 +3,8 @@ name: OpenAlea CI
 on:
   push:
     branches:
-      - main
-      - master
+     - main
+     - master
     tags:
       - 'v*'
   pull_request:
@@ -22,4 +22,4 @@ jobs:
     secrets:
       anaconda_token: ${{ secrets.ANACONDA_TOKEN }}
     with:
-      operating-system: '["ubuntu-latest", "windows-latest", "macos-13"]'
+      force-channel-priority: conda-forge, openalea3/label/dev, openalea3
