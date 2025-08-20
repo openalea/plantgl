@@ -24,23 +24,23 @@ requirements:
       - setuptools
       - setuptools_scm
       - numpy x.x
-      - qt-main
+      - qt-main>=5.15
       - pyqt
-      - sip
+      - sip<6.8
       - libpng
       - zlib
       - eigen
-      - cgal-cpp
+      - cgal-cpp>=5.4
       - qhull
       - ann
       - boost
       - expat                              # [linux]
-      - libxcb                             # [linux]
+      - libxcb=1.15                        # [linux]
       - pthread-stubs                      # [linux]
       - {{ cdt('mesa-libgl-devel') }}      # [linux]
-      - libglu                             # [linux]
-      - xorg-libxfixes                     # [linux]
-      - xorg-libx11                        # [linux]
+      - libglu                            # [linux]
+      - xorg-libxfixes                    # [linux]
+      - xorg-libx11                       # [linux]
   
           
   build:
@@ -82,7 +82,7 @@ requirements:
       - zlib
       - pyqt
       - pyopengl
-      - pyqglviewer
+      - pyqglviewer>=1.3
       - xorg-libxfixes                     # [linux]
       - libglu                             # [linux]
 
