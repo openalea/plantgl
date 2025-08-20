@@ -45,45 +45,24 @@
 #define __util_pgl_hash_h__
 
 #include "tools_config.h"
+#include <string>
+#include <functional>
 
 /*! \file util_hash.h
     \brief Utility for hashing std::string.
+    Modernized version: always uses std::hash (C++11+).
 */
 
-#include <string>
-
-
-#ifndef WIN32_STL_EXTENSION
-
-/**
-   \strust eqstr
-   \brief Comparison between 2 string.
-*/
-
-struct pgl_eqstr
-{
-  /// Compare the 2 string.
-  bool operator() (const std::string& s1, const std::string& s2) const
-    { return s1 == s2; }
+struct pgl_eqstr {
+  bool operator()(const std::string& s1, const std::string& s2) const {
+    return s1 == s2;
+  }
 };
 
-
-/**
-   \strust hashstr
-   \brief Find using a hasher a place for the string.
-*/
-struct pgl_hashstr
-{
-  typedef pgl_hash<const char*> hash_cstr;
-
-  /// hash of the string.
-  size_t operator() (const std::string& s1) const
-    { return my_hasher(s1.c_str()); }
-
-   hash_cstr my_hasher;
+struct pgl_hashstr {
+  size_t operator()(const std::string& s1) const {
+    return std::hash<std::string>()(s1);
+  }
 };
-
-
-#endif
 
 #endif
