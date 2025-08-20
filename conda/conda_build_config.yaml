@@ -1,15 +1,3 @@
-cxx_compiler:
-  - gxx                        # [linux]
-  - clangxx                    # [osx]
-  - vs2019                     # [win]
-compiler_version:
-  - 18                         # [osx]
-  - 13                     # [linux]
-cxx_compiler_version:
-  - 18                         # [osx]
-  - 13                    # [linux]
-MACOSX_DEPLOYMENT_TARGET:  # [osx]
-  - '10.13'                # [osx]
 pin_run_as_build:
   numpy: x.x
   boost: x.x
