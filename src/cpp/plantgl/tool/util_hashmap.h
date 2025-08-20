@@ -42,7 +42,7 @@
 
 #ifndef __util_pgl_hashmap_h__
 #define __util_pgl_hashmap_h__
-
+#include <string>
 #include "tools_config.h"
 
 /*! \file util_hashmap.h
