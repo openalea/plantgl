@@ -1,13 +1,18 @@
 # --- Link with Python
 function(pglwrapper_link_python libwrapname)
     if (Python3_FOUND)
-        # Always prefer the "Module" target (no libpython needed on 3.13+)
-        target_link_libraries(${libwrapname} PRIVATE Python3::Module)
+        # Prefer the "Module" target (C API for extensions, no libpython needed on 3.13+)
+        if (TARGET Python3::Module)
+            target_link_libraries(${libwrapname} PRIVATE Python3::Module)
+        endif()
         target_include_directories(${libwrapname} PRIVATE ${Python3_INCLUDE_DIRS})
 
     elseif (Python2_FOUND)
-        target_link_libraries(${libwrapname} PRIVATE Python2::Python)
+        if (TARGET Python2::Python)
+            target_link_libraries(${libwrapname} PRIVATE Python2::Python)
+        endif()
         target_include_directories(${libwrapname} PRIVATE ${Python2_INCLUDE_DIRS})
+
     else()
         message(FATAL_ERROR "Neither Python3 nor Python2 found for target ${libwrapname}")
     endif()
@@ -18,19 +23,28 @@ function(pglwrapper_link_boost libwrapname)
     # Disable Boost auto-linking (important on MSVC)
     target_compile_definitions(${libwrapname} PRIVATE BOOST_ALL_NO_LIB)
 
-    target_link_libraries(${libwrapname}
-        PRIVATE
-            Boost::system
-            Boost::thread
-            Boost::${boost_python}
-            Boost::dynamic_linking
-            Boost::disable_autolinking
-    )
+    # Core Boost libs
+    target_link_libraries(${libwrapname} PRIVATE Boost::system Boost::thread)
+
+    # Python binding library (only if found)
+    if (TARGET Boost::${boost_python})
+        target_link_libraries(${libwrapname} PRIVATE Boost::${boost_python})
+    else()
+        message(WARNING "Boost.Python component '${boost_python}' not found, skipping")
+    endif()
+
+    # These are safe interface targets
+    if (TARGET Boost::dynamic_linking)
+        target_link_libraries(${libwrapname} PRIVATE Boost::dynamic_linking)
+    endif()
+    if (TARGET Boost::disable_autolinking)
+        target_link_libraries(${libwrapname} PRIVATE Boost::disable_autolinking)
+    endif()
 endfunction()
 
 # --- Link with Boost.Numpy (if available)
 function(pglwrapper_link_numpy libwrapname)
-    if(USE_BOOST_NUMPY)
+    if (USE_BOOST_NUMPY AND TARGET Boost::${boost_numpy})
         target_link_libraries(${libwrapname} PRIVATE Boost::${boost_numpy})
     endif()
 endfunction()
@@ -41,8 +55,8 @@ function(pglwrapper_install libwrapname repository)
 
     if (WIN32)
         set_target_properties(${libwrapname} PROPERTIES SUFFIX ".pyd")
-    elseif (APPLE)
-        # Use ".so" for Python extension modules even on macOS
+    else()
+        # Use ".so" on Linux and macOS for Python extension modules
         set_target_properties(${libwrapname} PROPERTIES SUFFIX ".so")
     endif()
 
@@ -59,4 +73,5 @@ function(install_share sharedirectory project)
         DESTINATION "${CMAKE_INSTALL_PREFIX}/share/${project}"
     )
 endfunction()
+
 
