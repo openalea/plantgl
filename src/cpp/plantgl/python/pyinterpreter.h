@@ -65,7 +65,7 @@ protected:
 
 class PyStateSaver {
 public:
-    PyStateSaver() : _gstate(0), _state(nullptr) { }
+    PyStateSaver() : _gstate(PyGILState_UNLOCKED), _state(nullptr) { }
     ~PyStateSaver() { if (_state) popState(); }
 
     void pushState() {
