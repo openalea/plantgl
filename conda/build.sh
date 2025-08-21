@@ -83,13 +83,17 @@ echo "****** CMAKE CONFIG"
 
 export GMPDIR=${PREFIX}
 
+PYTHON_INCLUDE_DIR=$($PYTHON -c "from sysconfig import get_path; print(get_path('include'))")
+PYTHON_LIBRARY=$($PYTHON -c "from sysconfig import get_config_var; import os; lib = get_config_var('LIBDIR'); ver = get_config_var('VERSION'); print(os.path.join(lib,'libpython'+ver+'.so'))")
+
 cmake -DCMAKE_INSTALL_PREFIX=${PREFIX} \
       -DCMAKE_PREFIX_PATH=${PREFIX} \
-      -DCMAKE_BUILD_TYPE=Release  \
+      -DCMAKE_BUILD_TYPE=Release \
       -DPython3_EXECUTABLE=${PYTHON} \
-       ${SYSTEM_DEPENDENT_ARGS[@]} \
-      -LAH .. 
-
+      -DPython3_INCLUDE_DIR=${PYTHON_INCLUDE_DIR} \
+      -DPython3_LIBRARY=${PYTHON_LIBRARY} \
+      ${SYSTEM_DEPENDENT_ARGS[@]} \
+      -LAH ..
 echo
 echo "****** PGL CONFIG"
 cat $SRC_DIR/src/cpp/plantgl/userconfig.h
