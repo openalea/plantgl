@@ -48,16 +48,13 @@
 
 class PythonInterpreterAcquirer {
 public:
-
-    PythonInterpreterAcquirer()
-    {
-        /** It seems mandatory to acquire the GIL to call python
-            from C++ internal (during GUI process for instance) */
+    PythonInterpreterAcquirer() {
+        // It seems mandatory to acquire the GIL to call python
+        // from C++ internal (during GUI process for instance)
         gstate = PyGILState_Ensure();
     }
-    ~PythonInterpreterAcquirer()
-    {
-      if(gstate)PyGILState_Release(gstate);
+    ~PythonInterpreterAcquirer() {
+        if (gstate) PyGILState_Release(gstate);
     }
 
 protected:
@@ -68,31 +65,30 @@ protected:
 
 class PyStateSaver {
 public:
-  PyStateSaver() : _state(0) { }
+    PyStateSaver() : _gstate(0), _state(nullptr) { }
     ~PyStateSaver() { if (_state) popState(); }
 
-    void pushState () {
-      if(!_state) {
-        _gstate = PyGILState_Ensure();
-        if(PyEval_ThreadsInitialized())
-          _state = PyEval_SaveThread();
-      }
-    }
-    void popState ()
-    {
-        if(_state){
-            PyEval_RestoreThread(_state);
-            _state = NULL;
+    void pushState() {
+        if (!_state) {
+            _gstate = PyGILState_Ensure();
+            _state = PyEval_SaveThread();  // always valid in >=3.10
         }
-        if(_gstate)PyGILState_Release(_gstate);
+    }
+
+    void popState() {
+        if (_state) {
+            PyEval_RestoreThread(_state);
+            _state = nullptr;
+        }
+        if (_gstate) PyGILState_Release(_gstate);
     }
 
 protected:
     PyGILState_STATE _gstate;
-    PyThreadState *_state;
-
+    PyThreadState* _state;
 };
 
 /* ----------------------------------------------------------------------- */
 
 #endif
+
