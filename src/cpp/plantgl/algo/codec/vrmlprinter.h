@@ -51,6 +51,7 @@
 #include <plantgl/tool/rcobject.h>
 #include <plantgl/math/util_vector.h>
 #include <plantgl/tool/util_hashset.h>
+#include <functional>  // for std::hash
 
 /* ----------------------------------------------------------------------- */
 
@@ -67,65 +68,27 @@ typedef RCPtr<Appearance> AppearancePtr;
 /* ----------------------------------------------------------------------- */
 
 /// struct for testing equality of 2 pairs
-
-#ifndef WIN32_STL_EXTENSION
+/// Modernized version: always uses std::hash (C++11+). Compatibility with older compilers removed by commit 28619c0d0227ebb29175f7aa56cb5b530244f6c5
 
 template <class type>
-struct eqpair
-{
-  bool operator()(std::pair<type,type> a, std::pair<type,type> b) const
-  {
-    return ((a.first == b.first)&&(a.second == b.second));
+struct eqpair {
+  bool operator()(const std::pair<type,type>& a,
+                  const std::pair<type,type>& b) const {
+    return (a.first == b.first && a.second == b.second);
   }
 };
 
 /// struct for hashing a pair
 template <class type>
-struct hashpair
-{
-  size_t operator()(std::pair<type,type> a) const
-  {
-    return H((a.first+a.second));
+struct hashpair {
+  size_t operator()(const std::pair<type,type>& a) const {
+    return std::hash<type>()(a.first + a.second);
   }
-  pgl_hash<type> H;
 };
-
 
 /// hash set of pairs
-typedef pgl_hash_set<std::pair< uint_t, uint_t>,hashpair<uint_t>,eqpair<uint_t> > SCache;
+typedef pgl_hash_set<std::pair<uint_t,uint_t>, hashpair<uint_t>, eqpair<uint_t>> SCache;
 
-#else
-
-template <class type>
-struct less_pair
-{
-  bool operator()(std::pair<type,type> a, std::pair<type,type> b) const
-  {
-    return ((a.first < b.first)||(a.second < b.second));
-  }
-};
-
-
-template <class type>
-struct hash_comp_pair : STDEXT::hash_compare<std::pair<type,type>,less_pair<type> >
-{
-
-  size_t operator()(const std::pair<type,type>& a) const
-  {
-    return H((a.first+a.second));
-  }
-
-  bool operator()(std::pair<type,type> a, std::pair<type,type> b) const
-  {
-    return ((a.first < b.first)||(a.second < b.second));
-  }
-
-  STDEXT::hash_compare<type> H;
-};
-
-typedef pgl_hash_set<std::pair< uint_t, uint_t>, hash_comp_pair<uint_t> > SCache;
-
-#endif
 
 
 /**
