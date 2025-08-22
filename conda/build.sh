@@ -83,20 +83,35 @@ echo "****** CMAKE CONFIG"
 
 export GMPDIR=${PREFIX}
 
+# Always get Python include dir
 PYTHON_INCLUDE_DIR=$($PYTHON -c "from sysconfig import get_path; print(get_path('include'))")
-PYTHON_LIBRARY=$($PYTHON -c "from sysconfig import get_config_var; import os; lib = get_config_var('LIBDIR'); ver = get_config_var('VERSION'); print(os.path.join(lib,'libpython'+ver+'.so'))")
 
-cmake -DCMAKE_INSTALL_PREFIX=${PREFIX} \
-      -DCMAKE_PREFIX_PATH=${PREFIX} \
-      -DCMAKE_BUILD_TYPE=Release \
-      -DPython3_EXECUTABLE=${PYTHON} \
-      -DPython3_INCLUDE_DIR=${PYTHON_INCLUDE_DIR} \
-      -DPython3_LIBRARY=${PYTHON_LIBRARY} \
-      ${SYSTEM_DEPENDENT_ARGS[@]} \
-      -LAH ..
+# On Linux, we must also pass libpython explicitly
+PYTHON_LIBRARY=$($PYTHON -c "from sysconfig import get_config_var; import os; \
+    lib = get_config_var('LIBDIR'); ver = get_config_var('VERSION'); \
+    path=os.path.join(lib,'libpython'+ver+'.so'); \
+    print(path if os.path.exists(path) else '')")
+
+CMAKE_ARGS=(
+    -DCMAKE_INSTALL_PREFIX=${PREFIX}
+    -DCMAKE_PREFIX_PATH=${PREFIX}
+    -DCMAKE_BUILD_TYPE=Release
+    -DPython3_EXECUTABLE=${PYTHON}
+    -DPython3_INCLUDE_DIR=${PYTHON_INCLUDE_DIR}
+    ${SYSTEM_DEPENDENT_ARGS[@]}
+)
+
+# Only add Python3_LIBRARY on Linux
+if [[ "$(uname)" == "Linux" && -n "${PYTHON_LIBRARY}" ]]; then
+    CMAKE_ARGS+=(-DPython3_LIBRARY=${PYTHON_LIBRARY})
+fi
+
+cmake "${CMAKE_ARGS[@]}" -LAH ..
+
 echo
 echo "****** PGL CONFIG"
 cat $SRC_DIR/src/cpp/plantgl/userconfig.h
+
 
 echo
 echo "****** COMPILE"
