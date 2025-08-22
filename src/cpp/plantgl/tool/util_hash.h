@@ -50,7 +50,7 @@
 
 /*! \file util_hash.h
     \brief Utility for hashing std::string.
-    Modernized version: always uses std::hash (C++11+).
+    Modernized version: always uses std::hash (C++11+). Compatibility with older compilers removed by commit 28619c0d0227ebb29175f7aa56cb5b530244f6c5
 */
 
 struct pgl_eqstr {

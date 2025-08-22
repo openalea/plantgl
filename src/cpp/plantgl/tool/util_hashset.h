@@ -50,7 +50,7 @@
 
 /*! \file util_hashset.h
     \brief Utility for hashset with std::string and uint_t.
-    Modernized version: always uses std::unordered_set (C++11+).
+    Modernized version: always uses std::unordered_set (C++11+).. Compatibility with older compilers removed by commit 28619c0d0227ebb29175f7aa56cb5b530244f6c5
 */
 
 #define pgl_hash_set std::unordered_set
