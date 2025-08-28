@@ -1,5 +1,4 @@
 pin_run_as_build:
-  numpy: x.x
   boost: x.x
   qhull: x.x
   cgap-cpp: x.x
