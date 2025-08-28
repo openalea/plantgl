@@ -1,9 +1,0 @@
-pin_run_as_build:
-  numpy: x.x
-  boost: x.x
-  qhull: x.x
-  cgap-cpp: x.x
-  ann: x.x
-  qt-main: x.x
-  libpng: x.x
-  zlib: x.x

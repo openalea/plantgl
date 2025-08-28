@@ -19,10 +19,10 @@ build:
 
 requirements:
   host:
-      - python x.x
+      - python
       - setuptools
       - setuptools_scm
-      - numpy x.x
+      - numpy
       - qt-main
       - pyqt
       - sip
@@ -67,8 +67,8 @@ requirements:
     - {{ cdt('libx11-devel') }}          # [linux]
 
   run:
-      - python x.x
-      - numpy x.x
+      - python
+      - numpy
       - setuptools
       - ipython
       - boost 
