@@ -13,7 +13,7 @@ def orthoimage(scene : Scene, imgsize : tuple = (800,800), zoom : float = 1, azi
     :param elevation: The elevation (in degrees) of view to render
     :return: The resulting image
     """
-    z = ZBufferEngine(imgsize[0],imgsize[1], (255,255,255), eColorBased)
+    z = ZBufferEngine(imageWidth=imgsize[0],imageHeight=imgsize[1], backGroundColor=(255,255,255)) #, style=eColorBased) BUG the enum is not recognised...
         
     bbx = BoundingBox(scene)
     center = bbx.getCenter()
@@ -59,7 +59,7 @@ def perspectiveimage(scene : Scene, imgsize : tuple = (800,800), zoom : float = 
     :param elevation: The elevation (in degrees) of view to render
     :return: The resulting image
     """
-    z = ZBufferEngine(imgsize[0],imgsize[1], (255,255,255), eColorBased)
+    z = ZBufferEngine(imageWidth=imgsize[0],imageHeight=imgsize[1], backGroundColor=(255,255,255)) #, style=eColorBased) BUG the enum is not recognised...
         
     bbx = BoundingBox(scene)
     center = bbx.getCenter()

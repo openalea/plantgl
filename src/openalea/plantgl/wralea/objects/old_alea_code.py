@@ -1,15 +1,15 @@
 from openalea.core import *
 from . import objectgenerator
 
-__name__  = "vplants.plantgl.objects"
-__alias__ = ["PlantGL.Objects"]
+__name__  = "openalea.plantgl.objects"
+__alias__ = ["PlantGL.Objects", "vplants.plantgl.objects"]
 
 __version__ = '0.0.1'
 __license__ = 'CECILL-V2'
 __authors__ = 'F. Boudon, C. Pradal'
 __institutes__ = 'INRIA/CIRAD'
 __description__ = 'PlantGL Object Generator nodes.'
-__url__ =  'http://openalea.gforge.inria.fr'
+__url__ =  'http://openalea.rtfd.io'
 
 __all__ = ['scene']
 

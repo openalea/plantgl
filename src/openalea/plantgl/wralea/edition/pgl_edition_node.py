@@ -1,4 +1,4 @@
-from openalea.core import *
+from openalea.core import Node
 from copy import deepcopy
 from pickle import loads, dumps
 from openalea.plantgl.all import NurbsCurve2D
@@ -22,6 +22,5 @@ class curve2D(Node):
 
 def nurbs(surf):
     """ A curve 2D """
-    from copy import deepcopy        
     return deepcopy(surf)
 

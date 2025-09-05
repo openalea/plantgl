@@ -1,18 +1,18 @@
 from openalea.core import *
-from . import objectgenerator
 from openalea.core.path import path
+from openalea.plantgl.wralea.objects import objectgenerator
 
 
-name  = "vplants.plantgl.objects"
+name  = "openalea.plantgl.objects"
 
 metainfo = dict(
-alias = ["PlantGL.Objects"],
+alias = ["vplants.plantgl.objectss"],
 version = '0.0.2',
 license = 'CECILL-V2',
 authors = 'F. Boudon, C. Pradal',
 institutes = 'INRIA/CIRAD',
 description = 'PlantGL Object Generator nodes.',
-url =  'http://openalea.gforge.inria.fr',
+url =  'http://openalea.rtfd.io',
 )
 
 pkg = package.Package(name, metainfo)

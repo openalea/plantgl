@@ -43,75 +43,21 @@
 #ifndef __util_pgl_hashset_h__
 #define __util_pgl_hashset_h__
 
-/*! \file util_hashset.h
-    \brief Utility for hashset with std::string.
-*/
 #include "tools_config.h"
 #include "util_types.h"
+#include <unordered_set>
+#include <functional>
 
-#ifdef USING_UNORDERED_MAP
 
-#ifdef GNU_TR1_STL_EXTENSION
-	#include <tr1/unordered_set>
-	#define pgl_hash_set std::tr1::unordered_set
-
-	#ifndef pgl_hash
-		#define pgl_hash std::tr1::hash
-	#endif
-
-#else
-	#include <unordered_set>
-	#if (_MSC_VER == 1500)
-		#define pgl_hash_set std::tr1::unordered_set
-	#else
-		#define pgl_hash_set std::unordered_set
-	#endif
-	#ifndef pgl_hash
-		#define pgl_hash std::hash
-	#endif
-#endif
-
-#include <string>
-
-typedef pgl_hash_set<std::string> pgl_hash_set_string ;
-typedef pgl_hash_set<uint_t> pgl_hash_set_uint32;
-
-#else
-
-#ifdef GNU_TR1_STL_EXTENSION
-	#include <ext/hash_set>
-#else
-	#if defined(__GNUC__)
-		#warning GNU STL Extension not activated ! Old GCC version used ?
-	#endif
-	#include <hash_set>
-#endif
-
-#ifndef pgl_hash
-#define pgl_hash STDEXT::hash
-#endif
-#define pgl_hash_set STDEXT::hash_set
-
-#include "util_hash.h"
-
-#ifndef WIN32_STL_EXTENSION
-
-/**
-   \class hash_set_string
-   \brief Class for using hash_set with string.
+/*! \file util_hashset.h
+    \brief Utility for hashset with std::string and uint_t.
+    Modernized version: always uses std::unordered_set (C++11+).. Compatibility with older compilers removed by commit 28619c0d0227ebb29175f7aa56cb5b530244f6c5
 */
 
-typedef pgl_hash_set<std::string, pgl_hashstr, pgl_eqstr> pgl_hash_set_string;
-typedef pgl_hash_set<uint_t,pgl_hash<uint_t>,std::equal_to<uint_t> > pgl_hash_set_uint32;
+#define pgl_hash_set std::unordered_set
+#define pgl_hash     std::hash
 
-#else
-
-typedef pgl_hash_set<std::string> pgl_hash_set_string ;
-typedef pgl_hash_set<uint_t> pgl_hash_set_uint32;
-
-
-#endif
-
-#endif
+typedef pgl_hash_set<std::string> pgl_hash_set_string;
+typedef pgl_hash_set<uint_t>      pgl_hash_set_uint32;
 
 #endif
