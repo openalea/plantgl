@@ -1,10 +1,8 @@
 name: plantgl-devel
 channels:
     - conda-forge
-    - openalea3
-    - defaults
 dependencies:
-    - python
+    - python=3.12
     - setuptools
     - cmake
     - numpy
@@ -21,7 +19,7 @@ dependencies:
     - ann
     - ipython
     - pyopengl
-    - pyqglviewer
+    #- pyqglviewer
     - pytest
     - bison
     - flex

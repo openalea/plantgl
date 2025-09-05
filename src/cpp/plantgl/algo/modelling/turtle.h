@@ -347,11 +347,18 @@ public:
 
     virtual void polygonPoint();
 
+    /// test Polygon Mode
+    virtual bool isPolygonEnabled() const;
+
+
     /// start Generalized Cylinder
     virtual void startGC();
 
     /// stop Generalized Cylinder
     virtual void stopGC();
+
+    /// test Generalized Cylinder Mode
+    virtual bool isGCEnabled() const;
 
     inline void sphere()
     { __drawer->sphere(this->getIdPair(), this->getCurrentMaterial(), __params->frameInfo(), __params->width, __params->sectionResolution); }

@@ -55,9 +55,9 @@ boost::python::object py_grabZBufferPoints(ZBufferEngine * ze, real_t jitter = 0
 }
 
 boost::python::object py_idhistogram(ZBufferEngine * ze, bool solidangle = true){
-    pgl_hash_map<uint32_t,uint32_t> res = ze->idhistogram(solidangle);
+    pgl_hash_map<uint32_t,real_t> res = ze->idhistogram(solidangle);
     boost::python::list bres;
-    for(pgl_hash_map<uint32_t,uint32_t>::const_iterator _it = res.begin(); _it != res.end(); ++_it){
+    for(pgl_hash_map<uint32_t,real_t>::const_iterator _it = res.begin(); _it != res.end(); ++_it){
       bres.append(boost::python::make_tuple(_it->first,_it->second));
     }
     return bres;
@@ -88,14 +88,15 @@ void export_ZBufferEngine()
 
 
   class_< ZBufferEngine, bases<ProjectionEngine>, boost::noncopyable > 
-      ("ZBufferEngine", init<uint16_t, uint16_t, ZBufferEngine::eRenderingStyle, const Color3&, uint32_t, bool, ZBufferEngine::eFaceCulling>("Construct a ZBufferEngine.",
+      ("ZBufferEngine", init<uint16_t, uint16_t, ZBufferEngine::eRenderingStyle, const Color3&, uint32_t, bool, ZBufferEngine::eFaceCulling, ProjectionEngine::eIdPolicy>("Construct a ZBufferEngine.",
                         (bp::arg("imageWidth")=800, 
                          bp::arg("imageHeight")=600, 
                          bp::arg("renderingStyle") = ZBufferEngine::eColorBased, 
                          bp::arg("backGroundColor")=Color3(0,0,0), 
                          bp::arg("defaultId")=Shape::NOID, 
                          bp::arg("multithreaded")=true, 
-                         bp::arg("faceculling")=ZBufferEngine::eNoCulling)))
+                         bp::arg("faceculling")=ZBufferEngine::eNoCulling,
+                         bp::arg("idPolicy")=ProjectionEngine::eShapeIdBased)))
       .def("setLight", (void(ZBufferEngine::*)(const Vector3&, const Color3&, bool))&ZBufferEngine::setLight, (bp::arg("position"), bp::arg("color")=Color3(255,255,255), bp::arg("directional")=false))
       .def("setLight", (void(ZBufferEngine::*)(const Vector3&, const Color3&, const Color3&, const Color3&, bool))&ZBufferEngine::setLight, (bp::arg("position"), bp::arg("ambient")=Color3(255,255,255), bp::arg("diffuse")=Color3(255,255,255), bp::arg("specular")=Color3(255,255,255), bp::arg("directional")=false))
       .def("setHemisphericCamera", &ZBufferEngine::setHemisphericCamera, (bp::arg("near")=0,bp::arg("far")=REAL_MAX))
