@@ -17,10 +17,10 @@
 
 from openalea.core import Factory
 
-__name__ = "vplants.plantgl.dresser"
-__alias__ = ["PlantGL.Dresser"]
+__name__ = "openalea.plantgl.dresser"
+__alias__ = ["PlantGL.Dresser", "vplants.plantgl.dresser"]
 
-__version__ = '0.0.1'
+__version__ = '0.1.0'
 __license__ = 'CECILL-C'
 __authors__ = 'F. Boudon and D. Da Silva'
 __institutes__ = 'INRIA/CIRAD'
@@ -32,6 +32,6 @@ __all__ = ["dresser"]
 dresser = Factory(name="PGL Dresser",
                   description="Add Pgl geometry an object",
                   category="scene.PGL",
-                  nodemodule="vplants.plantgl.ext.dresser",
+                  nodemodule="openalea.plantgl.ext.dresser",
                   nodeclass="dresser",
                   )

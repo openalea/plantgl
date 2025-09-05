@@ -42,7 +42,7 @@
 
 #ifndef __tools_config_h__
 #define __tools_config_h__
-
+#include <string>
 #include "../pgl_config.h"
 #include "../pgl_namespace.h"
 

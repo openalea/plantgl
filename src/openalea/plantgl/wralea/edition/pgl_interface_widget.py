@@ -2,7 +2,7 @@
 #
 #       OpenAlea.Visualea: OpenAlea graphical user interface
 #
-#       Copyright 2006-2008 INRIA - CIRAD - INRA  
+#       Copyright 2006-2024 INRIA - CIRAD - INRAE
 #
 #       File author(s): Samuel Dufour-Kowalski <samuel.dufour@sophia.inria.fr>
 #                       Christophe Pradal <christophe.prada@cirad.fr>
@@ -24,8 +24,8 @@ from openalea.plantgl.gui.qt import QtCore, QtGui
 from openalea.core.interface import * #IGNORE:W0614,W0401
 from openalea.core.observer import lock_notify
 from openalea.visualea.node_widget import NodeWidget
-from openalea.plantgl.gui.curve2deditor import Curve2DEditor, Curve2DConstraint, FuncConstraint
-from openalea.plantgl.gui.nurbspatcheditor import NurbsPatchEditor
+from openalea.plantgl.gui.curve2deditor import Curve2DEditorView #, Curve2DConstraint, FuncConstraint
+from openalea.plantgl.gui.nurbspatcheditor import NurbsPatch3DEditorView
 from openalea.plantgl.scenegraph import NurbsCurve2D
 from .pgl_interface import ICurve2D, INurbsPatch
 from pickle import loads
@@ -76,7 +76,7 @@ class ICurve2DWidget(IInterfaceWidget, Curve2DEditor):
 '''
 
 
-class Curve2DWidget(NodeWidget, Curve2DEditor):
+class Curve2DWidget(NodeWidget, Curve2DEditorView):
     """
     Curve2D  widget
     """
@@ -89,18 +89,17 @@ class Curve2DWidget(NodeWidget, Curve2DEditor):
     def __init__(self, node, parent):
         """
         """
-        Curve2DEditor.__init__(self, parent)
+        Curve2DEditorView.__init__(self, parent)
         NodeWidget.__init__(self, node)
         
         self.notify(node, ('input_modified',))
         
-        self.connect(self, QtCore.SIGNAL("valueChanged()"), \
-                     self.valueChanged)
+        self.valueChanged.connect(self.onValueChanged)
         
         self.window().setWindowTitle(node.get_caption())
 
     @lock_notify      
-    def valueChanged(self):
+    def onValueChanged(self):
         """ update value """
         crv = self.getCurve()
         if crv and not self.isDefault(crv):
@@ -176,7 +175,7 @@ class INurbsPatchWidget(IInterfaceWidget, NurbsPatchEditor):
 '''
 
 
-class NurbsPatchWidget(NodeWidget, NurbsPatchEditor):
+class NurbsPatchWidget(NodeWidget, NurbsPatch3DEditorView):
     """
     NurbsPatchEditor widget
     """
@@ -185,20 +184,21 @@ class NurbsPatchWidget(NodeWidget, NurbsPatchEditor):
     def __init__(self, node, parent):
         """
         """
-        NurbsPatchEditor.__init__(self, parent)
+        NurbsPatch3DEditorView.__init__(self, parent)
         NodeWidget.__init__(self, node)
         
         self.notify(node, ('input_modified',))
         
-        self.connect(self, QtCore.SIGNAL("valueChanged()"), \
-                     self.valueChanged)
-        
+        #self.connect(self, QtCore.SIGNAL("valueChanged()"), 
+        #             self.valueChanged)
+        self.valueChanged.connect(self.onValueChanged)
+
         self.window().setWindowTitle(node.get_caption())
 
     @lock_notify      
-    def valueChanged(self):
+    def onValueChanged(self):
         """ update value """
-        patch = self.getNurbsPatch()
+        patch = self.getNurbsObject()
         self.node.set_input(0, patch)
 
     def notify(self, sender, event):
@@ -215,10 +215,10 @@ class NurbsPatchWidget(NodeWidget, NurbsPatchEditor):
                 pass
             
             try:
-                crv = self.node.get_input(0)
+                patch = self.node.get_input(0)
             except:
-                crv = INurbsPatch.default()
-            if not crv:
-                crv = INurbsPatch.default()
-            self.setNurbsPatch(crv)
+                patch= INurbsPatch.default()
+            if not patch:
+                patch = INurbsPatch.default()
+            self.setNurbsObject(patch)
         

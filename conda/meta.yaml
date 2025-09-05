@@ -1,8 +1,8 @@
-{% set data = load_setup_py_data() %}
+{% set version = environ.get('SETUPTOOLS_SCM_PRETEND_VERSION', "0.0.0.dev") %}
 
 package:
   name: openalea.plantgl
-  version: {{ data.get('version') }}
+  version: {{ version }}
 
 source:
   path: ..
@@ -13,30 +13,34 @@ about:
   summary: An open-source graphic toolkit for the creation, simulation and analysis of 3D virtual plants.
 
 build:
+  string: py{{ PY_VER }}
   number: 0
   preserve_egg_dir: True
 
 requirements:
   host:
-      - python x.x
+      - python
       - setuptools
-      - numpy x.x
-      - qt-main>=5.15
+      - setuptools_scm
+      - numpy
+      - qt-main
       - pyqt
       - sip
       - libpng
       - zlib
       - eigen
-      - cgal-cpp>=5.4
+      - cgal-cpp
       - qhull
       - ann
-      - boost                    
+      - boost
       - expat                              # [linux]
       - libxcb                             # [linux]
       - pthread-stubs                      # [linux]
       - {{ cdt('mesa-libgl-devel') }}      # [linux]
-      - libglu                            # [linux]
-      - xorg-libxfixes                    # [linux]
+      - libglu                             # [linux]
+      - xorg-libxfixes                     # [linux]
+      - xorg-libx11                        # [linux]
+  
           
   build:
     - python
@@ -59,10 +63,12 @@ requirements:
     - {{ cdt('libxxf86vm') }}           # [linux]
     - {{ cdt('libxcb') }}               # [linux]
     - {{ cdt('expat-devel') }}          # [linux]
+    - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
+    - {{ cdt('libx11-devel') }}          # [linux]
 
   run:
-      - python x.x
-      - numpy x.x
+      - python
+      - numpy
       - setuptools
       - ipython
       - boost 
@@ -75,9 +81,10 @@ requirements:
       - zlib
       - pyqt
       - pyopengl
-      - pyqglviewer>=1.3
+      - pyqglviewer
       - xorg-libxfixes                     # [linux]
       - libglu                             # [linux]
+
 
 test:
    requires:

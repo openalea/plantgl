@@ -44,75 +44,22 @@
 #define __util_pgl_hashmap_h__
 
 #include "tools_config.h"
+#include <unordered_map>
+#include <string>
+#include <functional>
+#include "util_hash.h"
 
 /*! \file util_hashmap.h
     \brief Utility for hashmap with std::string.
+    Modernized version: always uses std::unordered_map (C++11+).
 */
 
-#ifdef USING_UNORDERED_MAP
 
-#ifdef GNU_TR1_STL_EXTENSION
-	#include <tr1/unordered_map>
-	#define pgl_hash_map std::tr1::unordered_map
+#define pgl_hash_map std::unordered_map
+#define pgl_hash     std::hash
 
-	#ifndef pgl_hash
-		#define pgl_hash std::tr1::hash
-	#endif
-
-#else
-    #include <unordered_map>
-	#if (_MSC_VER == 1500)
-		#define pgl_hash_map std::tr1::unordered_map
-	#else
-		#define pgl_hash_map std::unordered_map
-	#endif
-	#ifndef pgl_hash
-		#define pgl_hash std::hash
-	#endif
-#endif
-
-#include <string>
-
+/// Hash map from std::string → T
 template <class T>
-struct pgl_hash_map_string : public pgl_hash_map<std::string, T >{};
-
-#else
-
-#ifdef GNU_TR1_STL_EXTENSION
-	#include <ext/hash_map>
-#else
-	#if defined(__GNUC__)
-		#warning GNU STL Extension not activated ! Old GCC version used ?
-	#endif
-	#include <hash_map>
-#endif
-
-#ifndef pgl_hash
-#define pgl_hash STDEXT::hash
-#endif
-#define pgl_hash_map STDEXT::hash_map
-
-#include "util_hash.h"
-
-#ifndef WIN32_STL_EXTENSION
-
-/**
-   \class hash_map_string
-   \brief Class used for parsing a stream.
-*/
-
-template <class T>
-struct pgl_hash_map_string : public pgl_hash_map<std::string, T, pgl_hashstr, pgl_eqstr>
-{};
-
-#else
-
-template <class T>
-struct pgl_hash_map_string : public pgl_hash_map<std::string, T >
-{};
-
-#endif
-
-#endif
+using pgl_hash_map_string = pgl_hash_map<std::string, T>;
 
 #endif
