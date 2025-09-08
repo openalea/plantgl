@@ -52,6 +52,8 @@ classifiers = [
 # you can list here all dependencies that are pip-instalable, and that have a name identical to the one used by conda (to allow reuse of this list in meta.yaml)
 # If conda name is different, please do not declare the pip name, and declare conda name in the next section
 dependencies = [
+    "pandas",
+    "numpy",
 ]
 
 [project.optional-dependencies]
@@ -82,7 +84,6 @@ channels = [
 ]
 dependencies = [
     "cmake",
-    "numpy",
     "boost",
     "qt-main",
     "pyqt",
