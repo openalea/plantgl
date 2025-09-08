@@ -85,6 +85,7 @@ channels = [
 dependencies = [
     "cmake",
     "boost",
+    "scikit-build-core",
     "qt-main",
     "pyqt",
     "libpng",
