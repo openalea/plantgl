@@ -127,7 +127,7 @@ echo "PYTHON:" ${PYTHON}
 
 #echo "** PYTHON CALL"
 #export PYTHONPATH=${PREFIX}/lib/python${PY_VER}/site-packages/
-${PYTHON} setup.py install --prefix=${PREFIX} 
+${PYTHON} -m pip install . --prefix=${PREFIX} 
 
 echo
 echo "****** CHECK PYTHON LIB"

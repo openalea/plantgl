@@ -1,0 +1,125 @@
+[build-system]
+requires = [
+   "scikit-build-core", "setuptools", "setuptools-scm"
+]
+build-backend = "scikit_build_core.setuptools.build_meta"
+
+# where your source lies if you followed src layout
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools]
+include-package-data = true # force explicit declaration of data (disable automatic inclusion)
+
+[tool.setuptools.package-data]
+"openalea.plantgl" = ["data/**/*"]
+"*" = ["*.so", "*.dylib", "*.dll", "*.pyd"]
+
+# enable dynamic version based on git tags
+[tool.setuptools_scm]
+fallback_version = "3.21.1.dev0"
+version_scheme = "guess-next-dev"
+local_scheme = "no-local-version"
+
+[project]
+name = "openalea.plantgl"
+authors = [
+  { name = "Frederic Boudon" },
+  { name = "Christophe Pradal" },
+  { name = "Christophe Nouguier" },
+]
+description = "FSPM tools for OpenAlea"
+readme = "README.md"
+license = "CECILL-C"
+license-files = ["LICEN[CS]E*"]
+requires-python = ">=3.10"
+dynamic = ["version"]
+classifiers = [
+  "Development Status :: 1 - Planning",
+  "Intended Audience :: Science/Research",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Scientific/Engineering",
+]
+
+# you can list here all dependencies that are pip-instalable, and that have a name identical to the one used by conda (to allow reuse of this list in meta.yaml)
+# If conda name is different, please do not declare the pip name, and declare conda name in the next section
+dependencies = [
+]
+
+[project.optional-dependencies]
+test = [
+  "pytest",
+  "nbmake",
+]
+dev = [
+  "pytest >=6",
+  "pytest-cov >=3",
+]
+doc = [
+  "sphinx-autobuild",
+  "pydata-sphinx-theme",
+  "myst-parser",
+  "sphinx-favicon",
+  "ipykernel",
+  "sphinx-copybutton",
+  "ipython_genutils",
+  "nbsphinx",
+]
+
+# section specific to conda-only distributed package (not used by pip yet)
+[tool.conda.environment]
+channels = [
+  "openalea3",
+  "conda-forge"
+]
+dependencies = [
+    "cmake",
+    "numpy",
+    "boost",
+    "qt-main",
+    "pyqt",
+    "libpng",
+    "zlib",
+    "qhull",
+    "cgal-cpp",
+    "gmp",
+    "mpfr",
+    "eigen",
+    "ann",
+    "pyopengl",
+    "pyqglviewer",
+    "bison",
+    "flex",
+    "scipy",
+    "matplotlib-base",
+]
+
+[tool.scikit-build]
+build-dir = "./build/{wheel_tag}"
+metadata.version.provider = "scikit_build_core.metadata.setuptools_scm"
+logging.level = "WARNING"
+sdist.include = ["*.so", "*.dylib", "*.dll", "*.pyd"]
+build.verbose = true
+experimental = true
+
+[tool.scikit-build.cmake]
+build-type = "Release"
+source-dir = "."
+
+[project.urls]
+Repository = "https://github.com/openalea/plantgl"
+Homepage = "https://plantgl.readthedocs.io/"
+"Bug Tracker" = "https://github.com/openalea/plantgl/issues"
+Discussions = "https://github.com/openalea/plantgl/discussions"
+Changelog = "https://github.com/openalea/plantgl/releases"
+
+[project.entry-points."wralea"]
+"my_pkg" = "openalea.plantgl_wralea"

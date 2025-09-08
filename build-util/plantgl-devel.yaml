@@ -2,7 +2,6 @@ name: plantgl-devel
 channels:
     - conda-forge
     - openalea3
-    - defaults
 dependencies:
     - python
     - setuptools

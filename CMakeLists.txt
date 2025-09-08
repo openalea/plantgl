@@ -2,9 +2,9 @@
 
 cmake_minimum_required(VERSION 3.12)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-include("Anaconda")
 include("PglConfig")
 include("PglWrapper")
+include("FindANN")
 include("detectPlantGL")
 
 # --- PlantGL Project
@@ -66,17 +66,17 @@ define_cpp_macro(PGL_USE_DOUBLE 1)
 ## ###################################################################
 
 # --- Python
-set(Python3_FIND_VIRTUALENV FIRST)
+set(Python_FIND_VIRTUALENV FIRST)
 if (WIN32)
   # needed when we run cmake in a conda environment
-  set(Python3_FIND_REGISTRY LAST)
+  set(Python_FIND_REGISTRY LAST)
 endif()
 
 
-find_package (Python3 COMPONENTS Interpreter Development NumPy REQUIRED)
-include_directories(${Python3_INCLUDE_DIRS})
-message(STATUS "Python version : " ${Python3_VERSION})
-message(STATUS "Python lib : " ${Python3_LIBRARIES})
+find_package (Python COMPONENTS Interpreter Development REQUIRED)
+include_directories(${Python_INCLUDE_DIRS})
+message(STATUS "Python version : " ${Python_VERSION})
+message(STATUS "Python lib : " ${Python_LIBRARIES})
 
 # --- Libraries
 
@@ -94,14 +94,13 @@ define_cpp_macro(PGL_QT_VERSION ${QT_VERSION_MAJOR})
 define_py_macro(PGL_WITHOUT_QT "False")
 define_py_macro(PGL_QT_VERSION ${QT_VERSION_MAJOR})
 
+find_package(Boost COMPONENTS thread system chrono ${boost_python} ${boost_numpy})
+message("${Boost_INCLUDE_DIR}")
 
-set(Boost_NO_SYSTEM_PATHS ON)
-set(Boost_USE_MULTITHREAD ON)
-set(Boost_USE_STATIC_LIBS OFF)
 set(BUILD_SHARED_LIBS ON)
 
-set(boost_python python${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR})
-set(boost_numpy numpy${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR})
+set(boost_python python${Python_VERSION_MAJOR}${Python_VERSION_MINOR})
+set(boost_numpy numpy${Python_VERSION_MAJOR}${Python_VERSION_MINOR})
 
 find_package(ZLIB REQUIRED)
 find_package(OpenGL REQUIRED)
@@ -116,16 +115,7 @@ find_package(FLEX)
 find_library(QHULL_LIBRARY NAMES "libqhullstatic.a" PATHS $ENV{CONDA_PREFIX}/lib)
 find_package(Qhull)
 
-#if (USE_CONDA_BUILD)
-#if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
-#      find_library(LIBSELINUX_LIBRARY "selinux" PATHS $ENV{BUILD_PREFIX}/x86_64-conda-linux-gnu/sysroot/lib64 $ENV{BUILD_PREFIX}/x86_64-conda_cos6-linux-gnu/sysroot/lib64  REQUIRED)
-#      message(STATUS "Found libselinux: ${LIBSELINUX_LIBRARY}")
-#endif()
-#endif()
-
-
-
-find_package(Boost 1.69 COMPONENTS thread system chrono ${boost_python} ${boost_numpy})
+find_package(Boost COMPONENTS thread system chrono ${boost_python} ${boost_numpy})
 
 if (Boost_FOUND)
     # Build with Boost
@@ -135,7 +125,7 @@ if (Boost_FOUND)
         define_macro(PGL_WITH_BOOST_NUMPY 1)
         set(USE_BOOST_NUMPY ON)
         message(STATUS "Building with Boost.Numpy")
-    elseif(DEFINED Boost_NUMPY${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}_FOUND)
+    elseif(DEFINED Boost_NUMPY${Python_VERSION_MAJOR}${Python_VERSION_MINOR}_FOUND)
         define_macro(PGL_WITH_BOOST_NUMPY 1)
         set(USE_BOOST_NUMPY ON)    
         message(STATUS "Building with Boost.Numpy")
