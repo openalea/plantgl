@@ -123,4 +123,19 @@ Discussions = "https://github.com/openalea/plantgl/discussions"
 Changelog = "https://github.com/openalea/plantgl/releases"
 
 [project.entry-points."wralea"]
-"my_pkg" = "openalea.plantgl_wralea"
+"plantgl.edition" = "openalea.plantgl.wralea.edition"
+"plantgl.objects" = "openalea.plantgl.wralea.objects"
+"plantgl.visualization" = "openalea.plantgl.wralea.visualization"
+"plantgl.operator" = "openalea.plantgl.wralea.operator"
+"plantgl.dresser" = "openalea.plantgl.wralea.dresser"
+"plantgl.demos" = "openalea.plantgl.wralea.demos"
+
+[project.entry-points."oalab.qt_control"]
+"PluginColorListWidget" = "openalea.plantgl.oaplugins:PluginColorListWidget"
+"PluginMaterialListWidget" = "openalea.plantgl.oaplugins:PluginMaterialListWidget"
+"PluginCurve2DWidget" = "openalea.plantgl.oaplugins:PluginCurve2DWidget"
+"PluginQuantisedFunctionWidget" = "openalea.plantgl.oaplugins:PluginQuantisedFunctionWidget"
+"PluginPatchWidget" = "openalea.plantgl.oaplugins:PluginPatchWidget"
+
+[project.entry-points."oalab.interface"]
+"PlantGLOAInterfacePlugin" = "openalea.plantgl.oaplugins.interfaces:PlantGLOAInterfacePlugin"
