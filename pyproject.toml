@@ -97,7 +97,6 @@ dependencies = [
     "eigen",
     "ann",
     "pyopengl",
-    "pyqglviewer",
     "bison",
     "flex",
     "scipy",

@@ -22,6 +22,7 @@ requirements:
       - python
       - setuptools
       - setuptools_scm
+      - scikit-build-core
       - numpy
       - qt-main
       - pyqt
