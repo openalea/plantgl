@@ -83,7 +83,7 @@ requirements:
       - ann
       - qt-main
       - libpng
-      - gmp
+      - gmp                                 #[unix]
       - mpfr
       - zlib
       - pyqt
