@@ -191,6 +191,7 @@ include_directories(${OPENGL_INCLUDE_DIR})
 
 if (DEFINED CONDA_ENV)
     link_directories("${CONDA_ENV}/lib")
+    include_directories("${CONDA_ENV}/include")
 endif()
 
 # --- Source Directories
