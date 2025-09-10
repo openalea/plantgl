@@ -28,7 +28,7 @@ requirements:
       - numpy
       - qt-main
       - pyqt
-      - gmp
+      - gmp                             #[unix]
       - mpfr
       - sip
       - libpng
@@ -40,6 +40,8 @@ requirements:
       - boost
       - bison                             # [unix]
       - flex                              # [unix]
+      - m2-bison                          # [win]
+      - m2-flex                           # [win]
       - expat                              # [linux]
       - libxcb                             # [linux]
       - pthread-stubs                      # [linux]
@@ -53,8 +55,6 @@ requirements:
     - python
     - binutils_impl_linux-64            # [linux]
     - {{ compiler('cxx') }}
-    - m2-bison                          # [win]
-    - m2-flex                           # [win]
     - menuinst                          # [win]
     - cmake
     - pkg-config                        # [linux]
