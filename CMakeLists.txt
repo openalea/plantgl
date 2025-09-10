@@ -150,13 +150,8 @@ else()
 endif()
 
 
-if(DEFINED FLEX_INCLUDE_DIR)
-    message("Flex include dir found: ${FLEX_INCLUDE_DIR}")
-else()
-    set(FLEX_INCLUDE_DIR ${Boost_INCLUDE_DIR})
-    message("Flex include set to: ${FLEX_INCLUDE_DIR}")
-endif()
-
+set(FLEX_INCLUDE_DIR ${Boost_INCLUDE_DIR})
+message("Flex include set to: ${FLEX_INCLUDE_DIR}")
 if (BISON_FOUND AND FLEX_FOUND)
     # Build with Bison and Flex
     define_cpp_macro(PGL_WITH_FLEX 1)
