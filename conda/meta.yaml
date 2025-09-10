@@ -25,6 +25,23 @@ requirements:
       - setuptools
       - setuptools_scm
       - scikit-build-core
+      - numpy
+      - qt-main
+      - pyqt
+      - gmp
+      - mpfr
+      - sip
+      - libpng
+      - zlib
+      - eigen
+      - cgal-cpp
+      - qhull
+      - ann
+      - boost
+      - bison                             # [unix]
+      - flex                              # [unix]
+      - m2-bison                          # [win]
+      - m2-flex                           # [win]
       - expat                              # [linux]
       - libxcb                             # [linux]
       - pthread-stubs                      # [linux]
@@ -38,25 +55,8 @@ requirements:
     - python
     - binutils_impl_linux-64            # [linux]
     - {{ compiler('cxx') }}
-    - bison                             # [unix]
-    - flex                              # [unix]
-    - m2-bison                          # [win]
-    - m2-flex                           # [win]
     - menuinst                          # [win]
     - cmake
-    - numpy
-    - qt-main
-    - pyqt
-    - gmp
-    - mpfr
-    - sip
-    - libpng
-    - zlib
-    - eigen
-    - cgal-cpp
-    - qhull
-    - ann
-    - boost
     - pkg-config                        # [linux]
     - make                              # [unix]
     - {{ cdt('mesa-libgl-devel') }}     # [linux]
