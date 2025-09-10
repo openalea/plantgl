@@ -4,7 +4,6 @@ cmake_minimum_required(VERSION 3.12)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include("PglConfig")
 include("PglWrapper")
-# include("FindANN")
 include("detectPlantGL")
 
 # --- PlantGL Project
@@ -119,6 +118,7 @@ find_package(FLEX)
 find_library(QHULL_LIBRARY NAMES "libqhullstatic.a" PATHS $ENV{CONDA_PREFIX}/lib)
 find_package(Qhull)
 
+
 find_package(Boost COMPONENTS thread system chrono ${boost_python} ${boost_numpy})
 
 if (Boost_FOUND)
@@ -147,6 +147,14 @@ else()
     set(USE_BOOST OFF)
     set(USE_BOOST_NUMPY OFF)
     message(STATUS "Building without Boost - Library not found.")
+endif()
+
+
+if(DEFINED FLEX_INCLUDE_DIR)
+    message("Flex include dir found: ${FLEX_INCLUDE_DIR}")
+else()
+    set(FLEX_INCLUDE_DIR ${Boost_INCLUDE_DIR})
+    message("Flex include set to: ${FLEX_INCLUDE_DIR}")
 endif()
 
 if (BISON_FOUND AND FLEX_FOUND)
@@ -191,7 +199,6 @@ include_directories(${OPENGL_INCLUDE_DIR})
 
 if (DEFINED CONDA_ENV)
     link_directories("${CONDA_ENV}/lib")
-    include_directories("${CONDA_ENV}/include")
 endif()
 
 # --- Source Directories
