@@ -17,7 +17,7 @@ build:
   number: 0
   preserve_egg_dir: True
   script:
-    - {{ PYTHON }} -m pip install . --ignore-installed --no-build-isolation --prefix={{ PREFIX }} -vv
+    - {{ PYTHON }} -m pip install . --ignore-installed --no-build-isolation -vv
 
 requirements:
   host:
