@@ -94,6 +94,10 @@ define_cpp_macro(PGL_QT_VERSION ${QT_VERSION_MAJOR})
 define_py_macro(PGL_WITHOUT_QT "False")
 define_py_macro(PGL_QT_VERSION ${QT_VERSION_MAJOR})
 
+if(POLICY CMP0167) # Removes find boost warning
+  cmake_policy(SET CMP0167 NEW)
+endif()
+
 find_package(Boost COMPONENTS thread system chrono ${boost_python} ${boost_numpy})
 message("${Boost_INCLUDE_DIR}")
 
