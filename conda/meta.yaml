@@ -17,7 +17,7 @@ build:
   number: 0
   preserve_egg_dir: True
   script:
-    - {{ PYTHON }} -m pip install . --ignore-installed --no-build-isolation -vv
+    - {{ PYTHON }} -m pip install . -vv
 
 requirements:
   host:
@@ -25,17 +25,6 @@ requirements:
       - setuptools
       - setuptools_scm
       - scikit-build-core
-      - numpy
-      - qt-main
-      - pyqt
-      - sip
-      - libpng
-      - zlib
-      - eigen
-      - cgal-cpp
-      - qhull
-      - ann
-      - boost
       - expat                              # [linux]
       - libxcb                             # [linux]
       - pthread-stubs                      # [linux]
@@ -55,6 +44,19 @@ requirements:
     - m2-flex                           # [win]
     - menuinst                          # [win]
     - cmake
+    - numpy
+    - qt-main
+    - pyqt
+    - gmp
+    - mpfr
+    - sip
+    - libpng
+    - zlib
+    - eigen
+    - cgal-cpp
+    - qhull
+    - ann
+    - boost
     - pkg-config                        # [linux]
     - make                              # [unix]
     - {{ cdt('mesa-libgl-devel') }}     # [linux]
@@ -81,6 +83,8 @@ requirements:
       - ann
       - qt-main
       - libpng
+      - gmp
+      - mpfr
       - zlib
       - pyqt
       - pyopengl
