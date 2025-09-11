@@ -107,12 +107,12 @@ sdist.include = ["*.so", "*.dylib", "*.dll", "*.pyd"]
 build.verbose = true
 experimental = true
 
+[tool.scikit-build.wheel]
+packages = ["src/openalea"]
+
 [tool.scikit-build.cmake]
 build-type = "Release"
 source-dir = "."
-
-[tool.setuptools.package-data]
-"*" = ["*.so", "*.dylib", "*.dll", "*.pyd"]
 
 [project.urls]
 Repository = "https://github.com/openalea/plantgl"
