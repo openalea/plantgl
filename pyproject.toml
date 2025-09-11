@@ -21,7 +21,7 @@ authors = [
   { name = "Christophe Nouguier" },
 ]
 description = "FSPM tools for OpenAlea"
-readme = "README.md"
+readme = "README.rst"
 license = "CECILL-C"
 license-files = ["LICEN[CS]E*"]
 requires-python = ">=3.10"
