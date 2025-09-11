@@ -55,6 +55,10 @@ requirements:
     - python
     - binutils_impl_linux-64            # [linux]
     - {{ compiler('cxx') }}
+    - bison                             # [unix]
+    - flex                              # [unix]
+    - m2-bison                          # [win]
+    - m2-flex                           # [win]
     - menuinst                          # [win]
     - cmake
     - pkg-config                        # [linux]

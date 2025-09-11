@@ -108,4 +108,4 @@ endif()
 
 # --- Output Library
 
-install(TARGETS pglalgo LIBRARY DESTINATION "lib")
+install(TARGETS pglalgo LIBRARY DESTINATION "$ENV{PREFIX}/lib")

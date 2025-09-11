@@ -8,12 +8,8 @@ build-backend = "scikit_build_core.setuptools.build_meta"
 [tool.setuptools.packages.find]
 where = ["src"]
 
-[tool.setuptools]
-include-package-data = true # force explicit declaration of data (disable automatic inclusion)
-
-[tool.setuptools.package-data]
-"openalea.plantgl" = ["data/**/*"]
-"*" = ["*.so", "*.dylib", "*.dll", "*.pyd"]
+#[tool.setuptools]
+#include-package-data = true # force explicit declaration of data (disable automatic inclusion)
 
 # enable dynamic version based on git tags
 [tool.setuptools_scm]

@@ -42,7 +42,7 @@ endif()
 
 # --- Output Library
 
-install(TARGETS pglgui LIBRARY DESTINATION "lib")
+install(TARGETS pglgui LIBRARY DESTINATION "$ENV{PREFIX}/lib")
 
 # --- Viewer Program
 

@@ -42,6 +42,6 @@ function(pglwrapper_install libwrapname repository)
 endfunction()
 
 function(install_share sharedirectory project)
-    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${sharedirectory}/ DESTINATION "${CMAKE_INSTALL_PREFIX}/share/${project}")
+    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${sharedirectory}/ DESTINATION "$ENV{PREFIX}/share/${project}")
 endfunction()
 
