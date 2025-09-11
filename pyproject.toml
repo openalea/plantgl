@@ -115,6 +115,9 @@ experimental = true
 build-type = "Release"
 source-dir = "."
 
+[tool.setuptools.package-data]
+"*" = ["*.so", "*.dylib", "*.dll", "*.pyd"]
+
 [project.urls]
 Repository = "https://github.com/openalea/plantgl"
 Homepage = "https://plantgl.readthedocs.io/"
