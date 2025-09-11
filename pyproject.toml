@@ -104,7 +104,8 @@ build.verbose = true
 experimental = true
 
 [tool.scikit-build.wheel]
-packages = ["src/openalea"]
+packages = ["src/openalea/"]
+exclude = ["wralea"]
 
 [tool.scikit-build.cmake]
 build-type = "Release"
