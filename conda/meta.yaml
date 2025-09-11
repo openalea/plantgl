@@ -22,7 +22,6 @@ build:
 requirements:
   host:
       - python
-      - setuptools
       - setuptools_scm
       - scikit-build-core
       - numpy
@@ -78,7 +77,6 @@ requirements:
   run:
       - python
       - numpy
-      - setuptools
       - ipython
       - boost 
       - qhull

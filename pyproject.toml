@@ -1,12 +1,8 @@
 [build-system]
 requires = [
-   "scikit-build-core", "setuptools", "setuptools-scm"
+   "scikit-build-core", "setuptools-scm"
 ]
-build-backend = "scikit_build_core.setuptools.build_meta"
-
-# where your source lies if you followed src layout
-[tool.setuptools.packages.find]
-where = ["src"]
+build-backend = "scikit_build_core.build"
 
 #[tool.setuptools]
 #include-package-data = true # force explicit declaration of data (disable automatic inclusion)
