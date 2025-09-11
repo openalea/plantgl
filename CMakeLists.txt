@@ -97,9 +97,6 @@ if(POLICY CMP0167) # Removes find boost warning
   cmake_policy(SET CMP0167 NEW)
 endif()
 
-find_package(Boost COMPONENTS thread system chrono ${boost_python} ${boost_numpy})
-message("${Boost_INCLUDE_DIR}")
-
 set(BUILD_SHARED_LIBS ON)
 
 set(boost_python python${Python_VERSION_MAJOR}${Python_VERSION_MINOR})
