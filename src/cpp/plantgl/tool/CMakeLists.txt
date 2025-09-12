@@ -24,4 +24,4 @@ endif()
 
 # --- Output Library
 
-install(TARGETS pgltool LIBRARY DESTINATION "lib")
+install(TARGETS pgltool LIBRARY DESTINATION "$ENV{PREFIX}/lib")

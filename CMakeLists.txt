@@ -2,6 +2,7 @@
 
 cmake_minimum_required(VERSION 3.20)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+include("Anaconda")
 include("PglConfig")
 include("PglWrapper")
 include("detectPlantGL")
@@ -97,6 +98,9 @@ if(POLICY CMP0167) # Removes find boost warning
   cmake_policy(SET CMP0167 NEW)
 endif()
 
+set(Boost_NO_SYSTEM_PATHS ON)
+set(Boost_USE_MULTITHREAD ON)
+set(Boost_USE_STATIC_LIBS OFF)
 set(BUILD_SHARED_LIBS ON)
 
 set(boost_python python${Python_VERSION_MAJOR}${Python_VERSION_MINOR})
@@ -107,7 +111,6 @@ find_package(OpenGL REQUIRED)
 find_package(PNG REQUIRED)
 find_package(JPEG REQUIRED)
 
-find_package(CGAL)
 find_package(ANN)
 find_package(BISON)
 find_package(Eigen)
@@ -117,6 +120,7 @@ find_package(Qhull)
 
 
 find_package(Boost COMPONENTS thread system chrono ${boost_python} ${boost_numpy})
+find_package(CGAL)
 
 if (Boost_FOUND)
     # Build with Boost
