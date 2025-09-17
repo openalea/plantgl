@@ -4,7 +4,7 @@ function(pglwrapper_link_python libwrapname)
         if (APPLE)
             target_link_libraries(${libwrapname} "-undefined dynamic_lookup")
         else()
-            target_link_libraries(${libwrapname} Python3::Python)
+            target_link_libraries(${libwrapname} Python::Python)
         endif()
 endfunction()
 
