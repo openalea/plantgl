@@ -1,15 +1,11 @@
 
 
 function(pglwrapper_link_python libwrapname)
-    if (Python3_FOUND)
         if (APPLE)
-             target_link_libraries(${libwrapname} "-undefined dynamic_lookup")
+            target_link_libraries(${libwrapname} "-undefined dynamic_lookup")
         else()
             target_link_libraries(${libwrapname} Python3::Python)
         endif()
-    elseif (Python2_FOUND)
-        target_link_libraries(${libwrapname} Python2::Python)
-    endif()
 endfunction()
 
 function(pglwrapper_link_boost libwrapname)
@@ -39,9 +35,5 @@ function(pglwrapper_install libwrapname repository)
     endif()
     message("Installing ${libwrapname} in ${CMAKE_SOURCE_DIR}/src/openalea/plantgl/${repository}")
     install(TARGETS ${libwrapname} DESTINATION "${CMAKE_SOURCE_DIR}/src/openalea/plantgl/${repository}")
-endfunction()
-
-function(install_share sharedirectory project)
-    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${sharedirectory}/ DESTINATION "$ENV{PREFIX}/share/${project}")
 endfunction()
 

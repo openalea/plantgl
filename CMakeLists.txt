@@ -10,6 +10,10 @@ include("detectPlantGL")
 # --- PlantGL Project
 
 project(plantgl CXX)
+#project(
+#  ${SKBUILD_PROJECT_NAME}
+#  LANGUAGES CXX
+#  VERSION ${SKBUILD_PROJECT_VERSION})
 
 # --- Build setup
 

@@ -108,3 +108,23 @@ elseif (NOT DEFINED CMAKE_INSTALL_PREFIX)
 else()
     message(STATUS "Install Prefix: " ${CMAKE_INSTALL_PREFIX})
 endif()
+
+function(install_share sharedirectory project)
+    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${sharedirectory}/ DESTINATION "${CONDA_ENV}/share/${project}")
+endfunction()
+
+
+function(install_pgllib libname)
+    message("Installing ${libname} in ${CONDA_ENV}lib/")
+    install(TARGETS ${libname} LIBRARY DESTINATION "${CONDA_ENV}lib/")
+endfunction()
+
+function(install_pglbin libname)
+    message("Installing ${libname} in ${CONDA_ENV}bin/")
+    install(TARGETS ${libname} RUNTIME DESTINATION "${CONDA_ENV}bin/")
+endfunction()
+
+function(install_headers directory exclude)
+    message("Installing header from ${directory} in ${CONDA_ENV}include/")
+    install(DIRECTORY ${directory} DESTINATION "${CONDA_ENV}include/" FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN ${exclude} EXCLUDE)
+endfunction()

@@ -1,4 +1,4 @@
-name: plantgl-devel
+name: plantgl-devel-sbc
 channels:
     - conda-forge
     - openalea3
@@ -21,7 +21,7 @@ dependencies:
     - eigen
     - ann
     - pyopengl
-    - pyqglviewer
+    #- pyqglviewer
     - pytest
     - bison
     - flex

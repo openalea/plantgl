@@ -16,4 +16,4 @@ add_dependencies(pglviewer pglgui)
 # --- Output Executable
 
 # install(TARGETS pglviewer RUNTIME DESTINATION "bin")
-install(TARGETS pglviewer DESTINATION "$ENV{PREFIX}/bin")
+install_pglbin(pglviewer)

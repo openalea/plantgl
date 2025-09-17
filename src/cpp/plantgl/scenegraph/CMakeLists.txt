@@ -27,4 +27,4 @@ endif()
 
 # --- Output Library
 
-install(TARGETS pglsg LIBRARY DESTINATION "$ENV{PREFIX}/lib")
+install_pgllib(pglsg)

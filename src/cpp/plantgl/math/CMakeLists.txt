@@ -13,4 +13,4 @@ endif()
 
 # --- Output Library
 
-install(TARGETS pglmath LIBRARY DESTINATION "$ENV{PREFIX}/lib")
+install_pgllib(pglmath)
