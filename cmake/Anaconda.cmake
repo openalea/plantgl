@@ -114,17 +114,14 @@ function(install_share sharedirectory project)
 endfunction()
 
 
-if (WIN32)
-    function(install_pgllib libname)
-        message("Installing ${libname} in ${CONDA_ENV}lib/")
-        install(TARGETS ${libname} LIBRARY DESTINATION "${CONDA_ENV}")
-    endfunction()
-else()
-    function(install_pgllib libname)
-        message("Installing ${libname} in ${CONDA_ENV}lib/")
-        install(TARGETS ${libname} LIBRARY DESTINATION "${CONDA_ENV}lib/")
-    endfunction()
-endif()
+function(install_pgllib libname)
+    message("Installing ${libname} in ${CONDA_ENV}lib/")
+    install(TARGETS ${libname}
+            RUNTIME DESTINATION "${CONDA_ENV}bin/"
+            LIBRARY DESTINATION "${CONDA_ENV}lib/"
+            ARCHIVE DESTINATION "${CONDA_ENV}lib/"
+     )
+endfunction()
 
 function(install_pglbin libname)
     message("Installing ${libname} in ${CONDA_ENV}bin/")
