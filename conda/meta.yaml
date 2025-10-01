@@ -35,6 +35,9 @@ requirements:
     - qhull
     - ann
     - boost
+    - expat                              # [linux]
+    - libxcb                             # [linux]
+    - pthread-stubs                      # [linux]
     - {{ cdt('mesa-libgl-devel') }}      # [linux]
     - libglu                             # [linux]
     - xorg-libxfixes                     # [linux]
@@ -52,14 +55,32 @@ requirements:
     - m2-flex                           # [win]
     - menuinst                          # [win]
     - make                              # [unix]
+    - {{ cdt('mesa-libgl-devel') }}     # [linux]
+    - {{ cdt('mesa-dri-drivers') }}     # [linux]
+    - {{ cdt('libxext') }}              # [linux]
+    - {{ cdt('libselinux') }}           # [linux]
+    - {{ cdt('libxdamage') }}           # [linux]
+    - {{ cdt('libxfixes') }}            # [linux]
+    - {{ cdt('libxxf86vm') }}           # [linux]
+    - {{ cdt('libxcb') }}               # [linux]
+    - {{ cdt('expat-devel') }}          # [linux]
+    - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
+    - {{ cdt('libx11-devel') }}          # [linux]
 
   run:
     - python
     - numpy
-    - boost
     - ipython
     - pyopengl
     - pyqglviewer
+    - boost
+    - qhull
+    - eigen
+    - cgal-cpp
+    - ann
+    - zlib
+    - xorg-libxfixes                     # [linux]
+    - libglu                             # [linux]
 
 test:
    requires:
