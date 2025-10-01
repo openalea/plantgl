@@ -28,7 +28,7 @@ requirements:
       - qt-main
       - pyqt
       - gmp                             #[unix]
-      - mpfr
+      - mpfr                            #[unix]
       - sip
       - libpng
       - zlib
