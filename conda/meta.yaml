@@ -37,10 +37,6 @@ requirements:
       - qhull
       - ann
       - boost
-      - bison                             # [unix]
-      - flex                              # [unix]
-      - m2-bison                          # [win]
-      - m2-flex                           # [win]
       - expat                              # [linux]
       - libxcb                             # [linux]
       - pthread-stubs                      # [linux]
@@ -85,8 +81,6 @@ requirements:
       - ann
       - qt-main
       - libpng
-      - gmp                                 #[unix]
-      - mpfr
       - zlib
       - pyqt
       - pyopengl
