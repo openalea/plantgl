@@ -27,8 +27,8 @@ requirements:
       - numpy
       - qt-main
       - pyqt
-      - gmp                             #[unix]
-      - mpfr                            #[unix]
+      - gmp
+      - mpfr
       - sip
       - libpng
       - zlib
@@ -74,20 +74,8 @@ requirements:
       - python
       - numpy
       - ipython
-      - boost 
-      - qhull
-      - eigen
-      - cgal-cpp
-      - ann
-      - qt-main
-      - libpng
-      - zlib
-      - pyqt
       - pyopengl
       - pyqglviewer
-      - xorg-libxfixes                     # [linux]
-      - libglu                             # [linux]
-
 
 test:
    requires:
