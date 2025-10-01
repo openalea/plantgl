@@ -13,69 +13,53 @@ about:
   summary: An open-source graphic toolkit for the creation, simulation and analysis of 3D virtual plants.
 
 build:
-  string: py{{ PY_VER }}
   number: 0
-  preserve_egg_dir: True
   script:
     - {{ PYTHON }} -m pip install --prefix={{ PREFIX }} . -vv
 
 requirements:
   host:
-      - python
-      - setuptools_scm
-      - scikit-build-core
-      - numpy
-      - qt-main
-      - pyqt
-      - gmp
-      - mpfr
-      - sip
-      - libpng
-      - zlib
-      - eigen
-      - cgal-cpp
-      - qhull
-      - ann
-      - boost
-      - expat                              # [linux]
-      - libxcb                             # [linux]
-      - pthread-stubs                      # [linux]
-      - {{ cdt('mesa-libgl-devel') }}      # [linux]
-      - libglu                             # [linux]
-      - xorg-libxfixes                     # [linux]
-      - xorg-libx11                        # [linux]
-  
-          
+    - python
+    - setuptools_scm
+    - scikit-build-core
+    - numpy
+    - qt-main
+    - pyqt
+    - gmp
+    - mpfr
+    - sip
+    - libpng
+    - zlib
+    - eigen
+    - cgal-cpp
+    - qhull
+    - ann
+    - boost
+    - {{ cdt('mesa-libgl-devel') }}      # [linux]
+    - libglu                             # [linux]
+    - xorg-libxfixes                     # [linux]
+    - xorg-libx11                        # [linux]
+
   build:
     - python
-    - binutils_impl_linux-64            # [linux]
     - {{ compiler('cxx') }}
+    - cmake
+    - pkg-config                        # [linux]
+    - binutils_impl_linux-64            # [linux]
     - bison                             # [unix]
     - flex                              # [unix]
     - m2-bison                          # [win]
     - m2-flex                           # [win]
     - menuinst                          # [win]
-    - cmake
-    - pkg-config                        # [linux]
     - make                              # [unix]
-    - {{ cdt('mesa-libgl-devel') }}     # [linux]
-    - {{ cdt('mesa-dri-drivers') }}     # [linux]
-    - {{ cdt('libxext') }}              # [linux]
-    - {{ cdt('libselinux') }}           # [linux]
-    - {{ cdt('libxdamage') }}           # [linux]
-    - {{ cdt('libxfixes') }}            # [linux]
-    - {{ cdt('libxxf86vm') }}           # [linux]
-    - {{ cdt('libxcb') }}               # [linux]
-    - {{ cdt('expat-devel') }}          # [linux]
-    - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
-    - {{ cdt('libx11-devel') }}          # [linux]
 
   run:
-      - python
-      - numpy
-      - ipython
-      - pyopengl
-      - pyqglviewer
+    - python
+    - numpy
+    - boost
+    - ipython
+    - pyopengl
+    - pyqglviewer
 
 test:
    requires:
