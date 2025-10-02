@@ -75,24 +75,14 @@ channels = [
   "conda-forge"
 ]
 dependencies = [
-    "cmake",
-    "boost",
-    "scikit-build-core",
-    "qt-main",
-    "pyqt",
-    "libpng",
-    "zlib",
-    "qhull",
-    "cgal-cpp",
-    "gmp",
-    "mpfr",
-    "eigen",
-    "ann",
     "pyopengl",
-    "bison",
-    "flex",
-    "scipy",
-    "matplotlib-base",
+    "pyqglviewer",
+    "boost",
+    "qhull",
+    "zlib",
+    "cgal-cpp",
+    "eigen",
+    "ann"
 ]
 
 [tool.scikit-build]

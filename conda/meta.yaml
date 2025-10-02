@@ -15,7 +15,7 @@ about:
 build:
   number: 0
   script:
-    - {{ PYTHON }} -m pip install --prefix={{ PREFIX }} . -vv
+    - {{ PYTHON }} -m pip install --prefix={{ PREFIX }} . --no-deps --no-build-isolation -vv
 
 requirements:
   host:
@@ -35,10 +35,9 @@ requirements:
     - qhull
     - ann
     - boost
-    - expat                              # [linux]
     - libxcb                             # [linux]
     - pthread-stubs                      # [linux]
-    - {{ cdt('mesa-libgl-devel') }}      # [linux]
+    - {{ cdt('mesa-libgl-devel') }}      # [linux] # match libqglviewer CDT GL strategy
     - libglu                             # [linux]
     - xorg-libxfixes                     # [linux]
     - xorg-libx11                        # [linux]
@@ -73,14 +72,17 @@ requirements:
     - ipython
     - pyopengl
     - pyqglviewer
-    - boost
-    - qhull
     - eigen
-    - cgal-cpp
-    - ann
     - zlib
-    - xorg-libxfixes                     # [linux]
-    - libglu                             # [linux]
+    - xorg-libxfixes    # [linux]
+    - libglu            # [linux]
+    # guards for ABI-sensitive libraries
+    - {{ pin_compatible('pyqt', max_pin='x.x') }}
+    - {{ pin_compatible('boost', max_pin='x.x') }}
+    - {{ pin_compatible('cgal-cpp', max_pin='x.x') }}
+    - {{ pin_compatible('qhull', max_pin='x.x') }}
+    - {{ pin_compatible('ann', max_pin='x.x') }}
+
 
 test:
    requires:
