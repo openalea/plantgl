@@ -1,16 +1,20 @@
 name: plantgl-devel
 channels:
-    - conda-forge
-    - openalea3
-    - msys2
-    - defaults
+  - openalea3/label/dev
+  - openalea3/label/rc
+  - openalea3
+  - conda-forge
 dependencies:
     - python
+    - conda-forge-pinning
     - setuptools
+    - setuptools_scm
+    - scikit-build-core
     - cmake
+    - cxx-compiler
     - numpy
-    - boost <=1.72
-    - qt
+    - boost
+    - qt-main
     - pyqt
     - libpng
     - zlib

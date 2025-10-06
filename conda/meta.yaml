@@ -27,7 +27,6 @@ requirements:
     - pyqt
     - gmp
     - mpfr
-    - sip
     - libpng
     - zlib
     - eigen
@@ -45,6 +44,7 @@ requirements:
   build:
     - python
     - {{ compiler('cxx') }}
+    - {{ stdlib('cxx') }}
     - cmake
     - pkg-config                        # [linux]
     - binutils_impl_linux-64            # [linux]
