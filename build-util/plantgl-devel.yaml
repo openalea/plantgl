@@ -1,10 +1,15 @@
-name: plantgl-devel
+name: plantgl-devel-sbc
 channels:
     - conda-forge
+    - openalea3
 dependencies:
-    - python=3.12
+    - python
+    - conda-forge-pinning
     - setuptools
+    - setuptools-scm
+    - scikit-build-core
     - cmake
+    - cxx-compiler
     - numpy
     - boost
     - qt-main
@@ -17,7 +22,6 @@ dependencies:
     - mpfr 
     - eigen
     - ann
-    - ipython
     - pyopengl
     #- pyqglviewer
     - pytest

@@ -2,16 +2,16 @@
 if (DEFINED ENV{CONDA_PREFIX})
     # Anaconda Environment
     message(STATUS "Anaconda environment detected: " $ENV{CONDA_PREFIX})
-    
-    list(APPEND CMAKE_INCLUDE_PATH "$ENV{CONDA_PREFIX}/include")
-    list(APPEND CMAKE_LIBRARY_PATH "$ENV{CONDA_PREFIX}/lib")
+
+    set(CMAKE_INCLUDE_PATH "$ENV{CONDA_PREFIX}/include" ${CMAKE_INCLUDE_PATH})
+    set(CMAKE_LIBRARY_PATH "$ENV{CONDA_PREFIX}/lib" ${CMAKE_LIBRARY_PATH})
 
     if (DEFINED ENV{PREFIX})
         file(TO_CMAKE_PATH $ENV{PREFIX} TMP_CONDA_ENV)
     else()
         file(TO_CMAKE_PATH $ENV{CONDA_PREFIX} TMP_CONDA_ENV)
     endif()
-    
+
     if (WIN32)
         set(CONDA_ENV "${TMP_CONDA_ENV}/Library/")
     else()
@@ -47,7 +47,7 @@ if (DEFINED ENV{CONDA_BUILD})
     if (APPLE)
         set(CMAKE_OSX_ARCHITECTURES $ENV{OSX_ARCH})
     endif()
-   
+
     set(CMAKE_CXX_COMPILER $ENV{CXX})
     set(CMAKE_CXX_COMPILER_RANLIB $ENV{RANLIB})
     set(CMAKE_CXX_COMPILER_AR $ENV{AR})
@@ -109,4 +109,26 @@ else()
     message(STATUS "Install Prefix: " ${CMAKE_INSTALL_PREFIX})
 endif()
 
+function(install_share sharedirectory project)
+    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${sharedirectory}/ DESTINATION "${CONDA_ENV}/share/${project}")
+endfunction()
 
+
+function(install_pgllib libname)
+    message("Installing ${libname} in ${CONDA_ENV}lib/")
+    install(TARGETS ${libname}
+            RUNTIME DESTINATION "${CONDA_ENV}bin/"
+            LIBRARY DESTINATION "${CONDA_ENV}lib/"
+            ARCHIVE DESTINATION "${CONDA_ENV}lib/"
+     )
+endfunction()
+
+function(install_pglbin libname)
+    message("Installing ${libname} in ${CONDA_ENV}bin/")
+    install(TARGETS ${libname} RUNTIME DESTINATION "${CONDA_ENV}bin/")
+endfunction()
+
+function(install_headers directory exclude)
+    message("Installing header from ${directory} in ${CONDA_ENV}include/")
+    install(DIRECTORY ${directory} DESTINATION "${CONDA_ENV}include/" FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN ${exclude} EXCLUDE)
+endfunction()

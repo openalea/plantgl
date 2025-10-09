@@ -1,8 +1,18 @@
 name: plantgl-doc
 channels:
-  - fredboudon
+  - openalea3/label/dev
+  - openalea3/label/rc
   - conda-forge
 dependencies:
   - openalea.plantgl
-  - graphviz
+  - oawidgets
   - pip
+  - pip:
+    - pydata-sphinx-theme
+    - myst-parser
+    - sphinx-favicon
+    - nbsphinx
+    - pandoc
+    - ipykernel
+    - sphinx-copybutton
+    - ipython_genutils
