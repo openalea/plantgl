@@ -60,6 +60,8 @@ using namespace std;
 PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
+ 
+const char * VegeStarFile::VgstarItemName[32] = { "obj", "EchX", "EchY", "EchZ", "TransX", "TransY", "TransZ", "RotX", "RotY", "RotZ", "R", "G", "B", "X1", "Y1", "Z1", "X2", "Y2", "Z2", "X3", "Y3", "Z3", "Mask", "Grp1", "Grp2", "Pmax", "Alpha",  "Teta",  "Resp", "VCmax", "Jmax", "Error"};
 
 ShapePtr 
 VegeStarLine::build(VGStarColorMap& colormap) const {
@@ -209,7 +211,8 @@ VegeStarFile::parse(std::istream& stream)
 {
     if(!parseHeader(stream))return false;
     else {
-        while(!stream.eof())parseLine(stream);
+        uint32_t linenb = 2;
+        while(!stream.eof())parseLine(stream, linenb++);
         return true;
     }
 }
@@ -217,7 +220,7 @@ VegeStarFile::parse(std::istream& stream)
 #define MAXLINELENGTH 500
 
 size_t find_next(const std::string s, size_t pos) {
-    std::string separators = "\t\n;,";
+    std::string separators = "\t\r\n;,";
     size_t next = std::string::npos;
     for (std::string::const_iterator it = separators.begin(); it != separators.end(); ++it){
         size_t npos = s.find(*it, pos);
@@ -229,6 +232,18 @@ size_t find_next(const std::string s, size_t pos) {
     return next;
 
 }
+
+std::string get_line(std::istream& stream)
+{
+    char cline[MAXLINELENGTH]; 
+    stream.getline(cline,MAXLINELENGTH);
+    std::string line(cline);
+    if (*(line.end()-1) == '\r'){
+        line.erase(line.end()-1);
+    }
+    return line;
+}
+
 std::vector<std::string> vgs_split(const std::string& s)
 {
     std::vector<std::string> output;
@@ -247,8 +262,8 @@ std::vector<std::string> vgs_split(const std::string& s)
 bool 
 VegeStarFile::parseHeader(std::istream& stream)
 {
-    char line[MAXLINELENGTH]; 
-    stream.getline(line,MAXLINELENGTH);
+    std::string line = get_line(stream);
+    if (line.size() == 0) return false;
     
     std::vector<std::string> tokens = vgs_split(line);
     for(int it = 0; it < tokens.size(); ++it){
@@ -293,20 +308,26 @@ VegeStarFile::parseHeader(std::istream& stream)
 }
 
 bool 
-VegeStarFile::parseLine(std::istream& stream)
+VegeStarFile::parseLine(std::istream& stream, uint32_t linenb)
 {
+    if(stream.eof())return false;
     VegeStarLine l;
-    real_t val = 0;
-    char line[MAXLINELENGTH]; 
-    stream.getline(line,MAXLINELENGTH);
+    std::string line = get_line(stream);
+    if (line.size() == 0) return false;
 
-    std::string t(line);
-    std::vector<std::string> tokens = vgs_split(t);
+    std::vector<std::string> tokens = vgs_split(line);
+    if(tokens.size() != attlist.size()){
+        pglError("Invalid token number in line %u: '%s'.\n", linenb, line.c_str() );
+        return false;
+    }
 
     for(size_t i = 0; i < attlist.size() && i < tokens.size(); i++){
+        real_t val = 0;
+        setlocale(LC_ALL,"C");
         val = atof(tokens[i].c_str());
         VgstarItem item = attlist[i];
-        if(stream.eof())return false;
+        // printf("'%s'=%f (%s)\n", VgstarItemName[item], val, tokens[i].c_str());
+
         switch(item){
         case obj :  {l.shapeid = (int)val;}break; 
         case EchX : {l.scaling.x() = val;}break; 

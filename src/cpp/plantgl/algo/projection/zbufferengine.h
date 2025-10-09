@@ -162,7 +162,8 @@ public :
                 const Color3& backGroundColor = Color3::BLACK,
                 uint32_t defaultId = Shape::NOID,
                 bool multithreaded = true, 
-                eFaceCulling culling = ZBufferEngine::eNoCulling);
+                eFaceCulling culling = ZBufferEngine::eNoCulling,
+                eIdPolicy idPolicy = eShapeIdBased);
         
   /// Destructor
   virtual ~ZBufferEngine();
@@ -246,7 +247,7 @@ public :
   std::tuple<PGL(Point3ArrayPtr),PGL(Color3ArrayPtr),PGL(Uint32Array1Ptr)> grabZBufferPoints(real_t jitter = 0, real_t raywidth = 0) const;
   ScenePtr grabSortedZBufferPoints(real_t jitter = 0, real_t raywidth = 0) const;
   
-  pgl_hash_map<uint32_t,uint32_t> idhistogram(bool solidangle = true) const;
+  pgl_hash_map<uint32_t,real_t> idhistogram(bool solidangle = true) const;
   
 protected :
     struct Fragment {

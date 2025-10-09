@@ -219,6 +219,8 @@ void export_Turtle()
     .def("polygonPoint",  &Turtle::polygonPoint , return_self<>())
     .def("startGC",      &Turtle::startGC , return_self<>())
     .def("stopGC",       &Turtle::stopGC , return_self<>())
+    .def("isPolygonEnabled", &Turtle::isPolygonEnabled )
+    .def("isGCEnabled", &Turtle::isGCEnabled )
 
     .def("sphere", (void (Turtle::*) ())       &Turtle::sphere , return_self<>())
     .def("sphere", (void (Turtle::*) (real_t))   &Turtle::sphere , return_self<>())

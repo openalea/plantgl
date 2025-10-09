@@ -54,6 +54,7 @@
     Modernized version: always uses std::unordered_map (C++11+).
 */
 
+
 #define pgl_hash_map std::unordered_map
 #define pgl_hash     std::hash
 

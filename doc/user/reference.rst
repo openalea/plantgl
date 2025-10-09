@@ -22,4 +22,3 @@ how to use OpenAlea.Plantgl see :ref:`PlantGL_user`.
     scenegraph.rst
     algo.rst
     gui.rst
-    ext.rst

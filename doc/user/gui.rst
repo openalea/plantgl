@@ -22,7 +22,8 @@ Class Inheritance diagram
 ..    :inherited-members:
     :synopsis: synopsis to be provided
 
-.. automodule:: openalea.plantgl.gui._pglgui
+..    
+    automodule:: openalea.plantgl.gui._pglgui
     :members:
     :undoc-members:
 

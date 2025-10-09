@@ -68,6 +68,7 @@ test/data/test_*
 
 # Sphinx documentation
 doc/_build/
+doc/html
 
 # PyBuilder
 target/

@@ -23,7 +23,7 @@ dependencies:
     - eigen
     - ann
     - pyopengl
-    - pyqglviewer
+    #- pyqglviewer
     - pytest
     - bison
     - flex

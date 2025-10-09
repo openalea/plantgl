@@ -491,7 +491,7 @@ def main():
     #scene = Scene([Shape(Polyline([(0,0,0),(1,0,1)], width=3),Material((200,50,100),2))])
     #scene = Scene('data/cow.obj')
     #scene = Scene('../share/plantgl/database/advancedgraphics/tulipa.geom')
-    #scene = Scene('../share/plantgl/database/advancedgraphics/mango.bgeom')
+    scene = Scene('../share/plantgl/database/advancedgraphics/mango.bgeom')
     #scene = Scene('../share/plantgl/database/examples/snowmanshape.geom')
     #scene = Scene('/Users/fboudon/Dropbox/mtpellier_training/project/benchmark_data/GDR_12_r1.txt')
     #scene[0].geometry.geometry.width=10

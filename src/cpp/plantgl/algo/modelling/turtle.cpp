@@ -708,6 +708,8 @@ void Turtle::oLineTo(const Vector3& v, real_t topradius )
       __params->pushPosition();
   }
 
+  bool Turtle::isPolygonEnabled() const { return __params->isPolygonOn(); }
+  
   void Turtle::startGC(){
       if (!__params->crossSection) setDefaultCrossSection();
       __params->generalizedCylinder(true);
@@ -735,6 +737,8 @@ void Turtle::stopGC(){
     __params->customParentId = Shape::NOID;
   }
 
+bool Turtle::isGCEnabled() const { return __params->isGeneralizedCylinderOn(); }
+  
 void Turtle::setCrossSection(const Curve2DPtr& curve, bool ccw)
 {
     __params->setCrossSection(curve, ccw, false);

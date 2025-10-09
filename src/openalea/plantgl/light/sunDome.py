@@ -13,14 +13,14 @@ weights = [0.026808309,0.026808309,0.026808309,0.026808309,0.026808309,0.0268083
 def plotSkyTurtle():
   pgl.Viewer.start()
   sc = pgl.Scene()
-  for i in range(len(elevations)):
-    pos = pgl.Vector3(pgl.Vector3.Spherical(30,radians(azimuths[i]),radians(90-elevations[i])))
+  for i, (az,el) in enumerate(zip(azimuths,elevations)):
+    pos = pgl.Vector3(pgl.Vector3.Spherical(30,radians(az),radians(90-el)))
     sc += pgl.Shape(pgl.Translated(pos,pgl.Sphere(0.5)),pgl.Material(),i+1)
   pgl.Viewer.display(sc)
   return sc
 
 def getSkyTurtleAt(i):
-  return (azimuths[i-1],elevations[i-1],weights[i-1])
+  return (elevations[i-1],azimuths[i-1],weights[i-1])
 
 def getSkyTurtleDir(i):
   return -pgl.Vector3(pgl.Vector3.Spherical(1,radians(azimuths[i-1]),radians(90-elevations[i-1])))
@@ -57,7 +57,7 @@ def getDirectLight( latitude, longitude, jourJul, startH, stopH, step=30, decalS
     tot+= s
   if round(tot,1) != 1.0:
     print("sum weight : ", tot) 
-  return [ ( around(degrees(az[i]),2), around(degrees(el[i]), 2), w[i] ) for i in range(len(az)) ]
+  return [ (  around(degrees(el[i]), 2), around(degrees(az[i]),2), w[i] ) for i in range(len(az)) ]
 
 
 def plotDirect( latitude, longitude, jourJul, startH, stopH, step=30, decalSun = 1, decalGMT = 0):

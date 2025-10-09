@@ -53,8 +53,8 @@
 
 PGL_USING_NAMESPACE
 
-DepthSortEngine::DepthSortEngine() :
-    ProjectionEngine()
+DepthSortEngine::DepthSortEngine(eIdPolicy idPolicy) :
+    ProjectionEngine(idPolicy)
 {
 }
 
@@ -86,7 +86,7 @@ void DepthSortEngine::iprocess(TriangleSetPtr triangles, AppearancePtr appearanc
         const Vector3& v1 = triangles->getFacePointAt(itidx,1);
         const Vector3& v2 = triangles->getFacePointAt(itidx,2);
 
-        processTriangle(v0, v1, v2, id);
+        processTriangle(v0, v1, v2, getNewPrimitiveId(id));
 
     }  
 
@@ -310,45 +310,59 @@ void print_polygon (const CGAL::Polygon_2<Kernel, Container>& P)
   std::cout << " ]" << std::endl;
 }
 
+/**
+ * Compute the intersection of two polygons.
+ *
+ * Given two polygons, compute the intersection of the two polygons and
+ * store the result in intersection1 and intersection2. Also compute the
+ * difference of the first polygon with the second and store the result in
+ * rest1 and the difference of the second polygon with the first and store the
+ * result in rest2.
+ *
+ * @param polygon1 The first polygon.
+ * @param polygon2 The second polygon.
+ * @param intersection1 The intersection of the two polygons projected on the
+ * first polygon.
+ * @param intersection2 The intersection of the two polygons projected on the
+ * second polygon.
+ * @param rest1 The difference of the first polygon with the second projected
+ * on the first polygon.
+ * @param rest2 The difference of the second polygon with the first projected on
+ * the second polygon.
+ * @return true if the intersection is not empty, false otherwise.
+ */
 bool intersect(Point3ArrayPtr polygon1, Point3ArrayPtr polygon2, 
                std::vector<Point3ArrayPtr>& intersection1, std::vector<Point3ArrayPtr>& intersection2, 
                std::vector<Point3ArrayPtr>& rest1,  std::vector<Point3ArrayPtr>& rest2)
 {
     Polygon_2 p1 = toPolygon(polygon1);
+    if (p1.area() < GEOM_EPSILON) return false;
     Polygon_2 p2 = toPolygon(polygon2);
+    if (p2.area() < GEOM_EPSILON) return false;
     assert( p1.is_counterclockwise_oriented ());
     assert( p2.is_counterclockwise_oriented ());
-    print_polygon(p1);
-    print_polygon(p2);
-    printf("intersect: %s\n",CGAL::do_intersect(p1, p2)?"True":"False");
+    // print_polygon(p1);
+    // print_polygon(p2);
+
     Pwh_list_2 result;
     CGAL::intersection(p1, p2, std::back_inserter(result));
 
-    // Triangle_2 p1 = toTriangle(polygon1);
-    // Triangle_2 p2 = toTriangle(polygon2);
-
-    // CGAL::cpp11::result_of<Kernel::Intersect_2(Triangle_2, Triangle_2)>::type
-    // result = intersection(p1, p2);
-
-    printf("intersect:%lu\n",result.size());
     if (result.size() == 0) return false;
 
     std::list<Polygon_2> polys = triangulate(result);
-    printf("nb pol:%lu\n",polys.size());
+    if (polys.size() == 0) return false;
 
     intersection1 = project(polys, polygon1);
     intersection2 = project(polys, polygon2);
 
     Pwh_list_2 result2;
     CGAL::difference(p1, p2, std::back_inserter(result2));
-    printf("diff1:%lu\n",result2.size());
 
     std::list<Polygon_2> polys2 = triangulate(result2);
     rest1 = project(polys2, polygon1);
 
     Pwh_list_2 result3;
     CGAL::difference(p2, p1, std::back_inserter(result3));
-    printf("diff2:%lu\n",result3.size());
 
     std::list<Polygon_2> polys3 = triangulate(result3);
     rest2 = project(polys3, polygon2);
@@ -357,7 +371,7 @@ bool intersect(Point3ArrayPtr polygon1, Point3ArrayPtr polygon2,
 
 }
 
-DepthSortEngine::PolygonInfo DepthSortEngine::_toPolygonInfo(const Point3ArrayPtr& points, uint32_t id) const
+DepthSortEngine::PolygonInfo _toPolygonInfo(const Point3ArrayPtr& points, uint32_t id) 
 {
     // printf("polygon info : %u %u\n", id , points->size());
     DepthSortEngine::PolygonInfo pinfo;
@@ -369,15 +383,21 @@ DepthSortEngine::PolygonInfo DepthSortEngine::_toPolygonInfo(const Point3ArrayPt
     return pinfo;
 }
 
-
-DepthSortEngine::PolygonInfoList DepthSortEngine::_toPolygonInfo(const std::vector<Point3ArrayPtr>& polygons, uint32_t id) const
+DepthSortEngine::PolygonInfoList _toPolygonInfo(const std::vector<Point3ArrayPtr>& polygons, uint32_t id) 
 {
-    PolygonInfoList result;   
+    DepthSortEngine::PolygonInfoList result;   
     for (std::vector<Point3ArrayPtr>::const_iterator it = polygons.begin(); it != polygons.end() ; ++it) {
         result.push_back( _toPolygonInfo(*it, id));
     }
     return result;
 }
+
+bool DepthSortEngine::PolygonInfo::bbx_intersect(const PolygonInfo& other) const{
+    if ((pmin.x() > other.pmax.x())||(pmax.x() < other.pmin.x())) { return false; }
+    if ((pmin.y() > other.pmax.y())||(pmax.y() < other.pmin.y())) { return false; }
+    return true;
+}
+
 
 std::pair<real_t, real_t> polygonzbounds(const DepthSortEngine::PolygonInfoList& polygons) {
     DepthSortEngine::PolygonInfoList::const_iterator it = polygons.begin();
@@ -390,15 +410,13 @@ std::pair<real_t, real_t> polygonzbounds(const DepthSortEngine::PolygonInfoList&
     return std::pair<real_t,real_t>(zmin, zmax);
 }
 
-void DepthSortEngine::removePolygon(PolygonInfoSet::iterator it)
+DepthSortEngine::PolygonInfoList::iterator DepthSortEngine::removePolygon(DepthSortEngine::PolygonInfoList::iterator it)
 {
-    __polygonlist.erase(it);
+    return __polygonlist.erase(it);
 }
 
 DepthSortEngine::PolygonInfoSet::iterator DepthSortEngine::appendPolygon(const PolygonInfo& polygon)
 {
-
-
     return __polygonlist.insert(__polygonlist.end(), polygon);
 }
 
@@ -410,17 +428,25 @@ DepthSortEngine::PolygonInfoIteratorList DepthSortEngine::appendPolygons(DepthSo
     return result;
 }
 
-
+/*
 DepthSortEngine::PolygonInfoIteratorList DepthSortEngine::getIntersectingPolygons(const PolygonInfo& polygon)
 {
     DepthSortEngine::PolygonInfoIteratorList result;
     for (DepthSortEngine::PolygonInfoSet::iterator it = __polygonlist.begin(); it != __polygonlist.end(); ++it) {
-        if ((polygon.pmin.x() > it->pmax.x())||(polygon.pmax.x() < it->pmin.x())) { continue; }
-        if ((polygon.pmin.y() > it->pmax.y())||(polygon.pmax.y() < it->pmin.y())) { continue; }
+        if (!polygon.bbx_intersect(*it)) { continue; }
         result.push_back(it);
     }
     return result;
 }
+
+DepthSortEngine::PolygonInfoSet::iterator DepthSortEngine::getNextIntersectingPolygon(const PolygonInfo& polygon, DepthSortEngine::PolygonInfoSet::iterator begin)
+{
+    for (DepthSortEngine::PolygonInfoSet::iterator it = begin; it != __polygonlist.end(); ++it) {
+        if (polygon.bbx_intersect(*it)) { return it; }
+    }
+    return __polygonlist.end();
+}
+*/
 
 void swap(Vector3& v1, Vector3& v2){
     Vector3 vTemp = v1;
@@ -430,9 +456,7 @@ void swap(Vector3& v1, Vector3& v2){
 
 void DepthSortEngine::processTriangle(const Vector3& v0, const Vector3& v1, const Vector3& v2, uint32_t id)
 {
-    setlocale(LC_ALL, "en_GB");
-
-    printf("[(%f,%f,%f),(%f,%f,%f),(%f,%f,%f)]\n",v0.x(),v0.y(),v0.z(),v1.x(),v1.y(),v1.z(),v2.x(),v2.y(),v2.z());
+    // setlocale(LC_ALL, "en_GB");
 
     Vector3 v0Cam = __camera->worldToCamera(v0);
     Vector3 v1Cam = __camera->worldToCamera(v1);
@@ -466,19 +490,13 @@ void DepthSortEngine::processTriangle(const Vector3& v0, const Vector3& v1, cons
     }
 
 
-    real_t direction = cross(Vector2(v1Cam.x()-v0Cam.x(),v1Cam.y()-v0Cam.y()), Vector2(v2Cam.x()-v0Cam.x(),v2Cam.y()-v0Cam.y()));
-    real_t direction2 = cross(Vector3(v1Cam.x()-v0Cam.x(),v1Cam.y()-v0Cam.y(),0), Vector3(v2Cam.x()-v0Cam.x(),v2Cam.y()-v0Cam.y(),0)).z();
-
-    printf("[(%f,%f),(%f,%f),(%f,%f)]:%s\n",v0Cam.x(),v0Cam.y(),v1Cam.x(),v1Cam.y(),v2Cam.x(),v2Cam.y(),(direction>0?"ccw":"cw"));
-    printf("%f - %f\n", direction, direction2);
-
+    real_t direction  = cross(Vector2(v1Cam.x()-v0Cam.x(),v1Cam.y()-v0Cam.y()), Vector2(v2Cam.x()-v0Cam.x(),v2Cam.y()-v0Cam.y()));
 
     Point3ArrayPtr points(new Point3Array());
     if (fabs(direction) < GEOM_EPSILON) {
         return;
     }
     else if (direction < 0) {
-        printf("reverse cw\n");
         points->push_back(v0Cam); points->push_back(v2Cam); points->push_back(v1Cam); 
     }
     else { // CCW
@@ -486,99 +504,153 @@ void DepthSortEngine::processTriangle(const Vector3& v0, const Vector3& v1, cons
     }
 
     PolygonInfo p = _toPolygonInfo(points, id);
-    PolygonInfoIteratorList intersections = getIntersectingPolygons(p);
-    _processTriangle(p, intersections, intersections.begin());
+    _processTriangle(p);
 }
 
-typename DepthSortEngine::PolygonInfoIteratorList::iterator 
+DepthSortEngine::PolygonInfoList clip_polygons(const DepthSortEngine::PolygonInfoList& polygons, const Plane3& plane){
+    DepthSortEngine::PolygonInfoList result;
+    for (DepthSortEngine::PolygonInfoList::const_iterator it = polygons.begin(); it != polygons.end() ; ++it) {
+        Point3ArrayPtr points = plane_triangle_clip(plane, it->points->getAt(0), it->points->getAt(1), it->points->getAt(2));
+        if (is_null_ptr(points) || points->size() < 3) {
+            return result;
+        }
+        if (points->size() == 3) {
+            result.push_back(_toPolygonInfo(points, it->id));
+        }
+        else {
+            Vector3& first = points->getAt(0);
+            for(Point3Array::const_iterator itP = points->begin()+1; itP != points->end()-1; ++itP){
+                Point3ArrayPtr lpoints(new Point3Array());
+                lpoints->push_back(first);
+                lpoints->push_back(*itP);
+                lpoints->push_back(*(itP+1));
+                result.push_back(_toPolygonInfo(lpoints, it->id));
+            }
+        } 
+    }
+    return result;
+}
+
+
+enum DEPTHCMP {IN_FRONT = -1, SAMEDEPTH = 0, BEHIND = 1, MIXED = 2, NOTVALID = 100};
+
+/**
+ * Compares the depth of two real number values.
+ *
+ * @param a The first depth value.
+ * @param b The second depth value.
+ * @return IN_FRONT if the first value is significantly greater than the second,
+ *         BEHIND if the first value is significantly less than the second,
+ *         SAMEDEPTH if the values are approximately equal within a small epsilon.
+ */
+enum DEPTHCMP compare_depth(real_t a, real_t b){
+    if (a - b > GEOM_EPSILON) return BEHIND;
+    else if (a - b < -GEOM_EPSILON) return IN_FRONT;
+    else return SAMEDEPTH;
+}
+
+/**
+ * Compares the depth of two lists of polygons.
+ *
+ * @param a The first list of polygons.
+ * @param b The second list of polygons.
+ * @return -1 if the first list is "in front of" the second list (i.e. the first list is closer to the camera), 
+ *          0 if the two lists are of the same depth,
+ *          1 if the second list is in front of the first, 
+ *          2 if they have mixed depth.
+ */
+enum DEPTHCMP compare_depths(std::vector<Point3ArrayPtr> a, std::vector<Point3ArrayPtr> b){
+    if (a.size() != b.size()) return NOTVALID;
+    enum DEPTHCMP result = compare_depth(a[0]->getAt(0).z(),b[0]->getAt(0).z());  
+    for (uint32_t i = 0; i < a.size(); ++i) {
+        Point3ArrayPtr p1 = a[i];
+        Point3ArrayPtr p2 = b[i];
+        Point3Array::const_iterator it = p1->begin();
+        Point3Array::const_iterator it2 = p2->begin();
+        for (; it != p1->end() && it2 != p2->end(); ++it, ++it2) {
+            enum DEPTHCMP lresult = compare_depth(it->z(),it2->z());
+            if (result == SAMEDEPTH) result = lresult;
+            else if (lresult == -result) return MIXED;
+        }
+        if (it != p1->end() || it2 != p2->end()) return NOTVALID;
+    }
+    return result;
+}
+
+void
 DepthSortEngine::_processTriangle( PolygonInfo polygon, 
-                                   DepthSortEngine::PolygonInfoIteratorList& polygonstotest, 
-                                   DepthSortEngine::PolygonInfoIteratorList::iterator begin)
+                                   uint32_t begin, 
+                                   bool insertTriangle)
 {
+
     bool processed = false;
-    printf("Process triangle %u\n", polygon.id);
-    for (DepthSortEngine::PolygonInfoIteratorList::iterator it = begin; it != polygonstotest.end(); ) {
-        PolygonInfo& current = *(*it);
+
+    PolygonInfoList toAppend;
+    PolygonInfoList::iterator it = __polygonlist.begin();
+    for (uint32_t i = 0 ; i < begin && it != __polygonlist.end(); ++i) ++it;
+    while ( it != __polygonlist.end() ) {
+
+        PolygonInfo& current = *it;
         uint32_t itid = current.id;
-        if ((polygon.pmin.x() > current.pmax.x())||(polygon.pmax.x() < current.pmin.x())) { ++it; continue; }
-        if ((polygon.pmin.y() > current.pmax.y())||(polygon.pmax.y() < current.pmin.y())) { ++it; continue; }
+        if (!polygon.bbx_intersect(current)) { ++it; continue; }
         else {
             std::vector<Point3ArrayPtr> intersection1;
             std::vector<Point3ArrayPtr> intersection2; 
-            std::vector<Point3ArrayPtr> rest1;
-            std::vector<Point3ArrayPtr> rest2;
-            printf("Test intersection\n");
-            if (!intersect(polygon.points, current.points, intersection1, intersection2, rest1, rest2)) { 
-                printf("No intersection\n");
+            std::vector<Point3ArrayPtr> restPolygon;
+            std::vector<Point3ArrayPtr> restCurrent;
+            if (!intersect(polygon.points, current.points, intersection1, intersection2, restPolygon, restCurrent)) { 
                 ++it; continue; 
             }
-            bool isbegin = (it == begin);
-            printf("intersect\n");
-            printf("%lu %lu %lu %lu\n", intersection1.size(), intersection2.size(), rest1.size(), rest2.size());
 
-            PolygonInfoList mrest2 = _toPolygonInfo(rest2, itid);
-            PolygonInfoList mrest1 = _toPolygonInfo(rest1, polygon.id);
+            PolygonInfoList mrestCurrent = _toPolygonInfo(restCurrent, itid);
+            PolygonInfoList mrestPolygon = _toPolygonInfo(restPolygon, polygon.id);
             
-            // We should process depth comparison
             PolygonInfoList mintersection1 = _toPolygonInfo(intersection1, polygon.id);
-            printf("mintersection1 : %lu\n", mintersection1.size());
-            std::pair<real_t, real_t> zbounds1 = polygonzbounds(mintersection1);
-            real_t zmin1 = zbounds1.first; real_t zmax1 = zbounds1.second;
-
             PolygonInfoList mintersection2 = _toPolygonInfo(intersection2, itid);
-            printf("mintersection2 : %lu\n", mintersection2.size());
-            std::pair<real_t, real_t> zbounds2 = polygonzbounds(mintersection2);
-            real_t zmin2 = zbounds2.first; real_t zmax2 = zbounds2.second;
 
-            printf("i1: %f %f\n", zmin1, zmax1);
-            printf("i2: %f %f\n", zmin2, zmax2);
-            if (zmax1 <= zmin2) {
+            // We should process depth comparison
+            enum DEPTHCMP depthcmp = compare_depths(intersection1, intersection2);
+
+            if (depthcmp <= 0) {
                 // new polygon hide the previous one.
                 // we remove the previous one and replace it by its non overlaping part.
-                printf("new polygon hide the previous one\n");
-                removePolygon(*it);
-                printf("remove polygon \n");
-                it = polygonstotest.erase(it);
+                it = removePolygon(it);                
 
-                if (mrest2.size() > 0) {
-                    printf("rest2 : %lu\n", mrest2.size());
-                    DepthSortEngine::PolygonInfoIteratorList newPol = appendPolygons(mrest2.begin(), mrest2.end());
-                    polygonstotest.insert(it, newPol.begin(), newPol.end());
-                    if (isbegin) { 
-                        begin = it;
-                        std::size_t const distance = std::distance(newPol.begin(), newPol.end());
-                        for (std::size_t i = 0; i < distance; ++i) {
-                            --begin;
-                        }
-                    }
-                }
-                else {
-                    if (isbegin) { begin = it; }
+                if (insertTriangle && mrestCurrent.size() > 0) {
+                    toAppend.insert(toAppend.end(),mrestCurrent.begin(), mrestCurrent.end());
                 }
 
                 continue; 
                 // we continue to compare the triangle with other triangles
 
             }
-            else if (zmax2 <= zmin1) {
+            else if (depthcmp == BEHIND) {
                  // new polygon is hidden by the previous one.
                  // we keep the previous one.
                  // and test for the non overlapping area of the new one.
-                printf("new polygon is hidden the previous one\n");
-                ++it;
-                if (!mrest1.empty()){
-                    if(mrest1.size() == 1) {
-                        polygon = mrest1.front();
-                        continue;
-                    }
-                    for (PolygonInfoList::const_iterator itR1 = mrest1.begin(); itR1 != mrest1.end() ; ++itR1) {
-                        it = _processTriangle(*itR1, polygonstotest, it);
-                    }
+                if (mrestPolygon.empty()){
+                        processed = true;
+                        break;
                 }
-                processed = true;
-                break;
+                else if(mrestPolygon.size() == 1) {
+                        polygon = mrestPolygon.front();
+                        ++it;
+                        continue;
+                }
+                else {
+                        uint32_t dist = std::distance( __polygonlist.begin(),it)+1;
+                        for (PolygonInfoList::const_iterator itR1 = mrestPolygon.begin(); 
+                                                             itR1 != mrestPolygon.end() ; 
+                                                             ++itR1) {
+                            _processTriangle(*itR1, dist, insertTriangle);
+                        }
+                        processed = true;
+                        break;
+                }
             }
-            else {
+            else  if (depthcmp == MIXED){
+
+                it = removePolygon(it);
 
                 // We should cut individual triangles
                 Vector3 p0 = mintersection1.begin()->points->getAt(0);
@@ -586,93 +658,54 @@ DepthSortEngine::_processTriangle( PolygonInfo polygon,
                 Vector3 p2 = mintersection1.begin()->points->getAt(2);                
                 Plane3 plane (-cross(p1-p0,p2-p0), p0);
 
-                for (PolygonInfoList::const_iterator itI2 = mintersection2.begin(); itI2 != mintersection2.end() ; ++itI2) {
-                    Point3ArrayPtr points = plane_triangle_clip(plane, itI2->points->getAt(0), itI2->points->getAt(1), itI2->points->getAt(2));
-                    printf("Clip triangle intersection2\n");
-                    if (is_null_ptr(points) || points->size() < 3) continue;
-                    printf("intersection2 %u\n", points->size());
-                    if (points->size() == 3) {
-                        appendPolygon(_toPolygonInfo(points, itI2->id));
-                    }
-                    else {
-                        Vector3& first = points->getAt(0);
-                        for(Point3Array::const_iterator itP = points->begin()+1; itP != points->end()-1; ++itP){
-                            Point3ArrayPtr lpoints(new Point3Array());
-                            lpoints->push_back(first);
-                            lpoints->push_back(*itP);
-                            lpoints->push_back(*(itP+1));
-                            appendPolygon(_toPolygonInfo(lpoints, itI2->id));
-                        }
-                    } 
-                }
+                PolygonInfoList clipped = clip_polygons(mintersection2, plane);
+                toAppend.insert(toAppend.end(),clipped.begin(), clipped.end());
 
                 Vector3 p0b = mintersection2.begin()->points->getAt(0);
                 Vector3 p1b = mintersection2.begin()->points->getAt(1);
                 Vector3 p2b = mintersection2.begin()->points->getAt(2);
                 Plane3 planeb (-cross(p1b-p0b,p2b-p0b), p0b);
-                for (PolygonInfoList::const_iterator itI1 = mintersection1.begin(); itI1 != mintersection1.end() ; ++itI1) {
-                    Point3ArrayPtr points = plane_triangle_clip(planeb, itI1->points->getAt(0), itI1->points->getAt(1), itI1->points->getAt(2));
-                    printf("Clip triangle intersection1\n");
-                    if (is_null_ptr(points) || points->size() < 3) continue;
-                    printf("intersection1 %u\n", points->size());
-                    if (points->size() == 3) {
-                        printf("result in triangle\n");
-                        appendPolygon(_toPolygonInfo(points, itI1->id));
-                    }
-                    else {
-                        printf("result in polygon\n");
-                        Vector3& first = points->getAt(0);
-                        for(Point3Array::const_iterator itP = points->begin()+1; itP != points->end()-1; ++itP){
-                            Point3ArrayPtr lpoints(new Point3Array());
-                            lpoints->push_back(first);
-                            lpoints->push_back(*itP);
-                            lpoints->push_back(*(itP+1));
-                            appendPolygon(_toPolygonInfo(lpoints, itI1->id));
-                        }
-                    } 
+
+                if (insertTriangle) {
+                    clipped = clip_polygons(mintersection1, planeb);
+                    toAppend.insert(toAppend.end(),clipped.begin(), clipped.end());
                 }
 
-                removePolygon(*it);
-                it = polygonstotest.erase(it);
-
-                if (mrest2.size() > 0) {
-                    printf("rest2 : %lu\n", mrest2.size());
-                    DepthSortEngine::PolygonInfoIteratorList newPol = appendPolygons(mrest2.begin(), mrest2.end());
-                    polygonstotest.insert(it, newPol.begin(), newPol.end());
-                    if (isbegin) {
-                        begin = it;
-                        std::size_t const distance = std::distance(newPol.begin(), newPol.end());
-                        for (std::size_t i = 0; i < distance; ++i) {
-                            --begin;
-                        }
-                        isbegin = false;
-                    }
+                if (mrestCurrent.size() > 0) {
+                    toAppend.insert(toAppend.end(),mrestCurrent.begin(), mrestCurrent.end());
                 }
 
-                printf("rest1 : %lu\n", mrest1.size());
-                if (!mrest1.empty()) {
-                    if(mrest1.size() == 1) {
-                        polygon = mrest1.front();
+                if (insertTriangle && !mrestPolygon.empty()){
+                    if(mrestPolygon.size() == 1) {
+                        polygon = mrestPolygon.front();
+                        ++it;
                         continue;
                     }
-                    // We should process depth comparison
-                    for (PolygonInfoList::const_iterator itR1 = mrest1.begin(); itR1 != mrest1.end() ; ++itR1) {
-                        it = _processTriangle(*itR1, polygonstotest, it);
+                    else {
+                        uint32_t dist = std::distance( __polygonlist.begin(),it)+1;
+                        for (PolygonInfoList::const_iterator itR1 = mrestPolygon.begin(); 
+                                                             itR1 != mrestPolygon.end() ; 
+                                                             ++itR1) {
+                            _processTriangle(*itR1, dist, insertTriangle);
+                        }
+                        processed = true;
+                        break;
                     }
                 }
 
-                if (isbegin) { begin = it; }
 
                 processed = true;
                 break;
             }
+            else {
+                printf("error in comparison of polygon depth\n");
+            }
         } 
     }
     if (!processed) {
-        printf("add to list\n");
         appendPolygon(polygon);
     }
-    return begin;
+    appendPolygons(toAppend.begin(), toAppend.end());
 }
 
 ScenePtr DepthSortEngine::getResult(Color4::eColor4Format format, bool cameraCoordinates) const
@@ -692,6 +725,41 @@ ScenePtr DepthSortEngine::getResult(Color4::eColor4Format format, bool cameraCoo
         }
         scene->add(ShapePtr(new Shape(GeometryPtr(new TriangleSet(lpoints,Index3ArrayPtr(new Index3Array(1,Index3(0,1,2))))), AppearancePtr(mat), it->id)));
     }
+    return scene;
+}
+
+ScenePtr DepthSortEngine::getSurfaceResult( bool cameraCoordinates) const
+{
+    printf("DepthSortEngine::getSurfaceResult\n");
+    ScenePtr scene(new Scene());
+    real_t minsurf = REAL_MAX;
+    real_t maxsurf = -REAL_MAX;
+    for(PolygonInfoList::const_iterator it = __polygonlist.begin(); it != __polygonlist.end(); ++it){
+        real_t csurface = fabs(edgeFunction(it->points->getAt(0),
+                                            it->points->getAt(1),
+                                            it->points->getAt(2)))/2;
+        if (csurface < minsurf) {
+            minsurf = csurface;
+        }
+        if (csurface > maxsurf) {
+            maxsurf = csurface;
+        }
+    }
+
+    for(PolygonInfoList::const_iterator it = __polygonlist.begin(); it != __polygonlist.end(); ++it){
+        Color3 col = Color3::interpolate(Color3::BLUE, Color3::RED, (fabs(edgeFunction(it->points->getAt(0), it->points->getAt(1), it->points->getAt(2)))/2-minsurf)/(maxsurf-minsurf));
+        Material * mat = new Material(Color3(col));
+        Point3ArrayPtr lpoints = it->points;
+        if (!cameraCoordinates) {
+            lpoints = Point3ArrayPtr(new Point3Array(*lpoints));
+            for(Point3Array::iterator itP = lpoints->begin(); itP != lpoints->end(); ++itP){
+                itP->z() *= -1;
+                *itP = __camera->cameraToWorld(*itP);
+            }
+        }
+        scene->add(ShapePtr(new Shape(GeometryPtr(new TriangleSet(lpoints,Index3ArrayPtr(new Index3Array(1,Index3(0,1,2))))), AppearancePtr(mat), it->id)));
+    }
+    printf("minsurf %f maxsurf %f\n", minsurf, maxsurf);
     return scene;
 }
 
@@ -719,4 +787,54 @@ ScenePtr DepthSortEngine::getProjectionResult(Color4::eColor4Format format, bool
     return scene;
 }
 
+
+ScenePtr DepthSortEngine::getSurfaceProjectionResult( bool cameraCoordinates) const
+{
+    ScenePtr scene(new Scene());
+    real_t minsurf =REAL_MAX;
+    real_t maxsurf = -REAL_MAX;
+    for(PolygonInfoList::const_iterator it = __polygonlist.begin(); it != __polygonlist.end(); ++it){
+        real_t csurface = fabs(edgeFunction(Vector2(it->points->getAt(0).x(),it->points->getAt(0).y()),
+                                            Vector2(it->points->getAt(1).x(),it->points->getAt(1).y()),
+                                            Vector2(it->points->getAt(2).x(),it->points->getAt(2).y())))/2;
+        if (csurface < minsurf) {
+            minsurf = csurface;
+        }
+        if (csurface > maxsurf) {
+            maxsurf = csurface;
+        }
+    }
+    for(PolygonInfoList::const_iterator it = __polygonlist.begin(); it != __polygonlist.end(); ++it){
+        Color3 col = Color3::interpolate(Color3::BLUE, Color3::RED, (fabs(edgeFunction(it->points->getAt(0), it->points->getAt(1), it->points->getAt(2)))/2-minsurf)/(maxsurf-minsurf));
+        Material * mat = new Material(Color3(col));
+        Point3ArrayPtr lpoints =  Point3ArrayPtr(new Point3Array(*it->points));
+        if (!cameraCoordinates) {
+            for(Point3Array::iterator itP = lpoints->begin(); itP != lpoints->end(); ++itP){
+                itP->z() = 0;
+                *itP = __camera->cameraToWorld(*itP);
+            }
+        }
+        else {
+            for(Point3Array::iterator itP = lpoints->begin(); itP != lpoints->end(); ++itP){
+                itP->z() = 0;
+            }
+        }
+        scene->add(ShapePtr(new Shape(GeometryPtr(new TriangleSet(lpoints,Index3ArrayPtr(new Index3Array(1,Index3(0,1,2))))), AppearancePtr(mat), it->id)));
+    }
+    return scene;
+}
+
+pgl_hash_map<uint32_t,real_t> DepthSortEngine::idsurfaces() const {
+    pgl_hash_map<uint32_t,real_t> result;
+    for(PolygonInfoList::const_iterator it = __polygonlist.begin(); it != __polygonlist.end(); ++it){
+        real_t csurface = fabs(edgeFunction(it->points->getAt(0), it->points->getAt(1), it->points->getAt(2)))/2;
+        if (result.find(it->id) == result.end()) {
+            result[it->id] = csurface;
+        }
+        else {
+            result[it->id] += csurface;
+        }
+    }
+    return result;
+}
 #endif

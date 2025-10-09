@@ -57,7 +57,7 @@
 #include <plantgl/scenegraph/scene/scene.h>
 #include <plantgl/scenegraph/appearance/material.h>
 #include <plantgl/scenegraph/appearance/texture.h>
-
+#include <plantgl/tool/util_hashmap.h>
 /* ----------------------------------------------------------------------- */
 
 PGL_BEGIN_NAMESPACE
@@ -71,11 +71,18 @@ PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
+
 class ALGO_API ProjectionEngine  {
 
 public :
+    enum eIdPolicy {
+        ePrimitiveIdBased,
+        eShapeIdBased
+    } ;
 
-      ProjectionEngine();
+    typedef pgl_hash_map<uint32_t,uint32_t> IdMap;
+
+      ProjectionEngine(eIdPolicy idPolicy = eShapeIdBased) ;
 
       virtual ~ProjectionEngine();
 
@@ -128,9 +135,27 @@ public :
       virtual void beginProcess() {}
       virtual void endProcess() {}
 
+      IdMap getPrimitiveIdMap() const { return __idMap; } 
+      
+      pgl_hash_map<uint32_t,std::pair<real_t,std::vector<real_t> > > aggregate(pgl_hash_map<uint32_t,real_t>) const;
+
 protected:
+
+    uint32_t getNewPrimitiveId(uint32_t shapeId) 
+    { 
+        if (__idPolicy == ePrimitiveIdBased) {
+            uint32_t id = __primitiveId++; 
+            __idMap[id] = shapeId; 
+            return id;
+        }
+        else { return shapeId; }    
+    }
+
     ProjectionCameraPtr __camera;
 
+    bool __idPolicy;
+    uint32_t __primitiveId;
+    IdMap __idMap;
 
 };
 
@@ -139,7 +164,8 @@ class ALGO_API ImageProjectionEngine  : public ProjectionEngine {
 public :
 
       ImageProjectionEngine(uint16_t imageWidth, 
-                       uint16_t imageHeight);
+                       uint16_t imageHeight,
+                       eIdPolicy idPolicy = eShapeIdBased);
 
       virtual ~ImageProjectionEngine();
 
@@ -148,7 +174,7 @@ public :
 
 
 protected:
-   uint16_t __imageWidth;
+    uint16_t __imageWidth;
     uint16_t __imageHeight;
 
 };

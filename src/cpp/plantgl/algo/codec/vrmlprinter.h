@@ -70,6 +70,7 @@ typedef RCPtr<Appearance> AppearancePtr;
 /// struct for testing equality of 2 pairs
 /// Modernized version: always uses std::hash (C++11+). Compatibility with older compilers removed by commit 28619c0d0227ebb29175f7aa56cb5b530244f6c5
 
+
 template <class type>
 struct eqpair {
   bool operator()(const std::pair<type,type>& a,
