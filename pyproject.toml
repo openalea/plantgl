@@ -95,7 +95,7 @@ experimental = true
 
 [tool.scikit-build.wheel]
 packages = ["src/openalea/"]
-exclude = ["wralea"]
+# exclude = ["wralea"]
 
 [tool.scikit-build.cmake]
 build-type = "Release"
