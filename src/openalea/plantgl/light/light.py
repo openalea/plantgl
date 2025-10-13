@@ -282,7 +282,7 @@ def scene_irradiance(scene, directions, north = 0, horizontal = False, scene_uni
     else:
        trirradiance = None
     
-    irradiance = { sid : value[0] / surfaces[sid] for sid, value in res.items() }
+    irradiance = { sid : value / surfaces[sid] for sid, value in res.items() }
 
     import pandas
     return pandas.DataFrame( {'area' : surfaces, 'irradiance' : irradiance} ), trirradiance
