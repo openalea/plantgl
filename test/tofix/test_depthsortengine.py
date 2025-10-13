@@ -57,6 +57,7 @@ def process_tris_full(pts, pts2, visual = False, translation = 2, model = None):
         Viewer.add(Shape(tr2, Material((0,0,200))))
 
     for mid, alpha in enumerate(range(0,360, 30)):
+      print('******** Test',mid,alpha)
       if model is None or model == mid:
         dir = Vector3(Vector3.Spherical(1,radians(alpha),pi/2))
         cam = 5*dir
@@ -64,7 +65,7 @@ def process_tris_full(pts, pts2, visual = False, translation = 2, model = None):
         e.setPerspectiveCamera(60,1,1,1000)
         e.lookAt(cam,(0,0,0),(0,0,1))
         cammatrix = e.camera().getWorldToCameraMatrix().inverse()
-        print(cam)
+        # print(cam)
         if visual : 
             vi = cammatrix.getColumn(0)
             assert vi.w == 0
@@ -84,8 +85,8 @@ def process_tris_full(pts, pts2, visual = False, translation = 2, model = None):
         e.processTriangle(*(pts+[100]))
         e.processTriangle(*(pts2+[20000]))
         s = e.getProjectionResult(eABGR)
-        for sh in s:
-            print([tuple(v) for v in sh.geometry.pointList])
+        #for sh in s:
+        #    print([tuple(v) for v in sh.geometry.pointList])
         if visual : 
             Viewer.add(Scene([Shape(Translated(cam,Oriented(vi,vj,sh.geometry)), sh.appearance, sh.id) for sh in s]))
 
@@ -258,15 +259,21 @@ def test_cylinder(visual = False):
     process_scene(Cylinder(), visual)
 
 def test_cone(visual = False):
-    process_scene(Cone(), visual, nbView=4)
+    process_scene(Cone(), visual)
 
 def test_paraboloid(visual = False):
     process_scene(Paraboloid(), visual)
 
 
-if __name__ == '__main__':
+def main():
     import sys
     argv = list(sys.argv)    
+    if '-h' in sys.argv:
+        print('available tests :')
+        for name in list(globals().keys()):
+            if name.startswith('test_'):
+                print(name)
+        return
     del argv[0]
     visual = '-v' in sys.argv
     print(visual)
@@ -287,3 +294,6 @@ if __name__ == '__main__':
         globals()['test_tri'+str(i)](visual, model = mid)
     else:
         globals()['test_'+str(i)](visual)
+
+if __name__ == '__main__':
+    main()

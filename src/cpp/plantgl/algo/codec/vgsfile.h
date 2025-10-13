@@ -123,6 +123,7 @@ public :
          VCmax, Jmax,
          Error
         };
+        static const char * VgstarItemName[32];
 
         VegeStarFile(){initShape();};
         ~VegeStarFile(){};
@@ -137,7 +138,7 @@ public :
         bool parse(std::istream& stream);
 
         bool parseHeader(std::istream& stream);
-        bool parseLine(std::istream& stream);
+        bool parseLine(std::istream& stream, uint32_t linenb = 0);
 
         ScenePtr build() const;
 

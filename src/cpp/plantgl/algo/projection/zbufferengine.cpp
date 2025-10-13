@@ -59,7 +59,8 @@ ZBufferEngine::ZBufferEngine(uint16_t imageWidth,
                              const Color3& backGroundColor,
                              uint32_t defaultid,
                              bool multithreaded,
-                             eFaceCulling culling ):
+                             eFaceCulling culling,
+                             eIdPolicy idPolicy ):
     ImageProjectionEngine(imageWidth,imageHeight),
     __light(new Light()),
     __style(style),
@@ -302,7 +303,7 @@ void ZBufferEngine::iprocess(TriangleSetPtr triangles, AppearancePtr appearance,
         }
       
         // shader->initEnv(_camera, __light);
-        renderShadedTriangle(v0, v1, v2, ccw, id, shader, _camera);
+        renderShadedTriangle(v0, v1, v2, ccw, getNewPrimitiveId(id), shader, _camera);
 
     }
     // printf("end process TriangleSetPtr\n");
@@ -1092,9 +1093,9 @@ ScenePtr ZBufferEngine::grabSortedZBufferPoints(real_t jitter, real_t raywidth )
 }
 
 
-pgl_hash_map<uint32_t,uint32_t> ZBufferEngine::idhistogram(bool solidangle) const
+pgl_hash_map<uint32_t,real_t> ZBufferEngine::idhistogram(bool solidangle) const
 {
-    pgl_hash_map<uint32_t,uint32_t> histo;
+    pgl_hash_map<uint32_t,real_t> histo;
 
     if ((__style & eIdBased) && is_valid_ptr(__idBuffer)){
        for (int32_t i = 0 ; i < __imageWidth ; i++) {
@@ -1103,7 +1104,7 @@ pgl_hash_map<uint32_t,uint32_t> ZBufferEngine::idhistogram(bool solidangle) cons
                 uint32_t pid = __idBuffer->getAt(i,j);
                 // printf("consider id %i\n",pid);
                 if (pid != __defaultid){
-                    pgl_hash_map<uint32_t,uint32_t>::iterator itId = histo.find(pid);
+                    pgl_hash_map<uint32_t,real_t>::iterator itId = histo.find(pid);
                     real_t value = (solidangle ? __camera->solidAngle(i,j,__imageWidth,__imageHeight) : 1);
                     if (itId == histo.end()){
                         histo[pid] = value;
@@ -1149,8 +1150,8 @@ RealArray2Ptr PGL(formFactors)(const Point3ArrayPtr& points,
                 }
             }
             ze.endProcess();
-            pgl_hash_map<uint32_t,uint32_t> histo = ze.idhistogram(solidangle);
-            for (pgl_hash_map<uint32_t,uint32_t>::const_iterator histoit = histo.begin(); histoit != histo.end(); ++histoit){
+            pgl_hash_map<uint32_t,real_t> histo = ze.idhistogram(solidangle);
+            for (pgl_hash_map<uint32_t,real_t>::const_iterator histoit = histo.begin(); histoit != histo.end(); ++histoit){
                 result->setAt(id, histoit->first, histoit->second);
             }
         }

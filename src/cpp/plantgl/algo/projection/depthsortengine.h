@@ -1,5 +1,3 @@
-
-
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
@@ -65,6 +63,8 @@
 
 PGL_BEGIN_NAMESPACE
 
+#define PGL_WITH_CGAL 1
+
 /* ----------------------------------------------------------------------- */
 
 /** 
@@ -78,7 +78,7 @@ class ALGO_API DepthSortEngine : public ProjectionEngine {
 
 public :
 
-    DepthSortEngine();
+    DepthSortEngine(eIdPolicy idPolicy = eShapeIdBased);
 
     virtual ~DepthSortEngine();
 
@@ -86,6 +86,8 @@ public :
 
     ScenePtr getResult(Color4::eColor4Format format = Color4::eARGB, bool cameraCoordinates = true) const;
     ScenePtr getProjectionResult(Color4::eColor4Format format = Color4::eARGB, bool cameraCoordinates = true) const;
+    ScenePtr getSurfaceResult(bool cameraCoordinates = true) const;
+    ScenePtr getSurfaceProjectionResult(bool cameraCoordinates = true) const;
 
     virtual void iprocess(TriangleSetPtr triangles, AppearancePtr appearance, uint32_t id, ProjectionCameraPtr camera = ProjectionCameraPtr(), uint32_t threadid = 0);
     virtual void iprocess(PolylinePtr polyline, MaterialPtr material, uint32_t id, ProjectionCameraPtr camera = ProjectionCameraPtr(), uint32_t threadid = 0);
@@ -95,7 +97,13 @@ public :
         Point3ArrayPtr points;
         Vector3 pmin, pmax;
         uint32_t id;
+
+        bool bbx_intersect(const PolygonInfo& other) const;
     };
+
+    pgl_hash_map<uint32_t,real_t> idsurfaces() const;
+    pgl_hash_map<uint32_t,std::pair<real_t,std::vector<real_t> > > aggregateIdSurfaces() const
+    { return aggregate(idsurfaces()); }
 
     typedef std::list<PolygonInfo> PolygonInfoList;
     typedef std::list<PolygonInfo> PolygonInfoSet;
@@ -103,21 +111,21 @@ public :
 
 protected:
 
-    void removePolygon(DepthSortEngine::PolygonInfoSet::iterator it);
+    DepthSortEngine::PolygonInfoList::iterator removePolygon(DepthSortEngine::PolygonInfoList::iterator it);
     DepthSortEngine::PolygonInfoSet::iterator appendPolygon(const PolygonInfo& polygon);
     DepthSortEngine::PolygonInfoIteratorList appendPolygons(DepthSortEngine::PolygonInfoList::iterator begin, DepthSortEngine::PolygonInfoList::iterator end);
-    DepthSortEngine::PolygonInfoIteratorList getIntersectingPolygons(const PolygonInfo& polygon);
+    // DepthSortEngine::PolygonInfoIteratorList getIntersectingPolygons(const PolygonInfo& polygon);
+    // DepthSortEngine::PolygonInfoSet::iterator getNextIntersectingPolygon(const PolygonInfo& polygon, DepthSortEngine::PolygonInfoSet::iterator begin);
 
 
-    PolygonInfo _toPolygonInfo(const Point3ArrayPtr& points, uint32_t id) const;
-    DepthSortEngine::PolygonInfoList _toPolygonInfo(const std::vector<Point3ArrayPtr>& polygons, uint32_t id) const;
-
-    DepthSortEngine::PolygonInfoIteratorList::iterator _processTriangle( PolygonInfo polygon, 
-                                                                         DepthSortEngine::PolygonInfoIteratorList& polygonstotest, 
-                                                                         DepthSortEngine::PolygonInfoIteratorList::iterator begin);
+    void _processTriangle( PolygonInfo polygon, uint32_t begin = 0, bool insertTriangle = true);
 
     PolygonInfoList __polygonlist; 
 };
+
+
+// DepthSortEngine::PolygonInfo _toPolygonInfo(const Point3ArrayPtr& points, uint32_t id) ;
+// DepthSortEngine::PolygonInfoList _toPolygonInfo(const std::vector<Point3ArrayPtr>& polygons, uint32_t id) ;
 
 /* ----------------------------------------------------------------------- */
 

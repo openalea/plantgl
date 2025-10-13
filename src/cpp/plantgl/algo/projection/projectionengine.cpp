@@ -53,8 +53,10 @@ PGL_USING_NAMESPACE
 
 
 
-ProjectionEngine::ProjectionEngine():
-    __camera(0)
+ProjectionEngine::ProjectionEngine(enum eIdPolicy idPolicy):
+    __camera(0),
+    __idPolicy(idPolicy),
+    __primitiveId(0)
 {
     setOrthographicCamera(-1, 1, -1, 1, 0, 2);
     lookAt(Vector3(0,1,0),Vector3(0,0,0),Vector3(0,0,1));
@@ -75,9 +77,33 @@ void ProjectionEngine::process(ScenePtr scene)
     endProcess();
 }
 
+pgl_hash_map<uint32_t,std::pair<real_t,std::vector<real_t> > > ProjectionEngine::aggregate(pgl_hash_map<uint32_t,real_t> values) const
+{
+    typedef pgl_hash_map<uint32_t,std::pair<real_t,std::vector<real_t> > > ResultType;
+    ResultType result;
+    for(pgl_hash_map<uint32_t,uint32_t>::const_iterator it = __idMap.begin(); it != __idMap.end(); ++it){
+        ResultType::iterator itRes;
+        uint32_t idshape = it->second;
+        pgl_hash_map<uint32_t,real_t>::const_iterator itvalue = values.find(it->first);
+        real_t value = ( itvalue ==values.end() ? 0.0 : itvalue->second);
+        if ((itRes = result.find(idshape))==result.end()){
+            std::pair<real_t,std::vector<real_t> > lresult;
+            lresult.second.push_back(value);
+            lresult.first += value;
+            result[idshape] = lresult;
+        }
+        else {
+            itRes->second.second.push_back(value);
+            itRes->second.first += value;
+        }
+    }
+    return result;
+}
+
 ImageProjectionEngine::ImageProjectionEngine(uint16_t imageWidth, 
-                                   uint16_t imageHeight):
-    ProjectionEngine(),
+                                   uint16_t imageHeight,
+                                   eIdPolicy idPolicy):
+    ProjectionEngine(idPolicy),
     __imageWidth(imageWidth), 
     __imageHeight(imageHeight)
 {
@@ -86,3 +112,4 @@ ImageProjectionEngine::ImageProjectionEngine(uint16_t imageWidth,
 ImageProjectionEngine::~ImageProjectionEngine()
 {
 }
+

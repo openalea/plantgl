@@ -32,6 +32,8 @@
 #include <plantgl/algo/projection/projectionengine.h>
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/boost_python.h>
+#include <plantgl/python/extract_list.h>
+#include <plantgl/python/export_list.h>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -42,9 +44,36 @@ using namespace std;
 
 ProjectionCameraPtr get_camera(ProjectionEngine * engine) { return engine->camera(); }
 
+boost::python::object py_get_idmap(ProjectionEngine * engine) { 
+    pgl_hash_map<uint32_t,uint32_t> res = engine->getPrimitiveIdMap();
+    boost::python::dict bres;
+    for(pgl_hash_map<uint32_t,uint32_t>::const_iterator _it = res.begin(); _it != res.end(); ++_it){
+      bres[boost::python::object(_it->first)] = boost::python::object(_it->second);
+    }
+    return bres;
+}
+
+boost::python::object py_aggregate(ProjectionEngine * engine, boost::python::dict values) {
+    pgl_hash_map<uint32_t,std::pair<real_t,std::vector<real_t> > > result = 
+        engine->aggregate(extract_dict<uint32_t,real_t, boost::python::extract, boost::python::extract, pgl_hash_map<uint32_t, real_t> >(values)());
+    boost::python::dict bres;
+    for(pgl_hash_map<uint32_t,std::pair<real_t,std::vector<real_t> > >::const_iterator _it = result.begin(); _it != result.end(); ++_it){
+      bres[boost::python::object(_it->first)] = boost::python::make_tuple(boost::python::object(_it->second.first), make_list(_it->second.second)());
+    }
+    return bres;
+}
+
 void export_ProjectionEngine()
 {
-
+      enum eIdPolicy {
+        ePrimitiveIdBased,
+        eShapeIdBased
+    } ;
+   enum_<ProjectionEngine::eIdPolicy>("eIdPolicy")
+    .value("ePrimitiveIdBased",ProjectionEngine::ePrimitiveIdBased)
+    .value("eShapeIdBased",ProjectionEngine::eShapeIdBased)
+    .export_values()
+    ;
 
   class_< ProjectionEngine, boost::noncopyable > 
       ("ProjectionEngine", no_init)
@@ -59,6 +88,8 @@ void export_ProjectionEngine()
       .def("process", (void(ProjectionEngine::*)(PolylinePtr, MaterialPtr, uint32_t))&ProjectionEngine::process, (bp::arg("polyline"),bp::arg("appearance"),bp::arg("id")))
       .def("process", (void(ProjectionEngine::*)(PointSetPtr, MaterialPtr, uint32_t))&ProjectionEngine::process, (bp::arg("pointset"),bp::arg("appearance"),bp::arg("id")))
       .def("process", (void(ProjectionEngine::*)(ScenePtr))&ProjectionEngine::process, (bp::arg("scene")))
+      .def("getIdmap", &py_get_idmap)
+      .def("aggregate", &py_aggregate)
 
       /*.def("worldToCamera", &ProjectionEngine::worldToCamera)
       .def("cameraToNDC", &ProjectionEngine::cameraToNDC)
