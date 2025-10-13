@@ -232,11 +232,11 @@ def directionalInterception(scene, directions,
                             method = eZBufferProjection, **args):
 
   if method == eOpenGLProjection:
-      return directionalInterception_openGL(scene, directions, north, horizontal, **args)
+      return directionalInterception_openGL(scene=scene, directions=directions, north=north, horizontal=horizontal, **args)
   elif method == eZBufferProjection:
-      return directionalInterception_zbuffer(scene, directions, north, horizontal, *args)
+      return directionalInterception_zbuffer(scene=scene, directions=directions, north=north, horizontal=horizontal, **args)
   elif method == eTriangleProjection:
-      return directionalInterception_triangleprojection(scene, directions, north, horizontal)
+      return directionalInterception_triangleprojection(scene=scene, directions=directions, north=north, horizontal=horizontal)
 
 def scene_irradiance(scene, directions, north = 0, horizontal = False, scene_unit = 'm', method = eZBufferProjection, **args):
     """
