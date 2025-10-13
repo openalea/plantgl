@@ -260,7 +260,7 @@ def scene_irradiance(scene, directions, north = 0, horizontal = False, scene_uni
 
 
     res = directionalInterception(scene = scene, directions = directions, north = north, horizontal = horizontal, method=method,  **args)
-    res = { sid : (conv_unit2 * value[0], [conv_unit2 * v for v in value[1]]) for sid, value in res.items() }
+    res = { sid : conv_unit2 * value for sid, value in res.items() }
 
     surfaces = dict([(sid, conv_unit2*sum([pgl.surface(sh.geometry) for sh in shapes])) for sid, shapes in scene.todict().items()])
 
