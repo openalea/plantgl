@@ -32,6 +32,8 @@
 #include <plantgl/algo/projection/zbufferengine.h>
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/boost_python.h>
+#include <plantgl/python/extract_list.h>
+#include <plantgl/python/export_list.h>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -62,6 +64,20 @@ boost::python::object py_idhistogram(ZBufferEngine * ze, bool solidangle = true)
     }
     return bres;
 }
+
+
+
+boost::python::object py_agregate_idsurfaces(ZBufferEngine * engine) {
+    pgl_hash_map<uint32_t,std::pair<real_t,std::vector<real_t> > > result = 
+        engine->aggregateIdSurfaces();
+    boost::python::dict bres;
+    for(pgl_hash_map<uint32_t,std::pair<real_t,std::vector<real_t> > >::const_iterator _it = result.begin(); _it != result.end(); ++_it){
+      bres[boost::python::object(_it->first)] = boost::python::make_tuple(boost::python::object(_it->second.first), make_list(_it->second.second)());
+    }
+    return bres;
+}
+
+
 void export_ZBufferEngine()
 {
 
@@ -121,7 +137,8 @@ void export_ZBufferEngine()
       .def("grabZBufferPoints", &py_grabZBufferPoints,(bp::arg("jitter")=0, bp::arg("raywidth")=0))
       .def("grabSortedZBufferPoints", &ZBufferEngine::grabSortedZBufferPoints,(bp::arg("jitter")=0, bp::arg("raywidth")=0))
       .def("idhistogram", &py_idhistogram, (bp::arg("solidangle")=true))
-      ;
+      .def("aggregateIdSurfaces", &py_agregate_idsurfaces)
+     ;
 
       def("formFactors", &formFactors, (bp::arg("points"), bp::arg("triangles"), bp::arg("normals")=Point3ArrayPtr(0), bp::arg("ccw")=true, bp::arg("discretization")=200, bp::arg("solidangle")=200));
 }

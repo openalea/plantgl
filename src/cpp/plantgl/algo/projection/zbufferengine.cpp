@@ -61,7 +61,7 @@ ZBufferEngine::ZBufferEngine(uint16_t imageWidth,
                              bool multithreaded,
                              eFaceCulling culling,
                              eIdPolicy idPolicy ):
-    ImageProjectionEngine(imageWidth,imageHeight),
+    ImageProjectionEngine(imageWidth,imageHeight,idPolicy),
     __light(new Light()),
     __style(style),
     __defaultid(defaultid),

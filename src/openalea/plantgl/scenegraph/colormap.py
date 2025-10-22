@@ -61,8 +61,9 @@ def tomateriallist(values, name = 'jet', ambientlevel = 0.5):
 
 
 def applymaterialmap(scene, values, name = 'jet', ambientlevel = 0.5):
+    from . import _pglsg as sg
     cm = PglMaterialMap(min(values), max(values), name, ambientlevel)
-    nscene = Scene()
+    nscene = sg.Scene()
     for value, shape in zip(values, scene):
-        nscene.add(Shape(shape.geometry, cm(value), shape.id, shape.parentId))
+        nscene.add(sg.Shape(shape.geometry, cm(value), shape.id, shape.parentId))
     return nscene
