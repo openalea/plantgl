@@ -247,11 +247,11 @@ def directionalInterception(scene, directions,
                             method = eZBufferProjection, primitive = eShapeBased,  **args):
 
   if method == eOpenGLProjection:
-      return directionalInterception_openGL(scene, directions, north, horizontal, **args)
+      return directionalInterception_openGL(scene=scene, directions=directions, north=north, horizontal=horizontal, **args)
   elif method == eZBufferProjection:
-      return directionalInterception_zbuffer(scene, directions, north, horizontal, primitive=primitive, **args)
+      return directionalInterception_zbuffer(scene=scene, directions=directions, north=north, horizontal=horizontal, primitive=primitive, **args)
   elif method == eTriangleProjection:
-      return directionalInterception_triangleprojection(scene, directions, north, horizontal, primitive=primitive)
+      return directionalInterception_triangleprojection(scene=scene, directions=directions, north=north, horizontal=horizontal, primitive=primitive)
 
 
 def directionalInterception_from_dir_vectors(scene, directions, 
