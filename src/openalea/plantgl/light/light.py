@@ -1,7 +1,6 @@
 from . import sunDome as sd
 import openalea.plantgl.all as pgl
-
-from math import radians, sin, pi, ceil
+from .utils import azel2vect, estimate_dir_vectors, getProjectionMatrix, projectedBBox
 
 # Light Fractalysis module: Computation of direct light in a scene
 #
@@ -45,62 +44,13 @@ def directInterception(scene, latitude=43.36, longitude=3.52, jj=221, start=7, s
 def totalInterception(scene, latitude=43.36, longitude=3.52, jj=221, start=7, stop=19, stp=30, dsun = 1, dGMT = 0, screenresolution = None):
   diffu = sd.skyTurtle()
   direct =  sd.getDirectLight( latitude=latitude , longitude=longitude, jourJul=jj, startH=start, stopH=stop, step=stp, decalSun = dsun, decalGMT = dGMT)
-  all = direct + diffu
-  return directionalInterception(scene, directions = all, screenresolution = screenresolution)
-
-
-def azel2vect(az, el, north=0):
-  """ converter for azimuth elevation 
-      az,el are expected in degrees, in the North-clocwise convention
-      In the scene, positive rotations are counter-clockwise
-      north is the angle (degrees, positive counter_clockwise) between X+ and North """
-  azimuth = -radians(north + az)
-  zenith = radians(90 - el)
-  v = -pgl.Vector3(pgl.Vector3.Spherical( 1., azimuth, zenith ) )
-  v.normalize()
-  return v
-
-def elaz2vect(el, az, north=0):
-  """ converter for azimuth elevation 
-      az,el are expected in degrees, in the North-clocwise convention
-      In the scene, positive rotations are counter-clockwise
-      north is the angle (degrees, positive counter_clockwise) between X+ and North """
-  azimuth = -radians(north + az)
-  zenith = radians(90 - el)
-  v = -pgl.Vector3(pgl.Vector3.Spherical( 1., azimuth, zenith ) )
-  v.normalize()
-  return v
-
-def estimate_dir_vectors( directions, north = 0, horizontal = False):
-  results = []
-  for el, az, irr in directions:
-        dir = azel2vect(az, el, north)
-        if horizontal :
-            irr /= sin(radians(el))
-        results.append((dir,irr))
-  return results
-   
-
-def getProjectionMatrix(forward, up = pgl.Vector3(0,0,1)):
-    forward.normalize()
-    up.normalize();
-    side = pgl.cross(up, forward);
-    side.normalize();
-    up = pgl.cross(forward, side);
-    up.normalize();
-    return pgl.Matrix3(side, up, forward).inverse()
-
-def projectedBBox(bbx, direction, up):
-    from itertools import product
-    proj = getProjectionMatrix(direction,up)
-    pts = [proj*pt for pt in product([bbx.getXMin(),bbx.getXMax()],[bbx.getYMin(),bbx.getYMax()],[bbx.getZMin(),bbx.getZMax()])]
-    projbbx = pgl.BoundingBox(pgl.PointSet(pts))
-    return projbbx
+  all = [estimate_dir_vectors(d,0,True) for d in direct] + [estimate_dir_vectors(d, 0, False) for d in diffu]
+  return directionalInterception_from_dir_vectors(scene, directions = all, screenresolution = screenresolution)
 
 
 eShapeBased, eTriangleBased = range(2)
-eOpenGLProjection, eZBufferProjection, eTriangleProjection = range(3)
-
+eOpenGLProjection, eZBufferProjection, eTriangleProjection, eCaribu = range(4)
+MethodNames = { eOpenGLProjection : "OpenGL Projection", eZBufferProjection : "Z-Buffer Projection", eTriangleProjection : "Triangle Projection", eCaribu : "Caribu"}
 
 def directionalInterception_openGL(scene, directions, north = 0, horizontal = False, screenwidth = 600):
    return directionalInterception_openGL_from_dir_vectors(scene, estimate_dir_vectors(directions, north, horizontal), screenwidth)
@@ -121,6 +71,7 @@ def directionalInterception_openGL_from_dir_vectors(scene, directions, screenwid
   shapeLight = {}
 
   for dir, wg in directions:
+    dir = pgl.Vector3(dir)
 
     pgl.Viewer.camera.lookAt(bbox.getCenter() + dir*(-2.5)*d_factor, bbox.getCenter()) #2.5 is for a 600x600 GLframe
 
@@ -154,6 +105,7 @@ def directionalInterception_zbuffer_from_dir_vectors(scene, directions,
                             multithreaded = True,
                             infinitize = None,
                             primitive = eShapeBased):
+  from math import  ceil
 
   bbox=pgl.BoundingBox( scene )
   d_factor = max(bbox.getXRange() , bbox.getYRange() , bbox.getZRange())
@@ -163,7 +115,7 @@ def directionalInterception_zbuffer_from_dir_vectors(scene, directions,
   pixsize = screenresolution*screenresolution
 
   for dir, wg in directions:
-
+    dir = pgl.Vector3(dir)
     up = dir.anOrthogonalVector()
     pjbbx = projectedBBox(bbox, dir, up)
     worldWidth = pjbbx.getXRange()
@@ -215,7 +167,7 @@ def directionalInterception_triangleprojection_from_dir_vectors(scene, direction
   shapeLight = {}
 
   for dir, wg in directions:
-
+    dir = pgl.Vector3(dir)
     up = dir.anOrthogonalVector()
     pjbbx = projectedBBox(bbox, dir, up)
     worldWidth = pjbbx.getXRange()
@@ -241,17 +193,13 @@ def directionalInterception_triangleprojection_from_dir_vectors(scene, direction
   return shapeLight
 
 
+
+
 def directionalInterception(scene, directions, 
                             north = 0, 
                             horizontal = False,
                             method = eZBufferProjection, primitive = eShapeBased,  **args):
-
-  if method == eOpenGLProjection:
-      return directionalInterception_openGL(scene=scene, directions=directions, north=north, horizontal=horizontal, **args)
-  elif method == eZBufferProjection:
-      return directionalInterception_zbuffer(scene=scene, directions=directions, north=north, horizontal=horizontal, primitive=primitive, **args)
-  elif method == eTriangleProjection:
-      return directionalInterception_triangleprojection(scene=scene, directions=directions, north=north, horizontal=horizontal, primitive=primitive)
+  return directionalInterception_from_dir_vectors(scene, estimate_dir_vectors(directions, north, horizontal), method, primitive, **args)
 
 
 def directionalInterception_from_dir_vectors(scene, directions, 
@@ -304,6 +252,34 @@ def _format_irradiance(scene, interception, primitive, scene_unit = 'm'):
             trid += 1
        return convert( {'area' : trsurface0, 'irradiance' : trirradiance0, 'interception' : trinterception0, 'shapeid' : trshapeid0} )
 
+def scene_irradiance_caribu_from_dir_vectors(scene, directions, primitive = eShapeBased, scene_unit = 'm'):
+   from openalea.caribu.CaribuScene import CaribuScene
+   from math import sin, radians
+   from .utils import vect2azel
+   import pandas
+   # Fake optical property. Not necessary for direct light computation
+   opt_prop = { 'GEN' : dict([(sh.id, (0.04,0.0,0.04,0.00) ) for sh in scene]) }
+   cs = CaribuScene(scene, opt=opt_prop, scene_unit=scene_unit)
+   # light irradiance should be expressed horizontally in Caribu
+   lights = [(wg * sin(radians(vect2azel(dir)[1])), tuple(dir)) for dir, wg in directions]
+   cs.setLight(lights)
+
+   raw, agg = cs.run(direct=True, infinite = False, split_face = False)
+   if primitive == eShapeBased:
+      return pandas.DataFrame(dict(area = agg['GEN']['area'], irradiance = agg['GEN']['Ei'], absorbance = agg['GEN']['Eabs'] ))
+   else:
+      return pandas.DataFrame(dict(area = sum(raw['GEN']['area'].values(),[]), 
+                                   irradiance = sum(raw['GEN']['Ei'].values(),[]), 
+                                   absorbance = sum(raw['GEN']['Eabs'].values(),[]),
+                                   shapeid = [sid for sid, values in raw['GEN']['area'].items() for i in range(len(values))] ))
+
+def scene_irradiance_caribu(scene, directions, 
+                            north = 0, 
+                            horizontal = False,
+                            primitive = eShapeBased, scene_unit = 'm'):
+    return scene_irradiance_caribu_from_dir_vectors(scene, estimate_dir_vectors(directions, north, horizontal), primitive, scene_unit)
+
+
 def scene_irradiance(scene, directions, 
                      north = 0, horizontal = False, 
                      scene_unit = 'm', 
@@ -320,14 +296,18 @@ def scene_irradiance(scene, directions,
     :returns: the area of the shapes of the scene in m2 and the irradiance in J.s-1.m-2
     :returntype: pandas.DataFrame
     """
-    if method == eOpenGLProjection:
-       primitive = eShapeBased
+    assert method in [eZBufferProjection, eTriangleProjection,  eCaribu, eOpenGLProjection], "Unknown method for projection"
+    if method == eCaribu:
+        return scene_irradiance_caribu(scene, directions=directions, north=north, horizontal=horizontal, primitive=primitive, scene_unit=scene_unit)
+    else:
+      if method == eOpenGLProjection:
+        primitive = eShapeBased
 
-    interception = directionalInterception( scene = scene,   directions = directions, 
-                                   north = north,   horizontal = horizontal, 
-                                   method = method, primitive = primitive,  
-                                   **args )
-    return _format_irradiance(scene, interception, primitive, scene_unit)
+      interception = directionalInterception( scene = scene,   directions = directions, 
+                                    north = north,   horizontal = horizontal, 
+                                    method = method, primitive = primitive,  
+                                    **args )
+      return _format_irradiance(scene, interception, primitive, scene_unit)
     
 
 def scene_irradiance_from_dir_vectors(scene, directions, 
@@ -345,333 +325,17 @@ def scene_irradiance_from_dir_vectors(scene, directions,
     :returns: the area of the shapes of the scene in m2 and the irradiance in J.s-1.m-2
     :returntype: pandas.DataFrame
     """
-    if method == eOpenGLProjection:
-       primitive = eShapeBased
-
-    interception = directionalInterception_from_dir_vectors( scene = scene,   directions = directions, 
-                                   method = method, primitive = primitive,  
-                                   **args )
-    return _format_irradiance(scene, interception, primitive, scene_unit)
-    
-
-def get_timezone(latitude, longitude):
-  """
-  Return the timezone identifier for a given geographic coordinate.
-
-  This function is a thin wrapper around tzfpy.get_tz and returns whatever
-  identifier tzfpy provides for the location (for example 'Europe/Paris').
-
-  Args:
-    latitude (float): Latitude in decimal degrees. Positive values indicate north;
-      expected range is -90.0 to 90.0.
-    longitude (float): Longitude in decimal degrees. Positive values indicate east;
-      expected range is -180.0 to 180.0.
-
-  Returns:
-    str or None: Timezone identifier string as returned by tzfpy.get_tz, or None
-    if no timezone could be determined for the given coordinates.
-
-  Raises:
-    Propagates exceptions raised by tzfpy.get_tz (for example, if tzfpy is not
-    installed or an internal error occurs).
-
-  Notes:
-    - Ensure the tzfpy package is available in the environment where this
-      function is called.
-    - No validation beyond documenting expected ranges is performed here;
-      callers should validate coordinates if needed.
-
-  Example:
-    >>> get_timezone(48.8566, 2.3522)
-    'Europe/Paris'
-  """
-  from tzfpy import get_tz
-  result = get_tz(lat=latitude, lng=longitude)
-  return result
-
-class LightEstimator:
-  def __init__(self, scene):
-      self.scene = scene
-      self.lights = []
-
-  def addLightFromVectors(self, lights):
-    """
-    Add a set of lights to the estimator.
-
-    Parameters
-    ----------
-    lights : list
-        A list of tuples (direction, intensity) representing the lights to add.
-    """
-    self.lights += lights
-    return self
-  
-  def addLights(self, directions, north = 0, horizontal = False):
-    """
-    Set lights based on specified directions.
-
-    This function calculates light directional vectors and intensity for each specified 
-    direction (elevation, azimuth and weight) and adds them to the lights list. 
-    If the horizontal flag is set to True, the intensity is supposed to be measured 
-    on an horizontal plane and thus adjusted according to the sine of the elevation angle.
-
-    :param directions: A list of tuples, where each tuple contains 
-                       an elevation, an azimuth and a weight.
-    :param north: The angle between the north direction of the azimuths 
-                  (in degrees-positive clockwise). Default is 0.
-    :param horizontal: A boolean flag specifying if the intensity is given using a horizontal convention and should be adjusted 
-                     (True) or not (False). Default is False.
-    """
-
-    self.lights += [(d,w) for d,w in estimate_dir_vectors(directions, north, horizontal) if w > 0]
-    return self 
-    
-  def add_sun(self,  irradiance = 1, dates = None, north = 0, latitude = 42.77, longitude = 2.86, timezone = None) :
-      def add_sun(self, irradiance=1, dates=None, north=0, latitude=42.77, longitude=2.86, timezone=None):
-        """
-        Adds sunlight sources to the scene based on specified dates and geographic location.
-
-        Parameters
-        ----------
-        irradiance : float, optional
-          The total irradiance of the sun (default is 1).
-        dates : list of datetime.datetime or None, optional
-          List of dates for which to compute sun positions. If None, uses the current date.
-        north : float, optional
-          The orientation of the north direction in degrees (default is 0).
-        latitude : float, optional
-          The latitude of the location in degrees (default is 42.77).
-        longitude : float, optional
-          The longitude of the location in degrees (default is 2.86).
-        timezone : str or None, optional
-          The timezone for the dates. If None, it is determined from latitude and longitude.
-
-        Returns
-        -------
-        self : object
-          Returns self to allow method chaining.
-
-        Notes
-        -----
-        This method computes the sun's position and adds corresponding light sources to the scene,
-        distributing the specified irradiance among them.
-        """
-      import datetime
-      if dates is None:
-          dates = [datetime.datetime.today()]
-      if type(dates) == list:
-          import pandas as pd
-          dates = pd.DatetimeIndex(dates, tz=timezone)
-      if dates.tzinfo is None:
-         if timezone is None:
-            timezone = get_timezone(latitude, longitude)
-         dates = dates.tz_localize(timezone)
-      dirs = []
-      for date in dates:
-        cdate = date.astimezone('UTC')
-        dirs += sd.getDirectLight(latitude=latitude, longitude=longitude, 
-                                  jourJul=cdate.day_of_year, 
-                                  startH=cdate.hour, stopH=cdate.hour+1, step=120, decalSun = 0, decalGMT = 0)
-      nbdirs = len(dirs)
-      self.addLights([(el, az, wg*irradiance/nbdirs) for el,az,wg in dirs], horizontal=True, north=north)
-      return self
-
-  def add_sky(self,  irradiance = 1) :
-    """
-    Adds sky lights to the scene using a predefined sky distribution.
-
-    Parameters
-    ----------
-    irradiance : float, optional
-      The global horizontal irradiance emitted from each sky light (default is 1).
-
-    Returns
-    -------
-    self
-      Returns self to allow method chaining.
-    """
-    self.addLights([(el, az, wg*irradiance) for el, az, wg in sd.skyTurtle()])
-    return self
-  
-  def add_sun_sky(self, ghi = 1, dhi = 0.5, dates = None, north = 0, latitude = 42.77, longitude = 2.86, timezone = None):
-      """
-      Adds both sun and sky components to the light model using specified irradiance values and location/time parameters.
-
-      Parameters
-      ----------
-      ghi : float, optional
-        Global horizontal irradiance (default is 1).
-      dhi : float, optional
-        Diffuse horizontal irradiance (default is 0.5).
-      dates : list of datetime.datetime, optional
-        List of dates/times for sun position calculation. If None, uses current date/time.
-      north : float, optional
-        North orientation in degrees (default is 0).
-      latitude : float, optional
-        Latitude of the location in degrees (default is 42.77).
-      longitude : float, optional
-        Longitude of the location in degrees (default is 2.86).
-      timezone : int or None, optional
-        Timezone offset from UTC. If None, uses system default.
-
-      Notes
-      -----
-      - The sun component is added with direct irradiance (ghi - dhi).
-      - The sky component is added with diffuse irradiance (dhi).
-      """
-      if dates is None:
-          import datetime
-          dates = [datetime.datetime.today()]
-      self.add_sun(ghi-dhi, dates=dates, north=north, latitude=latitude, longitude=longitude, timezone=timezone)
-      self.add_sky(dhi)
-  
-  def estimate(self,  method=eZBufferProjection, **args):
-      """
-      Estimates the irradiance of the scene using the specified method.
-
-      Parameters:
-        method (callable, optional): The method used for irradiance estimation. Defaults to eZBufferProjection.
-        **args: Additional keyword arguments passed to the irradiance estimation method.
-
-      Returns:
-        result: The computed irradiance result for the scene.
-      """
-      self.result = scene_irradiance_from_dir_vectors(self.scene, self.lights, method=method, **args)
-      return self.result
-   
-  def __call__(self, method=eZBufferProjection, **args):
-    """
-    Allows the instance to be called as a function to estimate lighting using the specified method.
-
-    Parameters
-    ----------
-    method : callable, optional
-      The lighting estimation method to use. Defaults to `eZBufferProjection`.
-    **args
-      Additional keyword arguments passed to the `estimate` method.
-
-    Returns
-    -------
-    result
-      The result of the lighting estimation as returned by the `estimate` method.
-    """
-    return self.estimate(method=method, **args)
-  
-  def lightrepr(self, minvalue = None, maxvalue = None, scale = 1.5):
-    """
-    Generate a visual representation of the lights in the scene.
-
-    This method creates a PlantGL scene with spheres representing each light source.
-    The position and size of each sphere are determined by the light's direction and intensity.
-    The color of each sphere is mapped according to its intensity using a colormap.
-
-    Parameters:
-      minvalue (float, optional): Minimum intensity value for the colormap. If None, uses the minimum intensity among the lights.
-      maxvalue (float, optional): Maximum intensity value for the colormap. If None, uses the maximum intensity among the lights.
-      scale (float, optional): Scaling factor for the radius used to position the lights. Default is 1.5.
-
-    Returns:
-      tuple:
-        - sg.Scene: A PlantGL scene containing the visual representation of the lights.
-        - PglMaterialMap: The colormap used for mapping light intensities to materials.
-    """
-    import openalea.plantgl.scenegraph as sg
-    import openalea.plantgl.math as mt
-    from openalea.plantgl.scenegraph.colormap import PglMaterialMap
-    bbx = sg.BoundingBox(self.scene)
-    center = bbx.getCenter()
-    posradius = mt.norm(bbx.getSize()) * scale
-    reprradius = posradius/50
-    min_intensity = min([wg for dir, wg in self.lights]) if minvalue is None else minvalue 
-    max_intensity = max([wg for dir, wg in self.lights]) if maxvalue is None else maxvalue
-    cmap = PglMaterialMap(min_intensity, max_intensity)
-    sc = sg.Scene()
-    for i,(dir, wg) in enumerate(self.lights):
-        sc += sg.Shape(sg.Translated(center-dir*posradius,sg.Sphere(reprradius)),cmap(wg),i+1)
-    return sc, cmap
-
-  def scenerepr(self, a_property = 'irradiance', minval = None, maxval = None):
-    """
-    Generate a PlantGL Scene representation with property-based coloring.
-
-    This method creates a PlantGL Scene (`sg.Scene`) where each shape is colored according to the values
-    of a specified property (default: 'irradiance') from the `self.result` dictionary. The coloring is
-    determined by a colormap that maps property values to materials or colors, within the specified
-    minimum and maximum value range.
-
-    If 'shapeid' is not present in `self.result`, each shape is colored individually using a material map.
-    If 'shapeid' is present, shapes are tessellated and colored per shape using a color map.
-
-    Parameters
-    ----------
-    a_property : str, optional
-      The property name in `self.result` to use for coloring (default is 'irradiance').
-    minval : float, optional
-      The minimum value for the colormap. If None, uses the minimum value found in the property.
-    maxval : float, optional
-      The maximum value for the colormap. If None, uses the maximum value found in the property.
-
-    Returns
-    -------
-    sc : sg.Scene
-      The generated PlantGL Scene with colored shapes.
-    cmap : PglMaterialMap or PglColorMap
-      The colormap used for mapping property values to colors/materials.
-    """
-    import openalea.plantgl.scenegraph as sg
-    import openalea.plantgl.algo as ag
-    if minval is None:
-       minval = min(self.result[a_property])
-    if maxval is None:
-       maxval = max(self.result[a_property])
-    scenedict = self.scene.todict()
-    sc = sg.Scene()
-    if not 'shapeid' in self.result:
-       from openalea.plantgl.scenegraph.colormap import PglMaterialMap
-       cmap  = PglMaterialMap(minval, maxval)
-       for i, value in self.result[a_property].items():
-          mat = cmap(value)
-          for sh in scenedict[i]:
-             sc.add(sg.Shape(sh.geometry, mat, sh.id, sh.parentId))
+    assert method in [eZBufferProjection, eTriangleProjection,  eCaribu, eOpenGLProjection], "Unknown method for projection"
+    if method == eCaribu:
+        return scene_irradiance_caribu_from_dir_vectors(scene, directions=directions, primitive=primitive, scene_unit=scene_unit)
     else:
-       from openalea.plantgl.scenegraph.colormap import PglColorMap
-       cmap  = PglColorMap(minval, maxval)
-       defaultmat = sg.Material()
-       for sid in self.result['shapeid'].unique():
-          tr = ag.tesselate(scenedict[sid][0].geometry)
-          if len(scenedict[sid]) > 1:
-            for sh in scenedict[sid][1:]:
-              tr = ag.merge_geometry(tr,ag.tesselate(sh.geometry))
-          tr.colorList = [cmap(v) for i, v in self.result[self.result['shapeid'] == sid][a_property].items()]
-          tr.colorPerVertex = False
-          sc.add(sg.Shape(tr, defaultmat, int(sid)))
-    return sc, cmap
-       
-          
-  def plot(self, a_property = 'irradiance', minval = None, maxval = None, lightrepscale = None, cmapdisplay = True):
-    """
-    Visualizes the specified property of the light simulation results.
+      if method == eOpenGLProjection:
+        primitive = eShapeBased
+        
 
-    Parameters:
-      a_property (str): The property to visualize (default: 'irradiance').
-      minval (float, optional): Minimum value for color mapping. If None and lightrepscale is provided, computed from results.
-      maxval (float, optional): Maximum value for color mapping. If None and lightrepscale is provided, computed from results.
-      lightrepscale (float, optional): Scale for light representation. If provided, adds light representation to the scene.
-      cmapdisplay (bool): If True, displays the color map legend in the visualization (default: True).
+      interception = directionalInterception_from_dir_vectors( scene = scene,   directions = directions, 
+                                    method = method, primitive = primitive,  
+                                    **args )
+      return _format_irradiance(scene, interception, primitive, scene_unit)
+    
 
-    Returns:
-      Scene: The PlantGL scene object representing the visualization.
-    """
-    if minval is None and not lightrepscale is None:
-       minval = min(min(self.result[a_property]),min(self.result[a_property]))
-    if maxval is None and not lightrepscale is None:
-       maxval = max(max(self.result[a_property]),max(self.result[a_property]))
-    sc, cmap = self.scenerepr(a_property, minval, maxval)
-    if not (lightrepscale is None):
-       sc += self.lightrepr(minval, maxval, lightrepscale)[0]
-    from openalea.plantgl.gui import Viewer
-    if cmapdisplay:
-      sc.add(cmap.pglrepr())
-    Viewer.display(sc)
-    return sc
-  
