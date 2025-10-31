@@ -3,7 +3,6 @@ from openalea.plantgl.all import *
 def test_scene():
     scene = Scene()
     assert scene.isValid()
-    return scene
 
 
 def test_default_material():

@@ -52,6 +52,21 @@ eShapeBased, eTriangleBased = range(2)
 eOpenGLProjection, eZBufferProjection, eTriangleProjection, eCaribu = range(4)
 MethodNames = { eOpenGLProjection : "OpenGL Projection", eZBufferProjection : "Z-Buffer Projection", eTriangleProjection : "Triangle Projection", eCaribu : "Caribu"}
 
+def caribu_available():
+    try:
+        import openalea.caribu
+        return True
+    except ImportError:
+        return False
+
+def available_projection_methods(primitive = eShapeBased):
+    result = [eZBufferProjection, eTriangleProjection] 
+    if primitive == eShapeBased :
+      result.append(eOpenGLProjection)
+    if caribu_available():
+        result.append(eCaribu)
+    return result
+
 def directionalInterception_openGL(scene, directions, north = 0, horizontal = False, screenwidth = 600):
    return directionalInterception_openGL_from_dir_vectors(scene, estimate_dir_vectors(directions, north, horizontal), screenwidth)
   

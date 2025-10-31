@@ -173,6 +173,7 @@ class LightEstimator:
       Returns:
         result: The computed irradiance result for the scene.
       """
+      assert method in lg.available_projection_methods(), f"Method {method} is not available. Available methods are: {lg.available_projection_methods()}"
       self.result = scene_irradiance_from_dir_vectors(self.scene, self.lights, method=method, **args)
       return self.result
    
