@@ -139,3 +139,29 @@ def get_timezone(latitude, longitude):
   return result
 
 
+
+def haversine_distance(lat1_deg, lon1_deg, lat2_deg, lon2_deg, R=1):
+    """
+    Calcule la distance géodésique (grand cercle) entre deux points sur une sphère.
+    - lat1_deg, lon1_deg : latitude et longitude du premier point (en degrés)
+    - lat2_deg, lon2_deg : latitude et longitude du second point (en degrés)
+    - R : rayon de la sphère (par défaut : 1, unité arbitraire)
+    """
+    import math
+    # Conversion en radians
+    phi1 = math.radians(lat1_deg)
+    phi2 = math.radians(lat2_deg)
+    lam1 = math.radians(lon1_deg)
+    lam2 = math.radians(lon2_deg)
+
+    # Normalisation de la différence de longitude dans [-π, π]
+    dlam = (lam2 - lam1 + math.pi) % (2 * math.pi) - math.pi
+
+    # Différence de latitude
+    dphi = phi2 - phi1
+
+    # Formule haversine
+    a = math.sin(dphi / 2) ** 2 + math.cos(phi1) * math.cos(phi2) * math.sin(dlam / 2) ** 2
+    c = 2 * math.asin(min(1.0, math.sqrt(a)))
+    
+    return R * c

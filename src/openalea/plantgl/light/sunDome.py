@@ -9,25 +9,6 @@ azimuths = [12.23, 59.77, 84.23, 131.77, 156.23, 203.77, 228.23, 275.77, 300.23,
 
 weights = [0.026808309,0.026808309,0.026808309,0.026808309,0.026808309,0.026808309,0.026808309,0.026808309,0.026808309,0.026808309,0.029325083,0.029325083,0.029325083,0.029325083,0.029325083,0.031299545,0.031299545,0.031299545,0.031299545,0.031299545,0.038160959,0.038160959,0.038160959,0.038160959,0.038160959,0.038160959,0.038160959,0.038160959,0.038160959,0.038160959,0.045638829,0.045638829,0.045638829,0.045638829,0.045638829,0.050212264,0.050212264,0.050212264,0.050212264,0.050212264,0.052965108,0.052965108,0.052965108,0.052965108,0.052965108,0.0481]
 
-def azel2vect(az, el, north=0):
-  """ converter for azimuth elevation 
-      az,el are expected in degrees, in the North-clocwise convention
-      In the scene, positive rotations are counter-clockwise
-      north is the angle (degrees, positive counter_clockwise) between X+ and North """
-  azimuth = -radians(north + az)
-  zenith = radians(90 - el)
-  v = -pgl.Vector3(pgl.Vector3.Spherical( 1., azimuth, zenith ) )
-  v.normalize()
-  return v
-
-def plotSkyTurtle(dim = 30):
-  pgl.Viewer.start()
-  sc = pgl.Scene()
-  for i, (az,el) in enumerate(zip(azimuths,elevations)):
-    pos = -dim*azel2vect (az,el) 
-    sc += pgl.Shape(pgl.Translated(pos,pgl.Sphere(0.5)),pgl.Material(),i+1)
-  pgl.Viewer.display(sc)
-  return sc
 
 def getSkyTurtleAt(i):
   return (elevations[i-1],azimuths[i-1],weights[i-1])
@@ -67,15 +48,6 @@ def getDirectLight( latitude, longitude, jourJul, startH, stopH, step=30, decalS
     tot+= s
   return [ (  degrees(eli),  degrees(azi), wi ) for eli, azi, wi in zip(el, az, w) ]
 
-
-def plotDirect( latitude, longitude, jourJul, startH, stopH, step=30, decalSun = 1, decalGMT = 0, dim = 30):
-  sunPos = getDirectLight( latitude, longitude, jourJul, startH, stopH, step, decalSun, decalGMT )
-  sc = pgl.Scene()
-  for i, (el, az, t) in enumerate(sunPos):
-    pos = -dim*azel2vect (az,el) 
-    sc += pgl.Shape(pgl.Translated(pos,pgl.Sphere(1)),pgl.Material(),i+1)
-  pgl.Viewer.display(sc)
-  return sc
 
 
 

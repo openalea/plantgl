@@ -108,6 +108,56 @@ class LightEstimator:
     self.addLights([(el, az, wg*irradiance) for el, az, wg in sd.skyTurtle()])
     return self
   
+  def add_uniform_sky(self,  irradiance = 1) :
+    """
+    Adds sky lights to the scene using a predefined sky distribution.
+
+    Parameters
+    ----------
+    irradiance : float, optional
+      The global horizontal irradiance emitted from each sky light (default is 1).
+
+    Returns
+    -------
+    self
+      Returns self to allow method chaining.
+    """
+    sky = sd.skyTurtle()
+    nb_lights = len(sky)
+    irradiance_per_light = irradiance / nb_lights
+    self.addLights([(el, az, irradiance_per_light) for el, az, wg in sky])
+    return self
+  
+  def _check_date(self, dates, latitude = 42.77, longitude = 2.86, timezone = None):      
+    import datetime
+    import pandas as pd
+    if dates is None:
+        today = datetime.datetime.today()
+        initdate = datetime.datetime(today.year, today.month, today.day, 1, 0, 0)
+        enddate = datetime.datetime(today.year, today.month, today.day, 23, 30, 0)
+        dates = pd.date_range(initdate, enddate, freq='h')
+    else:
+       if type(dates) == datetime.date:
+          initdate = datetime.datetime(today.year, today.month, today.day, 1, 0, 0)
+          enddate = datetime.datetime(today.year, today.month, today.day, 23, 30, 0)
+          dates = pd.date_range(initdate, enddate, freq='h')
+       elif type(dates) == str:
+           from dateutil.parser import parse
+           dates = parse(dates)           
+           if dates.hour == 0 and dates.minute == 0 and dates.second == 0:
+               initdate = datetime.datetime(dates.year, dates.month, dates.day, 1, 0, 0)
+               enddate = datetime.datetime(dates.year, dates.month, dates.day, 23, 30, 0)
+               dates = pd.date_range(initdate, enddate, freq='h')
+           else:
+               dates = pd.to_datetime(dates)
+       elif type(dates) == list:
+           dates = pd.to_datetime(dates)
+    if timezone is None:
+          timezone = get_timezone(latitude, longitude)
+    if dates.tzinfo is None:
+          dates = dates.tz_localize(timezone)
+    return dates
+  
   def add_sun_sky(self, ghi = 1, dhi = 0.5, dates = None, north = 0, latitude = 42.77, longitude = 2.86, timezone = None):
       """
       Adds both sun and sky components to the light model using specified irradiance values and location/time parameters.
@@ -134,9 +184,7 @@ class LightEstimator:
       - The sun component is added with direct irradiance (ghi - dhi).
       - The sky component is added with diffuse irradiance (dhi).
       """
-      if dates is None:
-          import datetime
-          dates = [datetime.datetime.today()]
+      dates = self._check_date(dates, latitude = latitude, longitude = longitude, timezone = timezone)
       self.add_sun(ghi-dhi, dates=dates, north=north, latitude=latitude, longitude=longitude, timezone=timezone)
       self.add_sky(dhi)
       return self
@@ -146,14 +194,8 @@ class LightEstimator:
       from openalea.astk.sky_sources import sky_turtle
       from openalea.astk.sky_luminance import sky_luminance
       from openalea.astk.sky_irradiance import sky_irradiance
-      if dates is None:
-            import datetime
-            dates = [datetime.datetime.today()]
-      if timezone is None:
-            timezone = get_timezone(latitude, longitude)
-      if type(dates) == list:
-          import pandas as pd
-          dates = pd.DatetimeIndex(dates, tz=timezone)    
+      dates = self._check_date(dates, latitude = latitude, longitude = longitude, timezone = timezone)
+ 
       sky_irr = sky_irradiance(dates=dates, ghi = ghi, dhi = dhi, latitude=latitude, longitude=longitude, timezone=timezone)
       grid = sky_grid()
       sun, sky= sky_luminance(grid, sky_type, sky_irr)
@@ -326,14 +368,141 @@ class LightEstimator:
       sc.add(cmap.pglrepr())
     Viewer.display(sc)
     return sc
+
+
   
-  def plot_sky(self, cmap='jet'):
+  def plot_sky(self, cmap='jet', background='interpolated', bgresolution=1, polar =True, projection ='sin', irradiance = 'horizontal'):
+     """
+    Visualize directional lights on a polar (or planar) sky plot.
+    Parameters
+    ----------
+    cmap : str, optional
+      Matplotlib colormap name used to map irradiance values to colors. Default: 'jet'.
+    background : {None, 'closest', 'interpolated'}, optional
+      Background shading mode:
+        - None: no background shading (only light markers).
+        - 'closest': assign each background cell the irradiance of the nearest light (nearest-neighbor).
+        - 'interpolated': compute each background cell from the 3 nearest lights using distance-based weighting.
+      Default: 'closest'.
+    bgresolution : int, optional
+      Sampling step in degrees for the background azimuth × elevation grid. Typical value 1 (1°×1° grid).
+      Larger values coarsen sampling and speed up computation. Default: 1.
+    polar : bool, optional
+      If True, use a polar projection (azimuth → theta, 0° at geographic North). If False, use a Cartesian plot.
+      Default: True.
+    projection : {'sin', 'flat'}, optional
+      Radial projection transform applied to elevation/zenith:
+        - 'sin' (default): use sin(el) to approximate equal‑area mapping.
+        - 'flat': use linear scaling.
+    irradiance : {'horizontal', 'direct'}, optional
+      How stored irradiance values are interpreted:
+        - 'horizontal' (default): convert directional irradiance to horizontal by multiplying by sin(elevation).
+        - 'direct': use the stored irradiance values unchanged.
+    Expected input on self
+    ----------------------
+    self.lights : iterable of (vector, value)
+      Each entry must be a tuple (vector, value) where
+        - vector: a 3D Cartesian direction (pointing from scene origin toward the light).
+        - value: numeric irradiance associated with that direction.
+    Behavior
+    --------
+    - Converts each 3D direction to azimuth and elevation using the module's utils.vect2azel helper.
+    - Maps:
+      - azimuth (degrees) → polar theta in radians with 0° at North.
+      - elevation (degrees) → radial coordinate using r = 90° − elevation so that horizon (0° elevation) is outermost and zenith (90°) is center.
+    - If irradiance == 'horizontal', adjusts irradiance by sin(elevation).
+    - Plots light directions as a scatter of markers with edgecolor and colors mapped to irradiance via cmap, and attaches a colorbar labeled "Irradiance".
+    - Optional background:
+      - Builds a 2D azimuth × zenith grid (default −180..180 azimuth, 0..90 zenith, or a grid based on unique sampled angles when 'interpolated').
+      - Uses a 2-D KD-tree (ANNKDTree2) on XY components of the light direction vectors for nearest-neighbor queries.
+      - 'closest': assign each grid cell the irradiance of the single nearest light.
+      - 'interpolated': combine the 3 nearest lights using simple inverse-distance-like weighting.
+      - Draws the background as a shaded pcolormesh (with alpha) so that the scatter markers remain visible.
+    Returns
+    -------
+    None
+      Displays the matplotlib figure (plt.show()).
+    ------
+    AssertionError
+      If self.lights is empty.
+      If background is not one of {None, 'interpolated', 'closest'}.
+      If projection is not one of {'sin', 'flat'}.
+      If irradiance is not one of {'horizontal', 'direct'}.
+    Notes
+    -----
+    - Relies on utils.vect2azel / azel2vect for conversions between vectors and azimuth/elevation.
+    - Background neighbor queries require openalea.plantgl.algo.ANNKDTree2 and openalea.plantgl.math utilities (e.g. Vector2).
+    - The implementation uses a simple distance-based weighting for interpolation (3 nearest neighbors).
+    - The radial mapping choices are provided to support either area-preserving-like ('sin') or linear ('flat') visualizations.
+     """
+     assert len(self.lights) > 0, "No lights to plot. Please add lights first."
+     assert background in [None, 'interpolated', 'closest'], "Background must be None, 'interpolated' or 'closest'."
+     assert projection in ['sin', 'flat'], "Projection must be 'sin' or 'flat'."
+     assert irradiance in ['horizontal', 'direct'], "Irradiance must be 'horizontal' or 'direct'."
      import matplotlib.pyplot as plt
-     from math import radians
-     fig, ax = plt.subplots(subplot_kw={'projection': 'polar'})
-     ax.set_theta_zero_location("N")
-     azimuths, elevations, values = zip(*[ (radians(vect2azel(vect)[0]), radians(90-vect2azel(vect)[1]), value)  for vect, value in self.lights])
-     scat = ax.scatter( azimuths, elevations, s=50, c=values, cmap=cmap)
-     fig.colorbar(scat, label='Irradiance')
+     from math import radians, degrees
+     import openalea.plantgl.math as mt
+     from .utils import azel2vect
+     import numpy as np
+     if polar:
+        fig, ax = plt.subplots(subplot_kw={'projection': 'polar'})
+        ax.set_theta_zero_location("N")
+     else:
+        fig, ax = plt.subplots()
+
+     azimuths, zeniths, values = zip(*[ (vect2azel(vect)[0], 90-vect2azel(vect)[1], value)  for vect, value in self.lights])
+     azimuths = np.array(azimuths)
+     zeniths = np.array(zeniths)
+     values = np.array(values)
+     
+     if irradiance == 'horizontal': 
+        values = [v*np.cos( np.radians(z)) if z != 90 else v/1e-6 for z,v in zip(zeniths, values)]
+
+     def projection_transform(el):
+        if projection == 'sin':
+            el = np.sin( np.radians(el) )
+        else:
+            el = el/90.0
+        return el
+     
+     if background is not None:
+        from openalea.plantgl.algo import ANNKDTree2
+        from openalea.plantgl.math import norm
+        refpoints = [vect for vect, value in self.lights]
+        refpoints2d = [mt.Vector2(vect.x, vect.y) for vect in refpoints]
+
+        kdtree = ANNKDTree2(refpoints2d)
+
+        if background == 'interpolated':
+          pX = np.sort(np.unique(azimuths))
+          if pX[0] > -180:
+            pX = np.concatenate( (np.array([-180]), pX) )
+          if pX[-1] < 180:
+            pX = np.concatenate( (pX, np.array([180]) ) )
+          
+          pY = np.sort(np.unique(zeniths))
+          if pY[0] > 0:
+            pY = np.concatenate( (np.array([0]), pY) )
+          if pY[-1] < 90:
+            pY = np.concatenate( (pY, np.array([90]) ) )
+        else:
+          pX = np.arange(-180,181,bgresolution)
+          pY = np.arange(0,91,bgresolution)
+
+        pV = np.zeros( (len(pX), len(pY)) )
+        for i, az in enumerate(pX ):
+              for j, zen in enumerate(pY):
+                    pt = azel2vect(az, 90-zen)
+                    pt2 =mt.Vector2(pt.x, pt.y)
+                    idx = kdtree.k_closest_points( pt2, 1 )[0]
+                    pV[i,j] = values[idx]
+        ax.pcolormesh( np.radians(pX) , projection_transform(pY), pV.T,  shading = 'gouraud', edgecolors=None, cmap=cmap)
+    
+     scat = ax.scatter( np.radians(azimuths), projection_transform(np.array(zeniths)), s=50, edgecolors='black', c=values,  cmap=cmap)
+     ticks = np.arange(0,91,30)
+     ax.set_yticks(projection_transform(ticks), labels=[str(90-yt) for yt in ticks])
+     ax.set_xlabel('Azimuth (degrees)')
+     ax.set_ylabel('Elevation (degrees)')
+     fig.colorbar(scat, label='Irradiance' if irradiance == 'direct' else 'Horizontal Irradiance')
      plt.show()
   
