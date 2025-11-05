@@ -43,6 +43,8 @@
 #include <plantgl/algo/projection/depthsortengine.h>
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/boost_python.h>
+#include <plantgl/python/extract_list.h>
+#include <plantgl/python/export_list.h>
 
 PGL_USING_NAMESPACE
 using namespace boost::python;
@@ -50,15 +52,38 @@ using namespace std;
 #define bp boost::python
 
 
+boost::python::object py_idsurfaces(DepthSortEngine * ze){
+    pgl_hash_map<uint32_t,real_t> res = ze->idsurfaces();
+    boost::python::list bres;
+    for(pgl_hash_map<uint32_t,real_t>::const_iterator _it = res.begin(); _it != res.end(); ++_it){
+      bres.append(boost::python::make_tuple(_it->first,_it->second));
+    }
+    return bres;
+}
+
+boost::python::object py_agregate_idsurfaces(DepthSortEngine * engine) {
+    pgl_hash_map<uint32_t,std::pair<real_t,std::vector<real_t> > > result = 
+        engine->aggregateIdSurfaces();
+    boost::python::dict bres;
+    for(pgl_hash_map<uint32_t,std::pair<real_t,std::vector<real_t> > >::const_iterator _it = result.begin(); _it != result.end(); ++_it){
+      bres[boost::python::object(_it->first)] = boost::python::make_tuple(boost::python::object(_it->second.first), make_list(_it->second.second)());
+    }
+    return bres;
+}
+
 void export_DepthSortEngine()
 {
 #ifdef PGL_WITH_CGAL
 
   class_< DepthSortEngine, bases<ProjectionEngine>, boost::noncopyable >
-      ("DepthSortEngine", init<>("Construct a DepthSortEngine.") )
+      ("DepthSortEngine", init<ProjectionEngine::eIdPolicy>("Construct a DepthSortEngine.",(bp::arg("idPolicy")=ProjectionEngine::eShapeIdBased)) )
       .def("processTriangle", &DepthSortEngine::processTriangle)
       .def("getResult", &DepthSortEngine::getResult, (bp::arg("format")=Color4::eARGB, bp::arg("cameraCoordinates")=true))
       .def("getProjectionResult", &DepthSortEngine::getProjectionResult, (bp::arg("format")=Color4::eARGB, bp::arg("cameraCoordinates")=true))
+      .def("getSurfaceResult", &DepthSortEngine::getSurfaceResult, (bp::arg("cameraCoordinates")=true))
+      .def("getSurfaceProjectionResult", &DepthSortEngine::getSurfaceProjectionResult, (bp::arg("cameraCoordinates")=true))
+      .def("idsurfaces", &py_idsurfaces)
+      .def("aggregateIdSurfaces", &py_agregate_idsurfaces)
       ;
 
 #endif

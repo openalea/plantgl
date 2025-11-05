@@ -73,8 +73,11 @@ object func_findX2(QuantisedFunction * func, real_t y, real_t startingx)
 
 real_t Func_getValue(QuantisedFunction * func, real_t x)
 {
-   if (func->getClamped() && (func->getFirstX() > x  || x > func->getLastX()))
-      throw PythonExc_IndexError();
+   if (func->getClamped() && (func->getFirstX() > x  || x > func->getLastX())){
+    PyErr_SetObject(PyExc_IndexError, boost::python::object(x).ptr());
+    boost::python::throw_error_already_set();
+
+   }
    else return func->getValue(x);
 }
 

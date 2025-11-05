@@ -54,7 +54,18 @@ def azel2vect(az, el, north=0):
       az,el are expected in degrees, in the North-clocwise convention
       In the scene, positive rotations are counter-clockwise
       north is the angle (degrees, positive counter_clockwise) between X+ and North """
-  azimuth = radians(north - az)
+  azimuth = -radians(north + az)
+  zenith = radians(90 - el)
+  v = -pgl.Vector3(pgl.Vector3.Spherical( 1., azimuth, zenith ) )
+  v.normalize()
+  return v
+
+def elaz2vect(el, az, north=0):
+  """ converter for azimuth elevation 
+      az,el are expected in degrees, in the North-clocwise convention
+      In the scene, positive rotations are counter-clockwise
+      north is the angle (degrees, positive counter_clockwise) between X+ and North """
+  azimuth = -radians(north + az)
   zenith = radians(90 - el)
   v = -pgl.Vector3(pgl.Vector3.Spherical( 1., azimuth, zenith ) )
   v.normalize()
@@ -62,7 +73,7 @@ def azel2vect(az, el, north=0):
 
 
 
-def directionalInterceptionGL(scene, directions, north = 0, horizontal = False, screenwidth = 600):
+def directionalInterception_openGL(scene, directions, north = 0, horizontal = False, screenwidth = 600):
   
   pgl.Viewer.display(scene)
   redrawPol = pgl.Viewer.redrawPolicy
@@ -79,7 +90,7 @@ def directionalInterceptionGL(scene, directions, north = 0, horizontal = False, 
   d_factor = max(bbox.getXRange() , bbox.getYRange() , bbox.getZRange())
   shapeLight = {}
 
-  for az, el, wg in directions:
+  for el, az, wg in directions:
     if( az != None and el != None):
         dir = azel2vect(az, el, north)
         if horizontal :
@@ -100,9 +111,6 @@ def directionalInterceptionGL(scene, directions, north = 0, horizontal = False, 
           shapeLight[key] += val*pixsize*wg
         else:
           shapeLight[key] = val*pixsize*wg
-  #valist = [shapeLight[key] for key in shapeLight.keys() ]
-  #print "Min value : ", min(valist)
-  #print "Max value : ", max(valist)
   pgl.Viewer.camera.lookAt(cam_pos, cam_targ ) 
   pgl.Viewer.redrawPolicy = redrawPol
 
@@ -131,11 +139,10 @@ def projectedBBox(bbx, direction, up):
 
 
 
-def directionalInterception(scene, directions, 
+def directionalInterception_zbuffer(scene, directions, 
                             north = 0, 
                             horizontal = False, 
                             screenresolution = None, 
-                            verbose = False, 
                             multithreaded = True,
                             infinitize = None):
 
@@ -146,7 +153,7 @@ def directionalInterception(scene, directions,
     screenresolution = d_factor/100
   pixsize = screenresolution*screenresolution
 
-  for az, el, wg in directions:
+  for el, az, wg in directions:
     if( az != None and el != None):
         dir = azel2vect(az, el, north)
         if horizontal :
@@ -157,9 +164,7 @@ def directionalInterception(scene, directions,
     worldWidth = pjbbx.getXRange()
     worldheight = pjbbx.getYRange()
     w, h = max(2,int(ceil(worldWidth/screenresolution))+1), max(2,int(ceil(worldheight/screenresolution))+1)
-    if verbose : 
-        print('direction :', dir)
-        print('image size :', w,'x',h)
+
     worldWidth = w * screenresolution
     worldheight = h * screenresolution
     z = pgl.ZBufferEngine(w,h,pgl.eIdBased)
@@ -184,8 +189,56 @@ def directionalInterception(scene, directions,
   
   return shapeLight
 
-def scene_irradiance(scene, directions, north = 0, horizontal = False, scene_unit = 'm', screenresolution = None, verbose = False,
-                            infinitize = None):
+def directionalInterception_triangleprojection(scene, directions, 
+                            north = 0, 
+                            horizontal = False):
+
+  bbox=pgl.BoundingBox( scene )
+  d_factor = max(bbox.getXRange() , bbox.getYRange() , bbox.getZRange())
+  shapeLight = {}
+
+  for el, az, wg in directions:
+    if( az != None and el != None):
+        dir = azel2vect(az, el, north)
+        if horizontal :
+            wg /= sin(radians(el))
+
+    up = dir.anOrthogonalVector()
+    print(dir, up)
+    pjbbx = projectedBBox(bbox, dir, up)
+    worldWidth = pjbbx.getXRange()
+    worldheight = pjbbx.getYRange()
+    z = pgl.DepthSortEngine(pgl.ePrimitiveIdBased)
+    z.setOrthographicCamera(-worldWidth/2., worldWidth/2., -worldheight/2., worldheight/2., d_factor , 3*d_factor)
+    eyepos = bbox.getCenter() - dir* d_factor * 2
+    z.lookAt(eyepos, bbox.getCenter(), up) 
+    z.process(scene) 
+
+    values = z.aggregateIdSurfaces()
+    pgl.Viewer.display(z.getSurfaceResult(cameraCoordinates=False))
+    print(values[2])
+    
+    if not values is None:
+        for shid, (val, triangleval) in values.items():
+            shapeLight[shid] = (shapeLight.get(shid,(0, None))[0] + val*wg, [v*wg for v in triangleval] if not shid in shapeLight else [ov+v*wg for ov,v in zip(shapeLight[shid][1],triangleval)])
+  
+  return shapeLight
+
+eOpenGLProjection, eZBufferProjection, eTriangleProjection = range(3)
+
+def directionalInterception(scene, directions, 
+                            north = 0, 
+                            horizontal = False,
+                            method = eZBufferProjection, **args):
+
+  if method == eOpenGLProjection:
+      return directionalInterception_openGL(scene=scene, directions=directions, north=north, horizontal=horizontal, **args)
+  elif method == eZBufferProjection:
+      return directionalInterception_zbuffer(scene=scene, directions=directions, north=north, horizontal=horizontal, **args)
+  elif method == eTriangleProjection:
+      return directionalInterception_triangleprojection(scene=scene, directions=directions, north=north, horizontal=horizontal)
+
+def scene_irradiance(scene, directions, north = 0, horizontal = False, scene_unit = 'm', method = eZBufferProjection, **args):
     """
     Compute the irradiance received by all the shapes of a given scene.
    :Parameters:
@@ -206,13 +259,79 @@ def scene_irradiance(scene, directions, north = 0, horizontal = False, scene_uni
     conv_unit2 = conv_unit**2
 
 
-    res = directionalInterception(scene = scene, directions = directions, north = north, horizontal = horizontal, screenresolution=screenresolution, infinitize=infinitize, verbose=verbose)
+    res = directionalInterception(scene = scene, directions = directions, north = north, horizontal = horizontal, method=method,  **args)
     res = { sid : conv_unit2 * value for sid, value in res.items() }
 
     surfaces = dict([(sid, conv_unit2*sum([pgl.surface(sh.geometry) for sh in shapes])) for sid, shapes in scene.todict().items()])
 
-
+    if method == eTriangleProjection:
+       trsurface = {}
+       for sh in scene:
+          tr = pgl.tesselate(sh.geometry)
+          trsurface.setdefault(sh.id,[])
+          trsurface[sh.id] += [conv_unit2 * pgl.surface(tr.pointAt(i,0),tr.pointAt(i,1),tr.pointAt(i,2)) for i in range(tr.indexListSize())]
+      
+       trirradiance = {}
+       for sid,value  in res.items():
+          lres = []
+          for tid, (v, trsurf) in enumerate(zip(value[1],trsurface[sid])):
+            #if not (0 <= v <= trsurf) :
+            #   raise ValueError("invalid projected surface", v, trsurf, sid, tid)
+            lres.append(v/trsurf)
+          trirradiance[sid] = lres
+    else:
+       trirradiance = None
+    
     irradiance = { sid : value / surfaces[sid] for sid, value in res.items() }
 
     import pandas
-    return pandas.DataFrame( {'area' : surfaces, 'irradiance' : irradiance} )
+    return pandas.DataFrame( {'area' : surfaces, 'irradiance' : irradiance} ), trirradiance
+
+
+class LightEstimator:
+  def __init__(self, method, scene):
+      self.method = method
+      self.scene = scene
+      self.lights = []
+
+  def setLights(self, lights):
+    """
+    Add a set of lights to the estimator.
+
+    Parameters
+    ----------
+    lights : list
+        A list of tuples (direction, intensity) representing the lights to add.
+    """
+    self.lights.append(lights)
+  
+  def setLightFromDirections(self, directions, north = 0, horizontal = False):
+    """
+    Set lights based on specified directions.
+
+    This function calculates light directional vectors and intensity for each specified 
+    direction (elevation, azimuth and weight) and adds them to the lights list. 
+    If the horizontal flag is set to True, the intensity is supposed to be measured 
+    on an horizontal plane and thus adjusted according to the sine of the elevation angle.
+
+    :param directions: A list of tuples, where each tuple contains 
+                       an elevation, an azimuth and a weight.
+    :param north: The angle between the north direction of the azimuths 
+                  (in degrees-positive clockwise). Default is 0.
+    :param horizontal: A boolean flag specifying if the intensity is given using a horizontal convention and should be adjusted 
+                     (True) or not (False). Default is False.
+    """
+
+    for el, az, wg in directions:
+      if( az != None and el != None):
+            dir = azel2vect(az, el, north)
+            if horizontal :
+                wg /= sin(radians(el))
+            self.lights.append( (dir, wg) )
+    
+
+  def estimate(self,  method, **args):
+      return directionalInterception(self.scene, self.lights, method, **args)
+   
+  def plot(self, a_property, minval = None, maxval = None, display = True):
+      pass

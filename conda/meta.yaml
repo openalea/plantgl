@@ -13,46 +13,46 @@ about:
   summary: An open-source graphic toolkit for the creation, simulation and analysis of 3D virtual plants.
 
 build:
-  string: py{{ PY_VER }}
   number: 0
-  preserve_egg_dir: True
+  script:
+    - {{ PYTHON }} -m pip install --prefix={{ PREFIX }} . --no-deps --no-build-isolation -vv
 
 requirements:
   host:
-      - python
-      - setuptools
-      - setuptools_scm
-      - numpy
-      - qt-main
-      - pyqt
-      - sip
-      - libpng
-      - zlib
-      - eigen
-      - cgal-cpp
-      - qhull
-      - ann
-      - boost
-      - expat                              # [linux]
-      - libxcb                             # [linux]
-      - pthread-stubs                      # [linux]
-      - {{ cdt('mesa-libgl-devel') }}      # [linux]
-      - libglu                             # [linux]
-      - xorg-libxfixes                     # [linux]
-      - xorg-libx11                        # [linux]
-  
-          
+    - python
+    - setuptools_scm
+    - scikit-build-core
+    - numpy
+    - qt-main
+    - pyqt
+    - gmp
+    - mpfr
+    - libpng
+    - zlib
+    - eigen
+    - cgal-cpp
+    - qhull
+    - ann
+    - boost
+    - libxcb                             # [linux]
+    - pthread-stubs                      # [linux]
+    - {{ cdt('mesa-libgl-devel') }}      # [linux] # match libqglviewer CDT GL strategy
+    - libglu                             # [linux]
+    - xorg-libxfixes                     # [linux]
+    - xorg-libx11                        # [linux]
+
   build:
     - python
-    - binutils_impl_linux-64            # [linux]
     - {{ compiler('cxx') }}
+    #- {{ stdlib('cxx') }}
+    - cmake
+    - pkg-config                        # [linux]
+    - binutils_impl_linux-64            # [linux]
     - bison                             # [unix]
     - flex                              # [unix]
     - m2-bison                          # [win]
     - m2-flex                           # [win]
     - menuinst                          # [win]
-    - cmake
-    - pkg-config                        # [linux]
     - make                              # [unix]
     - {{ cdt('mesa-libgl-devel') }}     # [linux]
     - {{ cdt('mesa-dri-drivers') }}     # [linux]
@@ -67,23 +67,21 @@ requirements:
     - {{ cdt('libx11-devel') }}          # [linux]
 
   run:
-      - python
-      - numpy
-      - setuptools
-      - ipython
-      - boost 
-      - qhull
-      - eigen
-      - cgal-cpp
-      - ann
-      - qt-main
-      - libpng
-      - zlib
-      - pyqt
-      - pyopengl
-      - pyqglviewer
-      - xorg-libxfixes                     # [linux]
-      - libglu                             # [linux]
+    - python
+    - numpy
+    - ipython
+    - pyopengl
+    - pyqglviewer
+    - eigen
+    - zlib
+    - xorg-libxfixes    # [linux]
+    - libglu            # [linux]
+    # guards for ABI-sensitive libraries
+    - {{ pin_compatible('pyqt', max_pin='x.x') }}
+    - {{ pin_compatible('boost', max_pin='x.x') }}
+    - {{ pin_compatible('cgal-cpp', max_pin='x.x') }}
+    - {{ pin_compatible('qhull', max_pin='x.x') }}
+    - {{ pin_compatible('ann', max_pin='x.x') }}
 
 
 test:

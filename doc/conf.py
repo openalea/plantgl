@@ -35,6 +35,7 @@ extensions = [
     "sphinx_favicon",  # support for favicon
     "nbsphinx",  # for integrating jupyter notebooks
     "myst_parser",  # for parsing .md files
+    'sphinx.ext.inheritance_diagram',
 ]
 
 nbsphinx_thumbnails = {

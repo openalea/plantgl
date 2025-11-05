@@ -1,0 +1,126 @@
+[build-system]
+requires = [
+   "scikit-build-core", "setuptools-scm"
+]
+build-backend = "scikit_build_core.build"
+
+#[tool.setuptools]
+#include-package-data = true # force explicit declaration of data (disable automatic inclusion)
+
+# enable dynamic version based on git tags
+[tool.setuptools_scm]
+fallback_version = "3.21.1.dev0"
+version_scheme = "guess-next-dev"
+local_scheme = "no-local-version"
+
+[project]
+name = "openalea.plantgl"
+authors = [
+  { name = "Frederic Boudon" },
+  { name = "Christophe Pradal" },
+  { name = "Christophe Nouguier" },
+]
+description = "FSPM tools for OpenAlea"
+readme = "README.rst"
+license = "CECILL-C"
+license-files = ["LICEN[CS]E*"]
+requires-python = ">=3.10"
+dynamic = ["version"]
+classifiers = [
+  "Development Status :: 1 - Planning",
+  "Intended Audience :: Science/Research",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Scientific/Engineering",
+]
+
+# you can list here all dependencies that are pip-instalable, and that have a name identical to the one used by conda (to allow reuse of this list in meta.yaml)
+# If conda name is different, please do not declare the pip name, and declare conda name in the next section
+dependencies = [
+    "pandas",
+    "numpy",
+]
+
+[project.optional-dependencies]
+test = [
+  "pytest",
+  "nbmake",
+]
+dev = [
+  "pytest >=6",
+  "pytest-cov >=3",
+]
+doc = [
+  "sphinx-autobuild",
+  "pydata-sphinx-theme",
+  "myst-parser",
+  "sphinx-favicon",
+  "ipykernel",
+  "sphinx-copybutton",
+  "ipython_genutils",
+  "nbsphinx",
+]
+
+# section specific to conda-only distributed package (not used by pip yet)
+[tool.conda.environment]
+channels = [
+  "openalea3",
+  "conda-forge"
+]
+dependencies = [
+    "pyopengl",
+    "pyqglviewer",
+    "boost",
+    "qhull",
+    "zlib",
+    "cgal-cpp",
+    "eigen",
+    "ann"
+]
+
+[tool.scikit-build]
+build-dir = "./build/"
+metadata.version.provider = "scikit_build_core.metadata.setuptools_scm"
+logging.level = "WARNING"
+sdist.include = ["*.so", "*.dylib", "*.dll", "*.pyd", "src/openalea/plantgl/config.py"]
+build.verbose = true
+experimental = true
+
+[tool.scikit-build.wheel]
+packages = ["src/openalea/"]
+
+[tool.scikit-build.cmake]
+build-type = "Release"
+source-dir = "."
+
+[project.urls]
+Repository = "https://github.com/openalea/plantgl"
+Homepage = "https://plantgl.readthedocs.io/"
+"Bug Tracker" = "https://github.com/openalea/plantgl/issues"
+Discussions = "https://github.com/openalea/plantgl/discussions"
+Changelog = "https://github.com/openalea/plantgl/releases"
+
+[project.entry-points."wralea"]
+"plantgl.edition" = "openalea.plantgl.wralea.edition"
+"plantgl.objects" = "openalea.plantgl.wralea.objects"
+"plantgl.visualization" = "openalea.plantgl.wralea.visualization"
+"plantgl.operator" = "openalea.plantgl.wralea.operator"
+"plantgl.dresser" = "openalea.plantgl.wralea.dresser"
+"plantgl.demos" = "openalea.plantgl.wralea.demos"
+
+[project.entry-points."oalab.qt_control"]
+"PluginColorListWidget" = "openalea.plantgl.oaplugins:PluginColorListWidget"
+"PluginMaterialListWidget" = "openalea.plantgl.oaplugins:PluginMaterialListWidget"
+"PluginCurve2DWidget" = "openalea.plantgl.oaplugins:PluginCurve2DWidget"
+"PluginQuantisedFunctionWidget" = "openalea.plantgl.oaplugins:PluginQuantisedFunctionWidget"
+"PluginPatchWidget" = "openalea.plantgl.oaplugins:PluginPatchWidget"
+
+[project.entry-points."oalab.interface"]
+"PlantGLOAInterfacePlugin" = "openalea.plantgl.oaplugins.interfaces:PlantGLOAInterfacePlugin"

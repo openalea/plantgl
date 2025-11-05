@@ -86,7 +86,7 @@ static bool DestroyedAppli = false;
 void initViewerAppli(){
     if(VIEWER_APPLI == NULL){
 #ifdef QT_THREAD_SUPPORT
-        if(qApp == NULL && MODE){
+        if((qApp == NULL && QApplication::instance() == NULL) && MODE){
             if(!DestroyedAppli)
                 VIEWER_APPLI = new ViewerThreadedAppli();
             else

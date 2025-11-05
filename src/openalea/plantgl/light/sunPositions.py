@@ -115,7 +115,7 @@ class Sequence:
         # jour (julien in [1, 365])
         # mindeb, minfin : heure de debut et de fin en minute (heure TSV temps solaire vrai)
 
-        # retourne un triplet (tabAZ, tabH, tabHeur)
+        # retourne un triplet (tabH, tabAZ, tabHeur)
 
         pasAngulaire = int(pasMinute) * 0.25 * math.pi / 180
         declin = 0.0
@@ -147,7 +147,7 @@ class Sequence:
             self.nbHauteurMax = self.nbHauteurJour
 
 
-        return tabAZ, tabH, tabHeur
+        return tabH, tabAZ,  tabHeur
 
 
 if __name__ == "__main__":
@@ -166,7 +166,7 @@ if __name__ == "__main__":
     angleHoraireMax = seq.angleHoraireMax(declinaison,latitude*math.pi/180)
     print("Angle Horaire Max : ",angleHoraireMax)
     print("Angle horaire de 1362 : ",seq.angleHoraire(1362))
-    (az,el,heur) = seq.positionSoleil(pas, latitude*math.pi/180, jour, 0, hfin)
+    (el, az,heur) = seq.positionSoleil(pas, latitude*math.pi/180, jour, 0, hfin)
     assert( len(az) == len(el) )
     for i in range(len(az)) :
         print("Azimuth : ", az[i] * 180. / math.pi,"  Elevation : ", el[i] * 180. / math.pi)
