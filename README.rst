@@ -145,7 +145,7 @@ You're done !
 Documentation
 =============
 
-Documentation is available at `<https://plantgl-fb.readthedocs.io/en/latest>`_
+Documentation is available at `<https://plantgl.readthedocs.io/en/latest>`_
 
 Help and Support
 ----------------
