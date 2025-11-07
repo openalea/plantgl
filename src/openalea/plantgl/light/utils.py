@@ -142,7 +142,8 @@ def get_timezone(latitude, longitude):
   result = get_tz(lat=latitude, lng=longitude)
   return result
 
-LOCALIZATION_CACHE = {}
+LOCALIZATION_CACHE = { 'Montpellier': {'latitude': 43.610769, 'longitude': 3.876716, 'altitude': 40, 'timezone': 'Europe/Paris'}
+}
 
 def city_localization(city_name):
       """
@@ -178,7 +179,10 @@ def city_localization(city_name):
         from geopy.geocoders import Nominatim
         geolocator = Nominatim(user_agent="plantgl_lightestimator")
         location = geolocator.geocode(city_name)
-        LOCALIZATION_CACHE[city_name] = (location.latitude, location.longitude, location.altitude, get_timezone(location.latitude, location.longitude))
+        LOCALIZATION_CACHE[city_name] = {'latitude': location.latitude, 
+                                         'longitude': location.longitude, 
+                                         'altitude': location.altitude, 
+                                         'timezone': get_timezone(location.latitude, location.longitude)}
         return LOCALIZATION_CACHE[city_name]
       except Exception as e:
         raise ValueError(f"Could not localize city '{city_name}': {e}")

@@ -3,8 +3,6 @@ from . import sunDome as sd
 from .utils import get_timezone, estimate_dir_vectors, vect2azel
 from .light import scene_irradiance_from_dir_vectors, eZBufferProjection
 
-Montpellier = {'latitude': 43.610769, 'longitude': 3.876716, 'altitude': 40, 'timezone': 'Europe/Paris'}
-
 class LightEstimator:
   """
   LightEstimator(scene)
@@ -72,13 +70,13 @@ class LightEstimator:
     heavy; sampling resolution and number of lights should be tuned for interactive use.
   """
   
-  def __init__(self, scene = None):
+  def __init__(self, scene = None, north = 90):
       self.scene = scene
-      self.north = 90
+      self.north = north
       self.lights = []
       self.localization = None
       self.result = None
-      self.localize(**Montpellier)
+      self.localize_to_city("Montpellier")
 
   def set_scene(self, scene, north = 90):
     """
@@ -127,7 +125,7 @@ class LightEstimator:
     """
     if timezone is None:
         timezone = get_timezone(latitude, longitude)
-    self.localization = (latitude, longitude, altitude, timezone)
+    self.localization = {'latitude': latitude, 'longitude': longitude, 'altitude': altitude, 'timezone': timezone}
     return self
 
   def localize_to_city(self, city_name):
@@ -155,7 +153,7 @@ class LightEstimator:
       >>> light_estimator.localize_to_city("Paris, France")
       """
       from .utils import city_localization
-      self.localize(*city_localization(city_name))
+      self.localize(**city_localization(city_name))
       return self
 
   def total_horizontal_irradiance(self):
@@ -274,8 +272,7 @@ class LightEstimator:
        elif type(dates) == list:
            dates = pd.to_datetime(dates)
     if dates.tzinfo is None:
-          timezone = self.localization[3]
-          dates = dates.tz_localize(timezone)
+          dates = dates.tz_localize(self.localization['timezone'])
     return dates
     
   def _check_daydate(self, date):      
@@ -291,8 +288,7 @@ class LightEstimator:
            date = parse(date)
     date = pd.to_datetime(date)
     if date.tzinfo is None:
-          timezone = self.localization[3]
-          date = date.tz_localize(timezone)
+          date = date.tz_localize(self.localization['timezone'])
     return date
     
   def add_sun(self, dates = None,  irradiance = 1) :
@@ -323,7 +319,7 @@ class LightEstimator:
         distributing the specified irradiance among them.
       """
       dates = self._check_date(dates)
-      latitude, longitude, altitude,timezone = self.localization
+      latitude, longitude = self.localization['latitude'], self.localization['longitude']
       dirs = []
       for date in dates:
         cdate = date.astimezone('UTC')
@@ -397,7 +393,7 @@ class LightEstimator:
       """
       assert ghi >= dhi, "GHI must be greater than or equal to DHI."
       dates = self._check_date(dates)
-      self.add_sun(ghi-dhi, dates=dates)
+      self.add_sun(irradiance=ghi-dhi, dates=dates)
       self.add_sky(dhi)
       return self
 
@@ -437,14 +433,10 @@ class LightEstimator:
         
       from openalea.astk.sky_irradiance import sky_irradiance
       dates = self._check_daydate(dates)
- 
-      latitude, longitude, altitude, timezone = self.localization
-      return sky_irradiance(daydate=dates, 
-                            attenuation=attenuation, 
-                            latitude=latitude, 
-                            longitude=longitude, 
-                            altitude=altitude, 
-                            timezone=timezone)
+
+      return sky_irradiance(daydate=dates,
+                            attenuation=attenuation,
+                            **self.localization)
 
   def add_astk_sun_sky_from_irradiances(self, irradiances, sky_type='blended', sky_subdivision=4):
       """
@@ -625,8 +617,7 @@ class LightEstimator:
 
         dates = self._check_date(dates)
         sky_discretization = [ 1, 6, 16, 26, 46, 66, 91, 136, 196, 251, 341, 406, 556, 751, 976][sky_subdivision]
-        latitude, longitude, altitude, timezone = self.localization
-        sky_irr = sky_irradiance(dates=dates, ghi = ghi, dhi = dhi, latitude=latitude, longitude=longitude, altitude=altitude, timezone=timezone)
+        sky_irr = sky_irradiance(dates=dates, ghi = ghi, dhi = dhi, **self.localization)
         sun, sky = sky_sources(sky_type=sky_type, sky_irradiance=sky_irr, sky_dirs = sky_turtle(sky_discretization), scale="ghi", north=0)
         self.add_lights( sun+sky, horizontal=True)
       except ImportError:
