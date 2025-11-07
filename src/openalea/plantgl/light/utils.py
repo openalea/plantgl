@@ -1,31 +1,31 @@
 from math import radians, degrees, sin
 import openalea.plantgl.all as pgl
 
-def azel2vect(az, el, north=0):
+def azel2vect(az, el, north = 0):
   """ converter for azimuth elevation 
       az,el are expected in degrees, in the North-clocwise convention
       In the scene, positive rotations are counter-clockwise
       north is the angle (degrees, positive counter_clockwise) between X+ and North """
-  azimuth = -radians(north + az)
+  azimuth = radians(- north - az)
   zenith = radians(90 - el)
   v = -pgl.Vector3(pgl.Vector3.Spherical( 1., azimuth, zenith ) )
   v.normalize()
   return v
 
-def elaz2vect(el, az, north=0):
+def elaz2vect(el, az, north = 0):
   """ converter for azimuth elevation 
       az,el are expected in degrees, in the North-clocwise convention
       In the scene, positive rotations are counter-clockwise
       north is the angle (degrees, positive counter_clockwise) between X+ and North """
   return azel2vect(az, el, north)
 
-def vect2azel(vector, north=0):
+def vect2azel(vector, north = 0):
   svec = pgl.Vector3.Spherical(-vector)
   el = 90 - degrees( svec.phi )
-  az = -degrees( svec.theta ) - north
+  az = - north - degrees( svec.theta )
   return (az, el)
 
-def vect2elaz(vector, north=0):
+def vect2elaz(vector, north = 0):
     az, el = vect2azel(vector, north)
     return (el, az)
 
@@ -45,7 +45,11 @@ def estimate_dir_vectors( directions, north = 0, horizontal = False):
     for el, az, irr in directions:
         dir = azel2vect(az, el, north)
         if horizontal :
-            irr /= sin(radians(el))
+            if el == 0:
+                # horizontal sun cannot have any horizontal component
+                irr = 0
+            else:
+              irr /= sin(radians(el))
         results.append((dir,irr))
     return results
 
@@ -138,6 +142,46 @@ def get_timezone(latitude, longitude):
   result = get_tz(lat=latitude, lng=longitude)
   return result
 
+LOCALIZATION_CACHE = {}
+
+def city_localization(city_name):
+      """
+      Retrieve the location (latitude, longitude, altitude, timezone) of a city from its name.
+
+      This method uses the geopy library to retrieve the geographical coordinates (latitude and longitude)
+      of a given city.
+
+      Parameters
+      ----------
+      city_name : str
+        The name of the city to locate. The city name should be specific enough for geopy to find it uniquely.
+
+      Raises
+      ------
+      ImportError
+        If the geopy package is not installed.
+      ValueError
+        If the city cannot be found or if there's an error in the geolocation process.
+
+      Examples
+      --------
+      >>> light_estimator = LightEstimator()
+      >>> light_estimator.localize_to_city("Paris, France")
+      """
+      if city_name in LOCALIZATION_CACHE:
+          return LOCALIZATION_CACHE[city_name]
+      try:
+        import geopy
+      except ImportError:
+        raise ImportError("geopy is required for localize_from_city. Please install geopy.")
+      try:
+        from geopy.geocoders import Nominatim
+        geolocator = Nominatim(user_agent="plantgl_lightestimator")
+        location = geolocator.geocode(city_name)
+        LOCALIZATION_CACHE[city_name] = (location.latitude, location.longitude, location.altitude, get_timezone(location.latitude, location.longitude))
+        return LOCALIZATION_CACHE[city_name]
+      except Exception as e:
+        raise ValueError(f"Could not localize city '{city_name}': {e}")
 
 
 def haversine_distance(lat1_deg, lon1_deg, lat2_deg, lon2_deg, R=1):

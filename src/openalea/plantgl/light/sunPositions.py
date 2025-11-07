@@ -13,6 +13,9 @@
 
 import math
 
+constante_solaire = 1365 # W/m2
+flux_solaire_moyen = 342 # W/m2
+
 class Sequence:
     def __init__(self, parent=None):
         self.nbHauteurJour = 0
@@ -43,11 +46,13 @@ class Sequence:
         sinAz = math.cos(declinaison) * math.sin(angleHoraire) / math.cos(hauteur)
         cosAz = (math.sin(latitude) * math.cos(declinaison) * math.cos(angleHoraire) - math.cos(latitude) * math.sin(declinaison)) / math.cos(hauteur)
         if (cosAz >= 0) :
-            return math.asin(sinAz)
+            result = math.asin(sinAz)
         elif (sinAz >= 0) :
-            return (math.pi - math.asin(sinAz))
+            result = (math.pi - math.asin(sinAz))
         else:
-            return (-math.pi - math.asin(sinAz))
+            result = (-math.pi - math.asin(sinAz))
+        result = (result + math.pi) % (2 * math.pi)
+        return result
 
     def angleHoraire(self, m): # m As Integer) As Single
         return (m * 0.25 - 180) * math.pi / 180.
