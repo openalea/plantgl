@@ -105,7 +105,7 @@ class LightEstimator:
     self.lights = []
     return self
   
-  def localize(self, latitude, longitude, altitude, timezone = None):
+  def localize(self, latitude, longitude, altitude, timezone = None, name = None):
     """
     Set the localization parameters for the estimator.
 
@@ -126,6 +126,7 @@ class LightEstimator:
     if timezone is None:
         timezone = get_timezone(latitude, longitude)
     self.localization = {'latitude': latitude, 'longitude': longitude, 'altitude': altitude, 'timezone': timezone}
+    self.localization_name = name
     return self
 
   def localize_to_city(self, city_name):
@@ -153,7 +154,7 @@ class LightEstimator:
       >>> light_estimator.localize_to_city("Paris, France")
       """
       from .utils import city_localization
-      self.localize(**city_localization(city_name))
+      self.localize(name=city_name, **city_localization(city_name))
       return self
 
   def total_horizontal_irradiance(self):
@@ -938,6 +939,11 @@ class LightEstimator:
      ax.set_xlabel('Azimuth')
      ax.set_ylabel('Elevation (degrees)')
      fig.colorbar(scat, label='Direct Irradiance' if irradiance == 'direct' else 'Horizontal Irradiance')
+     if not self.localization_name is None :
+        ax.set_title(self.localization_name)
+     else:
+        ax.set_title(f"Lat: {self.localization['latitude']}, Lon: {self.localization['longitude']}")
+     fig.tight_layout()
      plt.show()
      return self
   
