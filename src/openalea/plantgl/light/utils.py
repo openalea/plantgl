@@ -1,6 +1,21 @@
 from math import radians, degrees, sin
 import openalea.plantgl.all as pgl
 
+
+def to_horizontal_irradiance(normal_irradiance, elevation):
+    if elevation <= 0:
+      # horizontal sun cannot have any horizontal component
+      return 0
+    else:
+      return normal_irradiance * sin(radians(elevation))
+
+def to_normal_irradiance(horizontal_irradiance, elevation):
+    if elevation <= 0:
+      # horizontal sun cannot have any horizontal component
+      return horizontal_irradiance
+    else:
+      return horizontal_irradiance / sin(radians(elevation))
+
 def azel2vect(az, el, north = 0):
   """ converter for azimuth elevation 
       az,el are expected in degrees, in the North-clocwise convention
@@ -45,11 +60,7 @@ def estimate_dir_vectors( directions, north = 0, horizontal = False):
     for el, az, irr in directions:
         dir = azel2vect(az, el, north)
         if horizontal :
-            if el == 0:
-                # horizontal sun cannot have any horizontal component
-                irr = 0
-            else:
-              irr /= sin(radians(el))
+            irr = to_horizontal_irradiance(irr, el)
         results.append((dir,irr))
     return results
 
@@ -213,3 +224,4 @@ def haversine_distance(lat1_deg, lon1_deg, lat2_deg, lon2_deg, R=1):
     c = 2 * math.asin(min(1.0, math.sqrt(a)))
     
     return R * c
+

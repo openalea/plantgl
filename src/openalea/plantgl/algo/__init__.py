@@ -1,6 +1,8 @@
 import openalea.plantgl.scenegraph
 from ._pglalgo import *
 from copy import deepcopy
+from .visibilitymask import PonctualVisibilityMask
+
 
 def pushEvent(self):
     self._pystack.append(dict([(p,(c,c(getattr(self,p)))) for p,c in self._params.items()]))

@@ -231,6 +231,11 @@ ProjectionCameraPtr ProjectionCamera::sphericalCamera(real_t viewAngle, real_t n
     return ProjectionCameraPtr(new SphericalCamera(viewAngle, near, far));
 }
 
+ProjectionCameraPtr ProjectionCamera::equirectangularCamera(real_t viewAngle, real_t near, real_t far)
+{
+    return ProjectionCameraPtr(new EquirectangularCamera(viewAngle, near, far));
+}
+
 ProjectionCameraPtr ProjectionCamera::cylindricalCamera(real_t viewAngle, real_t bottom, real_t top, real_t near, real_t far)
 {
     return ProjectionCameraPtr(new CylindricalCamera(viewAngle, bottom, top, near, far));
@@ -359,21 +364,27 @@ SphericalCamera::~SphericalCamera() {}
 
 ProjectionCameraPtr SphericalCamera::copy() { return ProjectionCameraPtr(new SphericalCamera(*this));}
 
+
 Vector3::Spherical SphericalCamera::NDCToSpherical(const Vector3& vertexNDC) const
 {
-    real_t x = (fabs(vertexNDC.x()) > GEOM_EPSILON ? vertexNDC.x() : GEOM_EPSILON);
-    real_t theta = atan2(vertexNDC.y(),x);
-    real_t phi = x*__viewAngle/cos(theta);
+    real_t x = vertexNDC.x();
+    real_t y = vertexNDC.y();
+
+    real_t rho = std::sqrt(x*x + y*y);
+    real_t theta = std::atan2(y, x);
+    real_t phi = rho * __viewAngle;   // projection équidistante
 
     return Vector3::Spherical(vertexNDC.z(), theta, phi);
-
 }
+
 
 Vector3 SphericalCamera::SphericalToNDC(const Vector3::Spherical& sph) const
 {
-    real_t normedphi = sph.phi/__viewAngle;
+    real_t rho = sph.phi / __viewAngle;
+    real_t x = rho * std::cos(sph.theta);
+    real_t y = rho * std::sin(sph.theta);
 
-    return Vector3(normedphi * cos(sph.theta), normedphi * sin(sph.theta),  sph.radius);    
+    return Vector3(x, y, sph.radius);
 }
 
 
@@ -410,10 +421,69 @@ Ray SphericalCamera::rasterToWorldRay(uint16_t x, uint16_t y, const uint16_t ima
     return Ray(__position, direction.normed());
 }
 
+bool SphericalCamera::isValidPixel(uint16_t x, uint16_t y, const uint16_t imageWidth, const uint16_t imageHeight) const {
+    float ndc_x, ndc_y;
+
+    // 1) tester le centre (rapide)
+    Vector3 ndc = rasterToNDC(Vector3(x + 0.5f, y + 0.5f, 1), imageWidth, imageHeight);
+    if (ndc.x()*ndc.x() + ndc.y()*ndc.y() <= 1.0f)
+        return true;
+
+    // 2) tester les coins
+    for (int dx = 0; dx <= 1; ++dx)
+        for (int dy = 0; dy <= 1; ++dy)
+        {
+            Vector3 ndc = rasterToNDC(Vector3(x + dx, y + dy, 1), imageWidth, imageHeight);
+            if (ndc.x()*ndc.x() + ndc.y()*ndc.y() <= 1.0f)
+                return true;
+        }
+
+    return false;
+
+//     return (norm(Vector2(x-imageWidth/2,y-imageHeight/2)) <= pglMin(imageWidth,imageHeight)/2);
+}
+
+/* ----------------------------------------------------------------------- */
+EquirectangularCamera::EquirectangularCamera(real_t viewAngle, real_t _near, real_t _far):
+        SphericalCamera(viewAngle, _near, _far){
+            __type = eEquirectangular;
+            __viewAngle = viewAngle*GEOM_RAD/2;
+}
+
+
+EquirectangularCamera::~EquirectangularCamera() {}
+
+ProjectionCameraPtr EquirectangularCamera::copy() { return ProjectionCameraPtr(new EquirectangularCamera(*this));}
+
+Vector3::Spherical EquirectangularCamera::NDCToSpherical(const Vector3& ndc) const
+{
+    
+    // Horizontal : plein 360° (classique en equirectangular)
+    real_t theta = ndc.x() * M_PI;    // [-1,1] → [-π,π]
+
+    // Vertical : limité par viewAngle
+    // φ = 0 (centre vers +Z) quand ndc.y = +1
+    // φ = viewAngle quand ndc.y = -1
+    real_t phi = ((real_t)1.0 - ndc.y()) * (__viewAngle * real_t(0.5));
+
+    return Vector3::Spherical(ndc.z(), theta, phi);
+}
+
+Vector3 EquirectangularCamera::SphericalToNDC(const Vector3::Spherical& sph) const
+{
+    // Horizontal : 360°
+    real_t ndc_x = sph.theta / M_PI;   // [-π,π] → [-1,1]
+
+    // Vertical inverse
+    real_t ndc_y = 1.0 - (2.0 * sph.phi / __viewAngle);
+
+    return Vector3(ndc_x, ndc_y, sph.radius);
+}
+
 /* ----------------------------------------------------------------------- */
 
 CylindricalCamera::CylindricalCamera(real_t viewAngle, real_t _bottom, real_t _top, real_t _near, real_t _far):
-        ProjectionCamera(_near, _far, eHemispheric, eRayIntersection),
+        ProjectionCamera(_near, _far, eCylindrical, eRayIntersection),
         top(_top), bottom(_bottom),
         __viewAngle(viewAngle*GEOM_RAD/2){
         __yscale = 2. / (_top - _bottom) ;

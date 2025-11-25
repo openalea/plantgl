@@ -47,6 +47,7 @@ void export_ProjectionCamera()
     .value("eOrthographic",ProjectionCamera::eOrthographic)
     .value("ePerspective",ProjectionCamera::ePerspective)
     .value("eHemispheric",ProjectionCamera::eHemispheric)
+    .value("eEquirectangular",ProjectionCamera::eEquirectangular)
     .value("eCylindrical",ProjectionCamera::eCylindrical)
       .export_values()
       ;
@@ -132,7 +133,12 @@ void export_ProjectionCamera()
         .def("SphericalToNDC",&SphericalCamera::SphericalToNDC)
       ;
 
-      implicitly_convertible< SphericalCameraPtr, ProjectionCameraPtr >();
+  class_< EquirectangularCamera, EquirectangularCameraPtr, bases<SphericalCamera>, boost::noncopyable  > 
+      ("EquirectangularCamera", init< real_t , real_t , real_t > 
+        ("Construct an EquirectangularCamera", (bp::arg("viewAngle")=180,bp::arg("near")=0,bp::arg("far")=REAL_MAX)))
+      ;
+
+      implicitly_convertible< EquirectangularCameraPtr, SphericalCameraPtr >();
 
 
 }

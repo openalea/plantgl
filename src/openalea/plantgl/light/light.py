@@ -1,4 +1,3 @@
-from . import sunDome as sd
 import openalea.plantgl.all as pgl
 from .utils import azel2vect, estimate_dir_vectors, getProjectionMatrix, projectedBBox
 
@@ -34,18 +33,19 @@ from .utils import azel2vect, estimate_dir_vectors, getProjectionMatrix, project
 # Note: In all these algorithms the plant projection to compute the intercepted surfaces is orthographic
 # and based on a viewport whose resolution is 600x600
 
-def diffuseInterception(scene, screenresolution = None):
-  return  directionalInterception(scene, directions = sd.skyTurtle(), screenresolution = screenresolution)
+def diffuseInterception(scene, ghi, screenresolution = None):
+  from .sky import soc_sky_sources
+  return  directionalInterception(scene, directions = soc_sky_sources(ghi), screenresolution = screenresolution)
 
-def directInterception(scene, latitude=43.36, longitude=3.52, jj=221, start=7, stop=19, stp=30, dsun = 1, dGMT = 0, screenresolution = None):
-  direct = sd.getDirectLight( latitude=latitude , longitude=longitude, jourJul=jj, startH=start, stopH=stop, step=stp, decalSun = dsun, decalGMT = dGMT)
-  return  directionalInterception(scene, directions = direct, screenresolution = screenresolution)
+def directInterception(scene, dates, irradiance, latitude=43.36, longitude=3.52,  screenresolution = None):
+  from .sun import sun_sources
+  return  directionalInterception(scene, sun_sources(dates, latitude, longitude, irradiance), screenresolution = screenresolution)
 
-def totalInterception(scene, latitude=43.36, longitude=3.52, jj=221, start=7, stop=19, stp=30, dsun = 1, dGMT = 0, screenresolution = None):
-  diffu = sd.skyTurtle()
-  direct =  sd.getDirectLight( latitude=latitude , longitude=longitude, jourJul=jj, startH=start, stopH=stop, step=stp, decalSun = dsun, decalGMT = dGMT)
-  all = [estimate_dir_vectors(d,0,True) for d in direct] + [estimate_dir_vectors(d, 0, False) for d in diffu]
-  return directionalInterception_from_dir_vectors(scene, directions = all, screenresolution = screenresolution)
+def totalInterception(scene, ghi, dhi, dates, latitude=43.36, longitude=3.52, screenresolution = None):
+  from .sky import soc_sky_sources
+  from .sun import sun_sources
+  directions = soc_sky_sources(dhi) + sun_sources(dates, latitude, longitude, ghi-dhi)
+  return directionalInterception(scene, directions = directions, screenresolution = screenresolution)
 
 
 eShapeBased, eTriangleBased = range(2)
@@ -172,7 +172,7 @@ def directionalInterception_triangleprojection(scene, directions,
                             north = 0, 
                             horizontal = False,
                             primitive = eShapeBased):
-   return directionalInterception_triangleprojection_from_dir_vectors(scene, estimate_dir_vectors(directions, north, horizontal), primitive)
+   return parallel_directionalInterception_triangleprojection_from_dir_vectors(scene, estimate_dir_vectors(directions, north, horizontal), primitive)
 
 def directionalInterception_triangleprojection_from_dir_vectors(scene, directions, 
                             primitive = eShapeBased):
@@ -207,6 +207,51 @@ def directionalInterception_triangleprojection_from_dir_vectors(scene, direction
   
   return shapeLight
 
+def __pditfdv_process_direction(args):
+    dir, wg, path, primitive = args
+    scene = pgl.Scene(path)
+    bbox=pgl.BoundingBox( scene )
+    d_factor = max(bbox.getXRange() , bbox.getYRange() , bbox.getZRange())
+    dir = pgl.Vector3(dir)
+    up = dir.anOrthogonalVector()
+    pjbbx = projectedBBox(bbox, dir, up)
+    worldWidth = pjbbx.getXRange()
+    worldheight = pjbbx.getYRange()
+    z = pgl.DepthSortEngine(idPolicy=pgl.ePrimitiveIdBased if primitive == eTriangleBased else pgl.eShapeIdBased)
+    z.setOrthographicCamera(-worldWidth/2., worldWidth/2., -worldheight/2., worldheight/2., d_factor , 3*d_factor)
+    eyepos = bbox.getCenter() - dir* d_factor * 2
+    z.lookAt(eyepos, bbox.getCenter(), up) 
+    z.process(scene) 
+    if primitive == eShapeBased :
+      values = z.idsurfaces()
+    else:
+      values = z.aggregateIdSurfaces()
+    return values
+
+def parallel_directionalInterception_triangleprojection_from_dir_vectors(scene, directions, 
+                            primitive = eShapeBased):
+  import os, tempfile
+  with tempfile.TemporaryDirectory() as tmp:
+    path = os.path.join(tmp, 'tmpscenefile.bgeom')
+    scene.save(path)
+    import multiprocessing
+    with multiprocessing.Pool() as pool:
+      allvalues = pool.map(__pditfdv_process_direction, [(dir, wg, path, primitive) for dir, wg in directions])
+
+  from math import nan
+  shapeLight = {}
+  for values, (dir, wg) in zip(allvalues, directions):
+    if primitive == eShapeBased :
+      if not values is None:
+        for shid, val in values:
+            assert shapeLight.get(shid,0) != nan
+            shapeLight[shid] = shapeLight.get(shid,0) + val*wg
+    else:
+      if not values is None:
+        for shid, (val, triangleval) in values.items():
+            shapeLight[shid] =  [v*wg for v in triangleval] if not shid in shapeLight else [ov+v*wg for ov,v in zip(shapeLight[shid],triangleval)]
+  
+  return shapeLight
 
 
 
@@ -225,12 +270,18 @@ def directionalInterception_from_dir_vectors(scene, directions,
   elif method == eZBufferProjection:
       return directionalInterception_zbuffer_from_dir_vectors(scene, directions, primitive=primitive, **args)
   elif method == eTriangleProjection:
-      return directionalInterception_triangleprojection_from_dir_vectors(scene, directions, primitive=primitive)
+      if len(directions) <= 1:
+          return directionalInterception_triangleprojection_from_dir_vectors(scene, directions, primitive=primitive)
+      else:
+          return parallel_directionalInterception_triangleprojection_from_dir_vectors(scene, directions, primitive=primitive)
 
 def _format_irradiance(scene, interception, primitive, scene_unit = 'm'):
     try:
       import pandas
-      def convert(a) : return pandas.DataFrame(a)
+      def convert(a) : 
+         res = pandas.DataFrame(a)
+         res.fillna(0, inplace=True)
+         return res
     except ImportError as ie:
        def convert(a) : return a
     units = {'mm': 0.001, 'cm': 0.01, 'dm': 0.1, 'm': 1, 'dam': 10, 'hm': 100,
@@ -242,6 +293,7 @@ def _format_irradiance(scene, interception, primitive, scene_unit = 'm'):
     if primitive == eShapeBased:
       
       surfaces = dict([(sid, conv_unit2*sum([pgl.surface(sh.geometry) for sh in shapes])) for sid, shapes in scene.todict().items()])
+
       irradiance = { sid : conv_unit2 * value / surfaces[sid] for sid, value in interception.items() }
       if conv_unit2 != 1:
         interception = { sid : conv_unit2 * value  for sid, value in interception.items() }

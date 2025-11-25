@@ -172,6 +172,7 @@ public :
 
   void setHemisphericCamera(real_t near = 0, real_t far = REAL_MAX);
   void setSphericalCamera(real_t viewAngle = 180, real_t near = 0, real_t far = REAL_MAX);
+  void setEquirectangularCamera(real_t viewAngle = 180, real_t near = 0, real_t far = REAL_MAX);
   void setCylindricalCamera(real_t viewAngle, real_t bottom, real_t top, real_t near = 0, real_t far = REAL_MAX);
 
   

@@ -135,6 +135,11 @@ void ZBufferEngine::setSphericalCamera(real_t viewAngle, real_t nearValue, real_
         }
     }
 }
+void ZBufferEngine::setEquirectangularCamera(real_t viewAngle, real_t nearValue, real_t farValue)
+{  
+    __camera = ProjectionCamera::equirectangularCamera(viewAngle, nearValue, farValue); 
+}
+
 void ZBufferEngine::setCylindricalCamera(real_t viewAngle, real_t bottom, real_t top, real_t nearValue, real_t farValue)
 {  
     __camera = ProjectionCamera::cylindricalCamera(viewAngle, bottom, top, nearValue, farValue); 
@@ -199,7 +204,12 @@ bool ZBufferEngine::isVisible(int32_t x, int32_t y, real_t z) const
 
 bool ZBufferEngine::isVisible(const Vector3& pos) const
 {
+    if (dot(pos-camera()->position(), -camera()->getWorldToCameraMatrix().getColumn(2)) - camera()->near < 0){
+        // printf("Position (%f,%f,%f) is behind near plane : %f\n", pos.x(), pos.y(), pos.z(), (dot(pos-camera()->position(), -camera()->getWorldToCameraMatrix().getColumn(2)) - camera()->near));
+        return false;
+    }
     Vector3 raster = worldToRaster(pos);
+    // printf("Position (%f,%f,%f) isVisible : (%i,%i), (%f,%f)  %f %f %s\n", pos.x(), pos.y(), pos.z(), int(raster.x()), int(raster.y()), raster.x(), raster.y(), raster.z(), __depthBuffer->getAt(raster.x(), raster.y()), (raster.z()< __depthBuffer->getAt(raster.x(), raster.y()) ? "True" : "False"));
     return isVisible(raster.x(), raster.y(), raster.z());
 }
 
