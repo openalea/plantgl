@@ -119,8 +119,8 @@ def relative_optical_air_mass(elevation):
     using Kasten & Young formula with horizon limit.
     Returns relative air mass (1.0 at zenith).
     """
-    if elevation <= 0:
-        return float('inf')
+    if elevation <= 0.1:
+        return 40
     # Limit elevation to avoid extreme air mass
     elevation = max(elevation, 0.1)
     el_rad = math.radians(elevation)

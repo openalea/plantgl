@@ -32,6 +32,7 @@ class LightManager:
       self.lights = {}
       self.localization = None
       self.localize_to_city("Montpellier")
+      self.precomputed_lights = {}
 
 
   def clear_lights(self):
@@ -52,9 +53,19 @@ class LightManager:
   def lights_keys(self):
     return list(self.lights.keys())
 
-  def select_lights_from_tags(self, **tag_filters):
-    return [name for name, light in self.lights.items() if all(light.tags.get(k) == v for k, v in tag_filters.items())]
+  def select_lights(self, **filters):
+      lights = self.get_lights_dataframe()
+      for filtername, filtervalue in filters.items():
+          lights = lights[lights[filtername] == filtervalue]
+      return list(lights['name'])
 
+  def get_light_angles(self, name):
+     l = self.lights[name]
+     return l.elevation, l.azimuth
+  
+  def precompute_lights(self, **filters):
+      self.precomputed_lights.update(dict([(self.get_light_angles(name), None) for name in self.select_lights(**filters)]))
+  
   def get_lights_dataframe(self):
     """
     Get the current lights in the estimator.
@@ -88,6 +99,7 @@ class LightManager:
       """
       self.lights[name].enabled = enabled
       return self
+  
   
   def localize(self, latitude, longitude, altitude, timezone = None, name = None):
     """

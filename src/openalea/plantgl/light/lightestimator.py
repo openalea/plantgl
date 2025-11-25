@@ -94,10 +94,9 @@ class LightEstimator (LightManager):
     """
     self.scene = scene
     self.north = north
+    self.precomputed_lights = dict(zip(self.precompute_lights.keys(), [None for i in range(len(self.precomputed_lights))]))
     return self
   
-
-
   def estimate(self,  method=eZBufferProjection, **args):
       """
       Estimates the irradiance datese scene using the specified method.
@@ -111,7 +110,34 @@ class LightEstimator (LightManager):
       """
       assert self.scene is not None, "Scene is not set. Please set the scene before estimating irradiance."
       assert method in lg.available_projection_methods(), f"Method {method} is not available. Available methods are: {lg.available_projection_methods()}"
-      self.result = scene_irradiance_from_dir_vectors(self.scene, self.lights_values(), method=method, **args)
+      precomputedresult = None
+      light_values = []
+      for light in self.lights.values():
+         if light.enabled:
+            lightid = self.get_light_angles(light.name)
+            if lightid in self.precomputed_lights:
+                if not self.precomputed_lights[lightid] is None:
+                    value = self.precomputed_lights[lightid]
+                else:
+                    value = scene_irradiance_from_dir_vectors(self.scene, [(light.direction, 1)], method=method, **args)
+                    self.precomputed_lights[lightid] = value
+                if precomputedresult is None:               
+                  precomputedresult = value.copy()
+                  precomputedresult['irradiance'] *= light.irradiance
+                  precomputedresult['interception'] *= light.irradiance
+                else:
+                  precomputedresult['irradiance'] += value['irradiance']*light.irradiance
+                  precomputedresult['interception'] += value['interception']*light.irradiance
+            else:
+               light_values.append((light.direction, light.irradiance))
+      if len(light_values) > 0 :
+          print('Compute lights for ',len(light_values),' light sources')
+          self.result = scene_irradiance_from_dir_vectors(self.scene, light_values, method=method, **args)
+          if not precomputedresult is None:
+            self.result['irradiance'] += precomputedresult['irradiance']
+            self.result['interception'] += precomputedresult['interception']
+      else:
+         self.result = precomputedresult
       return self.result
    
   def __call__(self, method=eZBufferProjection, **args):
