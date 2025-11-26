@@ -66,6 +66,9 @@ class LightManager:
   def precompute_lights(self, **filters):
       self.precomputed_lights.update(dict([(self.get_light_angles(name), None) for name in self.select_lights(**filters)]))
   
+  def clear_precomputation(self):
+      self.precomputed_lights = {}
+  
   def get_lights_dataframe(self):
     """
     Get the current lights in the estimator.
@@ -318,19 +321,20 @@ class LightManager:
         This method computes the sun's position and adds corresponding light sources to the scene,
         distributing the specified irradiance among them.
       """
-      from .sun import sun_positions, direct_horizontal_irradiance, direct_normal_irradiance
-      dates = self._check_date(dates)
-      latitude, longitude = self.localization['latitude'], self.localization['longitude']
-      dirs = []
-      sum_unit_irradiance = 0
-      dlights = sun_positions(dates=dates, latitude=latitude, longitude=longitude)
-      irrs = list(map(direct_horizontal_irradiance, dlights['elevation']))
-      sum_unit_irradiance = sum(irrs)
-      dlights['irradiance'] = irrs
-      dlights['irradiance'] *= irradiance/sum_unit_irradiance
+      if irradiance > 0:
+        from .sun import sun_positions, direct_horizontal_irradiance, direct_normal_irradiance
+        dates = self._check_date(dates)
+        latitude, longitude = self.localization['latitude'], self.localization['longitude']
+        dirs = []
+        sum_unit_irradiance = 0
+        dlights = sun_positions(dates=dates, latitude=latitude, longitude=longitude)
+        irrs = list(map(direct_horizontal_irradiance, dlights['elevation']))
+        sum_unit_irradiance = sum(irrs)
+        dlights['irradiance'] = irrs
+        dlights['irradiance'] *= irradiance/sum_unit_irradiance
 
-      for date,(el,az,irr) in dlights.iterrows():
-         self.add_light(f"sun_{date.strftime('%Y%m%d_%H%M')}", el, az, irr, horizontal=True, date=date, type='SUN')
+        for date,(el,az,irr) in dlights.iterrows():
+          self.add_light(f"sun_{date.strftime('%Y%m%d_%H%M')}", el, az, irr, horizontal=True, date=date, type='SUN')
       return self
 
   def add_sky(self,  irradiance = 1) :

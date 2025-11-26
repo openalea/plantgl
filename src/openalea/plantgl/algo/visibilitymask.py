@@ -40,6 +40,7 @@ class PonctualVisibilityMask:
     def is_visible(self, point):
         if not hasattr(self, 'mask'):
             self.compute()
+        if norm(point-self.position) < 1e-5 : return False
         return self.mask.isVisible(point)
     
     def get_mask_image(self):
