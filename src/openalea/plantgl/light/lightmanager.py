@@ -331,7 +331,8 @@ class LightManager:
         irrs = list(map(direct_horizontal_irradiance, dlights['elevation']))
         sum_unit_irradiance = sum(irrs)
         dlights['irradiance'] = irrs
-        dlights['irradiance'] *= irradiance/sum_unit_irradiance
+        if sum_unit_irradiance > 0:
+          dlights['irradiance'] *= irradiance/sum_unit_irradiance
 
         for date,(el,az,irr) in dlights.iterrows():
           self.add_light(f"sun_{date.strftime('%Y%m%d_%H%M')}", el, az, irr, horizontal=True, date=date, type='SUN')
@@ -708,6 +709,9 @@ class LightManager:
 
         irr_values = [direct_horizontal_irradiance(el, tau=0.7) for (el, az, irr) in sun]
         irr_values_sum = sum(irr_values)
+        if irr_values_sum <= 0:
+           irr_values_sum = 1
+        
         irr_values = [w*(ghi-dhi)/irr_values_sum for w in irr_values]
 
         self.add_lights([(f"sky_{i}",el, to_clockwise(az), irr, {'type': 'SKY'}) for i, (el, az, irr) in enumerate(sky)], horizontal=True)

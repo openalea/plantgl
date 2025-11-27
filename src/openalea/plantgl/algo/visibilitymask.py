@@ -38,6 +38,7 @@ class PonctualVisibilityMask:
         self.mask.process(self.scene)
     
     def is_visible(self, point):
+        from openalea.plantgl.math import norm
         if not hasattr(self, 'mask'):
             self.compute()
         if norm(point-self.position) < 1e-5 : return False
