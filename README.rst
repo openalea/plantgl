@@ -1,23 +1,6 @@
 .. image:: https://img.shields.io/badge/license-CeCILL--C-blue 
    :target: LICENSE
 
-Distribution based on Python 2:
-
-.. image:: https://ci.appveyor.com/api/projects/status/pbfi5p0bfslqij3s/branch/master?svg=true
-    :target: https://ci.appveyor.com/project/fredboudon/plantgl
-
-.. image:: https://anaconda.org/openalea/openalea.plantgl/badges/version.svg
-    :target: https://anaconda.org/openalea/openalea.plantgl
-
-.. image:: https://anaconda.org/openalea/openalea.plantgl/badges/platforms.svg
-    :target: https://anaconda.org/openalea/openalea.plantgl
-
-.. image:: https://anaconda.org/openalea/openalea.plantgl/badges/latest_release_date.svg
-    :target: https://anaconda.org/openalea/openalea.plantgl
-
-.. image:: https://readthedocs.org/projects/plantgl/badge/?version=latest  
-    :target: http://plantgl.readthedocs.io/en/latest/
-
 Distribution based on Python 3:
 
 .. image:: https://ci.appveyor.com/api/projects/status/5a4xss61gm8v88yo/branch/master?svg=true
@@ -69,7 +52,7 @@ To install PlantGL, you need to create an environment (named for instance pgl) :
 
 .. code-block:: bash
 
-        conda create -n pgl openalea.plantgl -c fredboudon -c conda-forge
+        conda create -n pgl openalea.plantgl -c openalea3 -c conda-forge
 
 The package ``openalea.plantgl`` is retrieved from the ``fredboudon`` channel (developement) and its dependencies will be taken from ``conda-forge`` channel.
 
