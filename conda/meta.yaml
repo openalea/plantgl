@@ -83,6 +83,10 @@ requirements:
     - {{ pin_compatible('qhull', max_pin='x.x') }}
     - {{ pin_compatible('ann', max_pin='x.x') }}
 
+run_constrained:
+  # prevent dll breakage on windows (m2w64 lib path preprends msvc lib path)
+  - m2w64-gcc-libs ==0  # [win]
+  - m2w64-toolchain ==0  # [win]
 
 test:
    requires:
