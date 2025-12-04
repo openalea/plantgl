@@ -204,7 +204,7 @@ bool ZBufferEngine::isVisible(int32_t x, int32_t y, real_t z) const
 
 bool ZBufferEngine::isVisible(const Vector3& pos) const
 {
-    if (dot(pos-camera()->position(), -camera()->getWorldToCameraMatrix().getColumn(2)) - camera()->near < 0){
+    if ((dot(pos-camera()->position(), -camera()->getWorldToCameraMatrix().getColumn(2)) - camera()->near) < 0){
         // printf("Position (%f,%f,%f) is behind near plane : %f\n", pos.x(), pos.y(), pos.z(), (dot(pos-camera()->position(), -camera()->getWorldToCameraMatrix().getColumn(2)) - camera()->near));
         return false;
     }
