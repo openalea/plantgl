@@ -188,6 +188,7 @@ public:
    inline const Vector3& up() const  { return __up; }
 
    inline real_t near() const { return __near; }
+   inline real_t get_near() const { return __near; }
    inline real_t far() const { return __far; }
 
    virtual real_t projectedArea(uint16_t x, uint16_t y, real_t z, const uint16_t imageWidth, const uint16_t imageHeight);
