@@ -56,7 +56,9 @@ ProjectionCamera::ProjectionCamera(real_t _near, real_t _far, eProjectionType _t
         near(_near),
         far(_far),
         __type(_type),
-        __methodtype(methodtype){
+        __methodtype(methodtype),
+        __direction(1,0,0),
+        __up(0,0,1){
 }
 
 ProjectionCamera::~ProjectionCamera() {}
@@ -72,6 +74,8 @@ void ProjectionCamera::lookAt(const Vector3& eyePosition3D, const Vector3& cente
         up = cross(forward, side);
         up.normalize();
         __position = eyePosition3D;
+        __direction = forward;
+        __up = up;
         Matrix4 cameraToWorld(side, up, forward, eyePosition3D);
         __worldToCamera = inverse(cameraToWorld);
         __currentWorldToCamera = __worldToCamera * __currentModelMatrix;

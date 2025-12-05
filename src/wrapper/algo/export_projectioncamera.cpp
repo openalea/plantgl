@@ -95,6 +95,8 @@ void export_ProjectionCamera()
       .def_readwrite("far", &ProjectionCamera::far)
 
       .def("position", &ProjectionCamera::position, return_value_policy<copy_const_reference>())
+      .def("direction", &ProjectionCamera::direction, return_value_policy<copy_const_reference>())
+      .def("up", &ProjectionCamera::up, return_value_policy<copy_const_reference>())
       .def("type", &ProjectionCamera::type)
       .def("methodType", &ProjectionCamera::methodType)
 
