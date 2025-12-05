@@ -178,17 +178,17 @@ public:
    static ProjectionCameraPtr equirectangularCamera(real_t viewAngle, real_t near, real_t far);
    static ProjectionCameraPtr cylindricalCamera(real_t viewAngle, real_t bottom, real_t top, real_t near, real_t far);
 
-   real_t near;
-   real_t far;
-
    eProjectionType type() const { return __type; }
    eProjectionMethodType methodType() const { return __methodtype; }
 
    virtual ProjectionCameraPtr copy() = 0;
 
-   const Vector3& position() const { return __position; }
-   const Vector3& direction() const { return __direction; }
-   const Vector3& up() const  { return __up; }
+   inline const Vector3& position() const { return __position; }
+   inline const Vector3& direction() const { return __direction; }
+   inline const Vector3& up() const  { return __up; }
+
+   inline real_t near() const { return __near; }
+   inline real_t far() const { return __far; }
 
    virtual real_t projectedArea(uint16_t x, uint16_t y, real_t z, const uint16_t imageWidth, const uint16_t imageHeight);
    virtual real_t solidAngle(uint16_t x, uint16_t y, const uint16_t imageWidth, const uint16_t imageHeight);
@@ -202,6 +202,10 @@ protected:
    Vector3 __position;
    Vector3 __direction;
    Vector3 __up;
+
+   real_t __near;
+   real_t __far;
+
 
    Matrix4 __worldToCamera;
    std::stack<Matrix4> __modelMatrixStack;

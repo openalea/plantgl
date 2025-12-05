@@ -53,8 +53,8 @@ PGL_USING_NAMESPACE
 
 ProjectionCamera::ProjectionCamera(real_t _near, real_t _far, eProjectionType _type, eProjectionMethodType methodtype):
         RefCountObject(),
-        near(_near),
-        far(_far),
+        __near(_near),
+        __far(_far),
         __type(_type),
         __methodtype(methodtype),
         __direction(1,0,0),
@@ -138,11 +138,11 @@ Ray ProjectionCamera::rasterToWorldRay(uint16_t x, uint16_t y, const uint16_t im
 
 
 bool ProjectionCamera::isInZRange(real_t z) const {
-    return ((z-near) >= -GEOM_EPSILON && (z-far) <= GEOM_EPSILON);
+    return ((z-__near) >= -GEOM_EPSILON && (z-__far) <= GEOM_EPSILON);
 }
 
 bool ProjectionCamera::isInZRange(real_t zmin, real_t zmax) const{
-    return !(zmax < near || zmin > far);
+    return !(zmax < __near || zmin > __far);
 }
 
 void ProjectionCamera::transformModel(const Matrix4& transform)
@@ -283,7 +283,7 @@ Vector3 FrustumCamera::NDC2screen(const real_t& xNDC, const real_t& yNDC, const 
 
 BoundingBoxPtr FrustumCamera::getBoundingBoxView() const
 {
-    return BoundingBoxPtr(new BoundingBox(Vector3(left,bottom,near),Vector3(right,top,far)));    
+    return BoundingBoxPtr(new BoundingBox(Vector3(left,bottom,__near),Vector3(right,top,__far)));    
 }
 
 /* ----------------------------------------------------------------------- */
@@ -296,7 +296,7 @@ PerspectiveCamera::PerspectiveCamera(real_t _left, real_t _right, real_t _bottom
 PerspectiveCamera::PerspectiveCamera(real_t verticalAngleOfView, real_t aspectRatio, real_t _near, real_t _far):
         FrustumCamera(-1, 1, -1, 1, _near, _far, ePerspective)
 {   
-    real_t top = near * tan(verticalAngleOfView * GEOM_RAD/2.);
+    real_t top = _near * tan(verticalAngleOfView * GEOM_RAD/2.);
     real_t bottom = -top;
     real_t right = top * aspectRatio;
     real_t left = -right;
@@ -310,12 +310,12 @@ ProjectionCameraPtr PerspectiveCamera::copy() { return ProjectionCameraPtr(new P
 Vector3 PerspectiveCamera::cameraToNDC(const Vector3& vertexCamera) const {
     real_t z = -vertexCamera.z();
     if (z < 0) { return screen2NDC(0, 0, vertexCamera.z()); }
-    return screen2NDC(near * vertexCamera.x() / z, near * vertexCamera.y() / z, vertexCamera.z());        
+    return screen2NDC(__near * vertexCamera.x() / z, __near * vertexCamera.y() / z, vertexCamera.z());        
 }
 
 Vector3 PerspectiveCamera::NDCToCamera(const Vector3& vertexNDC) const {
     real_t z = vertexNDC.z();
-    return NDC2screen(vertexNDC.x() * z / near, vertexNDC.y() * z / near, vertexNDC.z());
+    return NDC2screen(vertexNDC.x() * z / __near, vertexNDC.y() * z / __near, vertexNDC.z());
 }
 
 Ray PerspectiveCamera::rasterToCameraRay(uint16_t x, uint16_t y, const uint16_t imageWidth, const uint16_t imageHeight) const
