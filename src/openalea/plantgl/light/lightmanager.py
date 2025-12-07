@@ -64,8 +64,11 @@ class LightManager:
      return l.elevation, l.azimuth
   
   def precompute_lights(self, **filters):
-      self.precomputed_lights.update(dict([(self.get_light_angles(name), None) for name in self.select_lights(**filters)]))
-  
+      self.precomputed_lights.update(dict([(self.get_light_angles(name), None) for name in self.select_lights(**filters) if name not in self.precomputed_lights]))
+
+  def precompute_sky(self):
+      self.precompute_lights(type='SKY')
+
   def clear_precomputation(self):
       self.precomputed_lights = {}
   
@@ -355,6 +358,7 @@ class LightManager:
     from .sky import sky_turtle
     for i, (el, az, wg) in enumerate(sky_turtle()):
        self.add_light(f"sky_{i}", el, az, wg*irradiance, horizontal=False, type='SKY')
+    # self.precompute_sky()
     return self
   
   def add_uniform_sky(self,  irradiance = 1) :
@@ -376,6 +380,7 @@ class LightManager:
     nb_lights = len(sky)
     irradiance_per_light = irradiance / nb_lights
     self.add_lights([(f"sky_{i}", el, az, irradiance_per_light, {'type': 'SKY'}) for i, (el, az, wg) in enumerate(sky)], horizontal=False)
+    # self.precompute_sky()
     return self
   
   def add_sun_sky(self, dates = None, ghi = 1, dhi = 0.5):
@@ -523,6 +528,7 @@ class LightManager:
          sky_discretization = [ 1, 6, 16, 26, 46, 66, 91, 136, 196, 251, 341, 406, 556, 751, 976][sky_subdivision]
          sun, sky = sky_sources(sky_type=sky_type, sky_irradiance=irradiances, sky_dirs = sky_turtle(sky_discretization), scale="ghi", north = 0)
          self.add_lights([(f"sky_{i}",el, to_clockwise(az), irr, {'type': 'SKY'}) for i, (el, az, irr) in enumerate(sky)], horizontal=True)
+         # self.precompute_sky()
          for date,(el,az,irr) in zip(sun, irradiances.index):
             self.add_light(f"sun_{date.strftime('%Y%m%d_%H%M')}", el, to_clockwise(az), irr, horizontal=True, date=date, type='SUN')
       except ImportError:
@@ -715,6 +721,8 @@ class LightManager:
         irr_values = [w*(ghi-dhi)/irr_values_sum for w in irr_values]
 
         self.add_lights([(f"sky_{i}",el, to_clockwise(az), irr, {'type': 'SKY'}) for i, (el, az, irr) in enumerate(sky)], horizontal=True)
+        #self.precompute_sky()
+
         for date,(el,az,_),irr in zip(sky_irr.index, sun, irr_values):
             self.add_light(f"sun_{date.strftime('%Y%m%d_%H%M')}", el, to_clockwise(az),  irr, horizontal=True, date=date, type='SUN')
       except ImportError:

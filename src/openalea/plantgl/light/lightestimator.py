@@ -124,10 +124,16 @@ class LightEstimator (LightManager):
                 if precomputedresult is None:               
                   precomputedresult = value.copy()
                   precomputedresult['irradiance'] *= light.irradiance
-                  precomputedresult['interception'] *= light.irradiance
+                  if 'interception' in precomputedresult:
+                    precomputedresult['interception'] *= light.irradiance
+                  if 'absorbance' in precomputedresult:
+                    precomputedresult['absorbance'] *= light.irradiance
                 else:
                   precomputedresult['irradiance'] += value['irradiance']*light.irradiance
-                  precomputedresult['interception'] += value['interception']*light.irradiance
+                  if 'interception' in precomputedresult:
+                    precomputedresult['interception'] += value['interception']*light.irradiance
+                  if 'absorbance' in precomputedresult:
+                    precomputedresult['absorbance'] += value['absorbance']*light.irradiance
             else:
                light_values.append((light.direction, light.irradiance))
       if len(light_values) > 0 :
@@ -135,7 +141,10 @@ class LightEstimator (LightManager):
           self.result = scene_irradiance_from_dir_vectors(self.scene, light_values, method=method, **args)
           if not precomputedresult is None:
             self.result['irradiance'] += precomputedresult['irradiance']
-            self.result['interception'] += precomputedresult['interception']
+            if 'interception' in self.result and 'interception' in precomputedresult:
+              self.result['interception'] += precomputedresult['interception']
+            if 'absorbance' in self.result and 'absorbance' in precomputedresult:
+              self.result['absorbance'] += precomputedresult['absorbance']
       else:
          self.result = precomputedresult
       return self.result
