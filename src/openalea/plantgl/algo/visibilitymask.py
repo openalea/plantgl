@@ -1,7 +1,13 @@
+from math import ceil
+
+from openalea.plantgl.math import Vector3
+from openalea.plantgl.math import norm
+
+from ._pglalgo import SphericalCamera
+from ._pglalgo import ZBufferEngine, eIdBased
+
 class _MaskEngine:
     def __init__(self, position = (0,0,0), direction=(0,0,1), up=(0,1,0), view_angle=180, angular_resolution=1):
-        from openalea.plantgl.math import Vector3
-        from ._pglalgo import SphericalCamera
         self.size = self.view_angle/self.angular_resolution
         self.camera = SphericalCamera(self.view_angle)
         self.camera.lookAt(Vector3(position), Vector3(position)+Vector3(direction), Vector3(up))
@@ -21,7 +27,6 @@ class _MaskEngine:
 
 class PonctualVisibilityMask:
     def __init__(self, scene=None, position = (0,0,0), direction=(0,0,1), up=(0,1,0), view_angle=180, angular_resolution=1):
-        from openalea.plantgl.math import Vector3
         self.position = Vector3(position)
         self.direction = Vector3(direction)
         self.up = Vector3(up)
@@ -30,15 +35,12 @@ class PonctualVisibilityMask:
         self.angular_resolution = angular_resolution
     
     def compute(self):
-        from ._pglalgo import ZBufferEngine, eIdBased
-        from math import ceil
         self.mask = ZBufferEngine(ceil(self.view_angle/self.angular_resolution), ceil(self.view_angle/self.angular_resolution), renderingStyle=eIdBased)
         self.mask.setSphericalCamera(self.view_angle)
         self.mask.lookAt(self.position, self.position+self.direction, self.up) 
         self.mask.process(self.scene)
     
     def is_visible(self, point):
-        from openalea.plantgl.math import norm
         if not hasattr(self, 'mask'):
             self.compute()
         if norm(point-self.position) < 1e-5 : return False
