@@ -47,6 +47,7 @@ void export_ProjectionCamera()
     .value("eOrthographic",ProjectionCamera::eOrthographic)
     .value("ePerspective",ProjectionCamera::ePerspective)
     .value("eHemispheric",ProjectionCamera::eHemispheric)
+    .value("eEquirectangular",ProjectionCamera::eEquirectangular)
     .value("eCylindrical",ProjectionCamera::eCylindrical)
       .export_values()
       ;
@@ -90,10 +91,12 @@ void export_ProjectionCamera()
       .def("isInZRange", (bool (ProjectionCamera::*)(real_t) const)&ProjectionCamera::isInZRange)
       .def("isInZRange", (bool (ProjectionCamera::*)(real_t,real_t) const)&ProjectionCamera::isInZRange)
 
-      .def_readwrite("near", &ProjectionCamera::near)
-      .def_readwrite("far", &ProjectionCamera::far)
+      .def("near", &ProjectionCamera::near)
+      .def("far", &ProjectionCamera::far)
 
       .def("position", &ProjectionCamera::position, return_value_policy<copy_const_reference>())
+      .def("direction", &ProjectionCamera::direction, return_value_policy<copy_const_reference>())
+      .def("up", &ProjectionCamera::up, return_value_policy<copy_const_reference>())
       .def("type", &ProjectionCamera::type)
       .def("methodType", &ProjectionCamera::methodType)
 
@@ -132,7 +135,12 @@ void export_ProjectionCamera()
         .def("SphericalToNDC",&SphericalCamera::SphericalToNDC)
       ;
 
-      implicitly_convertible< SphericalCameraPtr, ProjectionCameraPtr >();
+  class_< EquirectangularCamera, EquirectangularCameraPtr, bases<SphericalCamera>, boost::noncopyable  > 
+      ("EquirectangularCamera", init< real_t , real_t , real_t > 
+        ("Construct an EquirectangularCamera", (bp::arg("viewAngle")=180,bp::arg("near")=0,bp::arg("far")=REAL_MAX)))
+      ;
+
+      implicitly_convertible< EquirectangularCameraPtr, SphericalCameraPtr >();
 
 
 }

@@ -3,7 +3,7 @@ from math import sqrt
 
 def test_triangle():
     from openalea.plantgl.all import TriangleSet, Scene, Shape,Vector3
-    from openalea.plantgl.light import scene_irradiance
+    from openalea.plantgl.light import scene_irradiance, eTriangleProjection
     points = [(0, 0, 0), (0, 0, sqrt(2)), (0, sqrt(2), 0)]
     triangles = Scene([Shape(TriangleSet(points, [list(range(3))]),id=8)])
 

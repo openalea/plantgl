@@ -64,7 +64,15 @@
 PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
-
+// Normalized Device Coordinates (NDC) space conversion functions
+/*
+Espace NDC
+- Domaine : [-1,1] × [-1,1]
+- Origine : centre de l’image
+- Axe X : droite positive
+- Axe Y : haut positif (contrairement à un raster classique)
+- Profondeur Z : libre (z_w après projection perspective)
+*/
 inline Vector3 NDCtoRasterSpace(const Vector3& vertexNDC, const uint16_t imageWidth, const uint16_t imageHeight)
 {
     // convert to raster space
@@ -74,6 +82,7 @@ inline Vector3 NDCtoRasterSpace(const Vector3& vertexNDC, const uint16_t imageWi
                           vertexNDC.z());
     return vertexRaster;
 }
+
 
 inline Vector3 rasterSpaceToNDC(const Vector3& raster, const uint16_t imageWidth, const uint16_t imageHeight)
 {
@@ -103,6 +112,7 @@ public:
         eOrthographic,
         ePerspective,
         eHemispheric,
+        eEquirectangular,
         eCylindrical
     };
 
@@ -165,17 +175,21 @@ public:
    static ProjectionCameraPtr orthographicCamera(real_t left, real_t right, real_t bottom, real_t top, real_t near, real_t far);
    static ProjectionCameraPtr hemisphericCamera(real_t near, real_t far);
    static ProjectionCameraPtr sphericalCamera(real_t viewAngle, real_t near, real_t far);
+   static ProjectionCameraPtr equirectangularCamera(real_t viewAngle, real_t near, real_t far);
    static ProjectionCameraPtr cylindricalCamera(real_t viewAngle, real_t bottom, real_t top, real_t near, real_t far);
-
-   real_t near;
-   real_t far;
 
    eProjectionType type() const { return __type; }
    eProjectionMethodType methodType() const { return __methodtype; }
 
    virtual ProjectionCameraPtr copy() = 0;
 
-   const Vector3& position() const { return __position; }
+   inline const Vector3& position() const { return __position; }
+   inline const Vector3& direction() const { return __direction; }
+   inline const Vector3& up() const  { return __up; }
+
+   inline real_t near() const { return __near; }
+   inline real_t get_near() const { return __near; }
+   inline real_t far() const { return __far; }
 
    virtual real_t projectedArea(uint16_t x, uint16_t y, real_t z, const uint16_t imageWidth, const uint16_t imageHeight);
    virtual real_t solidAngle(uint16_t x, uint16_t y, const uint16_t imageWidth, const uint16_t imageHeight);
@@ -187,6 +201,12 @@ protected:
    eProjectionType __type;
    eProjectionMethodType __methodtype;
    Vector3 __position;
+   Vector3 __direction;
+   Vector3 __up;
+
+   real_t __near;
+   real_t __far;
+
 
    Matrix4 __worldToCamera;
    std::stack<Matrix4> __modelMatrixStack;
@@ -286,15 +306,13 @@ public:
    real_t getViewAngle() const ;
    void setViewAngle(real_t angle);
 
-   virtual bool isValidPixel(uint16_t x, uint16_t y, const uint16_t imageWidth, const uint16_t imageHeight) const {
-        return (norm(Vector2(x-imageWidth/2,y-imageHeight/2)) <= pglMin(imageWidth,imageHeight)/2);
-   }
+   virtual bool isValidPixel(uint16_t x, uint16_t y, const uint16_t imageWidth, const uint16_t imageHeight) const;
    
    virtual Ray rasterToCameraRay(uint16_t x, uint16_t y, const uint16_t imageWidth, const uint16_t imageHeight) const;
    virtual Ray rasterToWorldRay(uint16_t x, uint16_t y, const uint16_t imageWidth, const uint16_t imageHeight) const;
 
-   Vector3::Spherical NDCToSpherical(const Vector3& vertexNDC) const;
-   Vector3 SphericalToNDC(const Vector3::Spherical& sph) const;
+   virtual Vector3::Spherical NDCToSpherical(const Vector3& vertexNDC) const;
+   virtual Vector3 SphericalToNDC(const Vector3::Spherical& sph) const;
 
 
 protected:
@@ -303,6 +321,33 @@ protected:
 };
 
 typedef RCPtr<SphericalCamera> SphericalCameraPtr;
+
+
+/* ----------------------------------------------------------------------- */
+
+class ALGO_API EquirectangularCamera : public SphericalCamera {
+public:
+
+   EquirectangularCamera(real_t viewAngle = 180, real_t near = 0, real_t far = REAL_MAX);
+
+   virtual ~EquirectangularCamera();
+
+   virtual ProjectionCameraPtr copy();
+
+   virtual bool isValidPixel(uint16_t x, uint16_t y, const uint16_t imageWidth, const uint16_t imageHeight) const {
+     return (x < imageWidth) && (y < imageHeight);
+   } 
+
+   virtual Vector3::Spherical NDCToSpherical(const Vector3& vertexNDC) const;
+   virtual Vector3 SphericalToNDC(const Vector3::Spherical& sph) const;
+
+
+protected:
+   real_t __viewAngle;
+
+};
+
+typedef RCPtr<EquirectangularCamera> EquirectangularCameraPtr;
 
 
 /* ----------------------------------------------------------------------- */
