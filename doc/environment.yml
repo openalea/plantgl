@@ -5,7 +5,7 @@ channels:
   - conda-forge
 dependencies:
   - openalea.plantgl
-  - oawidgets
+  - openalea.widgets
   - pip
   - pip:
     - pydata-sphinx-theme
