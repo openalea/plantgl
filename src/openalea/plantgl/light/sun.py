@@ -110,7 +110,7 @@ def sun_positions(dates, latitude, longitude):
 
 
 
-# Constante solaire moyenne (W/m²)
+# Mean Solar Constant (W/m²)
 SOLAR_CONSTANT = 1361
 
 def relative_optical_air_mass(elevation):
@@ -196,3 +196,4 @@ def sun_sources(dates, latitude, longitude, irradiance):
     for date, (elevation, azimuth, dhi, dni, ghi) in sun_irradiance(dates, latitude, longitude, tau).iterrow():
         result.append((elevation, azimuth, (ghi-dhi)*irradiance/sumirr))
     return result
+
