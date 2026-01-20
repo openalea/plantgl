@@ -149,4 +149,3 @@ Citation
 If you find our work useful in your research, please consider citing:
 
    Pradal C., Boudon F., Nouguier C., Chopard J., Godin C.. 2009. PlantGL : A python-based geometric library for 3D plant modelling at different scales. Graphical Models, 71 : p. 1-21.
-
