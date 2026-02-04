@@ -1,7 +1,5 @@
 name: plantgl-doc
 channels:
-  - openalea3/label/dev
-  - openalea3/label/rc
   - openalea3
   - conda-forge
 dependencies:
