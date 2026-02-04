@@ -172,6 +172,7 @@ public :
 
   void setHemisphericCamera(real_t near = 0, real_t far = REAL_MAX);
   void setSphericalCamera(real_t viewAngle = 180, real_t near = 0, real_t far = REAL_MAX);
+  void setEquirectangularCamera(real_t viewAngle = 180, real_t near = 0, real_t far = REAL_MAX);
   void setCylindricalCamera(real_t viewAngle, real_t bottom, real_t top, real_t near = 0, real_t far = REAL_MAX);
 
   
@@ -247,8 +248,13 @@ public :
   std::tuple<PGL(Point3ArrayPtr),PGL(Color3ArrayPtr),PGL(Uint32Array1Ptr)> grabZBufferPoints(real_t jitter = 0, real_t raywidth = 0) const;
   ScenePtr grabSortedZBufferPoints(real_t jitter = 0, real_t raywidth = 0) const;
   
-  pgl_hash_map<uint32_t,real_t> idhistogram(bool solidangle = true) const;
-  
+  pgl_hash_map<uint32_t,real_t> idhistogram(bool solidangle = false) const;
+
+  pgl_hash_map<uint32_t,real_t> idsurfaces() const
+  { return idhistogram(false); }
+  pgl_hash_map<uint32_t,std::pair<real_t,std::vector<real_t> > > aggregateIdSurfaces() const
+    { return aggregate(idhistogram(false)); }
+
 protected :
     struct Fragment {
 

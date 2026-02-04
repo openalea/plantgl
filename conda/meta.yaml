@@ -74,6 +74,8 @@ requirements:
     - pyqglviewer
     - eigen
     - zlib
+    - tzfpy
+    - pandas
     - xorg-libxfixes    # [linux]
     - libglu            # [linux]
     # guards for ABI-sensitive libraries
@@ -88,7 +90,6 @@ test:
    requires:
      - pytest
      - matplotlib-base
-     - pandas
    imports:
      - openalea.plantgl
      - openalea.plantgl.all

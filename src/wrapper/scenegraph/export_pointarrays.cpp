@@ -360,7 +360,52 @@ RealArrayPtr pa3_to_polarangle(Point3Array * pts, const Vector3& center, int lat
     return result;
 }
 
+#include <clocale>
 
+std::string pa2_to_str(Point2Array * pts, std::string format = "(%f,%f)", std::string joinstr = ",")
+{
+
+    std::string result;
+    std::setlocale(LC_ALL, "C");
+    for(Point2Array::const_iterator itpts = pts->begin(); itpts != pts->end(); ++itpts)
+    {
+        char buffer[256];
+        snprintf(buffer,256,format.c_str(), itpts->x(), itpts->y());
+        result += buffer;
+        if (itpts != pts->end()-1) result += joinstr;
+    }
+    return result;
+}
+
+std::string pa3_to_str(Point3Array * pts, std::string format = "(%f,%f,%f)", std::string joinstr = ",")
+{
+
+    std::string result;
+    std::setlocale(LC_ALL, "C");
+    for(Point3Array::const_iterator itpts = pts->begin(); itpts != pts->end(); ++itpts)
+    {
+        char buffer[256];
+        snprintf(buffer,256,format.c_str(), itpts->x(), itpts->y(), itpts->z());
+        result += buffer;
+        if (itpts != pts->end()-1) result += joinstr;
+    }
+    return result;
+}
+
+std::string pa4_to_str(Point4Array * pts, std::string format = "(%f,%f,%f,%f)", std::string joinstr = ",")
+{
+
+    std::string result;
+    std::setlocale(LC_ALL, "C");
+    for(Point4Array::const_iterator itpts = pts->begin(); itpts != pts->end(); ++itpts)
+    {
+        char buffer[256];
+        snprintf(buffer,256,format.c_str(), itpts->x(), itpts->y(), itpts->z(), itpts->w());
+        result += buffer;
+        if (itpts != pts->end()-1) result += joinstr;
+    }
+    return result;
+}
 void export_pointarrays()
 {
   EXPORT_ARRAY_CT( p2a, Point2Array, "Point2Array([Vector2(x,y),...])")
@@ -390,6 +435,7 @@ void export_pointarrays()
     .def( "isValid", &Point2Array::isValid)
     .def( "filterCoordinates", &py_filter_coord<Point2Array>,"Filter array by looking at coordinate i.",args("i","coordmin","coordmax"))
     .def( "sliceCoordinates", &ra_from_ps<Point2Array>,"Construct a RealArray using one of the coordinates.",args("idx"))
+    .def( "to_str", &pa2_to_str,"Construct a string representation of the Point2Array.",(arg("format")="(%f,%f)",args("joinstr")=","))
     DEFINE_NUMPY( p2a );
   EXPORT_CONVERTER(Point2Array);
 
@@ -428,6 +474,7 @@ void export_pointarrays()
     .def( "filterCoordinates", &py_filter_coord<Point3Array>,"Filter array by looking at coordinate i.",args("i","coordmin","coordmax"))
     .def( "sliceCoordinates", &p2_from_p3,"Construct a Point2Array using 2 of the coordinates.",args("idx0","idx1"))
     .def( "sliceCoordinates", &ra_from_ps<Point3Array>,"Construct a RealArray using one of the coordinates.",args("idx"))
+    .def( "to_str", &pa3_to_str,"Construct a string representation of the Point3Array.",(arg("format")="(%f,%f,%f)",arg("joinstr")=","))
    DEFINE_NUMPY( p3a );
   EXPORT_CONVERTER(Point3Array);
 
@@ -471,6 +518,7 @@ void export_pointarrays()
     .def( "sliceCoordinates", &p2_from_p4,"Construct a Point2Array using 2 of the coordinates.",args("idx0","idx1"))
     .def( "sliceCoordinates", &p3_from_p4,"Construct a Point3Array using 3 of the coordinates.",args("idx0","idx1","idx2"))
     .def( "sliceCoordinates", &ra_from_ps<Point4Array>,"Construct a RealArray using one of the coordinates.",args("idx"))
+    .def( "to_str", &pa4_to_str,"Construct a string representation of the Point4Array.",(arg("format")="(%f,%f,%f,%f)",arg("joinstr")=","))
     DEFINE_NUMPY( p4a );
   EXPORT_CONVERTER(Point4Array);
 

@@ -81,20 +81,24 @@ pgl_hash_map<uint32_t,std::pair<real_t,std::vector<real_t> > > ProjectionEngine:
 {
     typedef pgl_hash_map<uint32_t,std::pair<real_t,std::vector<real_t> > > ResultType;
     ResultType result;
-    for(pgl_hash_map<uint32_t,uint32_t>::const_iterator it = __idMap.begin(); it != __idMap.end(); ++it){
+    // for(pgl_hash_map<uint32_t,uint32_t>::const_iterator it = __idMap.begin(); it != __idMap.end(); ++it){
+    for (uint32_t idtriangle = 0; idtriangle < __primitiveId; ++idtriangle) {
         ResultType::iterator itRes;
-        uint32_t idshape = it->second;
-        pgl_hash_map<uint32_t,real_t>::const_iterator itvalue = values.find(it->first);
-        real_t value = ( itvalue ==values.end() ? 0.0 : itvalue->second);
-        if ((itRes = result.find(idshape))==result.end()){
-            std::pair<real_t,std::vector<real_t> > lresult;
-            lresult.second.push_back(value);
-            lresult.first += value;
-            result[idshape] = lresult;
-        }
-        else {
-            itRes->second.second.push_back(value);
-            itRes->second.first += value;
+        pgl_hash_map<uint32_t,uint32_t>::const_iterator it = __idMap.find(idtriangle);
+        if (it != __idMap.end()){
+            uint32_t idshape = it->second;
+            pgl_hash_map<uint32_t,real_t>::const_iterator itvalue = values.find(idtriangle);
+            real_t value = ( itvalue ==values.end() ? 0.0 : itvalue->second);
+            if ((itRes = result.find(idshape))==result.end()){
+                std::pair<real_t,std::vector<real_t> > lresult;
+                lresult.second.push_back(value);
+                lresult.first += value;
+                result[idshape] = lresult;
+            }
+            else {
+                itRes->second.second.push_back(value);
+                itRes->second.first += value;
+            }
         }
     }
     return result;
