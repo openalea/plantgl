@@ -23,7 +23,7 @@ toCol3 = lambda v : Color3(int(v[0]*255),int(v[1]*255),int(v[2]*255))
 toV3 = lambda v : Vector3(float(v[0]),float(v[1]),float(v[2]))
 
 projections = OrderedDict([(ePerspective , Camera.PERSPECTIVE), (eOrthographic , Camera.ORTHOGRAPHIC),
-                           (eHemispheric , Camera.PERSPECTIVE), (eEquirectangular , Camera.PERSPECTIVE), (eCylindrical , Camera.ORTHOGRAPHIC)])
+                           (eHemispheric , Camera.PERSPECTIVE),(eEquirectangular , Camera.PERSPECTIVE), (eCylindrical , Camera.ORTHOGRAPHIC)])
 
 header = '''
 #ifndef (__camera_definition__)
@@ -494,7 +494,7 @@ def main():
     #scene = Scene([Shape(Polyline([(0,0,0),(1,0,1)], width=3),Material((200,50,100),2))])
     #scene = Scene('data/cow.obj')
     #scene = Scene('../share/plantgl/database/advancedgraphics/tulipa.geom')
-    # scene = Scene('../share/plantgl/database/advancedgraphics/mango.bgeom')
+    #scene = Scene('../share/plantgl/database/advancedgraphics/mango.bgeom')
     #scene = Scene('../share/plantgl/database/examples/snowmanshape.geom')
     #scene = Scene('/Users/fboudon/Dropbox/mtpellier_training/project/benchmark_data/GDR_12_r1.txt')
     #scene[0].geometry.geometry.width=10
