@@ -4,6 +4,8 @@ channels:
   - openalea3
 dependencies:
   - python
+  - openalea.plantgl
+  - openalea.widgets
   - pip
   - pip:
       - -e '..[test,dev,doc]'
