@@ -34,6 +34,7 @@ extensions = [
     "sphinx.ext.napoleon",  # support for numpy and google style docstrings
     "sphinx_favicon",  # support for favicon
     "nbsphinx",  # for integrating jupyter notebooks
+    "sphinx_copybutton",      # support for copybutton in code blocks
     "myst_parser",  # for parsing .md files
     'sphinx.ext.inheritance_diagram',
 ]
