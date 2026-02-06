@@ -40,7 +40,7 @@ extensions = [
 ]
 
 nbsphinx_thumbnails = {
-    'examples/Segmentation': '_static/segmentation_thumb.png',
+    'tutorial': '_images/profile_hulls2.png',
 }
 
 nbsphinx_allow_errors = True
