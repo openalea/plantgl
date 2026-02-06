@@ -41,6 +41,7 @@ extensions = [
 
 nbsphinx_thumbnails = {
     'tutorial': '_images/profile_hulls2.png',
+    'examples/PlantGL-Graphical_Model_2009': '_images/pinecone.png'
 }
 
 nbsphinx_allow_errors = True
