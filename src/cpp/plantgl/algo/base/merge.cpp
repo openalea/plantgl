@@ -342,7 +342,6 @@ GEOM_TRACE("apply TriangleSet");
     }
     else return false;
   }
-
   Point3ArrayPtr& points= __model->getPointList();
   Point3ArrayPtr pts= geom.getPointList();
   uint_t size = points->size();

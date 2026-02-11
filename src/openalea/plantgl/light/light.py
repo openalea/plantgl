@@ -1,7 +1,5 @@
-from . import sunDome as sd
 import openalea.plantgl.all as pgl
-
-from math import radians, sin, pi, ceil
+from .utils import azel2vect, estimate_dir_vectors, getProjectionMatrix, projectedBBox
 
 # Light Fractalysis module: Computation of direct light in a scene
 #
@@ -35,52 +33,49 @@ from math import radians, sin, pi, ceil
 # Note: In all these algorithms the plant projection to compute the intercepted surfaces is orthographic
 # and based on a viewport whose resolution is 600x600
 
-def diffuseInterception(scene, screenresolution = None):
-  return  directionalInterception(scene, directions = sd.skyTurtle(), screenresolution = screenresolution)
+def diffuseInterception(scene, ghi, screenresolution = None):
+  from .sky import soc_sky_sources
+  return  directionalInterception(scene, directions = soc_sky_sources(ghi), screenresolution = screenresolution)
 
-def directInterception(scene, latitude=43.36, longitude=3.52, jj=221, start=7, stop=19, stp=30, dsun = 1, dGMT = 0, screenresolution = None):
-  direct = sd.getDirectLight( latitude=latitude , longitude=longitude, jourJul=jj, startH=start, stopH=stop, step=stp, decalSun = dsun, decalGMT = dGMT)
-  return  directionalInterception(scene, directions = direct, screenresolution = screenresolution)
+def directInterception(scene, dates, irradiance, latitude=43.36, longitude=3.52,  screenresolution = None):
+  from .sun import sun_sources
+  return  directionalInterception(scene, sun_sources(dates, latitude, longitude, irradiance), screenresolution = screenresolution)
 
-def totalInterception(scene, latitude=43.36, longitude=3.52, jj=221, start=7, stop=19, stp=30, dsun = 1, dGMT = 0, screenresolution = None):
-  diffu = sd.skyTurtle()
-  direct =  sd.getDirectLight( latitude=latitude , longitude=longitude, jourJul=jj, startH=start, stopH=stop, step=stp, decalSun = dsun, decalGMT = dGMT)
-  all = direct + diffu
-  return directionalInterception(scene, directions = all, screenresolution = screenresolution)
-
-
-def azel2vect(az, el, north=0):
-  """ converter for azimuth elevation 
-      az,el are expected in degrees, in the North-clocwise convention
-      In the scene, positive rotations are counter-clockwise
-      north is the angle (degrees, positive counter_clockwise) between X+ and North """
-  azimuth = -radians(north + az)
-  zenith = radians(90 - el)
-  v = -pgl.Vector3(pgl.Vector3.Spherical( 1., azimuth, zenith ) )
-  v.normalize()
-  return v
-
-def elaz2vect(el, az, north=0):
-  """ converter for azimuth elevation 
-      az,el are expected in degrees, in the North-clocwise convention
-      In the scene, positive rotations are counter-clockwise
-      north is the angle (degrees, positive counter_clockwise) between X+ and North """
-  azimuth = -radians(north + az)
-  zenith = radians(90 - el)
-  v = -pgl.Vector3(pgl.Vector3.Spherical( 1., azimuth, zenith ) )
-  v.normalize()
-  return v
+def totalInterception(scene, ghi, dhi, dates, latitude=43.36, longitude=3.52, screenresolution = None):
+  from .sky import soc_sky_sources
+  from .sun import sun_sources
+  directions = soc_sky_sources(dhi) + sun_sources(dates, latitude, longitude, ghi-dhi)
+  return directionalInterception(scene, directions = directions, screenresolution = screenresolution)
 
 
+eShapeBased, eTriangleBased = range(2)
+eOpenGLProjection, eZBufferProjection, eTriangleProjection, eCaribu = range(4)
+MethodNames = { eOpenGLProjection : "OpenGL Projection", eZBufferProjection : "Z-Buffer Projection", eTriangleProjection : "Triangle Projection", eCaribu : "Caribu"}
+
+def caribu_available():
+    try:
+        import openalea.caribu
+        return True
+    except ImportError:
+        return False
+
+def available_projection_methods(primitive = eShapeBased):
+    result = [eZBufferProjection, eTriangleProjection] 
+    if primitive == eShapeBased :
+      result.append(eOpenGLProjection)
+    if caribu_available():
+        result.append(eCaribu)
+    return result
 
 def directionalInterception_openGL(scene, directions, north = 0, horizontal = False, screenwidth = 600):
+   return directionalInterception_openGL_from_dir_vectors(scene, estimate_dir_vectors(directions, north, horizontal), screenwidth)
   
+def directionalInterception_openGL_from_dir_vectors(scene, directions, screenwidth = 600):
   pgl.Viewer.display(scene)
   redrawPol = pgl.Viewer.redrawPolicy
   pgl.Viewer.redrawPolicy = False
   pgl.Viewer.frameGL.maximize(True)
   
-  #pgl.Viewer.widgetGeometry.setSize(screenwidth, screenwidth)
   pgl.Viewer.frameGL.setSize(screenwidth,screenwidth)
   
   cam_pos,cam_targ,cam_up = pgl.Viewer.camera.getPosition()
@@ -90,15 +85,8 @@ def directionalInterception_openGL(scene, directions, north = 0, horizontal = Fa
   d_factor = max(bbox.getXRange() , bbox.getYRange() , bbox.getZRange())
   shapeLight = {}
 
-  for el, az, wg in directions:
-    if( az != None and el != None):
-        dir = azel2vect(az, el, north)
-        if horizontal :
-            wg /= sin(radians(el))
-
-    else :
-      dir = -pgl.Viewer.camera.getPosition()[1]
-      assert not horizontal
+  for dir, wg in directions:
+    dir = pgl.Vector3(dir)
 
     pgl.Viewer.camera.lookAt(bbox.getCenter() + dir*(-2.5)*d_factor, bbox.getCenter()) #2.5 is for a 600x600 GLframe
 
@@ -117,34 +105,22 @@ def directionalInterception_openGL(scene, directions, north = 0, horizontal = Fa
   
   return shapeLight
 
-
-
-def getProjectionMatrix(forward, up = pgl.Vector3(0,0,1)):
-    forward.normalize()
-    up.normalize();
-    side = pgl.cross(up, forward);
-    side.normalize();
-    up = pgl.cross(forward, side);
-    up.normalize();
-    return pgl.Matrix3(side, up, forward).inverse()
-
-
-
-def projectedBBox(bbx, direction, up):
-    from itertools import product
-    proj = getProjectionMatrix(direction,up)
-    pts = [proj*pt for pt in product([bbx.getXMin(),bbx.getXMax()],[bbx.getYMin(),bbx.getYMax()],[bbx.getZMin(),bbx.getZMax()])]
-    projbbx = pgl.BoundingBox(pgl.PointSet(pts))
-    return projbbx
-
-
-
 def directionalInterception_zbuffer(scene, directions, 
                             north = 0, 
                             horizontal = False, 
                             screenresolution = None, 
                             multithreaded = True,
-                            infinitize = None):
+                            infinitize = None,
+                            primitive = eShapeBased):
+   return directionalInterception_zbuffer_from_dir_vectors(scene, estimate_dir_vectors(directions, north, horizontal), screenresolution, multithreaded, infinitize, primitive)
+
+
+def directionalInterception_zbuffer_from_dir_vectors(scene, directions, 
+                            screenresolution = None, 
+                            multithreaded = True,
+                            infinitize = None,
+                            primitive = eShapeBased):
+  from math import  ceil
 
   bbox=pgl.BoundingBox( scene )
   d_factor = max(bbox.getXRange() , bbox.getYRange() , bbox.getZRange())
@@ -153,12 +129,8 @@ def directionalInterception_zbuffer(scene, directions,
     screenresolution = d_factor/100
   pixsize = screenresolution*screenresolution
 
-  for el, az, wg in directions:
-    if( az != None and el != None):
-        dir = azel2vect(az, el, north)
-        if horizontal :
-            wg /= sin(radians(el))
-
+  for dir, wg in directions:
+    dir = pgl.Vector3(dir)
     up = dir.anOrthogonalVector()
     pjbbx = projectedBBox(bbox, dir, up)
     worldWidth = pjbbx.getXRange()
@@ -167,7 +139,7 @@ def directionalInterception_zbuffer(scene, directions,
 
     worldWidth = w * screenresolution
     worldheight = h * screenresolution
-    z = pgl.ZBufferEngine(w,h,pgl.eIdBased)
+    z = pgl.ZBufferEngine(w, h, renderingStyle=pgl.eIdBased, idPolicy=pgl.ePrimitiveIdBased if primitive == eTriangleBased else pgl.eShapeIdBased)
     z.multithreaded = multithreaded
     z.setOrthographicCamera(-worldWidth/2., worldWidth/2., -worldheight/2., worldheight/2., d_factor , 3*d_factor)
     eyepos = bbox.getCenter() - dir* d_factor * 2
@@ -182,63 +154,203 @@ def directionalInterception_zbuffer(scene, directions,
             if infinitize[2] > 0 : z.periodizeBuffer(center, center+pgl.Vector3(0,0,infinitize[2]))
  
 
-    values = z.idhistogram(False)
-    if not values is None:
+    if primitive == eShapeBased :
+      values = z.idhistogram(False)
+      if not values is None:
         for shid, val in values:
             shapeLight[shid] = shapeLight.get(shid,0) + val*pixsize*wg
+    else:
+      values = z.aggregateIdSurfaces()
+    
+      if not values is None:
+        for shid, (val, triangleval) in values.items():
+            shapeLight[shid] =  [v*pixsize*wg for v in triangleval] if not shid in shapeLight else [ov+v*pixsize*wg for ov,v in zip(shapeLight[shid],triangleval)]
   
   return shapeLight
 
 def directionalInterception_triangleprojection(scene, directions, 
                             north = 0, 
-                            horizontal = False):
+                            horizontal = False,
+                            primitive = eShapeBased):
+   return parallel_directionalInterception_triangleprojection_from_dir_vectors(scene, estimate_dir_vectors(directions, north, horizontal), primitive)
+
+def directionalInterception_triangleprojection_from_dir_vectors(scene, directions, 
+                            primitive = eShapeBased):
 
   bbox=pgl.BoundingBox( scene )
   d_factor = max(bbox.getXRange() , bbox.getYRange() , bbox.getZRange())
   shapeLight = {}
 
-  for el, az, wg in directions:
-    if( az != None and el != None):
-        dir = azel2vect(az, el, north)
-        if horizontal :
-            wg /= sin(radians(el))
-
+  for dir, wg in directions:
+    dir = pgl.Vector3(dir)
     up = dir.anOrthogonalVector()
-    print(dir, up)
     pjbbx = projectedBBox(bbox, dir, up)
     worldWidth = pjbbx.getXRange()
     worldheight = pjbbx.getYRange()
-    z = pgl.DepthSortEngine(pgl.ePrimitiveIdBased)
+    z = pgl.DepthSortEngine(idPolicy=pgl.ePrimitiveIdBased if primitive == eTriangleBased else pgl.eShapeIdBased)
     z.setOrthographicCamera(-worldWidth/2., worldWidth/2., -worldheight/2., worldheight/2., d_factor , 3*d_factor)
     eyepos = bbox.getCenter() - dir* d_factor * 2
     z.lookAt(eyepos, bbox.getCenter(), up) 
     z.process(scene) 
 
-    values = z.aggregateIdSurfaces()
-    pgl.Viewer.display(z.getSurfaceResult(cameraCoordinates=False))
-    print(values[2])
+    if primitive == eShapeBased :
+      values = z.idsurfaces()
+      if not values is None:
+        for shid, val in values:
+            shapeLight[shid] = shapeLight.get(shid,0) + val*wg
+    else:
+      values = z.aggregateIdSurfaces()
     
-    if not values is None:
+      if not values is None:
         for shid, (val, triangleval) in values.items():
-            shapeLight[shid] = (shapeLight.get(shid,(0, None))[0] + val*wg, [v*wg for v in triangleval] if not shid in shapeLight else [ov+v*wg for ov,v in zip(shapeLight[shid][1],triangleval)])
+            shapeLight[shid] =  [v*wg for v in triangleval] if not shid in shapeLight else [ov+v*wg for ov,v in zip(shapeLight[shid],triangleval)]
   
   return shapeLight
 
-eOpenGLProjection, eZBufferProjection, eTriangleProjection = range(3)
+def __pditfdv_process_direction(args):
+    dir, wg, path, primitive = args
+    scene = pgl.Scene(path)
+    bbox=pgl.BoundingBox( scene )
+    d_factor = max(bbox.getXRange() , bbox.getYRange() , bbox.getZRange())
+    dir = pgl.Vector3(dir)
+    up = dir.anOrthogonalVector()
+    pjbbx = projectedBBox(bbox, dir, up)
+    worldWidth = pjbbx.getXRange()
+    worldheight = pjbbx.getYRange()
+    z = pgl.DepthSortEngine(idPolicy=pgl.ePrimitiveIdBased if primitive == eTriangleBased else pgl.eShapeIdBased)
+    z.setOrthographicCamera(-worldWidth/2., worldWidth/2., -worldheight/2., worldheight/2., d_factor , 3*d_factor)
+    eyepos = bbox.getCenter() - dir* d_factor * 2
+    z.lookAt(eyepos, bbox.getCenter(), up) 
+    z.process(scene) 
+    if primitive == eShapeBased :
+      values = z.idsurfaces()
+    else:
+      values = z.aggregateIdSurfaces()
+    return values
+
+def parallel_directionalInterception_triangleprojection_from_dir_vectors(scene, directions, 
+                            primitive = eShapeBased):
+  import os, tempfile
+  with tempfile.TemporaryDirectory() as tmp:
+    path = os.path.join(tmp, 'tmpscenefile.bgeom')
+    scene.save(path)
+    import multiprocessing
+    with multiprocessing.Pool() as pool:
+      allvalues = pool.map(__pditfdv_process_direction, [(dir, wg, path, primitive) for dir, wg in directions])
+
+  from math import nan
+  shapeLight = {}
+  for values, (dir, wg) in zip(allvalues, directions):
+    if primitive == eShapeBased :
+      if not values is None:
+        for shid, val in values:
+            assert shapeLight.get(shid,0) != nan
+            shapeLight[shid] = shapeLight.get(shid,0) + val*wg
+    else:
+      if not values is None:
+        for shid, (val, triangleval) in values.items():
+            shapeLight[shid] =  [v*wg for v in triangleval] if not shid in shapeLight else [ov+v*wg for ov,v in zip(shapeLight[shid],triangleval)]
+  
+  return shapeLight
+
+
 
 def directionalInterception(scene, directions, 
                             north = 0, 
                             horizontal = False,
-                            method = eZBufferProjection, **args):
+                            method = eZBufferProjection, primitive = eShapeBased,  **args):
+  return directionalInterception_from_dir_vectors(scene, estimate_dir_vectors(directions, north, horizontal), method, primitive, **args)
+
+
+def directionalInterception_from_dir_vectors(scene, directions, 
+                            method = eZBufferProjection, primitive = eShapeBased,  **args):
 
   if method == eOpenGLProjection:
-      return directionalInterception_openGL(scene=scene, directions=directions, north=north, horizontal=horizontal, **args)
+      return directionalInterception_openGL_from_dir_vectors(scene, directions, **args)
   elif method == eZBufferProjection:
-      return directionalInterception_zbuffer(scene=scene, directions=directions, north=north, horizontal=horizontal, **args)
+      return directionalInterception_zbuffer_from_dir_vectors(scene, directions, primitive=primitive, **args)
   elif method == eTriangleProjection:
-      return directionalInterception_triangleprojection(scene=scene, directions=directions, north=north, horizontal=horizontal)
+      if len(directions) <= 1:
+          return directionalInterception_triangleprojection_from_dir_vectors(scene, directions, primitive=primitive)
+      else:
+          return parallel_directionalInterception_triangleprojection_from_dir_vectors(scene, directions, primitive=primitive)
 
-def scene_irradiance(scene, directions, north = 0, horizontal = False, scene_unit = 'm', method = eZBufferProjection, **args):
+def _format_irradiance(scene, interception, primitive, scene_unit = 'm'):
+    try:
+      import pandas
+      def convert(a) : 
+         res = pandas.DataFrame(a)
+         res.fillna(0, inplace=True)
+         return res
+    except ImportError as ie:
+       def convert(a) : return a
+    units = {'mm': 0.001, 'cm': 0.01, 'dm': 0.1, 'm': 1, 'dam': 10, 'hm': 100,
+             'km': 1000}
+
+    conv_unit = units[scene_unit]
+    conv_unit2 = conv_unit**2
+
+    if primitive == eShapeBased:
+      
+      surfaces = dict([(sid, conv_unit2*sum([pgl.surface(sh.geometry) for sh in shapes])) for sid, shapes in scene.todict().items()])
+
+      irradiance = { sid : conv_unit2 * value / surfaces[sid] for sid, value in interception.items() }
+      if conv_unit2 != 1:
+        interception = { sid : conv_unit2 * value  for sid, value in interception.items() }
+
+      return convert( {'area' : surfaces, 'irradiance' : irradiance, 'interception' : interception} )
+    else :
+       trshapeid0, trirradiance0, trsurface0, trinterception0 = {}, {}, {}, {}
+       trid = 0
+       for sh in scene:
+          tr = pgl.tesselate(sh.geometry)
+          nbtr = tr.indexListSize()
+          interceptions = interception[sh.id]
+          assert len(interceptions) >= nbtr
+          if len(interceptions) > nbtr:
+             interception[sh.id] = interceptions[nbtr:]
+             interceptions = interceptions[:nbtr]
+          for i,intercept in enumerate(interceptions):
+            surf = pgl.surface(tr.pointAt(i,0),tr.pointAt(i,1),tr.pointAt(i,2))
+            trsurface0[trid] = surf * conv_unit2
+            trshapeid0[trid] = sh.id
+            trirradiance0[trid] = intercept/surf
+            trinterception0[trid] = intercept * conv_unit2
+            trid += 1
+       return convert( {'area' : trsurface0, 'irradiance' : trirradiance0, 'interception' : trinterception0, 'shapeid' : trshapeid0} )
+
+def scene_irradiance_caribu_from_dir_vectors(scene, directions, primitive = eShapeBased, scene_unit = 'm'):
+   from openalea.caribu.CaribuScene import CaribuScene
+   from math import sin, radians
+   from .utils import vect2azel
+   import pandas
+   # Fake optical property. Not necessary for direct light computation
+   opt_prop = { 'GEN' : dict([(sh.id, (0.04,0.0,0.04,0.00) ) for sh in scene]) }
+   cs = CaribuScene(scene, opt=opt_prop, scene_unit=scene_unit)
+   # light irradiance should be expressed horizontally in Caribu
+   lights = [(wg * sin(radians(vect2azel(dir)[1])), tuple(dir)) for dir, wg in directions]
+   cs.setLight(lights)
+
+   raw, agg = cs.run(direct=True, infinite = False, split_face = False)
+   if primitive == eShapeBased:
+      return pandas.DataFrame(dict(area = agg['GEN']['area'], irradiance = agg['GEN']['Ei'], absorbance = agg['GEN']['Eabs'] ))
+   else:
+      return pandas.DataFrame(dict(area = sum(raw['GEN']['area'].values(),[]), 
+                                   irradiance = sum(raw['GEN']['Ei'].values(),[]), 
+                                   absorbance = sum(raw['GEN']['Eabs'].values(),[]),
+                                   shapeid = [sid for sid, values in raw['GEN']['area'].items() for i in range(len(values))] ))
+
+def scene_irradiance_caribu(scene, directions, 
+                            north = 0, 
+                            horizontal = False,
+                            primitive = eShapeBased, scene_unit = 'm'):
+    return scene_irradiance_caribu_from_dir_vectors(scene, estimate_dir_vectors(directions, north, horizontal), primitive, scene_unit)
+
+
+def scene_irradiance(scene, directions, 
+                     north = 0, horizontal = False, 
+                     scene_unit = 'm', 
+                     method = eZBufferProjection, primitive = eShapeBased, **args):
     """
     Compute the irradiance received by all the shapes of a given scene.
    :Parameters:
@@ -251,87 +363,46 @@ def scene_irradiance(scene, directions, north = 0, horizontal = False, scene_uni
     :returns: the area of the shapes of the scene in m2 and the irradiance in J.s-1.m-2
     :returntype: pandas.DataFrame
     """
-
-    units = {'mm': 0.001, 'cm': 0.01, 'dm': 0.1, 'm': 1, 'dam': 10, 'hm': 100,
-             'km': 1000}
-
-    conv_unit = units[scene_unit]
-    conv_unit2 = conv_unit**2
-
-
-    res = directionalInterception(scene = scene, directions = directions, north = north, horizontal = horizontal, method=method,  **args)
-    res = { sid : conv_unit2 * value for sid, value in res.items() }
-
-    surfaces = dict([(sid, conv_unit2*sum([pgl.surface(sh.geometry) for sh in shapes])) for sid, shapes in scene.todict().items()])
-
-    if method == eTriangleProjection:
-       trsurface = {}
-       for sh in scene:
-          tr = pgl.tesselate(sh.geometry)
-          trsurface.setdefault(sh.id,[])
-          trsurface[sh.id] += [conv_unit2 * pgl.surface(tr.pointAt(i,0),tr.pointAt(i,1),tr.pointAt(i,2)) for i in range(tr.indexListSize())]
-      
-       trirradiance = {}
-       for sid,value  in res.items():
-          lres = []
-          for tid, (v, trsurf) in enumerate(zip(value[1],trsurface[sid])):
-            #if not (0 <= v <= trsurf) :
-            #   raise ValueError("invalid projected surface", v, trsurf, sid, tid)
-            lres.append(v/trsurf)
-          trirradiance[sid] = lres
+    assert method in [eZBufferProjection, eTriangleProjection,  eCaribu, eOpenGLProjection], "Unknown method for projection"
+    if method == eCaribu:
+        return scene_irradiance_caribu(scene, directions=directions, north=north, horizontal=horizontal, primitive=primitive, scene_unit=scene_unit)
     else:
-       trirradiance = None
-    
-    irradiance = { sid : value / surfaces[sid] for sid, value in res.items() }
+      if method == eOpenGLProjection:
+        primitive = eShapeBased
 
-    import pandas
-    return pandas.DataFrame( {'area' : surfaces, 'irradiance' : irradiance} ), trirradiance
-
-
-class LightEstimator:
-  def __init__(self, method, scene):
-      self.method = method
-      self.scene = scene
-      self.lights = []
-
-  def setLights(self, lights):
-    """
-    Add a set of lights to the estimator.
-
-    Parameters
-    ----------
-    lights : list
-        A list of tuples (direction, intensity) representing the lights to add.
-    """
-    self.lights.append(lights)
-  
-  def setLightFromDirections(self, directions, north = 0, horizontal = False):
-    """
-    Set lights based on specified directions.
-
-    This function calculates light directional vectors and intensity for each specified 
-    direction (elevation, azimuth and weight) and adds them to the lights list. 
-    If the horizontal flag is set to True, the intensity is supposed to be measured 
-    on an horizontal plane and thus adjusted according to the sine of the elevation angle.
-
-    :param directions: A list of tuples, where each tuple contains 
-                       an elevation, an azimuth and a weight.
-    :param north: The angle between the north direction of the azimuths 
-                  (in degrees-positive clockwise). Default is 0.
-    :param horizontal: A boolean flag specifying if the intensity is given using a horizontal convention and should be adjusted 
-                     (True) or not (False). Default is False.
-    """
-
-    for el, az, wg in directions:
-      if( az != None and el != None):
-            dir = azel2vect(az, el, north)
-            if horizontal :
-                wg /= sin(radians(el))
-            self.lights.append( (dir, wg) )
+      interception = directionalInterception( scene = scene,   directions = directions, 
+                                    north = north,   horizontal = horizontal, 
+                                    method = method, primitive = primitive,  
+                                    **args )
+      return _format_irradiance(scene, interception, primitive, scene_unit)
     
 
-  def estimate(self,  method, **args):
-      return directionalInterception(self.scene, self.lights, method, **args)
-   
-  def plot(self, a_property, minval = None, maxval = None, display = True):
-      pass
+def scene_irradiance_from_dir_vectors(scene, directions, 
+                     scene_unit = 'm', 
+                     method = eZBufferProjection, primitive = eShapeBased, **args):
+    """
+    Compute the irradiance received by all the shapes of a given scene.
+   :Parameters:
+    - `scene` : scene for which the irradiance has to be computed
+    - `directions` : list of tuple composed of the an azimuth, an elevation and an irradiance (in J.s-1.m-2)
+    - `north` : the angle between the north direction of the azimuths (in degrees-counter clockwise). Warning: it is given in clockwise in Caribu.
+    - `horizontal` : specify if the irradiance use an horizontal convention (True) or a normal direction (False)
+    - `scene_unit` : specify the units in which the scene is built. Convert then all the result in m.
+
+    :returns: the area of the shapes of the scene in m2 and the irradiance in J.s-1.m-2
+    :returntype: pandas.DataFrame
+    """
+    assert method in [eZBufferProjection, eTriangleProjection,  eCaribu, eOpenGLProjection], "Unknown method for projection"
+    if method == eCaribu:
+        return scene_irradiance_caribu_from_dir_vectors(scene, directions=directions, primitive=primitive, scene_unit=scene_unit)
+    else:
+      if method == eOpenGLProjection:
+        primitive = eShapeBased
+        
+
+      interception = directionalInterception_from_dir_vectors( scene = scene,   directions = directions, 
+                                    method = method, primitive = primitive,  
+                                    **args )
+      return _format_irradiance(scene, interception, primitive, scene_unit)
+    
+

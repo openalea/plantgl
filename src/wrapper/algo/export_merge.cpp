@@ -51,6 +51,14 @@ PGL_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
 
+ExplicitModelPtr merge_geometry(GeometryPtr a, GeometryPtr b){
+  Discretizer d;
+  a->apply(d);
+  Merge m(d,d.getDiscretization());
+  m.apply(b);
+  return m.getModel();
+}
+
 void export_Merge()
 {
   class_< Merge, boost::noncopyable >
@@ -60,6 +68,7 @@ void export_Merge()
     .def("apply", ( bool(Merge::*)(ExplicitModelPtr&) ) &Merge::apply)
     .add_property("result",make_function(&Merge::getModel,return_internal_reference<1>()))
     ;
+  def("merge_geometry",&merge_geometry);
 }
 
 
