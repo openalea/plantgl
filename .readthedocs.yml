@@ -1,0 +1,20 @@
+version: 2
+
+build:
+  os: "ubuntu-22.04"
+  tools:
+    python: "mambaforge-22.9"
+
+conda:
+  environment: doc/environment.yml
+
+sphinx:
+  # Path to your Sphinx configuration file.
+  configuration: doc/conf.py
+
+# Optional but recommended, declare the Python requirements required
+# to build your documentation
+# See https://docs.readthedocs.io/en/stable/guides/reproducible-builds.html
+python:
+   install:
+     - requirements: doc/requirements.txt
