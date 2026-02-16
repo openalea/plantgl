@@ -81,6 +81,8 @@ target/
 doc/doxygen
 src/cpp/plantgl/doxygenFile
 
+doc/_autosummary
+
 # temporary dirs for Mac OS X
 .DS_Store
 
