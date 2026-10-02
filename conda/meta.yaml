@@ -36,7 +36,7 @@ requirements:
     - boost
     - libxcb                             # [linux]
     - pthread-stubs                      # [linux]
-    - {{ cdt('mesa-libgl-devel') }}      # [linux] # match libqglviewer CDT GL strategy
+    - libgl-devel                        # [linux]
     - libglu                             # [linux]
     - xorg-libxfixes                     # [linux]
     - xorg-libx11                        # [linux]
@@ -44,7 +44,7 @@ requirements:
   build:
     - python
     - {{ compiler('cxx') }}
-    #- {{ stdlib('cxx') }}
+    - {{ stdlib('c') }}
     - cmake
     - pkg-config                        # [linux]
     - binutils_impl_linux-64            # [linux]
@@ -54,17 +54,17 @@ requirements:
     - m2-flex                           # [win]
     - menuinst                          # [win]
     - make                              # [unix]
-    - {{ cdt('mesa-libgl-devel') }}     # [linux]
-    - {{ cdt('mesa-dri-drivers') }}     # [linux]
-    - {{ cdt('libxext') }}              # [linux]
-    - {{ cdt('libselinux') }}           # [linux]
-    - {{ cdt('libxdamage') }}           # [linux]
-    - {{ cdt('libxfixes') }}            # [linux]
-    - {{ cdt('libxxf86vm') }}           # [linux]
-    - {{ cdt('libxcb') }}               # [linux]
-    - {{ cdt('expat-devel') }}          # [linux]
-    - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
-    - {{ cdt('libx11-devel') }}          # [linux]
+    - libgl-devel                       # [linux]
+    - libxcb                            # [linux]
+    #- {{ cdt('mesa-dri-drivers') }}     # [linux]
+    #- {{ cdt('libxext') }}              # [linux]
+    #- {{ cdt('libselinux') }}           # [linux]
+    #- {{ cdt('libxdamage') }}           # [linux]
+    #- {{ cdt('libxfixes') }}            # [linux]
+    #- {{ cdt('libxxf86vm') }}           # [linux]
+    #- {{ cdt('expat-devel') }}          # [linux]
+    #- {{ cdt('xorg-x11-proto-devel') }}  # [linux]
+    #- {{ cdt('libx11-devel') }}          # [linux]
 
   run:
     - python
