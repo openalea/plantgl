@@ -79,11 +79,11 @@ requirements:
     - xorg-libxfixes    # [linux]
     - libglu            # [linux]
     # guards for ABI-sensitive libraries
-    - {{ pin_compatible('pyqt', max_pin='x.x') }}
-    - {{ pin_compatible('boost', max_pin='x.x') }}
-    - {{ pin_compatible('cgal-cpp', max_pin='x.x') }}
-    - {{ pin_compatible('qhull', max_pin='x.x') }}
-    - {{ pin_compatible('ann', max_pin='x.x') }}
+    # - {{ pin_compatible('pyqt', max_pin='x.x') }}
+    # - {{ pin_compatible('boost', max_pin='x.x') }}
+    # - {{ pin_compatible('cgal-cpp', max_pin='x.x') }}
+    # - {{ pin_compatible('qhull', max_pin='x.x') }}
+    # - {{ pin_compatible('ann', max_pin='x.x') }}
 
 
 test:
