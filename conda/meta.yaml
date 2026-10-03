@@ -33,7 +33,11 @@ requirements:
     - cgal-cpp
     - qhull
     - ann
+    - libboost
     - libboost-devel
+    - libboost-headers
+    - libboost-python
+    - libboost-python-devel
     - libxcb                             # [linux]
     - pthread-stubs                      # [linux]
     - libgl-devel                        # [linux]

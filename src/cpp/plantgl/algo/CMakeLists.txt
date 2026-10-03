@@ -89,7 +89,7 @@ else(APPLE)
 
 endif(APPLE)
 
-target_link_libraries(pglalgo Boost::system Boost::thread)
+target_link_libraries(pglalgo Boost::filesystem Boost::thread)
 
 # --- Dependencies
 
