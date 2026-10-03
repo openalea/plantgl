@@ -11,7 +11,7 @@ add_library(pgltool SHARED ${SRC_FILES})
 #endif()
 
 if (NOT MSVC)
-    target_link_libraries(pgltool Boost::system Boost::thread Boost::chrono)
+    target_link_libraries(pgltool Boost::filesystem Boost::thread Boost::chrono)
 endif()
 
 

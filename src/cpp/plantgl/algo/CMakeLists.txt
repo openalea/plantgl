@@ -75,7 +75,7 @@ target_link_libraries(pglalgo ${QHULL_LIBRARIES})
 
 if(APPLE)
   target_link_libraries(pglalgo "-framework Metal")
-  target_link_libraries(pglalgo "-framework AGL")
+#   target_link_libraries(pglalgo "-framework AGL")
   target_link_libraries(pglalgo "-framework OpenGL")
 else(APPLE)
   target_link_libraries(pglalgo OpenGL::GL OpenGL::GLU)
@@ -89,7 +89,7 @@ else(APPLE)
 
 endif(APPLE)
 
-target_link_libraries(pglalgo Boost::system Boost::thread)
+target_link_libraries(pglalgo Boost::filesystem Boost::thread)
 
 # --- Dependencies
 
