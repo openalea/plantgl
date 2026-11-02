@@ -17,7 +17,7 @@ pglwrapper_link_boost(_pglgui)
 pglwrapper_link_python(_pglgui)
 
 if(APPLE)
-  target_link_libraries(_pglgui "-framework AGL")
+  target_link_libraries(_pglgui "-framework OpenGL")
 endif()
 
 # --- Dependencies

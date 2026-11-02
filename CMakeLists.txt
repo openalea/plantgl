@@ -123,7 +123,7 @@ find_library(QHULL_LIBRARY NAMES "libqhullstatic.a" PATHS $ENV{CONDA_PREFIX}/lib
 find_package(Qhull)
 
 
-find_package(Boost COMPONENTS thread system chrono ${boost_python} ${boost_numpy})
+find_package(Boost COMPONENTS headers thread filesystem chrono ${boost_python} ${boost_numpy})
 find_package(CGAL)
 
 if (Boost_FOUND)
