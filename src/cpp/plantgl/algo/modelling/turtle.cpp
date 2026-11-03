@@ -295,12 +295,18 @@ void Turtle::stop(){
 
   void Turtle::f(real_t length){
       // if(length > 0){
-          if (length > 0 && __params->guide) _applyGuide(length);
-          if (__params->elasticity > GEOM_EPSILON){
-              _applyTropism();
+          if (length > 0 && __params->guide) 
+            length = _applyGuide(length);
+
+          TropismResult result = _applyTropism(length);
+
+          if (result.chordLength > GEOM_EPSILON) {
+            setHead(result.chordHeading, result.chordUp);
+            __params->position += __params->heading * result.chordLength * getScale().z();
           }
-          __params->position += __params->heading*length*getScale().z();
-          // __params->axialLength += length;
+          setHead(result.finalHeading, result.finalUp);
+
+          __params->axialLength += length;
           if (length > 0 && __params->guide) _ajustToGuide();
       // }
       // else if(fabs(length) < GEOM_EPSILON) warning("f length should be non null.");
@@ -309,11 +315,14 @@ void Turtle::stop(){
 
   void Turtle::F(real_t length, real_t topradius){
       if(length > 0){
-          if (__params->guide) _applyGuide(length);
-          if (__params->elasticity > GEOM_EPSILON){
-              _applyTropism();
-          }
-          if (length > GEOM_EPSILON){
+          real_t drawLength = length;
+          real_t arcLength = length;
+          if (__params->guide) drawLength = _applyGuide(arcLength);
+
+          TropismResult result = _applyTropism(drawLength);
+          drawLength = result.chordLength;
+          if (drawLength > GEOM_EPSILON){
+              setHead(result.chordHeading, result.chordUp);
               if (!__params->isGeneralizedCylinderOn()){
                       if(__params->defaultSection && __params->width > -GEOM_EPSILON){
                             if (topradius < -GEOM_EPSILON) {
@@ -321,7 +330,7 @@ void Turtle::stop(){
                                         getIdPair(),
                                         getCurrentMaterial(),
                                         __params->frameInfo(),
-                                        length,
+                                        drawLength,
                                         __params->width,
                                         __params->sectionResolution);
                             } else {
@@ -329,7 +338,7 @@ void Turtle::stop(){
                                         getIdPair(),
                                         getCurrentMaterial(),
                                         __params->frameInfo(),
-                                        length,
+                                        drawLength,
                                         __params->width,
                                         topradius,
                                         __params->sectionResolution
@@ -341,7 +350,7 @@ void Turtle::stop(){
                                   getIdPair(),
                                   getCurrentMaterial(),
                                   __params->frameInfo(),
-                                  length,
+                                  drawLength,
                                   __params->width,
                                   topradius < -GEOM_EPSILON?getWidth():topradius,
                                   __params->crossSection,
@@ -349,11 +358,12 @@ void Turtle::stop(){
                                   __params->sectionResolution);
                       }
               }
-              __params->position += __params->heading*length*getScale().z();
-              __params->axialLength += length;
+              __params->position += __params->heading*drawLength*getScale().z();
+              __params->axialLength += arcLength;
           }
+          setHead(result.finalHeading, result.finalUp);
           if (__params->guide) _ajustToGuide();
-          if (length > GEOM_EPSILON && (__params->isGeneralizedCylinderOn() || __params->isPolygonOn()))
+          if (drawLength > GEOM_EPSILON && (__params->isGeneralizedCylinderOn() || __params->isPolygonOn()))
               __params->pushPosition();
           if (topradius > -GEOM_EPSILON ) {
               setWidth(topradius);
@@ -818,17 +828,164 @@ void Turtle::headingReflection()
     // __params->heading = - __params->heading;
 }
 
+#include <cmath>
 
-void Turtle::_applyTropism() {
-    _tendTo(getTropism(),getElasticity());
+struct SiCiDifference {
+    double si;
+    double ci;
+};
+
+inline SiCiDifference computeSiCiDifference(
+    double theta0, double kL)
+{
+    // Computes:
+    // Si(theta0) - Si(theta0 * exp(-kL))
+    // Ci(theta0) - Ci(theta0 * exp(-kL))
+
+    const double x2 = theta0 * theta0;
+    const double eps = 1e-15;
+
+    // Si series, starting at n = 0
+    double term = theta0;
+    double si = 0.0;
+
+    for (int n = 0; n < 30; ++n) {
+        int p = 2*n + 1;
+
+        double delta = -term * std::expm1(-p*kL);
+        si += delta;
+
+        if (std::abs(delta) < eps)
+            break;
+
+        term *= -x2 * p /
+            ((p+2.0)*(p+2.0)*(p+1.0));
+    }
+
+    // Ci series, starting at n = 1
+    term = -x2 / 4.0;
+    double ci = kL;
+
+    for (int n = 1; n < 30; ++n) {
+        int p = 2*n;
+
+        double delta = -term * std::expm1(-p*kL);
+        ci += delta;
+
+        if (std::abs(delta) < eps)
+            break;
+
+        term *= -x2 * p /
+            ((p+2.0)*(p+2.0)*(p+1.0));
+    }
+
+    return {si, ci};
 }
 
-void Turtle::_applyGuide(real_t& l) {
+Turtle::TropismResult Turtle::_applyTropism(real_t length)
+{
+    const Vector3 h = getHeading();
+    const Vector3 u = getUp();
+
+    TropismResult result = { length, h, u, h, u };
+
+    if (length <= GEOM_EPSILON || getElasticity() <= GEOM_EPSILON)
+        return result;
+
+    Vector3 t = getTropism();
+    if (t.normalize() <= GEOM_EPSILON)
+        return result;
+
+    Vector3 axis = cross(h, t);
+    const real_t sinTheta = axis.normalize();
+    const real_t cosTheta = dot(h, t);
+
+    // Legacy tropism: rotation applied before displacement
+    if (!__params->elasticityPerLengthUnitEnabled) {
+        if (sinTheta <= GEOM_EPSILON) {
+            // if (cosTheta > 0)
+                return result;
+            // axis = u;
+        }
+
+        const real_t theta = atan2(sinTheta, cosTheta);
+        const Matrix3 rot =
+            Matrix3::axisRotation(axis, theta * getElasticity());
+
+        result.chordHeading = result.finalHeading = rot * h;
+        result.chordUp = result.finalUp = rot * u;
+
+        return result;
+    }
+
+    // Integrated tropism
+    const real_t k = getElasticity();
+    if (k <= GEOM_EPSILON)
+        return result;
+
+    if (sinTheta <= GEOM_EPSILON) {
+        // if (cosTheta > 0)
+            return result;
+
+        // Antiparallel heading: choose a rotation plane
+        // axis = getLeft();
+    }
+
+    const real_t theta0 = atan2(sinTheta, cosTheta);
+    const real_t kL = k * length;
+    const real_t thetaEnd = theta0 * exp(-kL);
+
+    // Final tangent orientation
+    const Matrix3 endRot =
+        Matrix3::axisRotation(axis, theta0 - thetaEnd);
+
+    result.finalHeading = endRot * h;
+    result.finalUp = endRot * u;
+
+    // Analytical integration of the displacement
+    const SiCiDifference integrals =
+        computeSiCiDifference(theta0, kL);
+
+    const real_t xs = -integrals.si / k;
+    const real_t ys = integrals.ci / k;
+
+    Vector3 xaxis = cross(axis, t);
+    xaxis.normalize();
+
+    const Vector3 displacement = xs * xaxis + ys * t;
+
+    // Chord length and direction
+    result.chordLength = norm(displacement);
+
+    if (result.chordLength > GEOM_EPSILON) {
+        result.chordHeading = displacement / result.chordLength;
+
+        // Minimal rotation from initial heading to chord heading
+        Vector3 chordAxis = cross(h, result.chordHeading);
+        const real_t sine = chordAxis.normalize();
+
+        if (sine > GEOM_EPSILON) {
+            const real_t angle =
+                atan2(sine, dot(h, result.chordHeading));
+
+            result.chordUp =
+                Matrix3::axisRotation(chordAxis, angle) * u;
+        }
+        else if (dot(h, result.chordHeading) < 0) {
+            result.chordUp =
+                Matrix3::axisRotation(u, GEOM_PI) * u;
+        }
+    }
+
+    return result;
+}
+
+real_t Turtle::_applyGuide(real_t l) {
         bool local_ajustement = (fabs(l) < GEOM_EPSILON);
         real_t current = __params->guide->__actualT;
         if( current >= 1.0 && !local_ajustement) {
             __params->guide = TurtlePathPtr();
-            return;
+            return l;
         }
         if(__params->guide->is2D()){
             Turtle2DPath * guide = (Turtle2DPath *)__params->guide.get();
@@ -966,6 +1123,7 @@ void Turtle::_applyGuide(real_t& l) {
             guide->__lastHeading = tangent;
             guide->__actualT = current;
         }
+        return l;
 }
 
 void Turtle::_ajustToGuide()
@@ -1019,14 +1177,21 @@ void Turtle::circle(real_t radius )
 
 void Turtle::box(real_t length,real_t topradius){
       if(length > 0){
-          if (__params->guide) _applyGuide(length);
-          if (__params->elasticity > GEOM_EPSILON) _applyTropism();
+          real_t drawLength = length;
+          if (__params->guide) drawLength = _applyGuide(length);
 
-          __drawer->box(getIdPair(), getCurrentMaterial(), __params->frameInfo(), length, __params->width, topradius);
+          const real_t arcLength = drawLength;
+          TropismResult result = _applyTropism(arcLength);
+          drawLength = result.chordLength;
+          if (drawLength > GEOM_EPSILON) {
+            setHead(result.chordHeading, result.chordUp);
+            __drawer->box(getIdPair(), getCurrentMaterial(), __params->frameInfo(), drawLength, __params->width, topradius);
+            __params->position += __params->heading * drawLength * getScale().z();
+            __params->axialLength += length;
+          }
+          setHead(result.finalHeading, result.finalUp);
 
-          __params->position += __params->heading*length*getScale().z();
-          __params->axialLength += length;
-          if (length > 0 && __params->guide) _ajustToGuide();
+          if (__params->guide) _ajustToGuide();
 
           if (topradius > -GEOM_EPSILON ) {
               setWidth(topradius);
@@ -1043,22 +1208,18 @@ void Turtle::box(real_t length,real_t topradius){
 
 void Turtle::quad(real_t length,real_t topradius){
       if(length > 0){
-          if (__params->guide) _applyGuide(length);
-          if (__params->elasticity > GEOM_EPSILON){
-              _applyTropism();
+          if (__params->guide) length = _applyGuide(length);
+          const real_t arcLength = length;
+          TropismResult result = _applyTropism(arcLength);
+          const real_t drawLength = result.chordLength;
+          if (drawLength > GEOM_EPSILON) {
+            setHead(result.chordHeading, result.chordUp);
+            __drawer->quad(getIdPair(), getCurrentMaterial(), __params->frameInfo(), drawLength, __params->width, topradius);
+            __params->position += __params->heading * drawLength * getScale().z();
+            __params->axialLength += length;
           }
-          __drawer->quad(
-                  getIdPair(),
-                  getCurrentMaterial(),
-                  __params->frameInfo(),
-                  length,
-                  __params->width,
-                  topradius
-                  );
-
-          __params->position += __params->heading*length*getScale().z();
-          __params->axialLength += length;
-          if (length > 0 && __params->guide) _ajustToGuide();
+          setHead(result.finalHeading, result.finalUp);
+          if (__params->guide) _ajustToGuide();
 
           if (topradius > -GEOM_EPSILON ) {
               setWidth(topradius);

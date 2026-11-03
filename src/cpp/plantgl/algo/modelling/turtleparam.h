@@ -197,6 +197,7 @@ public:
 
   Vector3 tropism;
   real_t elasticity;
+  bool elasticityPerLengthUnitEnabled;
 
   TurtlePathPtr guide;
 

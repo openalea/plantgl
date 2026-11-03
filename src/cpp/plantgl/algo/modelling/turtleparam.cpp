@@ -100,6 +100,7 @@ TurtleParam::TurtleParam() :
   width(0.1f),
   tropism(0,0,1),
   elasticity(0),
+  elasticityPerLengthUnitEnabled(false),
   screenCoordinates(false),
   __polygon(false),
   __generalizedCylinder(false),
@@ -129,6 +130,7 @@ TurtleParam::reset(){
   width = 0.1f;
   tropism = Vector3(0,0,1);
   elasticity = 0;
+  elasticityPerLengthUnitEnabled = false;
   screenCoordinates = false;
   __polygon = false;
   __generalizedCylinder = false;

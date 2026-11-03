@@ -258,8 +258,12 @@ void export_Turtle()
     .def("sweep", (void (Turtle::*) (const LineicModelPtr&,const Curve2DPtr&,real_t,real_t,real_t,const QuantisedFunctionPtr))&Turtle::sweep, (bp::arg("path"),bp::arg("section"),bp::arg("length"),bp::arg("dlength"),bp::arg("radiusmagnitude")=1.0,bp::arg("radiusvariation")=QuantisedFunctionPtr()), return_self<>())
 
     .add_property("elasticity",&get_prop_bt_from_class<real_t,Turtle,&Turtle::getElasticity>,&Turtle::setElasticity)
+    .add_property("elasticityPerLengthUnitEnabled",&get_prop_bt_from_class<bool,Turtle,&Turtle::isElasticityPerLengthUnitEnabled>,&Turtle::setElasticityPerLengthUnitEnabled)
     .add_property("tropism",&get_prop_bt_from_class<Vector3,Turtle,&Turtle::getTropism>,(void(Turtle::*)(const Vector3&))&Turtle::setTropism)
     .def("setTropism", (void(Turtle::*)(real_t,real_t,real_t))&Turtle::setTropism, return_self<>())
+    .def("setElasticity", (void(Turtle::*)(real_t))&Turtle::setElasticity, return_self<>())
+    .def("setElasticityPerLengthUnit", (void(Turtle::*)(real_t))&Turtle::setElasticityPerLengthUnit, return_self<>())
+    .def("setElasticityPerLengthUnitEnabled", (void(Turtle::*)(bool))&Turtle::setElasticityPerLengthUnitEnabled, return_self<>())
 
     .def("setScreenCoordinatesEnabled", &Turtle::setScreenCoordinatesEnabled, (bp::arg("enabled")=true), return_self<>())
 
