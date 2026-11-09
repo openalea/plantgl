@@ -1,0 +1,29 @@
+# Host dependencies of openalea.plantgl, common to all platforms: the libraries and
+# Python build tools the C++ code and the wrappers are built against.
+# - conda/meta.yaml reads it for requirements/host (platform specific ones, such as the
+#   OpenGL libraries on Linux, stay in meta.yaml).
+# - Developers: conda env update -n plantgl-devel -f conda/build_deps.yml
+# No `# [linux]` selectors here: conda-build's load_file_data does not apply them.
+channels:
+  - conda-forge
+dependencies:
+  - python
+  - pip
+  - setuptools-scm
+  - scikit-build-core
+  - numpy
+  - qt-main
+  - pyqt
+  - gmp
+  - mpfr
+  - libpng
+  - libjpeg-turbo
+  - zlib
+  - cgal-cpp
+  - ann
+  # CMake finds Eigen3 and Qhull, but never defines PGL_WITH_EIGEN / PGL_WITH_QHULL,
+  # so the code using them is compiled out. Uncomment when enabling them in CMake.
+  # - eigen
+  # - qhull
+  - libboost-devel
+  - libboost-python-devel

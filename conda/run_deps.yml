@@ -1,0 +1,16 @@
+# Runtime dependencies of openalea.plantgl, always needed. Keep this list short: plantgl
+# is a dependency of many packages (optional ones go in optional_deps.yml).
+# - conda/meta.yaml reads it for requirements/run (the C++ libraries are pinned by the
+#   run_exports of the host packages).
+# - Developers: conda env update -n plantgl-devel -f conda/run_deps.yml
+# No `# [linux]` selectors here: conda-build's load_file_data does not apply them.
+channels:
+  - conda-forge
+  # pyqglviewer; the dev and rc labels have its python 3.14 builds
+  - openalea3/label/dev
+  - openalea3/label/rc
+  - openalea3
+dependencies:
+  - numpy
+  - pyopengl
+  - pyqglviewer

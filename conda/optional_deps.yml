@@ -1,0 +1,16 @@
+# Optional dependencies of openalea.plantgl: import them only inside the functions using
+# them, never at module level.
+# - conda/meta.yaml test/requires repeats the ones the tests use (matplotlib-base,
+#   pandas).
+# - Read the Docs adds them to environment_rtd.yml (see .readthedocs.yml).
+# - Developers: conda env update -n plantgl-devel -f conda/optional_deps.yml
+# No `# [linux]` selectors here: conda-build's load_file_data does not apply them.
+channels:
+  - conda-forge
+dependencies:
+  - pandas            # light
+  - tzfpy             # light: get_timezone
+  - geopy             # light: localize_from_city
+  - ipython           # codec.js
+  - matplotlib-base   # plots, colormaps
+  - trimesh           # algo.alphashape

@@ -1,0 +1,18 @@
+# Documentation (Sphinx) dependencies.
+# - Read the Docs adds them to environment_rtd.yml before creating its env
+#   (see .readthedocs.yml).
+# - Developers: conda env update -n plantgl-devel -f conda/doc_deps.yml
+channels:
+  - conda-forge
+  - openalea3     # openalea.widgets
+dependencies:
+  - sphinx
+  - pydata-sphinx-theme
+  - myst-parser
+  - sphinx-favicon
+  - sphinx-copybutton
+  - nbsphinx
+  - pandoc
+  - ipykernel
+  - ipython_genutils
+  - openalea.widgets
