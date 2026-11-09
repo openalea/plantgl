@@ -4,17 +4,16 @@ build:
   os: "ubuntu-22.04"
   tools:
     python: "mambaforge-22.9"
+  jobs:
+    # add the documentation and optional dependencies to the published package environment
+    pre_create_environment:
+      - sed -n '/^dependencies:/,$p' conda/doc_deps.yml | tail -n +2 >> conda/environment_rtd.yml
+      - sed -n '/^dependencies:/,$p' conda/optional_deps.yml | tail -n +2 >> conda/environment_rtd.yml
 
 conda:
-  environment: doc/environment.yml
+  environment: conda/environment_rtd.yml
 
 sphinx:
   # Path to your Sphinx configuration file.
   configuration: doc/conf.py
 
-# Optional but recommended, declare the Python requirements required
-# to build your documentation
-# See https://docs.readthedocs.io/en/stable/guides/reproducible-builds.html
-python:
-   install:
-     - requirements: doc/requirements.txt
