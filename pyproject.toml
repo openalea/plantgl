@@ -1,4 +1,6 @@
 [build-system]
+# Only what an isolated pip build needs from PyPI; compilers and C++ libraries come
+# from conda (conda/meta.yaml, conda/environment-*.yml).
 requires = [
    "scikit-build-core", "setuptools-scm"
 ]
@@ -41,49 +43,9 @@ classifiers = [
   "Topic :: Scientific/Engineering",
 ]
 
-# you can list here all dependencies that are pip-instalable, and that have a name identical to the one used by conda (to allow reuse of this list in meta.yaml)
-# If conda name is different, please do not declare the pip name, and declare conda name in the next section
-dependencies = [
-    "pandas",
-    "numpy",
-]
-
-[project.optional-dependencies]
-test = [
-  "pytest",
-  "nbmake",
-]
-dev = [
-  "pytest >=6",
-  "pytest-cov >=3",
-]
-doc = [
-  "sphinx-autobuild",
-  "pydata-sphinx-theme",
-  "myst-parser",
-  "sphinx-favicon",
-  "ipykernel",
-  "sphinx-copybutton",
-  "ipython_genutils",
-  "nbsphinx",
-]
-
-# section specific to conda-only distributed package (not used by pip yet)
-[tool.conda.environment]
-channels = [
-  "openalea3",
-  "conda-forge"
-]
-dependencies = [
-    "pyopengl",
-    "pyqglviewer",
-    "boost",
-    "qhull",
-    "zlib",
-    "cgal-cpp",
-    "eigen",
-    "ann"
-]
+# Dependencies are declared in conda/: run_deps.yml (runtime), optional_deps.yml,
+# doc_deps.yml, and meta.yaml / environment-*.yml (build). A pip install brings no
+# runtime dependency.
 
 [tool.scikit-build]
 build-dir = "./build/"

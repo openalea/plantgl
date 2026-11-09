@@ -88,40 +88,47 @@ Compiling
 =============
 
 
-The simplest way to build PlantGL is to use conda (see below).
+PlantGL is compiled in a conda environment. Its dependencies are listed in ``conda/``:
+``environment-linux.yml``, ``environment-macos.yml`` or ``environment-win.yml`` (compilers and
+build tools of your system), ``build_deps.yml`` (libraries), ``run_deps.yml`` (runtime),
+``optional_deps.yml`` (optional, needed by the tests) and ``doc_deps.yml`` (documentation).
+The commands below are for Linux: on macOS use ``conda/environment-macos.yml`` (requires the
+Xcode Command Line Tools), on Windows ``conda/environment-win.yml`` (requires Visual Studio
+2022 with the C++ tools).
 
-Then, setup your Conda environment with all required dependencies :
-
-.. code:: bash
-
-    # Linux or macOS
-    conda env create -f build-util/plantgl-devel.yaml
-
-    # Windows
-    conda env create -f build-util/plantgl-devel-win.yaml
-    
-    conda activate plantgl-devel
-
-Now, you can build, then install PlantGL :
+Solution 1: build an environment from scratch
+---------------------------------------------
 
 .. code:: bash
 
-    cd plantgl
-    mkdir build
-    cd build
+    mamba create -n plantgl-devel -f conda/environment-linux.yml -f conda/build_deps.yml -f conda/run_deps.yml -f conda/optional_deps.yml
+    mamba activate plantgl-devel
 
-    # Linux
-    cmake .. -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX}
+Solution 2: add the dependencies to an existing environment
+-----------------------------------------------------------
 
-    # Windows -> Visual Studio 2015 is required
-    cmake .. -G "NMake Makefiles" -DCMAKE_INSTALL_PREFIX=%LIBRARY_PREFIX%  ..
+.. code:: bash
 
-    cmake --build . --target install --config Release
+    mamba install -n myenv -f conda/environment-linux.yml -f conda/build_deps.yml -f conda/run_deps.yml -f conda/optional_deps.yml
+    mamba activate myenv
 
-    cd ..
-    python setup.py install --prefix=${CONDA_PREFIX}
+Add ``-f conda/doc_deps.yml`` to either command to build the documentation.
 
-You're done !
+Then compile and install PlantGL in the active environment, from the root of the
+repository:
+
+.. code:: bash
+
+    pip install . --no-deps --no-build-isolation -v
+
+CMake runs through scikit-build-core: the build directory is ``build/``, reused by the next
+builds. The C++ libraries, headers and ``pglviewer`` are installed in the environment, the
+Python package in its ``site-packages``. Run the tests with:
+
+.. code:: bash
+
+    cd test
+    pytest -v --ignore=tofix --ignore=ui --ignore=oatest
 
 
 =============
