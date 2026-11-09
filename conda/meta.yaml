@@ -18,6 +18,9 @@ about:
 
 build:
   number: 0
+  # Packages compiling against PlantGL (openalea.plantgl in their host) get this run pin.
+  run_exports:
+    - {{ pin_subpackage('openalea.plantgl', max_pin='x.x') }}
   script:
     - {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
 
