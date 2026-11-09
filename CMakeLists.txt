@@ -118,6 +118,14 @@ find_package(JPEG REQUIRED)
 find_package(ANN)
 find_package(BISON)
 find_package(Eigen3)
+if (WIN32)
+    # winflexbison installs FlexLexer.h in Library/share/winflexbison, not searched by
+    # FindFLEX. NO_CMAKE_FIND_ROOT_PATH: use these paths as is under conda-build.
+    find_path(FLEX_INCLUDE_DIR FlexLexer.h
+              PATHS "$ENV{BUILD_PREFIX}/Library/share/winflexbison"
+                    "$ENV{CONDA_PREFIX}/Library/share/winflexbison"
+              NO_CMAKE_FIND_ROOT_PATH)
+endif()
 find_package(FLEX)
 find_library(QHULL_LIBRARY NAMES "libqhullstatic.a" PATHS $ENV{CONDA_PREFIX}/lib)
 find_package(Qhull)
