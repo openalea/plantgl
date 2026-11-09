@@ -1,5 +1,5 @@
 from .utils import estimate_dir_vectors, vect2azel, azel2vect, to_horizontal_irradiance, to_normal_irradiance
-import pandas as pd
+# pandas is an optional dependency of plantgl: import it only in the methods using it
 import datetime
 
 def to_clockwise(ccw_angle):
@@ -84,6 +84,7 @@ class LightManager:
     attributes = ['name', 'elevation', 'azimuth', 'irradiance', 'enabled']
     attributes += list(set([key for l in self.lights.values() for key in l.tags.keys()]))
 
+    import pandas as pd
     res = [ [getattr(light, attr) if hasattr(light, attr) else (light.tags[attr]) if attr in light.tags else None for attr in attributes] for light in self.lights.values()  ]
     return pd.DataFrame(res, columns=attributes)
 
@@ -259,7 +260,8 @@ class LightManager:
             self.add_light(name, elevation, azimuth, irradiance, horizontal, **tags)
     return self 
   
-  def _check_date(self, dates):      
+  def _check_date(self, dates):
+    import pandas as pd
     if dates is None:
         today = datetime.datetime.today()
         initdate = datetime.datetime(today.year, today.month, today.day, 1, 0, 0)
@@ -285,7 +287,8 @@ class LightManager:
           dates = dates.tz_localize(self.localization['timezone'])
     return dates
     
-  def _check_daydate(self, date):      
+  def _check_daydate(self, date):
+    import pandas as pd
     if date is None:
         date = datetime.datetime.today()
         date = datetime.datetime(date.year, date.month, date.day, 0, 0, 0)
