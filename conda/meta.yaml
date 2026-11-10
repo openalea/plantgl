@@ -1,7 +1,7 @@
 {% set version = environ.get('SETUPTOOLS_SCM_PRETEND_VERSION', "0.0.0.dev") %}
-{# Host and runtime dependencies are declared in build_deps.yml and run_deps.yml, also
+{# Host and runtime dependencies are declared in host_deps.yml and run_deps.yml, also
    used by developers. permit_undefined_jinja=False: fail if a file is missing. #}
-{% set build_deps = load_file_data('build_deps.yml', from_recipe_dir=True, permit_undefined_jinja=False).get('dependencies', []) %}
+{% set host_deps = load_file_data('host_deps.yml', from_recipe_dir=True, permit_undefined_jinja=False).get('dependencies', []) %}
 {% set run_deps = load_file_data('run_deps.yml', from_recipe_dir=True, permit_undefined_jinja=False).get('dependencies', []) %}
 
 package:
@@ -26,8 +26,8 @@ build:
 
 requirements:
   host:
-    # conda/build_deps.yml
-    {% for dep in build_deps %}
+    # conda/host_deps.yml
+    {% for dep in host_deps %}
     - {{ dep }}
     {% endfor %}
     # OpenGL::GL and OpenGL::GLU. X11 headers (included by GL/glx.h) and xcb come with

@@ -4,7 +4,7 @@
 # up its compiler.
 # Use it with the host, runtime and optional dependencies of conda/ (see README):
 #   mamba create -n plantgl-devel -f environment-win.yaml \
-#     -f conda/build_deps.yml -f conda/run_deps.yml -f conda/optional_deps.yml
+#     -f conda/host_deps.yml -f conda/run_deps.yml -f conda/optional_deps.yml
 name: plantgl-devel
 channels:
   - conda-forge

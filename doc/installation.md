@@ -37,7 +37,7 @@ cd plantgl
 
 # Install the dependencies with mamba (environment-macos.yaml or environment-win.yaml
 # on macOS or Windows)
-mamba create -n plantgl-devel -f environment-linux.yaml -f conda/build_deps.yml -f conda/run_deps.yml -f conda/optional_deps.yml
+mamba create -n plantgl-devel -f environment-linux.yaml -f conda/host_deps.yml -f conda/run_deps.yml -f conda/optional_deps.yml
 mamba activate plantgl-devel
 pip install .
 

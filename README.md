@@ -64,7 +64,7 @@ ipython
 
 PlantGL is compiled in a conda environment. `environment-linux.yaml`,
 `environment-macos.yaml` or `environment-win.yaml` list the compilers and build tools of
-your system; the other dependencies are in `conda/`: `build_deps.yml` (libraries),
+your system; the other dependencies are in `conda/`: `host_deps.yml` (libraries),
 `run_deps.yml` (runtime) and `optional_deps.yml` (optional, needed by the tests), and
 `doc/doc_deps.yml` (documentation). The commands below are for Linux: on macOS use
 `environment-macos.yaml` (requires the Xcode Command Line Tools), on Windows
@@ -73,14 +73,14 @@ your system; the other dependencies are in `conda/`: `build_deps.yml` (libraries
 Solution 1: build an environment from scratch
 
 ```bash
-mamba create -n plantgl-devel -f environment-linux.yaml -f conda/build_deps.yml -f conda/run_deps.yml -f conda/optional_deps.yml
+mamba create -n plantgl-devel -f environment-linux.yaml -f conda/host_deps.yml -f conda/run_deps.yml -f conda/optional_deps.yml
 mamba activate plantgl-devel
 ```
 
 Solution 2: add the dependencies to an existing environment
 
 ```bash
-mamba install -n myenv -f environment-linux.yaml -f conda/build_deps.yml -f conda/run_deps.yml -f conda/optional_deps.yml
+mamba install -n myenv -f environment-linux.yaml -f conda/host_deps.yml -f conda/run_deps.yml -f conda/optional_deps.yml
 mamba activate myenv
 ```
 

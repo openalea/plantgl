@@ -43,7 +43,7 @@ classifiers = [
   "Topic :: Scientific/Engineering",
 ]
 
-# Dependencies are declared in conda/: build_deps.yml, run_deps.yml (runtime),
+# Dependencies are declared in conda/: host_deps.yml, run_deps.yml (runtime),
 # optional_deps.yml, meta.yaml; plus environment-*.yaml (build tools, developers) and
 # doc/doc_deps.yml. A pip install brings no
 # runtime dependency.

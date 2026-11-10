@@ -2,7 +2,7 @@
 # platform specific host libraries of conda/meta.yaml. Versions follow conda-forge; sysroot is pinned as in conda-forge-pinning.
 # Use it with the host, runtime and optional dependencies of conda/ (see README):
 #   mamba create -n plantgl-devel -f environment-linux.yaml \
-#     -f conda/build_deps.yml -f conda/run_deps.yml -f conda/optional_deps.yml
+#     -f conda/host_deps.yml -f conda/run_deps.yml -f conda/optional_deps.yml
 name: plantgl-devel
 channels:
   - conda-forge
