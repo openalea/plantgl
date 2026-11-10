@@ -7,11 +7,11 @@ build:
   jobs:
     # add the documentation and optional dependencies to the published package environment
     pre_create_environment:
-      - sed -n '/^dependencies:/,$p' conda/doc_deps.yml | tail -n +2 >> conda/environment_rtd.yml
-      - sed -n '/^dependencies:/,$p' conda/optional_deps.yml | tail -n +2 >> conda/environment_rtd.yml
+      - sed -n '/^dependencies:/,$p' doc/doc_deps.yml | tail -n +2 >> doc/environment.yaml
+      - sed -n '/^dependencies:/,$p' conda/optional_deps.yml | tail -n +2 >> doc/environment.yaml
 
 conda:
-  environment: conda/environment_rtd.yml
+  environment: doc/environment.yaml
 
 sphinx:
   # Path to your Sphinx configuration file.

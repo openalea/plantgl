@@ -2,8 +2,8 @@
 # them, never at module level.
 # - conda/meta.yaml test/requires repeats the ones the tests use (matplotlib-base,
 #   pandas).
-# - Read the Docs adds them to environment_rtd.yml (see .readthedocs.yml).
-# - Developers: conda env update -n plantgl-devel -f conda/optional_deps.yml
+# - Read the Docs adds them to doc/environment.yaml (see .readthedocs.yml).
+# - Developers: with environment-<platform>.yaml (see README).
 # No `# [linux]` selectors here: conda-build's load_file_data does not apply them.
 channels:
   - conda-forge

@@ -2,7 +2,7 @@
 # is a dependency of many packages (optional ones go in optional_deps.yml).
 # - conda/meta.yaml reads it for requirements/run (the C++ libraries are pinned by the
 #   run_exports of the host packages).
-# - Developers: conda env update -n plantgl-devel -f conda/run_deps.yml
+# - Developers: with environment-<platform>.yaml (see README).
 # No `# [linux]` selectors here: conda-build's load_file_data does not apply them.
 channels:
   - conda-forge

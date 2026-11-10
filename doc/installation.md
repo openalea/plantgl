@@ -31,13 +31,14 @@ cd plantgl/test; pytest
 ### Install From source
 
 ```bash
-# Install dependency with conda
-mamba env create -n phm -f conda/environment.yml
-mamba activate plantgl
-
-# Clone plantgl and install
+# Clone plantgl
 git clone https://github.com/openalea/plantgl.git
 cd plantgl
+
+# Install the dependencies with mamba (environment-macos.yaml or environment-win.yaml
+# on macOS or Windows)
+mamba create -n plantgl-devel -f environment-linux.yaml -f conda/build_deps.yml -f conda/run_deps.yml -f conda/optional_deps.yml
+mamba activate plantgl-devel
 pip install .
 
 # (Optional) Test your installation

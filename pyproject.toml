@@ -1,6 +1,6 @@
 [build-system]
 # Only what an isolated pip build needs from PyPI; compilers and C++ libraries come
-# from conda (conda/meta.yaml, conda/environment-*.yml).
+# from conda (conda/meta.yaml, environment-*.yaml).
 requires = [
    "scikit-build-core", "setuptools-scm"
 ]
@@ -43,8 +43,9 @@ classifiers = [
   "Topic :: Scientific/Engineering",
 ]
 
-# Dependencies are declared in conda/: run_deps.yml (runtime), optional_deps.yml,
-# doc_deps.yml, and meta.yaml / environment-*.yml (build). A pip install brings no
+# Dependencies are declared in conda/: build_deps.yml, run_deps.yml (runtime),
+# optional_deps.yml, meta.yaml; plus environment-*.yaml (build tools, developers) and
+# doc/doc_deps.yml. A pip install brings no
 # runtime dependency.
 
 [tool.scikit-build]

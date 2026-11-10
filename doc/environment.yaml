@@ -1,6 +1,6 @@
 # Read the Docs environment: the latest published openalea.plantgl, dev and rc builds
 # included. The documentation describes this package, not the checkout.
-# The dependencies of doc_deps.yml and optional_deps.yml are appended to this file before
+# The dependencies of doc/doc_deps.yml and conda/optional_deps.yml are appended to this file before
 # the env is created (see .readthedocs.yml): keep `dependencies:` last.
 name: plantgl-rtd
 channels:

@@ -62,29 +62,29 @@ ipython
 
 ## Compiling
 
-PlantGL is compiled in a conda environment. Its dependencies are listed in `conda/`:
-`environment-linux.yml`, `environment-macos.yml` or `environment-win.yml` (compilers and
-build tools of your system), `build_deps.yml` (libraries), `run_deps.yml` (runtime),
-`optional_deps.yml` (optional, needed by the tests) and `doc_deps.yml` (documentation).
-The commands below are for Linux: on macOS use `conda/environment-macos.yml` (requires the
-Xcode Command Line Tools), on Windows `conda/environment-win.yml` (requires Visual Studio
-2022 with the C++ tools).
+PlantGL is compiled in a conda environment. `environment-linux.yaml`,
+`environment-macos.yaml` or `environment-win.yaml` list the compilers and build tools of
+your system; the other dependencies are in `conda/`: `build_deps.yml` (libraries),
+`run_deps.yml` (runtime) and `optional_deps.yml` (optional, needed by the tests), and
+`doc/doc_deps.yml` (documentation). The commands below are for Linux: on macOS use
+`environment-macos.yaml` (requires the Xcode Command Line Tools), on Windows
+`environment-win.yaml` (requires Visual Studio 2022 with the C++ tools).
 
 Solution 1: build an environment from scratch
 
 ```bash
-mamba create -n plantgl-devel -f conda/environment-linux.yml -f conda/build_deps.yml -f conda/run_deps.yml -f conda/optional_deps.yml
+mamba create -n plantgl-devel -f environment-linux.yaml -f conda/build_deps.yml -f conda/run_deps.yml -f conda/optional_deps.yml
 mamba activate plantgl-devel
 ```
 
 Solution 2: add the dependencies to an existing environment
 
 ```bash
-mamba install -n myenv -f conda/environment-linux.yml -f conda/build_deps.yml -f conda/run_deps.yml -f conda/optional_deps.yml
+mamba install -n myenv -f environment-linux.yaml -f conda/build_deps.yml -f conda/run_deps.yml -f conda/optional_deps.yml
 mamba activate myenv
 ```
 
-Add `-f conda/doc_deps.yml` to either command to build the documentation.
+Add `-f doc/doc_deps.yml` to either command to build the documentation.
 
 Then compile and install PlantGL in the active environment, from the root of the
 repository:
