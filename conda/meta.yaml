@@ -26,6 +26,7 @@ build:
 
 requirements:
   host:
+    - python
     # conda/host_deps.yml
     {% for dep in host_deps %}
     - {{ dep }}

@@ -14,5 +14,8 @@ dependencies:
     - make
     - bison
     - flex
+    # development
+    - ipython
+    - matplotlib-base
     # test
     - pytest

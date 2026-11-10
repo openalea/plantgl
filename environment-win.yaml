@@ -14,5 +14,8 @@ dependencies:
     - cmake
     # win_bison / win_flex, found by CMake, as in conda/meta.yaml
     - winflexbison
+    # development
+    - ipython
+    - matplotlib-base
     # test
     - pytest

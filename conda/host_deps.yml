@@ -7,7 +7,6 @@
 channels:
   - conda-forge
 dependencies:
-  - python
   - pip
   - setuptools-scm
   - scikit-build-core

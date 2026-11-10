@@ -18,5 +18,8 @@ dependencies:
     # host requirements of conda/meta.yaml specific to Linux
     - libgl-devel
     - libglu
+    # development
+    - ipython
+    - matplotlib-base
     # test
     - pytest
