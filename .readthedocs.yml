@@ -1,9 +1,13 @@
 version: 2
 
 build:
-  os: "ubuntu-22.04"
+  os: "ubuntu-24.04"
   tools:
-    python: "mambaforge-22.9"
+    python: "miniconda-latest"
+  jobs:
+    # append the dependencies of doc/doc_deps.yml to doc/environment.yml (single solve)
+    pre_create_environment:
+      - sed -n '/^dependencies:/,$p' doc/doc_deps.yml | sed 1d >> doc/environment.yml
 
 conda:
   environment: doc/environment.yml
@@ -11,10 +15,3 @@ conda:
 sphinx:
   # Path to your Sphinx configuration file.
   configuration: doc/conf.py
-
-# Optional but recommended, declare the Python requirements required
-# to build your documentation
-# See https://docs.readthedocs.io/en/stable/guides/reproducible-builds.html
-python:
-   install:
-     - requirements: doc/requirements.txt

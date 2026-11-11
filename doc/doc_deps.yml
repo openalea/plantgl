@@ -1,0 +1,16 @@
+# Documentation (Sphinx) dependencies.
+# - Read the Docs adds them to doc/environment.yml before creating its env
+#   (see .readthedocs.yml).
+# - Developers: add -f doc/doc_deps.yml to the mamba command of README.md.
+channels:
+  - conda-forge
+dependencies:
+  - sphinx
+  - pydata-sphinx-theme
+  - myst-parser
+  - sphinx-favicon
+  - sphinx-copybutton
+  - nbsphinx
+  - pandoc
+  - ipykernel
+  - ipython_genutils

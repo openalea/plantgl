@@ -1,6 +1,9 @@
 [build-system]
+# Only what an isolated pip build needs from PyPI; compilers and C++ libraries come
+# from conda (conda/meta.yaml, conda/host_deps.yml, build-util/plantgl-devel-*.yaml).
 requires = [
-   "scikit-build-core", "setuptools-scm"
+   "scikit-build-core", "setuptools-scm",
+    # other host deps are handled by conda, to honor conda-forge lib system
 ]
 build-backend = "scikit_build_core.build"
 
@@ -21,7 +24,7 @@ authors = [
   { name = "Christophe Nouguier" },
 ]
 description = "FSPM tools for OpenAlea"
-readme = "README.rst"
+readme = "README.md"
 license = "CECILL-C"
 license-files = ["LICEN[CS]E*"]
 requires-python = ">=3.10"
@@ -41,48 +44,26 @@ classifiers = [
   "Topic :: Scientific/Engineering",
 ]
 
-# you can list here all dependencies that are pip-instalable, and that have a name identical to the one used by conda (to allow reuse of this list in meta.yaml)
-# If conda name is different, please do not declare the pip name, and declare conda name in the next section
-dependencies = [
-    "pandas",
-    "numpy",
-]
+# Conda dependencies (host, run) are in conda/host_deps.yml and conda/run_deps.yml,
+# documentation ones in doc/doc_deps.yml. Optional dependencies are the extras below.
 
 [project.optional-dependencies]
-test = [
-  "pytest",
-  "nbmake",
-]
 dev = [
-  "pytest >=6",
-  "pytest-cov >=3",
+    "ipython"
 ]
-doc = [
-  "sphinx-autobuild",
-  "pydata-sphinx-theme",
-  "myst-parser",
-  "sphinx-favicon",
-  "ipykernel",
-  "sphinx-copybutton",
-  "ipython_genutils",
-  "nbsphinx",
+test = [
+    "pytest",
+    "pandas",
+    # not available on pip under this name: in build-util/plantgl-devel-*.yaml
+    #"matplotlib-base"
 ]
-
-# section specific to conda-only distributed package (not used by pip yet)
-[tool.conda.environment]
-channels = [
-  "openalea3",
-  "conda-forge"
+light = [
+    "pandas",
+    "tzfpy",
+    "geopy"
 ]
-dependencies = [
-    "pyopengl",
-    "pyqglviewer",
-    "boost",
-    "qhull",
-    "zlib",
-    "cgal-cpp",
-    "eigen",
-    "ann"
+algo = [
+    "trimesh"
 ]
 
 [tool.scikit-build]

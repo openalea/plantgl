@@ -1,0 +1,25 @@
+# Linux developer environment: compilers, build tools and the platform specific host
+# libraries of conda/meta.yaml. Versions follow conda-forge; sysroot is pinned as in
+# conda-forge-pinning.
+# Use with conda/host_deps.yml and conda/run_deps.yml (see README.md):
+#   mamba create -n plantgl-devel -f build-util/plantgl-devel-linux.yaml -f conda/host_deps.yml -f conda/run_deps.yml
+name: plantgl-devel
+channels:
+  - openalea3/label/dev
+  - openalea3/label/rc
+  - openalea3
+  - conda-forge
+dependencies:
+    # build requirements of conda/meta.yaml (compiler('cxx'), stdlib('c'))
+    - cxx-compiler
+    - sysroot_linux-64=2.17
+    - cmake
+    - make
+    - pkg-config
+    - bison
+    - flex
+    # host requirements of conda/meta.yaml specific to Linux
+    - libgl-devel
+    - libglu
+    # test (not on PyPI under this name; pytest and pandas come from pip: .[test])
+    - matplotlib-base

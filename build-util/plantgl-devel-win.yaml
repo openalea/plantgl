@@ -1,3 +1,8 @@
+# Windows developer environment: compilers and build tools of conda/meta.yaml.
+# Versions follow conda-forge. Visual Studio 2022 with the C++ tools is required:
+# activation of the env sets up its compiler.
+# Use with conda/host_deps.yml and conda/run_deps.yml (see README.md):
+#   mamba create -n plantgl-devel -f build-util/plantgl-devel-win.yaml -f conda/host_deps.yml -f conda/run_deps.yml
 name: plantgl-devel
 channels:
   - openalea3/label/dev
@@ -5,30 +10,10 @@ channels:
   - openalea3
   - conda-forge
 dependencies:
-    - python
-    - conda-forge-pinning
-    - setuptools
-    - setuptools_scm
-    - scikit-build-core
-    - cmake
+    # build requirements of conda/meta.yaml (compiler('cxx'))
     - cxx-compiler
-    - numpy
-    - boost
-    - qt-main
-    - pyqt
-    - libpng
-    - zlib
-    - qhull
-    - cgal-cpp
-    - gmp 
-    - mpfr 
-    - eigen
-    - ann
-    - ipython
-    - pyopengl
-    - pyqglviewer
-    - pytest
-    - m2-bison
-    - m2-flex 
-    - scipy
+    - cmake
+    # win_bison / win_flex, found by CMake, as in conda/meta.yaml
+    - winflexbison
+    # test (not on PyPI under this name; pytest and pandas come from pip: .[test])
     - matplotlib-base

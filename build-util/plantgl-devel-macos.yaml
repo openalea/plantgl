@@ -1,0 +1,20 @@
+# macOS (Intel and Apple Silicon) developer environment: compilers and build tools of
+# conda/meta.yaml. Versions follow conda-forge.
+# Xcode Command Line Tools are required (SDK and OpenGL framework).
+# Use with conda/host_deps.yml and conda/run_deps.yml (see README.md):
+#   mamba create -n plantgl-devel -f build-util/plantgl-devel-macos.yaml -f conda/host_deps.yml -f conda/run_deps.yml
+name: plantgl-devel
+channels:
+  - openalea3/label/dev
+  - openalea3/label/rc
+  - openalea3
+  - conda-forge
+dependencies:
+    # build requirements of conda/meta.yaml (compiler('cxx'))
+    - cxx-compiler
+    - cmake
+    - make
+    - bison
+    - flex
+    # test (not on PyPI under this name; pytest and pandas come from pip: .[test])
+    - matplotlib-base
