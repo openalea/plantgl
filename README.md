@@ -83,7 +83,7 @@ conda activate plantgl-devel
 Now, you can build, then install PlantGL:
 
 ```bash
-pip install -e .[doc,test,light,algo] --no-build-isolation
+pip install -e ".[doc,test,light,algo]" --no-build-isolation
 ```
 
 You're done!

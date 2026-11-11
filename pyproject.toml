@@ -1,6 +1,7 @@
 [build-system]
 requires = [
-   "scikit-build-core", "setuptools-scm"
+   "scikit-build-core", "setuptools-scm",
+    # other host deps are handled by conda, to honor conda-forge lib system
 ]
 build-backend = "scikit_build_core.build"
 
@@ -21,7 +22,7 @@ authors = [
   { name = "Christophe Nouguier" },
 ]
 description = "FSPM tools for OpenAlea"
-readme = "README.rst"
+readme = "README.md"
 license = "CECILL-C"
 license-files = ["LICEN[CS]E*"]
 requires-python = ">=3.10"
@@ -43,8 +44,9 @@ classifiers = [
 
 dependencies = [
     "numpy",
-    # not available on pip
+    # handled by conda
     # pyopengl,
+    # not available on pip
     # pyqglviewer
 ]
 

@@ -2,6 +2,9 @@
 # platform specific host libraries of conda/meta.yaml. Versions follow conda-forge; sysroot is pinned as in conda-forge-pinning.
 name: plantgl-devel
 channels:
+  - openalea3/label/dev
+  - openalea3/label/rc
+  - openalea3
   - conda-forge
 dependencies:
     # build requirements of conda/meta.yaml (compiler('cxx'), stdlib('c'))
