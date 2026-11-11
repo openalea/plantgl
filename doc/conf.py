@@ -48,7 +48,8 @@ nbsphinx_allow_errors = True
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 autosummary_generate = True
-exclude_patterns = ["_build", "_templates"]
+# user/: old (2009) user guide, not in any toctree; its automodule directives duplicate the API reference
+exclude_patterns = ["_build", "_templates", "user"]
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
 source_suffix = {
