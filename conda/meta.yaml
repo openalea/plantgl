@@ -14,13 +14,17 @@ about:
 
 build:
   number: 0
+  # Packages compiling against PlantGL (openalea.plantgl in their host) get this run pin.
+  run_exports:
+    - {{ pin_subpackage('openalea.plantgl', max_pin='x.x') }}
   script:
-    - {{ PYTHON }} -m pip install --prefix={{ PREFIX }} . --no-deps --no-build-isolation -vv
+    - {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
 
 requirements:
   host:
     - python
-    - setuptools_scm
+    - pip
+    - setuptools-scm
     - scikit-build-core
     - numpy
     - qt-main
@@ -28,66 +32,43 @@ requirements:
     - gmp
     - mpfr
     - libpng
+    - libjpeg-turbo
     - zlib
-    - eigen
     - cgal-cpp
-    - qhull
     - ann
-    - libboost
+    # CMake finds Eigen3 and Qhull, but never defines PGL_WITH_EIGEN / PGL_WITH_QHULL,
+    # so the code using them is compiled out. Uncomment when enabling them in CMake.
+    # - eigen
+    # - qhull
     - libboost-devel
-    - libboost-headers
-    - libboost-python
     - libboost-python-devel
-    - libxcb                             # [linux]
-    - pthread-stubs                      # [linux]
     - libgl-devel                        # [linux]
     - libglu                             # [linux]
-    - xorg-libxfixes                     # [linux]
-    - xorg-libx11                        # [linux]
 
   build:
-    - python
     - {{ compiler('cxx') }}
     - {{ stdlib('c') }}
     - cmake
+    - make                              # [unix]
     - pkg-config                        # [linux]
-    - binutils_impl_linux-64            # [linux]
     - bison                             # [unix]
     - flex                              # [unix]
-    - m2-bison                          # [win]
-    - m2-flex                           # [win]
-    - menuinst                          # [win]
-    - make                              # [unix]
-    - libgl-devel                       # [linux]
-    - libxcb                            # [linux]
+    - winflexbison                      # [win]
 
   run:
+    # ABI pins of the libraries linked (qt-main, pyqt, numpy, boost, png, jpeg, zlib,
+    # gmp, mpfr, ann, GL) are added by the run_exports of the host packages.
     - python
     - numpy
-    - ipython
     - pyopengl
     - pyqglviewer
-    - eigen
-    - zlib
-    - tzfpy
-    - pandas
-    - xorg-libxfixes    # [linux]
-    - libglu            # [linux]
-    # guards for ABI-sensitive libraries
-    - {{ pin_compatible('pyqt', max_pin='x.x') }}
-    - {{ pin_compatible('libboost', max_pin='x.x') }}
-    - {{ pin_compatible('libboost-devel', max_pin='x.x') }}
-    - {{ pin_compatible('libboost-python', max_pin='x.x') }}
-    - {{ pin_compatible('libboost-python-devel', max_pin='x.x') }}
-    - {{ pin_compatible('cgal-cpp', max_pin='x.x') }}
-    - {{ pin_compatible('qhull', max_pin='x.x') }}
-    - {{ pin_compatible('ann', max_pin='x.x') }}
 
 
 test:
    requires:
      - pytest
      - matplotlib-base
+     - pandas
    imports:
      - openalea.plantgl
      - openalea.plantgl.all
