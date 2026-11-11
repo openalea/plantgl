@@ -5,30 +5,52 @@ channels:
   - openalea3
   - conda-forge
 dependencies:
-    - python
-    - conda-forge-pinning
-    - setuptools
-    - setuptools_scm
-    - scikit-build-core
-    - cmake
+    # build requirements of conda/meta.yaml (compiler('cxx'))
     - cxx-compiler
+    - cmake
+    # win_bison / win_flex, found by CMake, as in conda/meta.yaml
+    - winflexbison
+    # development
+    - ipython
+    # test
+    - pytest
+    - pandas
+    - matplotlib-base
+    # host
+    - pip
+    - setuptools-scm
+    - scikit-build-core
     - numpy
-    - boost
     - qt-main
     - pyqt
+    - gmp
+    - mpfr
     - libpng
+    - libjpeg-turbo
     - zlib
-    - qhull
     - cgal-cpp
-    - gmp 
-    - mpfr 
-    - eigen
     - ann
-    - ipython
+    # CMake finds Eigen3 and Qhull, but never defines PGL_WITH_EIGEN / PGL_WITH_QHULL,
+    # so the code using them is compiled out. Uncomment when enabling them in CMake.
+    # - eigen
+    # - qhull
+    - libboost-devel
+    - libboost-python-devel
+    # run
     - pyopengl
     - pyqglviewer
-    - pytest
-    - m2-bison
-    - m2-flex 
-    - scipy
-    - matplotlib-base
+    - tzfpy             # light: get_timezone
+    - geopy             # light: localize_from_city
+    - trimesh           # algo.alphashape
+    # doc
+    - sphinx
+    - pydata-sphinx-theme
+    - myst-parser
+    - sphinx-favicon
+    - sphinx-copybutton
+    - nbsphinx
+    - pandoc
+    - graphviz          # dot, for the inheritance diagrams
+    - ipykernel
+    - ipython_genutils
+
