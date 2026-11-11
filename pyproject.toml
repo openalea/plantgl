@@ -41,48 +41,41 @@ classifiers = [
   "Topic :: Scientific/Engineering",
 ]
 
-# you can list here all dependencies that are pip-instalable, and that have a name identical to the one used by conda (to allow reuse of this list in meta.yaml)
-# If conda name is different, please do not declare the pip name, and declare conda name in the next section
 dependencies = [
-    "pandas",
     "numpy",
+    # not available on pip
+    # pyopengl,
+    # pyqglviewer
 ]
 
 [project.optional-dependencies]
 test = [
-  "pytest",
-  "nbmake",
-]
-dev = [
-  "pytest >=6",
-  "pytest-cov >=3",
-]
-doc = [
-  "sphinx-autobuild",
-  "pydata-sphinx-theme",
-  "myst-parser",
-  "sphinx-favicon",
-  "ipykernel",
-  "sphinx-copybutton",
-  "ipython_genutils",
-  "nbsphinx",
+    "pytest",
+    "pandas",
+    # not available on pip
+    #"matplotlib-base"
 ]
 
-# section specific to conda-only distributed package (not used by pip yet)
-[tool.conda.environment]
-channels = [
-  "openalea3",
-  "conda-forge"
+light = [
+    "pandas",
+    "tzfpy",
+    "geopy"
 ]
-dependencies = [
-    "pyopengl",
-    "pyqglviewer",
-    "boost",
-    "qhull",
-    "zlib",
-    "cgal-cpp",
-    "eigen",
-    "ann"
+algo = [
+    "trimesh"
+]
+
+doc = [
+    "sphinx",
+    "sphinx-autobuild",
+    "pydata-sphinx-theme",
+    "myst-parser",
+    "sphinx-favicon",
+    "ipykernel",
+    "sphinx-copybutton",
+    "ipython_genutils",
+    "nbsphinx",
+    "graphviz"
 ]
 
 [tool.scikit-build]
