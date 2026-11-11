@@ -31,15 +31,8 @@ To install conda, you may refer to its installation page: https://docs.conda.io/
 To install PlantGL, you need to create an environment (named for instance pgl):
 
 ```bash
-conda create -n pgl openalea.plantgl -c openalea3 -c conda-forge
-```
-
-The package `openalea.plantgl` is retrieved from the `fredboudon` channel (development) and its dependencies will be taken from `conda-forge` channel.
-
-Then, you need to activate the pgl environment:
-
-```bash
-conda activate pgl
+mamba create -n pgl ipython openalea.plantgl -c openalea3 -c conda-forge
+mamba activate pgl
 ```
 
 You can then run the PlantGL viewer:
@@ -60,47 +53,85 @@ ipython
 >>> Viewer.display(Sphere())
 ```
 
-## Compiling
+## Installation for developers
 
-PlantGL is compiled in a conda environment. `environment-linux.yaml`,
-`environment-macos.yaml` or `environment-win.yaml` list the compilers and build tools of
-your system; the other dependencies are in `conda/`: `host_deps.yml` (libraries),
-`run_deps.yml` (runtime) and `optional_deps.yml` (optional, needed by the tests), and
-`doc/doc_deps.yml` (documentation). The commands below are for Linux: on macOS use
-`environment-macos.yaml` (requires the Xcode Command Line Tools), on Windows
-`environment-win.yaml` (requires Visual Studio 2022 with the C++ tools).
+PlantGL is compiled in a conda environment (mamba 2 is required to combine several
+environment files). The dependencies are split into several files:
 
-Solution 1: build an environment from scratch
+| File | Content |
+|---|---|
+| `environment-linux.yaml`, `environment-macos.yaml`, `environment-win.yaml` | compilers, build tools and test tools of your system |
+| `conda/host_deps.yml` | libraries PlantGL is compiled against |
+| `conda/run_deps.yml` | runtime dependencies |
+| `conda/optional_deps.yml` | optional dependencies (mostly for light tools) |
+| `doc/doc_deps.yml` | documentation tools (only to build the documentation) |
+
+System requirements:
+
+- **Windows**: Visual Studio 2022 with the C++ tools.
+- **macOS**: the Xcode Command Line Tools (`xcode-select --install`).
+
+### 1. Create the environment
+
+From the root of the repository, create a new environment. Replace
+`environment-linux.yaml` by `environment-macos.yaml` or `environment-win.yaml` depending on
+your system:
 
 ```bash
-mamba create -n plantgl-devel -f environment-linux.yaml -f conda/host_deps.yml -f conda/run_deps.yml -f conda/optional_deps.yml
+mamba create -n plantgl-devel -f environment-linux.yaml -f conda/host_deps.yml -f conda/run_deps.yml -f conda/optional_deps.yml -f doc/doc_deps.yml
 mamba activate plantgl-devel
 ```
 
-Solution 2: add the dependencies to an existing environment
+Or add the dependencies to an existing environment:
 
 ```bash
-mamba install -n myenv -f environment-linux.yaml -f conda/host_deps.yml -f conda/run_deps.yml -f conda/optional_deps.yml
+mamba install -n myenv -f environment-linux.yaml -f conda/host_deps.yml -f conda/run_deps.yml -f conda/optional_deps.yml -f doc/doc_deps.yml
 mamba activate myenv
 ```
 
-Add `-f doc/doc_deps.yml` to either command to build the documentation.
+`-f doc/doc_deps.yml` can be left out if you do not build the documentation.
 
-Then compile and install PlantGL in the active environment, from the root of the
-repository:
+### 2. Compile and install PlantGL
+
+In the activated environment, from the root of the repository:
 
 ```bash
-pip install . --no-deps --no-build-isolation -v
+pip install -e . --no-deps --no-build-isolation -v
 ```
 
-CMake runs through scikit-build-core: the build directory is `build/`, reused by the next
-builds. The C++ libraries, headers and `pglviewer` are installed in the environment, the
-Python package in its `site-packages`. Run the tests with:
+- `--no-deps --no-build-isolation`: pip uses the conda environment as is and installs no
+  dependency.
+- CMake runs through scikit-build-core. The build directory `build/` is reused, so the next
+  builds only recompile what changed.
+- `-e` (editable mode): changes to the Python files of `src/openalea/plantgl` are used
+  directly. After a change in the C++ code (`src/cpp`, `src/wrapper`), run the same `pip
+  install` command again.
+
+### 3. Run the tests
 
 ```bash
 cd test
-pytest -v --ignore=tofix --ignore=ui --ignore=oatest
+pytest -v
 ```
+
+The `tofix`, `ui` and `oatest` directories are skipped (see `test/pytest.ini`).
+
+### 4. Build the documentation
+
+The environment must include `doc/doc_deps.yml` and PlantGL must be installed (step 2): the
+documentation reads the package version and the docstrings from the installed package.
+From the root of the repository:
+
+```bash
+cd doc
+make html
+```
+
+Then open `doc/_build/html/index.html` in a browser. On Windows, the same command runs
+`doc/make.bat` in cmd; in PowerShell, type `.\make html`. Other targets:
+
+- `make rtdhtml`: same settings as Read the Docs (warnings become errors).
+- `make clean`: remove the built documentation.
 
 ## Documentation
 
