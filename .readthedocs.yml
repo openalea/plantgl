@@ -5,14 +5,13 @@ build:
   tools:
     python: "miniconda-latest"
   jobs:
-    # add the documentation and optional dependencies to the published package environment
-    post_create_environment:
-      - conda env update --name $CONDA_DEFAULT_ENV --file doc/doc_deps.yml
+    # append the dependencies of doc/doc_deps.yml to doc/environment.yml (single solve)
+    pre_create_environment:
+      - sed -n '/^dependencies:/,$p' doc/doc_deps.yml | sed 1d >> doc/environment.yml
 
 conda:
-  environment: doc/environment.yaml
+  environment: doc/environment.yml
 
 sphinx:
   # Path to your Sphinx configuration file.
   configuration: doc/conf.py
-

@@ -31,8 +31,7 @@ To install conda, you may refer to its installation page: https://docs.conda.io/
 To install PlantGL, you need to create an environment (named for instance pgl):
 
 ```bash
-mamba create -n pgl ipython openalea.plantgl -c openalea3 -c conda-forge
-mamba activate pgl
+conda create -n pgl openalea.plantgl -c openalea3 -c conda-forge
 ```
 
 The package `openalea.plantgl` is retrieved from the `openalea3` channel (development) and its dependencies will be taken from `conda-forge` channel.
@@ -62,85 +61,64 @@ ipython
 >>> Viewer.display(Sphere())
 ```
 
-## Installation for developers
+## Compiling
 
-PlantGL is compiled in a conda environment (mamba 2 is required to combine several
-environment files). The dependencies are split into several files:
+The simplest way to build PlantGL is to use conda, with mamba 2 (it combines several
+environment files). The dependencies are split into:
 
-| File | Content |
-|---|---|
-| `environment-linux.yaml`, `environment-macos.yaml`, `environment-win.yaml` | compilers, build tools and test tools of your system |
-| `conda/host_deps.yml` | libraries PlantGL is compiled against |
-| `conda/run_deps.yml` | runtime dependencies |
-| `conda/optional_deps.yml` | optional dependencies (mostly for light tools) |
-| `doc/doc_deps.yml` | documentation tools (only to build the documentation) |
+- `build-util/plantgl-devel-<os>.yaml`: compilers and build tools of your system;
+- `conda/host_deps.yml`: libraries PlantGL is compiled against (also used by `conda/meta.yaml`);
+- `conda/run_deps.yml`: runtime dependencies (also used by `conda/meta.yaml`);
+- `doc/doc_deps.yml`: documentation tools, only needed to build the documentation.
 
-System requirements:
-
-- **Windows**: Visual Studio 2022 with the C++ tools.
-- **macOS**: the Xcode Command Line Tools (`xcode-select --install`).
-
-### 1. Create the environment
-
-From the root of the repository, create a new environment. Replace
-`environment-linux.yaml` by `environment-macos.yaml` or `environment-win.yaml` depending on
-your system:
+Setup your environment with all required dependencies (on Windows, Visual Studio 2022 with
+the C++ tools is required; on macOS, the Xcode Command Line Tools):
 
 ```bash
-mamba create -n plantgl-devel -f environment-linux.yaml -f conda/host_deps.yml -f conda/run_deps.yml -f conda/optional_deps.yml -f doc/doc_deps.yml
+# Linux
+mamba create -n plantgl-devel -f build-util/plantgl-devel-linux.yaml -f conda/host_deps.yml -f conda/run_deps.yml -f doc/doc_deps.yml
+
+# Macos
+mamba create -n plantgl-devel -f build-util/plantgl-devel-macos.yaml -f conda/host_deps.yml -f conda/run_deps.yml -f doc/doc_deps.yml
+
+# Windows
+mamba create -n plantgl-devel -f build-util/plantgl-devel-win.yaml -f conda/host_deps.yml -f conda/run_deps.yml -f doc/doc_deps.yml
+
 mamba activate plantgl-devel
-```
-
-Or add the dependencies to an existing environment:
-
-```bash
-mamba install -n myenv -f environment-linux.yaml -f conda/host_deps.yml -f conda/run_deps.yml -f conda/optional_deps.yml -f doc/doc_deps.yml
-mamba activate myenv
 ```
 
 `-f doc/doc_deps.yml` can be left out if you do not build the documentation.
 
-### 2. Compile and install PlantGL
-
-In the activated environment, from the root of the repository:
+Now, you can build, then install PlantGL with its test and optional dependencies:
 
 ```bash
-pip install -e . --no-deps --no-build-isolation -v
+pip install -e ".[dev,test,light,algo]" --no-build-isolation -v
 ```
 
-- `--no-deps --no-build-isolation`: pip uses the conda environment as is and installs no
-  dependency.
-- CMake runs through scikit-build-core. The build directory `build/` is reused, so the next
-  builds only recompile what changed.
-- `-e` (editable mode): changes to the Python files of `src/openalea/plantgl` are used
-  directly. After a change in the C++ code (`src/cpp`, `src/wrapper`), run the same `pip
-  install` command again.
+In editable mode (`-e`), changes to the Python files are used directly. After a change in
+the C++ code (`src/cpp`, `src/wrapper`), run the same command again: the build directory
+`build/` is reused, so only what changed is recompiled.
 
-### 3. Run the tests
+Run the tests:
 
 ```bash
 cd test
 pytest -v
 ```
 
-The `tofix`, `ui` and `oatest` directories are skipped (see `test/pytest.ini`).
-
-### 4. Build the documentation
-
-The environment must include `doc/doc_deps.yml` and PlantGL must be installed (step 2): the
-documentation reads the package version and the docstrings from the installed package.
-From the root of the repository:
+Build the documentation (PlantGL must be installed: the documentation reads its version
+and docstrings from the installed package):
 
 ```bash
 cd doc
 make html
 ```
 
-Then open `doc/_build/html/index.html` in a browser. On Windows, the same command runs
-`doc/make.bat` in cmd; in PowerShell, type `.\make html`. Other targets:
+Then open `doc/_build/html/index.html`. On Windows, in PowerShell, type `.\make html`.
+`make rtdhtml` uses the settings of Read the Docs (warnings become errors), `make clean`
+removes the built documentation.
 
-- `make rtdhtml`: same settings as Read the Docs (warnings become errors).
-- `make clean`: remove the built documentation.
+You're done!
 
 ## Documentation
 

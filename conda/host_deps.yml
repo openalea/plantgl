@@ -16,9 +16,8 @@ dependencies:
   - zlib
   - cgal-cpp
   - ann
-  # CMake finds Eigen3 and Qhull, but never defines PGL_WITH_EIGEN / PGL_WITH_QHULL,
-  # so the code using them is compiled out. Uncomment when enabling them in CMake.
-  # - eigen
-  # - qhull
+  # eigen: CGAL Eigen3 support (principal_curvatures); qhull: convex hull fitting
+  - eigen
+  - qhull
   - libboost-devel
   - libboost-python-devel

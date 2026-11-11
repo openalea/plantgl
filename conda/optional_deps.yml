@@ -1,8 +1,0 @@
-# Optional dependencies of openalea.plantgl: import them only inside the functions using
-# them, never at module level.
-channels:
-  - conda-forge
-dependencies:
-  - tzfpy             # light: get_timezone
-  - geopy             # light: localize_from_city
-  - trimesh           # algo.alphashape

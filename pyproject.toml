@@ -1,6 +1,6 @@
 [build-system]
 # Only what an isolated pip build needs from PyPI; compilers and C++ libraries come
-# from conda (conda/meta.yaml, environment-*.yaml).
+# from conda (conda/meta.yaml, conda/host_deps.yml, build-util/plantgl-devel-*.yaml).
 requires = [
    "scikit-build-core", "setuptools-scm",
     # other host deps are handled by conda, to honor conda-forge lib system
@@ -44,10 +44,27 @@ classifiers = [
   "Topic :: Scientific/Engineering",
 ]
 
-# Dependencies are declared in conda/: host_deps.yml, run_deps.yml (runtime),
-# optional_deps.yml, meta.yaml; plus environment-*.yaml (build tools, developers) and
-# doc/doc_deps.yml. A pip install brings no
-# runtime dependency.
+# Conda dependencies (host, run) are in conda/host_deps.yml and conda/run_deps.yml,
+# documentation ones in doc/doc_deps.yml. Optional dependencies are the extras below.
+
+[project.optional-dependencies]
+dev = [
+    "ipython"
+]
+test = [
+    "pytest",
+    "pandas",
+    # not available on pip under this name: in build-util/plantgl-devel-*.yaml
+    #"matplotlib-base"
+]
+light = [
+    "pandas",
+    "tzfpy",
+    "geopy"
+]
+algo = [
+    "trimesh"
+]
 
 [tool.scikit-build]
 build-dir = "./build/"

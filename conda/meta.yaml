@@ -46,7 +46,6 @@ requirements:
     - flex                              # [unix]
     # win_bison / win_flex on Windows, found by CMake
     - winflexbison                      # [win]
-    - make                              # [unix]
 
   run:
     # ABI pins of the libraries linked (qt-main, pyqt, numpy, boost, png, jpeg, zlib,
