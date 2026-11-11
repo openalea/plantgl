@@ -18,8 +18,6 @@ dependencies:
     # development
     - ipython
     # test
-    - pytest
-    - pandas
     - matplotlib-base
     # host
     - pip
@@ -44,18 +42,6 @@ dependencies:
     # run
     - pyopengl
     - pyqglviewer
-    - tzfpy             # light: get_timezone
-    - geopy             # light: localize_from_city
-    - trimesh           # algo.alphashape
     # doc
-    - sphinx
-    - pydata-sphinx-theme
-    - myst-parser
-    - sphinx-favicon
-    - sphinx-copybutton
-    - nbsphinx
     - pandoc
-    - graphviz          # dot, for the inheritance diagrams
-    - ipykernel
-    - ipython_genutils
 
