@@ -1,0 +1,44 @@
+# macOS (Intel and Apple Silicon) developer environment: compilers, build tools, test tools and the
+# platform specific host libraries of conda/meta.yaml. Versions follow conda-forge.
+# Xcode Command Line Tools are required (SDK and OpenGL framework).
+name: plantgl-devel
+channels:
+  - openalea3/label/dev
+  - openalea3/label/rc
+  - openalea3
+  - conda-forge
+dependencies:
+    # build requirements of conda/meta.yaml (compiler('cxx'))
+    - cxx-compiler
+    - cmake
+    - make
+    - bison
+    - flex
+    # development
+    - ipython
+    # test
+    - matplotlib-base
+    # host
+    - pip
+    - setuptools-scm
+    - scikit-build-core
+    - numpy
+    - qt-main
+    - pyqt
+    - gmp
+    - mpfr
+    - libpng
+    - libjpeg-turbo
+    - zlib
+    - cgal-cpp
+    - ann
+    # eigen: CGAL Eigen3 support (principal_curvatures); qhull: convex hull fitting
+    - eigen
+    - qhull
+    - libboost-devel
+    - libboost-python-devel
+    # run
+    - pyopengl
+    - pyqglviewer
+    # doc
+    - pandoc

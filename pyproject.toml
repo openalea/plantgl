@@ -2,7 +2,8 @@
 # Only what an isolated pip build needs from PyPI; compilers and C++ libraries come
 # from conda (conda/meta.yaml, environment-*.yaml).
 requires = [
-   "scikit-build-core", "setuptools-scm"
+   "scikit-build-core", "setuptools-scm",
+    # other host deps are handled by conda, to honor conda-forge lib system
 ]
 build-backend = "scikit_build_core.build"
 

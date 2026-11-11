@@ -35,6 +35,15 @@ mamba create -n pgl ipython openalea.plantgl -c openalea3 -c conda-forge
 mamba activate pgl
 ```
 
+The package `openalea.plantgl` is retrieved from the `openalea3` channel (development) and its dependencies will be taken from `conda-forge` channel.
+
+Then, you need to activate the pgl environment and add optional dependencies:
+
+```bash
+conda activate pgl
+conda install -c conda-forge ipython matplotlib-base pandas tzfpy geopy trimesh
+```
+
 You can then run the PlantGL viewer:
 
 ```bash
