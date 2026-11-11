@@ -1,12 +1,8 @@
 # Optional dependencies of openalea.plantgl: import them only inside the functions using
 # them, never at module level.
-# - conda/meta.yaml test/requires repeats the ones the tests use (matplotlib-base,
-#   pandas).
-# - Developers: with environment-<platform>.yaml (see README).
 channels:
   - conda-forge
 dependencies:
-  - pandas            # light
   - tzfpy             # light: get_timezone
   - geopy             # light: localize_from_city
   - trimesh           # algo.alphashape

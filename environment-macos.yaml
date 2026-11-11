@@ -1,9 +1,6 @@
 # macOS (Intel and Apple Silicon) developer environment: compilers, build tools, test tools and the
 # platform specific host libraries of conda/meta.yaml. Versions follow conda-forge.
 # Xcode Command Line Tools are required (SDK and OpenGL framework).
-# Use it with the host, runtime and optional dependencies of conda/ (see README):
-#   mamba create -n plantgl-devel -f environment-macos.yaml \
-#     -f conda/host_deps.yml -f conda/run_deps.yml -f conda/optional_deps.yml
 name: plantgl-devel
 channels:
   - conda-forge
@@ -16,6 +13,7 @@ dependencies:
     - flex
     # development
     - ipython
-    - matplotlib-base
     # test
     - pytest
+    - pandas
+    - matplotlib-base

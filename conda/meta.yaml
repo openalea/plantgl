@@ -59,7 +59,7 @@ requirements:
 test:
    requires:
      - pytest
-     # optional dependencies used by the tests (see conda/optional_deps.yml)
+     # dependencies used by the tests
      - matplotlib-base
      - pandas
    imports:
