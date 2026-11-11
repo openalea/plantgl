@@ -70,8 +70,15 @@ if (CGAL_FOUND)
     target_link_libraries(pglalgo ${GMP_LIBRARIES})
 endif()
 
+if (TARGET CGAL::Eigen3_support)
+    target_link_libraries(pglalgo CGAL::Eigen3_support)
+endif()
+
 target_link_libraries(pglalgo ${ANN_LIBRARIES})
-target_link_libraries(pglalgo ${QHULL_LIBRARIES})
+
+if (TARGET Qhull::qhull_r)
+    target_link_libraries(pglalgo Qhull::qhull_r)
+endif()
 
 if(APPLE)
   target_link_libraries(pglalgo "-framework Metal")
