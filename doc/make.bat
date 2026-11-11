@@ -15,8 +15,8 @@ if "%1" == "" goto help
 %SPHINXBUILD% >NUL 2>NUL
 if errorlevel 9009 (
 	echo.
-	echo.The 'sphinx-build' command was not found. Activate the conda environment
-	echo.including doc/doc_deps.yml, see README.md.
+	echo.The 'sphinx-build' command was not found. Activate the plantgl-devel
+	echo.environment and install the doc extra: pip install -e ".[doc]", see README.md.
 	exit /b 1
 )
 

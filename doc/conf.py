@@ -36,7 +36,6 @@ extensions = [
     "nbsphinx",  # for integrating jupyter notebooks
     "sphinx_copybutton",      # support for copybutton in code blocks
     "myst_parser",  # for parsing .md files
-    'sphinx.ext.inheritance_diagram',
 ]
 
 nbsphinx_thumbnails = {

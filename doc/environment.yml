@@ -12,6 +12,5 @@ dependencies:
     - sphinx-favicon
     - sphinx-copybutton
     - nbsphinx
-    - graphviz          # dot, for the inheritance diagrams
     - ipykernel
     - ipython_genutils

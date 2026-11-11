@@ -77,7 +77,6 @@ doc = [
     "sphinx-copybutton",
     "ipython_genutils",
     "nbsphinx",
-    "graphviz"
 ]
 
 [tool.scikit-build]
