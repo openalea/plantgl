@@ -62,6 +62,12 @@ requirements:
     - pyopengl
     - pyqglviewer
 
+  run_constrained:
+    # MinGW (m2w64-*, msys2 based) libraries break PlantGL on Windows: their bin
+    # directory comes before Library/bin in PATH, so their DLLs are loaded (#84).
+    # All of them depend on msys2-conda-epoch, so prevent installing them by unsolvability:
+    - msys2-conda-epoch <0.0a0          # [win]
+
 
 test:
    requires:
