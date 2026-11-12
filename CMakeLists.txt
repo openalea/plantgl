@@ -118,9 +118,17 @@ find_package(JPEG REQUIRED)
 find_package(ANN)
 find_package(BISON)
 find_package(Eigen3)
+if (WIN32)
+    # winflexbison installs FlexLexer.h in Library/share/winflexbison, not searched by
+    # FindFLEX. NO_CMAKE_FIND_ROOT_PATH: use these paths as is under conda-build.
+    find_path(FLEX_INCLUDE_DIR FlexLexer.h
+              PATHS "$ENV{BUILD_PREFIX}/Library/share/winflexbison"
+                    "$ENV{CONDA_PREFIX}/Library/share/winflexbison"
+              NO_CMAKE_FIND_ROOT_PATH)
+endif()
 find_package(FLEX)
-find_library(QHULL_LIBRARY NAMES "libqhullstatic.a" PATHS $ENV{CONDA_PREFIX}/lib)
-find_package(Qhull)
+# Config packages of conda-forge qhull: Qhull::qhull_r (reentrant, shared) is used.
+find_package(Qhull CONFIG)
 
 
 find_package(Boost COMPONENTS headers thread filesystem chrono ${boost_python} ${boost_numpy})
@@ -184,6 +192,31 @@ else()
     message(STATUS "Build PlantGL without CGAL - Library not found.")
     
     define_py_macro(PGL_WITH_CGAL "False")
+endif()
+
+# Eigen is only used through CGAL (jet fitting of principal_curvatures, Eigen
+# diagonalization in algo/base/pointmanipulation2.cpp). CGAL::Eigen3_support defines
+# CGAL_EIGEN3_ENABLED and adds the Eigen include directory; pglalgo links it.
+if (CGAL_FOUND AND Eigen3_FOUND)
+    include(CGAL_Eigen3_support)
+endif()
+if (TARGET CGAL::Eigen3_support)
+    define_cpp_macro(PGL_WITH_EIGEN 1)
+    define_py_macro(PGL_WITH_EIGEN "True")
+    message(STATUS "Build PlantGL with Eigen (CGAL Eigen3 support)")
+else()
+    define_py_macro(PGL_WITH_EIGEN "False")
+    message(STATUS "Build PlantGL without Eigen - Eigen3 or CGAL not found.")
+endif()
+
+# Qhull: convex hull fitting (Fit.convexHull, Fit.convexPolyline in algo/fitting/fit.cpp)
+if (TARGET Qhull::qhull_r)
+    define_cpp_macro(PGL_WITH_QHULL 1)
+    define_py_macro(PGL_WITH_QHULL "True")
+    message(STATUS "Build PlantGL with Qhull")
+else()
+    define_py_macro(PGL_WITH_QHULL "False")
+    message(STATUS "Build PlantGL without Qhull - Library not found.")
 endif()
 
 # --- Include Directories
