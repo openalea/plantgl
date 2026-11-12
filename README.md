@@ -43,6 +43,11 @@ conda activate pgl
 conda install -c conda-forge ipython matplotlib-base pandas tzfpy geopy trimesh
 ```
 
+PlantGL uses Qt5 (PyQt5). Prefer `matplotlib-base` to `matplotlib`, which also installs
+PySide6 (Qt6): if `matplotlib.pyplot` is then imported before PlantGL, Qt5 and Qt6 run in
+the same process, with separate event loops (PlantGL warns about it). Import
+`openalea.plantgl` first, or set the environment variable `QT_API=pyqt5`.
+
 You can then run the PlantGL viewer:
 
 ```bash

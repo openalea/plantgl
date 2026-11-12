@@ -24,7 +24,6 @@ import os
 import sys
 
 from openalea.plantgl.config import PGL_QT_VERSION
-import os
 
 #: Qt API environment variable name
 QT_API = 'QT_API'
@@ -42,12 +41,29 @@ PYSIDE_API = ['pyside']
 PYSIDE2_API = ['pyside2']
 PYSIDE6_API = ['pyside6']
 
+# Warn if a binding of the other Qt major version is already loaded (e.g. matplotlib
+# imported before PlantGL picks PySide6 when the full matplotlib package is installed):
+# both Qt versions then run in the same process, with separate event loops.
+_OTHER_QT_BINDINGS = {5: ('PyQt6', 'PySide6'), 6: ('PyQt5', 'PySide2')}.get(PGL_QT_VERSION, ())
+_loaded = [name for name in _OTHER_QT_BINDINGS if name in sys.modules]
+if _loaded:
+    import warnings
+    warnings.warn(
+        f"{', '.join(_loaded)} is already loaded (probably by matplotlib), but PlantGL "
+        f"uses Qt{PGL_QT_VERSION}: both Qt versions will run in this process, with "
+        f"separate event loops. Import openalea.plantgl first, or set the environment "
+        f"variable QT_API=pyqt{PGL_QT_VERSION} before starting Python.",
+        RuntimeWarning, stacklevel=2)
+del _loaded
+
 if PGL_QT_VERSION == 6:
-    try: 
+    try:
         import PySide6
         os.environ[QT_API] = PYSIDE6_API[0]
     except ImportError as ie:
-        print("cannot import PySide6  FIX IT !!")
+        # the openalea.plantgl.gui.qt modules only support PySide6 for Qt6
+        raise ImportError("PlantGL is built with Qt6 and needs PySide6, "
+                          "which cannot be imported") from ie
 
 elif PGL_QT_VERSION == 5:
         try :
