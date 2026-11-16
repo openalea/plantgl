@@ -1,4 +1,6 @@
 [build-system]
+# Only what an isolated pip build needs from PyPI; compilers and C++ libraries come
+# from conda (conda/meta.yaml, conda/host_deps.yml, build-util/plantgl-devel-*.yaml).
 requires = [
    "scikit-build-core", "setuptools-scm",
     # other host deps are handled by conda, to honor conda-forge lib system
@@ -42,22 +44,19 @@ classifiers = [
   "Topic :: Scientific/Engineering",
 ]
 
-dependencies = [
-    "numpy",
-    # handled by conda
-    # pyopengl,
-    # not available on pip
-    # pyqglviewer
-]
+# Conda dependencies (host, run) are in conda/host_deps.yml and conda/run_deps.yml,
+# documentation ones in doc/doc_deps.yml. Optional dependencies are the extras below.
 
 [project.optional-dependencies]
+dev = [
+    "ipython"
+]
 test = [
     "pytest",
     "pandas",
-    # not available on pip
+    # not available on pip under this name: in build-util/plantgl-devel-*.yaml
     #"matplotlib-base"
 ]
-
 light = [
     "pandas",
     "tzfpy",
@@ -65,18 +64,6 @@ light = [
 ]
 algo = [
     "trimesh"
-]
-
-doc = [
-    "sphinx",
-    "sphinx-autobuild",
-    "pydata-sphinx-theme",
-    "myst-parser",
-    "sphinx-favicon",
-    "ipykernel",
-    "sphinx-copybutton",
-    "ipython_genutils",
-    "nbsphinx",
 ]
 
 [tool.scikit-build]

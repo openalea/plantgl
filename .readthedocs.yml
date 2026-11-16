@@ -4,6 +4,10 @@ build:
   os: "ubuntu-24.04"
   tools:
     python: "miniconda-latest"
+  jobs:
+    # append the dependencies of doc/doc_deps.yml to doc/environment.yml (single solve)
+    pre_create_environment:
+      - sed -n '/^dependencies:/,$p' doc/doc_deps.yml | sed 1d >> doc/environment.yml
 
 conda:
   environment: doc/environment.yml
@@ -11,4 +15,3 @@ conda:
 sphinx:
   # Path to your Sphinx configuration file.
   configuration: doc/conf.py
-

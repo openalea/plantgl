@@ -1,0 +1,23 @@
+# Host dependencies of openalea.plantgl, common to all platforms: the libraries and
+# Python build tools the C++ code and the wrappers are built against.
+channels:
+  - conda-forge
+dependencies:
+  - pip
+  - setuptools-scm
+  - scikit-build-core
+  - numpy
+  - qt-main
+  - pyqt
+  - gmp
+  - mpfr
+  - libpng
+  - libjpeg-turbo
+  - zlib
+  - cgal-cpp
+  - ann
+  # eigen: CGAL Eigen3 support (principal_curvatures); qhull: convex hull fitting
+  - eigen
+  - qhull
+  - libboost-devel
+  - libboost-python-devel

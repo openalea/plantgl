@@ -1,0 +1,11 @@
+# Runtime dependencies of openalea.plantgl, always needed. Keep this list short: plantgl
+# is a dependency of many packages (optional ones are pip extras in pyproject.toml).
+channels:
+  - conda-forge
+  - openalea3/label/dev
+  - openalea3/label/rc
+  - openalea3
+dependencies:
+  - numpy
+  - pyopengl
+  - pyqglviewer
