@@ -65,18 +65,24 @@
 #include "miniball.h"
 #include "eigenvector.h"
 
-// #define PGL_WITHOUT_QHULL
-
 #ifdef PGL_WITH_QHULL
+    // Reentrant qhull API (libqhull_r): every call takes the qhT context 'qh',
+    // and FORALLfacets reads 'qh->facet_list'.
     extern "C"
     {
-        #ifndef PGL_WITH_QHULL_2011
-            #include <qhull/qhull_a.h>
-        #else
-            #include <libqhull/qhull_a.h>
-        #endif
-
+        #include <libqhull_r/qhull_ra.h>
     }
+
+static FILE * open_qhull_errfile(){
+#ifndef _WIN32
+    return fopen("/dev/null","w");
+#else
+    const char * tf = getenv("TMP");
+    if(tf == NULL) tf = "C:\\temp";
+    std::string f = tf + std::string("\\qhull.log");
+    return fopen(f.c_str(),"w");
+#endif
+}
 #endif
 
 
@@ -1615,8 +1621,8 @@ Fit::convexHull(){
 
 //  cerr << "Fit " << numpoints << " points 3D." << endl;
 
-  /* array of coordinates for each point */
-  coordT * points = new coordT[dim*numpoints];
+  /* array of coordinates for each point (allocated if qhull is used) */
+  coordT * points = NULL;
 
   /* True if qhull should free points in qh_freeqhull() or reallocation */
   boolT ismalloc = False;
@@ -1641,17 +1647,15 @@ Fit::convexHull(){
   int curlong, totlong;
 
   if(numpoints>3){
-#ifndef _WIN32
     /* error messages from qhull code */
-    errfile= fopen("/dev/null","w");
-#else
-        char * tf = getenv("TMP");
-        if(tf == NULL)tf = "C:\temp";
-        string f = tf + string("\\qhull.log");
-    errfile= fopen(f.c_str(),"w");
-#endif
+    errfile= open_qhull_errfile();
 
-//        errfile = fopen("/dev/null","w");
+    /* qhull context */
+    qhT qh_qh;
+    qhT *qh= &qh_qh;
+    qh_zero(qh, errfile);
+
+  points = new coordT[dim*numpoints];
   int k=0;
   for(Point3Array::iterator _it = __pointstofit->begin();
       _it != __pointstofit->end();
@@ -1663,7 +1667,7 @@ Fit::convexHull(){
 
 
   /* initialize dim, numpoints, points[], ismalloc here */
-  exitcode= qh_new_qhull (dim, numpoints, points, ismalloc,flags, outfile, errfile);
+  exitcode= qh_new_qhull (qh, dim, numpoints, points, ismalloc,flags, outfile, errfile);
 
   typedef pgl_hash_map<int,int> memtype;
   memtype mem;
@@ -1711,11 +1715,12 @@ Fit::convexHull(){
           }
       }
   }
-  qh_freeqhull(!qh_ALL);
-  qh_memfreeshort (&curlong, &totlong);
+  qh_freeqhull(qh, !qh_ALL);
+  qh_memfreeshort (qh, &curlong, &totlong);
   if (curlong || totlong)
     cerr << "qhull internal warning (main): did not free "<< totlong << "  bytes of long memory ("<< curlong <<" pieces)" << endl;
 
+  delete [] points;
   fclose(errfile);
   if(p_count==0)return GeometryPtr();
   pair<Point3Array::const_iterator,Point3Array::const_iterator> _skel = resulting_points->getZMinAndMax();
@@ -1751,8 +1756,8 @@ Point2ArrayPtr Fit::convexPolyline(const Point2ArrayPtr& _points){
     int numpoints =  _points->size();
 
 
-    /* array of coordinates for each point */
-    coordT * points = new coordT[dim*numpoints];
+    /* array of coordinates for each point (freed on return) */
+    vector<coordT> points(dim*numpoints);
 
     /* True if qhull should free points in qh_freeqhull() or reallocation */
     boolT ismalloc = False;
@@ -1764,15 +1769,8 @@ Point2ArrayPtr Fit::convexPolyline(const Point2ArrayPtr& _points){
      use NULL to skip qh_produce_output() */
     FILE *outfile= NULL;
 
-#ifndef _WIN32
     /* error messages from qhull code */
-    FILE *errfile= fopen("/dev/null","w");
-#else
-        char * tf = getenv("TMP");
-        if(tf == NULL)tf = "C:\temp";
-        string f = tf + string("\\qhull.log");
-    FILE *errfile= fopen(f.c_str(),"w");
-#endif
+    FILE *errfile= open_qhull_errfile();
 
     /* 0 if no error from qhull */
     int exitcode;
@@ -1791,6 +1789,11 @@ Point2ArrayPtr Fit::convexPolyline(const Point2ArrayPtr& _points){
 
     if(numpoints>3){
 
+        /* qhull context */
+        qhT qh_qh;
+        qhT *qh= &qh_qh;
+        qh_zero(qh, errfile);
+
         int k=0;
         for(Point2Array::iterator _it = _points->begin();
             _it != _points->end();
@@ -1800,7 +1803,7 @@ Point2ArrayPtr Fit::convexPolyline(const Point2ArrayPtr& _points){
         }
 
         /* initialize dim, numpoints, points[], ismalloc here */
-        exitcode= qh_new_qhull (dim, numpoints, points, ismalloc,flags, outfile, errfile);
+        exitcode= qh_new_qhull (qh, dim, numpoints, &points[0], ismalloc,flags, outfile, errfile);
 
         vertexT *vertex,**vertexp;
         vector<vector<Vector2> > r_points(0);
@@ -1892,6 +1895,8 @@ Point2ArrayPtr Fit::convexPolyline(const Point2ArrayPtr& _points){
         // Test
         assert(r_points.size()<=1);
         if(r_points.size()==0){
+            qh_freeqhull(qh, !qh_ALL);
+            qh_memfreeshort (qh, &curlong, &totlong);
             fclose(errfile);
             return Point2ArrayPtr();
         }
@@ -1921,8 +1926,8 @@ Point2ArrayPtr Fit::convexPolyline(const Point2ArrayPtr& _points){
                     _result->push_back(*_itf3b);_itf3b--;}
             }
         }
-        qh_freeqhull(!qh_ALL);
-        qh_memfreeshort (&curlong, &totlong);
+        qh_freeqhull(qh, !qh_ALL);
+        qh_memfreeshort (qh, &curlong, &totlong);
         if (curlong || totlong)
             cerr << "qhull internal warning (main): did not free "<< totlong << "  bytes of long memory ("<< curlong <<" pieces)" << endl;
 

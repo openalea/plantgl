@@ -34,13 +34,19 @@ To install PlantGL, you need to create an environment (named for instance pgl):
 conda create -n pgl openalea.plantgl -c openalea3 -c conda-forge
 ```
 
-The package `openalea.plantgl` is retrieved from the `fredboudon` channel (development) and its dependencies will be taken from `conda-forge` channel.
+The package `openalea.plantgl` is retrieved from the `openalea3` channel (development) and its dependencies will be taken from `conda-forge` channel.
 
-Then, you need to activate the pgl environment:
+Then, you need to activate the pgl environment and add optional dependencies:
 
 ```bash
 conda activate pgl
+conda install -c conda-forge ipython matplotlib-base pandas tzfpy geopy trimesh
 ```
+
+PlantGL uses Qt5 (PyQt5). Prefer `matplotlib-base` to `matplotlib`, which also installs
+PySide6 (Qt6): if `matplotlib.pyplot` is then imported before PlantGL, Qt5 and Qt6 run in
+the same process, with separate event loops (PlantGL warns about it). Import
+`openalea.plantgl` first, or set the environment variable `QT_API=pyqt5`.
 
 You can then run the PlantGL viewer:
 
@@ -67,8 +73,11 @@ The simplest way to build PlantGL is to use conda (see below).
 Then, setup your Conda environment with all required dependencies:
 
 ```bash
-# Linux or macOS
-conda env create -f build-util/plantgl-devel.yaml
+# Linux
+conda env create -f build-util/plantgl-devel-linux.yaml
+
+# Macos
+conda env create -f build-util/plantgl-devel-macos.yaml
 
 # Windows
 conda env create -f build-util/plantgl-devel-win.yaml
@@ -79,20 +88,7 @@ conda activate plantgl-devel
 Now, you can build, then install PlantGL:
 
 ```bash
-cd plantgl
-mkdir build
-cd build
-
-# Linux
-cmake .. -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX}
-
-# Windows -> Visual Studio 2015 is required
-cmake .. -G "NMake Makefiles" -DCMAKE_INSTALL_PREFIX=%LIBRARY_PREFIX%  ..
-
-cmake --build . --target install --config Release
-
-cd ..
-python setup.py install --prefix=${CONDA_PREFIX}
+pip install -e ".[doc,test,light,algo]" --no-build-isolation
 ```
 
 You're done!
