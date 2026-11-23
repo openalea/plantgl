@@ -700,6 +700,8 @@ void ViewGLFrame::reinitializeGL()
   __ogl->glEnable(GL_MULTISAMPLE);
 
   __ogl->glEnable(GL_LIGHTING);
+  __ogl->glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+  
 //  __light->enable();
   __ogl->glEnable(GL_BLEND);
 

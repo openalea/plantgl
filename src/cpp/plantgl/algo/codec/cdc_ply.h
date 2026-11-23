@@ -177,6 +177,7 @@ PGL_BEGIN_NAMESPACE
         return *this;
       }
     };
+    typedef std::vector<std::pair<std::string, SpecElement> > SpecElementList;
 
   public:
     PlyCodec();
@@ -197,9 +198,9 @@ PGL_BEGIN_NAMESPACE
 
 	ScenePtr readScene(std::string const &fname);
 
-	void parseAsciiValue(std::ifstream& file, std::map<std::string, SpecElement>::const_iterator const &it, pgl_hash_map_string<std::vector<propertyType> > &element);
+	void parseAsciiValue(std::ifstream& file, SpecElementList::const_iterator const &it, pgl_hash_map_string<std::vector<propertyType> > &element);
 
-	void parseBinaryValue(std::ifstream& file, std::map<std::string, SpecElement>::const_iterator const &it, pgl_hash_map_string<std::vector<propertyType> > &element);
+	void parseBinaryValue(std::ifstream& file, SpecElementList::const_iterator const &it, pgl_hash_map_string<std::vector<propertyType> > &element);
 
 	void parseVertex(std::size_t i, pgl_hash_map_string<std::vector<propertyType> > &element, Point3ArrayPtr const points, Color4ArrayPtr const colors);
 
@@ -209,13 +210,13 @@ PGL_BEGIN_NAMESPACE
 
 	FormatInfos parseFormatInfos(std::ifstream &file) const;
 
-	std::map<std::string, SpecElement> parseHeader(std::ifstream &file, FormatInfos const &format) const;
+	SpecElementList parseHeader(std::ifstream &file, FormatInfos const &format) const;
 
-	std::string parseHeaderElement(std::map<std::string, SpecElement> &specs, std::string const &line) const;
+	void parseHeaderElement(SpecElementList &specs, std::string const &line) const;
 
-	void parseHeaderProperty(std::map<std::string, SpecElement> &specs, std::string const &line, std::string const &lastSpecName) const;
+	void parseHeaderProperty(SpecElementList &specs, std::string const &line) const;
 
-	std::vector<std::string> parseColorProps(std::map<std::string, SpecElement> const &specs) const;
+	std::vector<std::string> parseColorProps(SpecElementList const &specs) const;
 
 	bool isBytesReverseNeeded(std::string const &fcoding) const;
 
@@ -228,7 +229,7 @@ PGL_BEGIN_NAMESPACE
     bool colorPropsSortFunction(std::string const &c1, std::string const &c2) const;
 
     std::vector<std::string> m_fcodingTypes;
-	pgl_hash_map_string<propertyType> m_propertiesTypes;
+	  pgl_hash_map_string<propertyType> m_propertiesTypes;
     std::vector<std::string> m_knownColorTypes;
     SizeVisitor sizeVisitor;
 	

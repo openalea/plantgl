@@ -44,17 +44,19 @@
 
 #include "depthsortengine.h"
 #include "projection_util.h"
+#include "projectionrenderer.h"
 #include <plantgl/scenegraph/geometry/boundingbox.h>
 #include <plantgl/scenegraph/geometry/triangleset.h>
 #include <plantgl/scenegraph/container/indexarray.h>
 #include <plantgl/algo/base/planeclipping.h>
+#include <plantgl/algo/base/tesselator.h>
 
 /* ----------------------------------------------------------------------- */
 
 PGL_USING_NAMESPACE
 
 DepthSortEngine::DepthSortEngine(eIdPolicy idPolicy) :
-    ProjectionEngine(idPolicy)
+    ProjectionEngine(idPolicy), __occlusionPolicy(eFullOcclusion)
 {
 }
 
@@ -504,7 +506,13 @@ void DepthSortEngine::processTriangle(const Vector3& v0, const Vector3& v1, cons
     }
 
     PolygonInfo p = _toPolygonInfo(points, id);
-    _processTriangle(p);
+    if (__occlusionPolicy != eOccluded){
+        _processTriangle(p, 0, __occlusionPolicy == eFullOcclusion);
+    }
+    else {
+        // In occluded mode we just store the polygon.
+        appendPolygon(p);
+    }
 }
 
 DepthSortEngine::PolygonInfoList clip_polygons(const DepthSortEngine::PolygonInfoList& polygons, const Plane3& plane){
@@ -616,7 +624,7 @@ DepthSortEngine::_processTriangle( PolygonInfo polygon,
                 // we remove the previous one and replace it by its non overlaping part.
                 it = removePolygon(it);                
 
-                if (insertTriangle && mrestCurrent.size() > 0) {
+                if (mrestCurrent.size() > 0) {
                     toAppend.insert(toAppend.end(),mrestCurrent.begin(), mrestCurrent.end());
                 }
 
@@ -675,7 +683,7 @@ DepthSortEngine::_processTriangle( PolygonInfo polygon,
                     toAppend.insert(toAppend.end(),mrestCurrent.begin(), mrestCurrent.end());
                 }
 
-                if (insertTriangle && !mrestPolygon.empty()){
+                if (!mrestPolygon.empty()){
                     if(mrestPolygon.size() == 1) {
                         polygon = mrestPolygon.front();
                         ++it;
@@ -702,7 +710,7 @@ DepthSortEngine::_processTriangle( PolygonInfo polygon,
             }
         } 
     }
-    if (!processed) {
+    if (!processed && insertTriangle) {
         appendPolygon(polygon);
     }
     appendPolygons(toAppend.begin(), toAppend.end());
@@ -837,4 +845,28 @@ pgl_hash_map<uint32_t,real_t> DepthSortEngine::idsurfaces() const {
     }
     return result;
 }
+
+void DepthSortEngine::process(ScenePtr scene, ScenePtr occludedOnly, ScenePtr occludingOnly) {
+    Discretizer d;
+    Tesselator t;
+    ProjectionRenderer r(*this, t, d);
+    eOcclusionPolicy prevPolicy = getOcclusionPolicy();
+    beginProcess();
+    if (is_valid_ptr(occludedOnly)){
+        setOcclusionPolicy(eOccluded);
+        occludedOnly->apply(r);
+    }
+    if (is_valid_ptr(scene)){
+        setOcclusionPolicy(eFullOcclusion);
+        scene->apply(r);
+    } 
+    if (is_valid_ptr(occludingOnly)){
+        setOcclusionPolicy(eOccluding);
+        occludingOnly->apply(r);
+    }
+    endProcess();
+    setOcclusionPolicy(prevPolicy); 
+}
+
+
 #endif

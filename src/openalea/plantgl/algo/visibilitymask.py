@@ -51,8 +51,8 @@ class PonctualVisibilityMask:
             self.compute()
         return self.mask.getDepthBuffer()
 
-    def view(self):
-        img = self.get_mask_image().to_array()
+    def view(self, cmap='gray'):
+        img = self.get_mask_image().to_array().T
         import matplotlib.pyplot as plt
-        plt.imshow(img)
+        plt.imshow(img, cmap=cmap)
         plt.show()

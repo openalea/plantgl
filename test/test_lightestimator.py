@@ -60,8 +60,9 @@ def test_lightestimator_irradiance(view = False):
                 continue
             args = {}
             if method == eZBufferProjection:
-                args['screenresolution'] = 0.01
-            result = l(method = method, primitive=primitive, **args)
+                args['resolution'] = 0.01
+            l.set_method(method = method, primitive=primitive, **args)
+            result = l()
             assert 'irradiance' in result
             print('Method:', MethodNames[method], ' - Max irradiance:', max(result['irradiance']))
             assert max(result['irradiance']-1) < 1e-3
@@ -72,6 +73,7 @@ def test_lightestimator_irradiance(view = False):
 def test_lightestimator_irradiance_with_cache(view = False):
     l = LightEstimator(Scene([Shape(QuadSet([[-1,-1,0],[-1,1,0],[1,1,0],[1,-1,0]],[list(range(4))]),id=10)])) #.addLights([(0,0,1)])
     l.add_sun_sky(ghi=1, dhi = 0.4, dates = pd.date_range("27/10/2025 7:00:00","27/10/2025 19:30:00", freq="h"))
+    l.set_method(method = eTriangleProjection, primitive=eTriangleBased)
     l.precompute_lights(type='SKY')
     l.precompute_lights(type='SUN')
     for dhi in range(0,11,1):
@@ -79,31 +81,71 @@ def test_lightestimator_irradiance_with_cache(view = False):
         l.add_sun_sky(ghi=1, dhi = dhi/10., dates = pd.date_range("27/10/2025 7:00:00","27/10/2025 19:30:00", freq="h"))
         print('Total horizontal irradiance:', l.total_horizontal_irradiance())
         assert( abs(l.total_horizontal_irradiance()-1) < 1e-3 )
-        result = l(method = eTriangleProjection, primitive=eTriangleBased)
+        result = l()
         assert 'irradiance' in result
-        print('DHI:', dhi/10., ' - Max irradiance:', max(result['irradiance']))
-        assert max(result['irradiance']-1) < 1e-3
         print(result)
+        print('DHI:', dhi/10., ' - Max irradiance:', max(result['irradiance']))
+        assert max(abs(result['irradiance']-1)) < 1e-3
 
 
 def test_lightestimator(view = False):
     from datetime import datetime
     l = LightEstimator(Scene([Shape(Sphere(),id=10),Shape(Box(0.1,0.1,0.1),id=12)])) #.addLights([(0,0,1)])
     l.add_sun_sky(dhi = 0.5, dates = pd.date_range("27/10/2025 7:00:00","27/10/2025 19:30:00", freq="h"))
-    print(l(method = eTriangleProjection, primitive=eTriangleBased))
+    l.set_method(method = eTriangleProjection, primitive=eTriangleBased)
+    print(l())
+    if view:
+        l.plot(lightrepscale = 1)
+
+def test_lightestimator_option(view = False):
+    from datetime import datetime
+    l = LightEstimator(Scene([Shape(QuadSet([[-1,-1,0],[-1,1,0],[1,1,0],[1,-1,0]],[list(range(4))]),id=1),
+                              Shape(QuadSet([[-0.5,-0.5,2],[-0.5,0.5,2],[0.5,0.5,2],[0.5,-0.5,2]],[list(range(4))]),id=2)])) #.addLights([(0,0,1)])
+    l.add_light("zenith", 90, 0, 1, horizontal = False)
+    l.set_method(method = eTriangleProjection, primitive=eShapeBased, occludingOnly=[2], occludedOnly=[1], multithreaded=False)
+    result = l()
+    print(result)
+    print(result['irradiance'][1], result['irradiance'][2])
+    assert result['irradiance'][2] < 1e-3 and result['irradiance'][1] >= 0.75 and "LightEstimator occlusion options failed"
+    if view:
+        l.plot(lightrepscale = 1)
+
+def test_lightestimator_option2(view = False):
+    from datetime import datetime
+    l = LightEstimator(Scene([Shape(QuadSet([[-1,-1,0],[-1,1,0],[1,1,0],[1,-1,0]],[list(range(4))]),id=1),
+                              Shape(QuadSet([[-0.5,-0.5,2],[-0.5,0.5,2],[0.5,0.5,-2],[0.5,-0.5,-2]],[list(range(4))]),id=2)])) #.addLights([(0,0,1)])
+    l.add_light("zenith", 90, 0, 1, horizontal = False)
+    l.set_method(method = eTriangleProjection, primitive=eShapeBased, occludingOnly=[2], occludedOnly=[1], multithreaded=False)
+    result = l()
+    print(result)
+    print(result['irradiance'][1], result['irradiance'][2])
+    assert result['irradiance'][2] < 1e-3 and result['irradiance'][1] >= 0.875 and "LightEstimator occlusion options failed"
+    if view:
+        l.plot(lightrepscale = 1)
+
+def test_lightestimator_option3(view = False):
+    from datetime import datetime
+    l = LightEstimator(Scene([Shape(QuadSet([[-1,-1,0],[-1,1,0],[1,1,0],[1,-1,0]],[list(range(4))]),id=1),
+                              Shape(QuadSet([[-0.5,-0.5,-2],[-0.5,0.5,-2],[0.5,0.5,-2],[0.5,-0.5,-2]],[list(range(4))]),id=2)])) #.addLights([(0,0,1)])
+    l.add_light("zenith", 90, 0, 1, horizontal = False)
+    l.set_method(method = eTriangleProjection, primitive=eShapeBased, occludingOnly=[2], occludedOnly=[1], multithreaded=False)
+    result = l()
+    print(result)
+    print(result['irradiance'][1], result['irradiance'][2])
+    assert result['irradiance'][2] < 1e-3 and result['irradiance'][1] >= 1 and "LightEstimator occlusion options failed"
     if view:
         l.plot(lightrepscale = 1)
 
 if __name__ == '__main__':
-    test_lightestimator_irradiance_with_cache()
-    exit()
+    test_lightestimator_irradiance_with_cache(True)
+    #exit()
     #for f in ['test_total_horizontal_irradiance',
     #          'test_astk_total_horizontal_irradiance']:
-    for f in list(globals().keys()):
-        if f.startswith('test_'):
-            print('***',f)
-            func = globals()[f]
-            if not func.__defaults__ is None:
-                func(True)
-            else:
-                func()
+    #for f in list(globals().keys()):
+    #    if f.startswith('test_'):
+    #        print('***',f)
+    #        func = globals()[f]
+    #        if not func.__defaults__ is None:
+    #            func(True)
+    #        else:
+    #            func()

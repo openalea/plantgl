@@ -159,7 +159,7 @@ ExplicitModel::isColorListToDefault() const {
 
 bool
 ExplicitModel::hasColorList( ) const {
-  return (__colorList);
+  return is_valid_ptr<Color4Array>(__colorList) && __colorList->size() > 0; 
 }
 
 

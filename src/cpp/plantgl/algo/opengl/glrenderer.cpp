@@ -1919,7 +1919,7 @@ bool GLRenderer::process(Text * text) {
   if (__Mode == Selection) {
     return true;
   } else {
-    __ogl->glPushAttrib(GL_LIGHTING_BIT | GL_DEPTH_BUFFER_BIT);
+    __ogl->glPushAttrib(GL_LIGHTING_BIT | GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT | GL_CURRENT_BIT);
     __ogl->glDisable(GL_LIGHTING);
     __ogl->glDisable(GL_DEPTH_TEST);
     if (!text->getString().empty()) {

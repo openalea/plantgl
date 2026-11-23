@@ -146,12 +146,24 @@ typedef RCPtr<LineicModel> LineicModelPtr;
 
 /* ----------------------------------------------------------------------- */
 
-SG_API real_t closestPointToSegment(Vector3& p,
-                           const Vector3& segA,
-                           const Vector3& segB,
-                           real_t* u = NULL);
+SG_API real_t closestPointToSegment(const Vector3& p,
+                                    const Vector3& A,
+                                    const Vector3& B,
+                                    real_t*        u       = nullptr,
+                                    Vector3*       closest = nullptr);
 
 /* ----------------------------------------------------------------------- */
+
+/// Retourne la distance (non élevée au carré) entre les segments [A0,A1] et [B0,B1].
+SG_API real_t
+closestSegmentToSegment(const Vector3& A0,
+                        const Vector3& A1,
+                        const Vector3& B0,
+                        const Vector3& B1,
+                        real_t*        uA       = nullptr,
+                        real_t*        uB       = nullptr,
+                        Vector3*       closestA = nullptr,
+                        Vector3*       closestB = nullptr);
 
 PGL_END_NAMESPACE
 

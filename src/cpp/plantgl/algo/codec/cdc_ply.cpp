@@ -70,8 +70,8 @@ PlyCodec::PlyCodec() :
 	m_propertiesTypes["uint8"] = uint8_t();
 	m_propertiesTypes["uint16"] = uint16_t();
 	m_propertiesTypes["uint32"] = uint32_t();
-	m_propertiesTypes["uchar"] = uchar_t();
-	m_propertiesTypes["char"] = char();
+	m_propertiesTypes["uchar"] = uint8_t();
+	m_propertiesTypes["char"] = int8_t();
 	m_propertiesTypes["short"] = short();
 	m_propertiesTypes["ushort"] = uint16_t();
 	m_propertiesTypes["double"] = double();
@@ -111,29 +111,43 @@ ScenePtr PlyCodec::read(std::string const &fname)
 
 ScenePtr PlyCodec::readScene(std::string const &fname)
 {
+	printf("Reading PLY file: '%s'...\n", fname.c_str());
 	std::ifstream file = openFile(fname);
 
 	FormatInfos const format = parseFormatInfos(file);
+	printf("Format: %s\n", format.coding.c_str());
+	printf("Version: %f\n", format.version);
+	printf("Keyword: %s\n", format.keyword.c_str());
 
 	m_reverseBytes = isBytesReverseNeeded(format.coding);
 
-	std::map<std::string, SpecElement> specs = parseHeader(file, format);
+	SpecElementList specs = parseHeader(file, format);
 
 	m_colorProps = parseColorProps(specs);
 
 	// Data size
-	std::size_t const vertexSize = specs.find("vertex") != specs.end() ? specs["vertex"].number : 0;
+	SpecElementList::const_iterator  itSpec = specs.begin();
+	while(itSpec->first != "vertex" && itSpec != specs.end()) ++itSpec ;
+
+	std::size_t const vertexSize = itSpec != specs.end() ? itSpec->second.number : 0;
 	std::size_t const colorSize = !m_colorProps.empty() ? vertexSize : 0;
-	std::size_t const faceSize = specs.find("face") != specs.end() ? specs["face"].number : 0;
+
+	itSpec = specs.begin();
+	while(itSpec->first != "face" && itSpec != specs.end()) ++itSpec ;
+
+	std::size_t const faceSize = itSpec != specs.end() ? itSpec->second.number : 0;
 
 	// Data
 	Point3ArrayPtr const points = new Point3Array(vertexSize);
-	Color4ArrayPtr const colors = new Color4Array(colorSize);
+	Color4ArrayPtr const colors = (colorSize == 0 ? Color4ArrayPtr() : Color4ArrayPtr(new Color4Array(colorSize)));
 	IndexArrayPtr const faces = new IndexArray(faceSize);
-
-	for (std::map<std::string, SpecElement>::const_iterator it = specs.begin(); it != specs.end(); ++it) {
+	printf("Data size: %d vertices, %d faces.\n", vertexSize, faceSize);
+	for (SpecElementList::const_iterator it = specs.begin(); it != specs.end(); ++it) {
 		// Parsing progression
-		ProgressStatus status(it->second.number, "Loading PLY file.", 0.25f);
+		std::string message = "Loading PLY file: '"; 
+		message += it->first;
+		message += "'... %.2f processed.     ";
+		ProgressStatus status(it->second.number, message, 0.25f);
 
 		for (std::size_t i = 0; i < it->second.number; ++i, ++status) {
 			// The element being processed
@@ -157,12 +171,13 @@ ScenePtr PlyCodec::readScene(std::string const &fname)
 				parseFace(i, element, faces);
 			}
 		}
+		++status;
 	}
 
 	return createScene(points, colors, faces);
 }
 
-void PlyCodec::parseAsciiValue(std::ifstream& file, std::map<std::string, SpecElement>::const_iterator const &it, pgl_hash_map_string<std::vector<propertyType> > &element)
+void PlyCodec::parseAsciiValue(std::ifstream& file, SpecElementList::const_iterator const &it, pgl_hash_map_string<std::vector<propertyType> > &element)
 {
 	std::vector<std::string> const lineValues = split(readNextLine(file));
 	std::size_t itv = 0;
@@ -203,7 +218,7 @@ void PlyCodec::parseAsciiValue(std::ifstream& file, std::map<std::string, SpecEl
 	}
 }
 
-void PlyCodec::parseBinaryValue(std::ifstream& file, std::map<std::string, SpecElement>::const_iterator const &it, pgl_hash_map_string<std::vector<propertyType> > &element)
+void PlyCodec::parseBinaryValue(std::ifstream& file, SpecElementList::const_iterator const &it, pgl_hash_map_string<std::vector<propertyType> > &element)
 {
 	for (std::vector<PropertyElement>::const_iterator propIt = it->second.properties.begin(); propIt != it->second.properties.end(); ++propIt) {
 		// We check if the property type exists
@@ -221,10 +236,10 @@ void PlyCodec::parseBinaryValue(std::ifstream& file, std::map<std::string, SpecE
 			// A reference to the vector containing the values
 			std::vector<propertyType>& values = vect.first->second;
 
-			propertyType const sizeType = m_propertiesTypes[propIt->sizetype];
-			GetVisitor<size_t> visitor;
-			
+			propertyType const sizeType = m_propertiesTypes[propIt->sizetype];			
 			propertyType const tmp = readNextValue(file, sizeType);
+
+			GetVisitor<size_t> visitor;
 			tmp.apply_visitor(visitor);
 
 			std::size_t const propCount = visitor.get_value();
@@ -262,11 +277,10 @@ void PlyCodec::parseVertex(std::size_t i, pgl_hash_map_string<std::vector<proper
 	std::size_t index = 0;
 
 	for (std::vector<std::string>::const_iterator cni = m_colorProps.begin(); cni != m_colorProps.end(); ++cni, ++index) {
-		GetVisitor<uchar_t> v;
+		GetVisitor<uint_t> v;
 		element[*cni][0].apply_visitor(v);
 		rgba[index] = v.get_value();
 	}
-
 	if (m_colorProps.size() >= 4 && m_colorProps[3] == "alpha") {
 		rgba[3] = 255 - rgba[3];
 	}
@@ -301,6 +315,7 @@ std::ifstream PlyCodec::openFile(std::string const& path) const
 	}
 
 	std::string const format = readNextLine(file);
+	printf("Format : '%s'\n", format.c_str());
 
 	if (strip(format) != "ply") {
 		// The file header must start by 'ply' to be considered valid
@@ -312,10 +327,13 @@ std::ifstream PlyCodec::openFile(std::string const& path) const
 
 PlyCodec::FormatInfos PlyCodec::parseFormatInfos(std::ifstream &file) const
 {
-	std::vector<std::string> const format = split(readNextLine(file));
+	std::string const line = readNextLine(file);
+	printf("Format line: '%s'\n", line.c_str());
+	std::vector<std::string> const format = split(line);
 
 	if (format.size() < 3) {
 		// Informations are missing
+		printf("Truncated header\n");
 		throw std::runtime_error("Truncated header");
 	}
 
@@ -326,6 +344,7 @@ PlyCodec::FormatInfos PlyCodec::parseFormatInfos(std::ifstream &file) const
 	
 	if (std::find(m_fcodingTypes.begin(), m_fcodingTypes.end(), infos.coding) == m_fcodingTypes.end()) {
 		// Unknown coding type
+		printf("Invalid format\n");
 		throw std::runtime_error("Invalid format");
 	}
 
@@ -334,36 +353,34 @@ PlyCodec::FormatInfos PlyCodec::parseFormatInfos(std::ifstream &file) const
 	return infos;
 }
 
-std::map<std::string, PlyCodec::SpecElement> PlyCodec::parseHeader(std::ifstream &file, FormatInfos const &format) const
+PlyCodec::SpecElementList PlyCodec::parseHeader(std::ifstream &file, FormatInfos const &format) const
 {
-	std::map<std::string, SpecElement> specs;
+	PlyCodec::SpecElementList specs;
 
-	std::string lastSpecName;
 
 	for (std::string line = readNextLine(file); line != "end_header" && file.good(); line = readNextLine(file)) {
 		if (line.find("element") == 0) {
-			lastSpecName = parseHeaderElement(specs, line);
+			parseHeaderElement(specs, line);
 		}
 		else if (line.find("property") == 0) {
-			parseHeaderProperty(specs, line, lastSpecName);
+			parseHeaderProperty(specs, line);
 		}
 	}
 
 	return specs;
 }
 
-std::string PlyCodec::parseHeaderElement(std::map<std::string, SpecElement> &specs, std::string const& line) const
+void PlyCodec::parseHeaderElement(SpecElementList &specs, std::string const& line) const
 {
 	std::vector<std::string> const elements = split(line);
 
 	std::string const &name = elements[1];
 	std::string const &number = elements[2];
 
-	specs[name] = SpecElement(toNumber<std::size_t>(number));
-	return name;
+	specs.push_back(std::make_pair(name,SpecElement(toNumber<std::size_t>(number))));
 }
 
-void PlyCodec::parseHeaderProperty(std::map<std::string, SpecElement> &specs, std::string const& line, std::string const& lastSpecName) const
+void PlyCodec::parseHeaderProperty(SpecElementList &specs, std::string const& line) const
 {
 	std::vector<std::string> const properties = split(line);
 
@@ -373,10 +390,11 @@ void PlyCodec::parseHeaderProperty(std::map<std::string, SpecElement> &specs, st
 		
 		if (m_propertiesTypes.find(type) == m_propertiesTypes.end()) {
 			// Invalid property type
+			printf("Invalid header\n");
 			throw std::runtime_error("Invalid header");
 		}
 		
-		specs[lastSpecName].properties.push_back(PropertyElement(name, type));
+		specs.back().second.properties.push_back(PropertyElement(name, type));
 	}
 	else if (properties.size() == 5) {
 		std::string const &sizeType = properties[2];
@@ -385,18 +403,20 @@ void PlyCodec::parseHeaderProperty(std::map<std::string, SpecElement> &specs, st
 
 		if (m_propertiesTypes.find(sizeType) == m_propertiesTypes.end() || m_propertiesTypes.find(type) == m_propertiesTypes.end()) {
 			// Invalid property type
+			printf("Invalid header\n");
 			throw std::runtime_error("Invalid header");
 		}
 
-		specs[lastSpecName].properties.push_back(PropertyElement(name, sizeType, type));
+		specs.back().second.properties.push_back(PropertyElement(name, sizeType, type));
 	}
 }
 
-std::vector<std::string> PlyCodec::parseColorProps(std::map<std::string, SpecElement> const& specs) const
+std::vector<std::string> PlyCodec::parseColorProps(SpecElementList const& specs) const
 {
 	std::vector<std::string> colorProps;
 
-	std::map<std::string, SpecElement>::const_iterator const it = specs.find("vertex");
+	SpecElementList::const_iterator  it = specs.begin();
+	while(it->first != "vertex" && it != specs.end()) ++it ;
 
 	if (it != specs.end()) {
 		SpecElement const &vertex = it->second;
@@ -446,10 +466,13 @@ ScenePtr PlyCodec::createScene(Point3ArrayPtr points, Color4ArrayPtr colors, Ind
 	ShapePtr shape = NULL;
 
 	if (faces->empty()) {
+		printf("No face, creating a point set\n");
+
 		shape = new Shape(GeometryPtr(new PointSet(points, colors)));
 	}
 	else {
-		shape = new Shape(GeometryPtr(new FaceSet(points, faces)));
+		printf("Creating a face set\n");
+		shape = new Shape(GeometryPtr(new FaceSet(points, faces, Point3ArrayPtr(), IndexArrayPtr(), colors)));
 	}
 	
 	scene->add(shape);

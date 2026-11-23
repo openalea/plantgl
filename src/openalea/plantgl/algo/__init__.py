@@ -54,7 +54,8 @@ def clear_parameters(self):
         self._pystack = []
     else:
         for p,c in self._params.items():
-            delattr(self,p)
+            if hasattr(self,p):
+                delattr(self,p)
     self._params = {}
 
 
