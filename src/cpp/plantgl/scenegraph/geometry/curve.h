@@ -207,11 +207,25 @@ typedef RCPtr<Curve2D> Curve2DPtr;
 
 /* ----------------------------------------------------------------------- */
 
-SG_API real_t closestPointToSegment(Vector2& p,
-                           const Vector2& segA,
-                           const Vector2& segB,
-                           real_t* u = NULL);
+SG_API real_t closestPointToSegment(const Vector2& p,
+                                    const Vector2& A,
+                                    const Vector2& B,
+                                    real_t*        u       = nullptr,
+                                    Vector2*       closest = nullptr);
 
+/* ----------------------------------------------------------------------- */
+
+/// Retourne la distance (non élevée au carré) entre les segments [A0,A1] et [B0,B1].
+SG_API real_t
+closestSegmentToSegment(const Vector2& A0,
+                        const Vector2& A1,
+                        const Vector2& B0,
+                        const Vector2& B1,
+                        real_t*        uA       = nullptr,
+                        real_t*        uB       = nullptr,
+                        Vector2*       closestA = nullptr,
+                        Vector2*       closestB = nullptr);
+                
 // __geom_curve_h__
 /* ----------------------------------------------------------------------- */
 

@@ -63,7 +63,6 @@
 
 PGL_BEGIN_NAMESPACE
 
-#define PGL_WITH_CGAL 1
 
 /* ----------------------------------------------------------------------- */
 
@@ -73,6 +72,12 @@ PGL_BEGIN_NAMESPACE
 */
 
 /* ----------------------------------------------------------------------- */
+
+enum eOcclusionPolicy {
+    eOccluding = 1,
+    eOccluded = 2,
+    eFullOcclusion = 3
+};
 
 class ALGO_API DepthSortEngine : public ProjectionEngine {
 
@@ -93,6 +98,9 @@ public :
     virtual void iprocess(PolylinePtr polyline, MaterialPtr material, uint32_t id, ProjectionCameraPtr camera = ProjectionCameraPtr(), uint32_t threadid = 0);
     virtual void iprocess(PointSetPtr pointset, MaterialPtr material, uint32_t id, ProjectionCameraPtr camera = ProjectionCameraPtr(), uint32_t threadid = 0);
 
+    void setOcclusionPolicy(eOcclusionPolicy policy) { __occlusionPolicy = policy; } 
+    eOcclusionPolicy getOcclusionPolicy() const { return __occlusionPolicy; }
+
     struct PolygonInfo {
         Point3ArrayPtr points;
         Vector3 pmin, pmax;
@@ -109,6 +117,8 @@ public :
     typedef std::list<PolygonInfo> PolygonInfoSet;
     typedef std::list<PolygonInfoSet::iterator> PolygonInfoIteratorList;
 
+    void process(ScenePtr scene, ScenePtr occludedOnly = ScenePtr(), ScenePtr occludingOnly = ScenePtr());
+
 protected:
 
     DepthSortEngine::PolygonInfoList::iterator removePolygon(DepthSortEngine::PolygonInfoList::iterator it);
@@ -121,6 +131,7 @@ protected:
     void _processTriangle( PolygonInfo polygon, uint32_t begin = 0, bool insertTriangle = true);
 
     PolygonInfoList __polygonlist; 
+    eOcclusionPolicy __occlusionPolicy;
 };
 
 

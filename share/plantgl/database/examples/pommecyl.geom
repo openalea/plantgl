@@ -1,4 +1,4 @@
 AmapSymbol pommecyl {
-  FileName "../../databases/SMBFiles/pommecyl.smb"
+  FileName "../amapsymbols/pommecyl.smb"
   Solid False
 }

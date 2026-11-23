@@ -603,6 +603,7 @@ PGL(basisFunctions)(uint_t span, real_t u, uint_t _degree, const RealArrayPtr& _
 }
 
 /* Algo A2.3 p72 Nurbs Book */
+/*
 RealArray2Ptr
 PGL(derivatesBasisFunctions)(int n,real_t u, int span,  uint_t _degree, const RealArrayPtr& _knotList ){
   real_t * left = (real_t *) alloca(2*(_degree+1)*sizeof(real_t)) ;
@@ -691,6 +692,114 @@ PGL(derivatesBasisFunctions)(int n,real_t u, int span,  uint_t _degree, const Re
   }
   return ders;
 
+}
+*/
+
+// Algo A2.3 p72 Nurbs Book - version corrigée / plus robuste
+RealArray2Ptr
+PGL(derivatesBasisFunctions)(int n, real_t u, int span, uint_t _degree, const RealArrayPtr& _knotList) {
+  // Clamp n to degree (algorithm requires n <= p)
+  int p = (int)_degree;
+  if (n > p) n = p;
+  if (n < 0) n = 0;
+
+  // safer stack buffers: use vector (but keep same semantics)
+  std::vector<real_t> left(p+1);
+  std::vector<real_t> right(p+1);
+
+  RealArray2 ndu(p+1, p+1);
+  real_t saved, temp;
+  int r, j;
+
+  RealArray2Ptr ders(new RealArray2(n+1, p+1));
+
+  ndu.setAt(0,0, 1.0);
+
+  for (j = 1; j <= p; ++j) {
+      left[j] = u - _knotList->getAt(span+1-j);
+      right[j] = _knotList->getAt(span+j) - u;
+      saved = 0.0;
+
+      for (r = 0; r < j; ++r) {
+          // Lower triangle
+          ndu.setAt(j, r, right[r+1] + left[j-r]);
+          // Protect against division by zero (can happen for degenerate knot vectors)
+          real_t denom = ndu.getAt(j, r);
+          if (denom == 0.0) {
+              temp = 0.0;
+          } else {
+              temp = ndu.getAt(r, j-1) / denom;
+          }
+          // Upper triangle
+          ndu.setAt(r, j, saved + right[r+1] * temp);
+          saved = left[j-r] * temp;
+      }
+      ndu.setAt(j, j, saved);
+  }
+
+  // Load basis function values (zero-th derivative)
+  for (j = 0; j <= p; ++j)
+      ders->setAt(0, j, ndu.getAt(j, p));
+
+  // Compute the derivatives
+  RealArray2 a(p+1, p+1);
+  for (r = 0; r <= p; ++r) {
+      int s1 = 0, s2 = 1; // alternate rows in array a
+      // reset row s1
+      for (int ii = 0; ii <= p; ++ii) a.setAt(0, ii, 0.0);
+      a.setAt(0,0, 1.0);
+
+      for (int k = 1; k <= n; ++k) {
+          real_t d = 0.0;
+          int rk = r - k;
+          int pk = p - k;
+
+          // first entry
+          if (rk >= 0) {
+              real_t denom = ndu.getAt(pk+1, rk);
+              real_t val = (denom == 0.0) ? 0.0 : (a.getAt(s1, 0) / denom);
+              a.setAt(s2, 0, val);
+              d = a.getAt(s2, 0) * ndu.getAt(rk, pk);
+          } else {
+              a.setAt(s2, 0, 0.0);
+          }
+
+          int j1 = (rk >= -0) ? 1 : -rk; // equals max(1, -rk)
+          if (j1 < 1) j1 = 1;
+          int j2 = (r - 1 <= pk) ? (k - 1) : (p - r); // equals min(k-1, p-r)
+
+          for (j = j1; j <= j2; ++j) {
+              real_t denom = ndu.getAt(pk+1, rk + j);
+              real_t numerator = a.getAt(s1, j) - a.getAt(s1, j-1);
+              a.setAt(s2, j, (denom == 0.0) ? 0.0 : (numerator / denom));
+              d += a.getAt(s2, j) * ndu.getAt(rk + j, pk);
+          }
+
+          if (r <= pk) {
+              real_t denom = ndu.getAt(pk+1, r);
+              a.setAt(s2, k, (denom == 0.0) ? 0.0 : (-(a.getAt(s1, k-1)) / denom));
+              d += a.getAt(s2, k) * ndu.getAt(r, pk);
+          } else {
+              a.setAt(s2, k, 0.0);
+          }
+
+          ders->setAt(k, r, d);
+
+          // swap s1/s2 using a temporary (clear and explicit)
+          int tmp = s1; s1 = s2; s2 = tmp;
+      }
+  }
+
+  // Multiply through by the correct factors: fact = p*(p-1)*...*(p-k+1)
+  for (int k = 1; k <= n; ++k) {
+      real_t fact = 1.0;
+      for (int i = 0; i < k; ++i) fact *= (p - i); // fact = p*(p-1)*...*(p-k+1)
+      for (j = 0; j <= p; ++j) {
+          ders->setAt(k, j, ders->getAt(k, j) * fact);
+      }
+  }
+
+  return ders;
 }
 
 /* ----------------------------------------------------------------------- */

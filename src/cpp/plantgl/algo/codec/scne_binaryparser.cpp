@@ -71,7 +71,7 @@ using namespace STDEXT;
 
 /* ----------------------------------------------------------------------- */
 
-static bool __verbose = true;
+static bool __verbose = false;
 
 void PGL(parserVerbose)(bool b)
 {

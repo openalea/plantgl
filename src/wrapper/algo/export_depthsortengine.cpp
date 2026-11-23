@@ -74,6 +74,12 @@ boost::python::object py_agregate_idsurfaces(DepthSortEngine * engine) {
 void export_DepthSortEngine()
 {
 #ifdef PGL_WITH_CGAL
+  enum_< eOcclusionPolicy >("eOcclusionPolicy")
+    .value("eOccluding",eOccluding)
+    .value("eOccluded",eOccluded)
+    .value("eFullOcclusion",eFullOcclusion)
+    .export_values()
+    ;
 
   class_< DepthSortEngine, bases<ProjectionEngine>, boost::noncopyable >
       ("DepthSortEngine", init<ProjectionEngine::eIdPolicy>("Construct a DepthSortEngine.",(bp::arg("idPolicy")=ProjectionEngine::eShapeIdBased)) )
@@ -84,6 +90,8 @@ void export_DepthSortEngine()
       .def("getSurfaceProjectionResult", &DepthSortEngine::getSurfaceProjectionResult, (bp::arg("cameraCoordinates")=true))
       .def("idsurfaces", &py_idsurfaces)
       .def("aggregateIdSurfaces", &py_agregate_idsurfaces)
+      .def("mprocess", (void(DepthSortEngine::*)( ScenePtr, ScenePtr, ScenePtr))&DepthSortEngine::process, (bp::arg("scene"), bp::arg("occludedOnly") = ScenePtr(), bp::arg("occludingOnly") = ScenePtr() ) )
+      .add_property("occlusionPolicy",&DepthSortEngine::getOcclusionPolicy, &DepthSortEngine::setOcclusionPolicy)
       ;
 
 #endif

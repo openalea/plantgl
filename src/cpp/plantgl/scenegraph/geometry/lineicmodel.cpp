@@ -121,8 +121,12 @@ QuantisedFunctionPtr LineicModel::getArcLengthToUMapping() const
 
   real_t fk = getFirstKnot();
   real_t lk = getLastKnot();
-  uint_t stride = getStride();
 
+  if (totlength == 0)
+      return QuantisedFunctionPtr(new QuantisedFunction(Point2ArrayPtr(new Point2Array(2,Vector2(0, fk),Vector2(1.0,lk))),10));
+
+
+  uint_t stride = getStride();
   real_t deltau = (lk - fk)/stride;
 
   Vector3 p1 = getPointAt(fk);
@@ -142,14 +146,17 @@ QuantisedFunctionPtr LineicModel::getArcLengthToUMapping() const
         length += n;
         p1 = p2;
         points->setAt(j,Vector2(length/totlength,u));
-        ++j;
     }
+    else {
+        points->setAt(j,Vector2((length/totlength)+GEOM_EPSILON,u));
+    }
+    ++j;
   }
   points->setAt(j-1,Vector2(1.0,lk));
   if (j != stride+1){
       points = Point2ArrayPtr(new Point2Array(points->begin(),points->begin()+j));
   }
-  return QuantisedFunctionPtr(new QuantisedFunction(points,5*stride));
+  return QuantisedFunctionPtr(new QuantisedFunction(points,std::max(QuantisedFunction::DEFAULT_SAMPLING,5*stride)));
 }
 
 QuantisedFunctionPtr LineicModel::getUToArcLengthMapping() const
@@ -158,8 +165,11 @@ QuantisedFunctionPtr LineicModel::getUToArcLengthMapping() const
 
   real_t fk = getFirstKnot();
   real_t lk = getLastKnot();
-  uint_t stride = getStride();
 
+  if (totlength < GEOM_EPSILON)
+      return QuantisedFunctionPtr(new QuantisedFunction(Point2ArrayPtr(new Point2Array(2,Vector2(fk, 0),Vector2(lk, 0.0))),2));
+
+  uint_t stride = getStride();
   real_t deltau = (lk - fk)/stride;
 
   Vector3 p1 = getPointAt(fk);
@@ -179,40 +189,50 @@ QuantisedFunctionPtr LineicModel::getUToArcLengthMapping() const
     points->setAt(i,Vector2(u,length/totlength));
   }
   points->setAt(stride,Vector2(lk,1.0));
-  return QuantisedFunctionPtr(new QuantisedFunction(points,5*stride));
+  return QuantisedFunctionPtr(new QuantisedFunction(points,std::max(QuantisedFunction::DEFAULT_SAMPLING,5*stride)));
 }
 
 /* ----------------------------------------------------------------------- */
 
-real_t
-__closestPointToSegment(Vector3& p,
-                           const Vector3& segA,
-                           const Vector3& segB,
-                           real_t* u)
+inline real_t
+closestPointToSegment_sq(const Vector3& p,
+                         const Vector3& A,
+                         const Vector3& B,
+                         real_t*        u       = nullptr,
+                         Vector3*       closest = nullptr)
 {
-  Vector3 diff = p - segA;
-  Vector3 M = segB - segA;
-  real_t t = dot(M,diff);
-  if(t > 0){
-    real_t dotMM = dot(M,M);
-    if(t < dotMM){
-      t = t / dotMM;
-      diff -= M*t;
-      p = segA + M*t;
+    const Vector3 AB   = B - A;
+    const Vector3 AP   = p - A;
+    const real_t  dotABAB = dot(AB, AB);
+
+    real_t t;
+    if (dotABAB < real_t(1e-12)) {
+        // Segment dégénéré (A ≈ B) → distance au point A
+        t = real_t(0);
+    } else {
+        t = std::clamp(dot(AB, AP) / dotABAB, real_t(0), real_t(1));
     }
-    else {
-      t = 1;
-      diff -= M;
-      p = segB;
-    }
-  }
-  else {
-    t = 0;
-    p = segA;
-  }
-  if (u != NULL) *u = t;
-  return dot(diff,diff);
+
+    const Vector3 proj = A + AB * t;
+    const Vector3 diff = p - proj;
+
+    if (closest) *closest = proj;
+    if (u)       *u       = t;
+
+    return dot(diff, diff);
 }
+
+/// Retourne la distance (non élevée au carré) entre `p` et le segment [A, B].
+real_t
+PGL(closestPointToSegment)(const Vector3& p,
+                      const Vector3& A,
+                      const Vector3& B,
+                      real_t*        u,
+                      Vector3*       closest )
+{
+    return std::sqrt(closestPointToSegment_sq(p, A, B, u, closest));
+}
+
 
 
 Vector3
@@ -227,11 +247,11 @@ LineicModel::findClosest(const Vector3& p, real_t* ui) const{
   real_t lu;
   for(real_t u = u0 + deltau ; u <= u1 ; u += deltau){
     p2 = getPointAt(u);
-    pt = p;
-    real_t d = __closestPointToSegment(pt,p1,p2,&lu);
+    Vector3 pres;
+    real_t d = closestPointToSegment_sq(pt, p1, p2, &lu, &pres);
     if(d < dist){
       dist = d;
-      res = pt;
+      res = pres;
       if (ui != NULL) *ui = u + deltau * (lu -1);
     }
     p1 = p2;
@@ -239,13 +259,123 @@ LineicModel::findClosest(const Vector3& p, real_t* ui) const{
   return res;
 }
 
-real_t
-PGL(closestPointToSegment)(Vector3& p,
-                           const Vector3& segA,
-                           const Vector3& segB,
-                           real_t* u)
+/* ----------------------------------------------------------------------- */
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Segment → Segment
+// ─────────────────────────────────────────────────────────────────────────────
+//
+// Algorithme de Dan Sunday (2001) — "Distance between 3D Lines and Segments"
+// http://geomalgorithms.com/a07-_distance.html
+//
+// Gère tous les cas dégénérés :
+//   - Les deux segments sont des points
+//   - Un seul segment est un point
+//   - Segments parallèles (ou quasi-parallèles)
+//   - Cas général (segments gauches dans R³)
+//
+// Paramètres :
+//   A0, A1   extrémités du segment A
+//   B0, B1   extrémités du segment B
+//   closestA (optionnel) point le plus proche sur A
+//   closestB (optionnel) point le plus proche sur B
+//   uA, uB   (optionnel) paramètres normalisés ∈ [0,1]
+//
+// Retourne dist²(segment A, segment B).
+
+inline real_t
+closestSegmentToSegment_sq(const Vector3& A0,
+                           const Vector3& A1,
+                           const Vector3& B0,
+                           const Vector3& B1,
+                           real_t*        uA       = nullptr,
+                           real_t*        uB       = nullptr,
+                           Vector3*       closestA = nullptr,
+                           Vector3*       closestB = nullptr)
 {
-    return sqrt(__closestPointToSegment(p,segA, segB,u));
+    constexpr real_t EPS = real_t(1e-10);
+
+    const Vector3 dA = A1 - A0;   // direction segment A
+    const Vector3 dB = B1 - B0;   // direction segment B
+    const Vector3 r  = A0 - B0;
+
+    const real_t a = dot(dA, dA);  // ||dA||²
+    const real_t e = dot(dB, dB);  // ||dB||²
+    const real_t f = dot(dB, r);
+
+    real_t tA, tB;
+
+    if (a < EPS && e < EPS) {
+        // ── Les deux segments sont des points ─────────────────────────────
+        tA = tB = real_t(0);
+    }
+    else if (a < EPS) {
+        // ── Segment A est un point ────────────────────────────────────────
+        tA = real_t(0);
+        tB = std::clamp(f / e, real_t(0), real_t(1));
+    }
+    else {
+        const real_t c = dot(dA, r);
+
+        if (e < EPS) {
+            // ── Segment B est un point ────────────────────────────────────
+            tB = real_t(0);
+            tA = std::clamp(-c / a, real_t(0), real_t(1));
+        }
+        else {
+            // ── Cas général ───────────────────────────────────────────────
+            // Résolution du système linéaire :
+            //   (a  -b) (tA)   (−c)
+            //   (b  −e) (tB) = (−f)
+            // où b = dot(dA, dB)
+            const real_t b     = dot(dA, dB);
+            const real_t denom = a * e - b * b;   // ||dA×dB||²
+
+            if (denom > EPS) {
+                // Segments non parallèles : solution unique sur les droites
+                tA = std::clamp((b * f - c * e) / denom, real_t(0), real_t(1));
+            } else {
+                // Segments parallèles : tA arbitraire (on prend 0),
+                // tB sera recalculé ci-dessous pour coller au segment B
+                tA = real_t(0);
+            }
+
+            // tB calculé depuis tA, puis reclamped + correction de tA
+            tB = (b * tA + f) / e;
+
+            if (tB < real_t(0)) {
+                tB = real_t(0);
+                tA = std::clamp(-c / a, real_t(0), real_t(1));
+            } else if (tB > real_t(1)) {
+                tB = real_t(1);
+                tA = std::clamp((b - c) / a, real_t(0), real_t(1));
+            }
+        }
+    }
+
+    const Vector3 pA   = A0 + dA * tA;
+    const Vector3 pB   = B0 + dB * tB;
+    const Vector3 diff = pA - pB;
+
+    if (closestA) *closestA = pA;
+    if (closestB) *closestB = pB;
+    if (uA)       *uA       = tA;
+    if (uB)       *uB       = tB;
+
+    return dot(diff, diff);
 }
 
-/* ----------------------------------------------------------------------- */
+/// Retourne la distance (non élevée au carré) entre les segments [A0,A1] et [B0,B1].
+real_t
+PGL(closestSegmentToSegment)(const Vector3& A0,
+                        const Vector3& A1,
+                        const Vector3& B0,
+                        const Vector3& B1,
+                        real_t*        uA       ,
+                        real_t*        uB       ,
+                        Vector3*       closestA ,
+                        Vector3*       closestB )
+{
+    return std::sqrt(closestSegmentToSegment_sq(A0, A1, B0, B1, uA, uB,
+                                                closestA, closestB));
+}

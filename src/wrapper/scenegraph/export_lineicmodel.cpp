@@ -71,8 +71,20 @@ template<class VectorT>
 object seg_findclosest(VectorT point, VectorT segA, VectorT segB)
 {
     real_t u;
-    real_t dist = closestPointToSegment(point,segA,segB,&u);
-    return make_tuple(point,dist,u);
+    VectorT res;
+    real_t dist = closestPointToSegment(point,segA,segB,&u, &res);
+    return make_tuple(res,dist,u);
+}
+
+template<class VectorT>
+object seg_findclosest_fromseg(VectorT seg1, VectorT seg2, VectorT segA, VectorT segB)
+{
+    real_t u1;
+    VectorT res1;
+    real_t u2;
+    VectorT res2;
+    real_t dist = closestSegmentToSegment(seg1, seg2, segA,segB, &u1, &u2, &res1, &res2);
+    return make_tuple(dist, res1, u1, res2, u2);
 }
 
 template <class T, class U, U (T::* func)(real_t) const >
@@ -113,7 +125,8 @@ void export_LineicModel()
 
   implicitly_convertible<LineicModelPtr, PrimitivePtr>();
 
-  def("closestPointToSegment",&seg_findclosest<Vector3>, args("point","segA","segB"));
+  def("closestPointToSegment",&seg_findclosest<Vector3>, args("point","segA","segB"),"Find the closest point from segment to a given point. Return closest point, distance, and u value of closest point on the segment");
+  def("closestSegmentToSegment",&seg_findclosest_fromseg<Vector3>, args("seg1","seg2","segA","segB"), "Find the closest point from segment to a given sgement. Return distance, closest point  and u value of closest point on the two segments");
 }
 
 
@@ -140,4 +153,6 @@ void export_Curve2D()
   implicitly_convertible<Curve2DPtr, PlanarModelPtr>();
 
   def("closestPointToSegment",&seg_findclosest<Vector2>, args("point","segA","segB"),"Find the closest point from segment to a given point. Return closest point, distance, and u value of closest point on the segment");
+  def("closestSegmentToSegment",&seg_findclosest_fromseg<Vector2>, args("seg1","seg2","segA","segB"),"Find the closest point from segment to a given sgement. Return distance, closest point  and u value of closest point on the two segments");
+
 }

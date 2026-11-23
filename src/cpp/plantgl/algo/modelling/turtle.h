@@ -147,7 +147,18 @@ public:
     { return __params->elasticity; }
 
     void setElasticity(real_t val = 0)
-    { __params->elasticity = val; }
+    { __params->elasticity = val; 
+      __params->elasticityPerLengthUnitEnabled = false; }
+
+    void setElasticityPerLengthUnit(real_t val = 0)
+    { __params->elasticity = val; 
+      __params->elasticityPerLengthUnitEnabled = true; }
+
+    inline const bool& isElasticityPerLengthUnitEnabled() const
+    { return __params->elasticityPerLengthUnitEnabled; }
+
+    inline void setElasticityPerLengthUnitEnabled(bool val) const
+    { __params->elasticityPerLengthUnitEnabled = val; }
 
     /// push the current turtle state on a stack
     virtual void push();
@@ -532,9 +543,16 @@ protected:
     TurtleParam& getParameters()
       { return *__params; }
 
-    void _applyTropism();
+    struct TropismResult {
+      real_t chordLength;
+      Vector3 chordHeading;
+      Vector3 chordUp;
+      Vector3 finalHeading;
+      Vector3 finalUp;
+    };
+    TropismResult _applyTropism(real_t length);
 
-    void _applyGuide(real_t& l);
+    real_t _applyGuide(real_t l);
     void _ajustToGuide();
 
     void _tendTo(const Vector3& t, real_t strength = 1.0);

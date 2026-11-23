@@ -424,7 +424,7 @@ Point4MatrixPtr  NurbsPatch::deriveAtH(real_t u, real_t v, int d, int uspan, int
     int du = ( d < (int)__udegree ? d : __udegree);
     int dv = ( d < (int)__vdegree ? d : __vdegree);
 
-    Point4MatrixPtr patchders(new Point4Matrix(d+1,d+1, Vector4::ORIGIN));
+    Point4MatrixPtr patchders(new Point4Matrix(d+1,d+1, Vector4(0,0,0,0)));
     RealArray2Ptr UderF = derivatesBasisFunctions(du,u,uspan,__udegree,__uKnotList);
     RealArray2Ptr VderF = derivatesBasisFunctions(dv,v,vspan,__vdegree,__vKnotList);
 
@@ -470,8 +470,8 @@ Point3MatrixPtr NurbsPatch::deriveAt(real_t  u, real_t  v, int d, int uspan, int
     RealArray2 Bin = binomialCoef(d);
 
     for( int k = 0 ; k <= d ; k++ ){
-        // for( int l = 0 ; l <= d-k ; l++){
-        for( int l = 0 ; l <= d ; l++){
+        for( int l = 0 ; l <= d-k ; l++){
+        // for( int l = 0 ; l <= d ; l++){
             vec.x() = dersW->getAt(k,l).x() ;
             vec.y() = dersW->getAt(k,l).y() ;
             vec.z() = dersW->getAt(k,l).z() ;
@@ -491,24 +491,66 @@ Point3MatrixPtr NurbsPatch::deriveAt(real_t  u, real_t  v, int d, int uspan, int
     return patchders;
 }
 
+/*
+Point3MatrixPtr NurbsPatch::deriveAt(real_t u, real_t v,
+                                     int d,
+                                     int uspan,
+                                     int vspan) const
+{
+    Point3MatrixPtr SKL( new Point3Matrix(d+1,d+1,Vector3::ORIGIN));
+    Point4MatrixPtr Aders = deriveAtH(u,v,d,uspan,vspan);
+    RealArray2 Bin = binomialCoef(d);
+
+    for(int k=0;k<=d;k++)
+    {
+        for(int l=0;l<=d-k;l++)
+        {
+            Vector3 value( Aders->getAt(k,l).x(), Aders->getAt(k,l).y(), Aders->getAt(k,l).z() );
+
+            for(int i=0;i<=k;i++)
+            {
+                for(int j=0;j<=l;j++)
+                {
+                    if(i==0 && j==0)
+                        continue;
+                    value -= SKL->getAt(k-i,l-j) * Bin.getAt(k,i) * Bin.getAt(l,j) * Aders->getAt(i,j).w();
+                }
+            }
+
+            SKL->getAt(k,l)=
+                value / Aders->getAt(0,0).w();
+        }
+    }
+
+    return SKL;
+}
+*/
 
 Vector3 NurbsPatch::getDerivativeAt(real_t u, real_t v, int du, int dv) const {
-    int d = max(du,dv) ;
-    if (d > min(__udegree,__vdegree)) return Vector3(0,0,0);
+    // Refuse uniquement si l'utilisateur demande un ordre supérieur au degré correspondant
+    if (du > (int)__udegree || dv > (int)__vdegree) return Vector3(0,0,0);
+
+    // int d = max(du,dv);
+    int d = du+dv;
+    
     int uspan = findSpan(u,__udegree,__uKnotList) ;
     int vspan = findSpan(v,__vdegree,__vKnotList) ;
     Point3MatrixPtr ders = deriveAt(u,v,d,uspan,vspan) ;
+
+    // deriveAt retourne une matrice (d+1)x(d+1) et on peut lire la dérivée (du,dv)
     return ders->getAt(du,dv) ;
 }
 
 
+// Remplacement de getDerivativesAt
 Point3MatrixPtr NurbsPatch::getDerivativesAt(real_t u,real_t v) const {
     int uspan = findSpan(u,__udegree,__uKnotList) ;
     int vspan = findSpan(v,__vdegree,__vKnotList) ;
-    int degree = min(__udegree,__vdegree) ;
+    // On demande les dérivées jusqu'au maximum des degrés pour couvrir tout l'espace possible
+    // int degree = max((int)__udegree,(int)__vdegree) ;
+    int degree = __udegree + __vdegree ;
     return deriveAt(u,v,degree,uspan,vspan) ;
 }
-
 
 
 Vector3 NurbsPatch::getPointAt(real_t u, real_t v) const{
