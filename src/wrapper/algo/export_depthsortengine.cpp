@@ -91,6 +91,9 @@ void export_DepthSortEngine()
       .def("idsurfaces", &py_idsurfaces)
       .def("aggregateIdSurfaces", &py_agregate_idsurfaces)
       .def("mprocess", (void(DepthSortEngine::*)( ScenePtr, ScenePtr, ScenePtr))&DepthSortEngine::process, (bp::arg("scene"), bp::arg("occludedOnly") = ScenePtr(), bp::arg("occludingOnly") = ScenePtr() ) )
+      .add_property("intersectionThreads", &DepthSortEngine::getIntersectionThreads,
+                    &DepthSortEngine::setIntersectionThreads,
+                    "Maximum threads for candidate intersections, including the calling thread. Default is 1.")
       .add_property("occlusionPolicy",&DepthSortEngine::getOcclusionPolicy, &DepthSortEngine::setOcclusionPolicy)
       ;
 

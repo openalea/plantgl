@@ -58,6 +58,7 @@
 #include <plantgl/scenegraph/scene/scene.h>
 #include "projectionengine.h"
 #include <list>
+#include <memory>
 
 /* ----------------------------------------------------------------------- */
 
@@ -85,6 +86,8 @@ public :
 
     DepthSortEngine(eIdPolicy idPolicy = eShapeIdBased);
 
+    DepthSortEngine(const DepthSortEngine& other);
+    DepthSortEngine& operator=(const DepthSortEngine& other);
     virtual ~DepthSortEngine();
 
     void processTriangle(const Vector3& v0, const Vector3& v1, const Vector3& v2, uint32_t id);
@@ -101,10 +104,16 @@ public :
     void setOcclusionPolicy(eOcclusionPolicy policy) { __occlusionPolicy = policy; } 
     eOcclusionPolicy getOcclusionPolicy() const { return __occlusionPolicy; }
 
+    // Maximum threads for candidate intersections, including the calling
+    // thread. One thread (the default) processes candidates sequentially.
+    void setIntersectionThreads(unsigned count);
+    unsigned getIntersectionThreads() const;
+
     struct PolygonInfo {
         Point3ArrayPtr points;
         Vector3 pmin, pmax;
         uint32_t id;
+        std::size_t insertionOrder = 0;
 
         bool bbx_intersect(const PolygonInfo& other) const;
     };
@@ -124,14 +133,16 @@ protected:
     DepthSortEngine::PolygonInfoList::iterator removePolygon(DepthSortEngine::PolygonInfoList::iterator it);
     DepthSortEngine::PolygonInfoSet::iterator appendPolygon(const PolygonInfo& polygon);
     DepthSortEngine::PolygonInfoIteratorList appendPolygons(DepthSortEngine::PolygonInfoList::iterator begin, DepthSortEngine::PolygonInfoList::iterator end);
-    // DepthSortEngine::PolygonInfoIteratorList getIntersectingPolygons(const PolygonInfo& polygon);
-    // DepthSortEngine::PolygonInfoSet::iterator getNextIntersectingPolygon(const PolygonInfo& polygon, DepthSortEngine::PolygonInfoSet::iterator begin);
 
 
     void _processTriangle( PolygonInfo polygon, uint32_t begin = 0, bool insertTriangle = true);
 
     PolygonInfoList __polygonlist; 
     eOcclusionPolicy __occlusionPolicy;
+
+private:
+    struct PolygonIndex;
+    std::unique_ptr<PolygonIndex> __polygonIndex;
 };
 
 
