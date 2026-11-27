@@ -1,5 +1,8 @@
-# Linux developer environment: compilers, build tools, test tools and the
-# platform specific host libraries of conda/meta.yaml. Versions follow conda-forge; sysroot is pinned as in conda-forge-pinning.
+# Linux developer environment: compilers, build tools and the platform specific host
+# libraries of conda/meta.yaml. Versions follow conda-forge; sysroot is pinned as in
+# conda-forge-pinning.
+# Use with conda/host_deps.yml and conda/run_deps.yml (see README.md):
+#   mamba create -n plantgl-devel -f build-util/plantgl-devel-linux.yaml -f conda/host_deps.yml -f conda/run_deps.yml
 name: plantgl-devel
 channels:
   - openalea3/label/dev
@@ -18,32 +21,5 @@ dependencies:
     # host requirements of conda/meta.yaml specific to Linux
     - libgl-devel
     - libglu
-    # development
-    - ipython
-    # test
+    # test (not on PyPI under this name; pytest and pandas come from pip: .[test])
     - matplotlib-base
-    # host
-    - pip
-    - setuptools-scm
-    - scikit-build-core
-    - numpy
-    - qt-main
-    - pyqt
-    - gmp
-    - mpfr
-    - libpng
-    - libjpeg-turbo
-    - zlib
-    - cgal-cpp
-    - ann
-    # eigen: CGAL Eigen3 support (principal_curvatures); qhull: convex hull fitting
-    - eigen
-    - qhull
-    - libboost-devel
-    - libboost-python-devel
-    # run
-    - pyopengl
-    - pyqglviewer
-    # doc
-    - pandoc
-

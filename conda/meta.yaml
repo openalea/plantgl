@@ -1,4 +1,8 @@
 {% set version = environ.get('SETUPTOOLS_SCM_PRETEND_VERSION', "0.0.0.dev") %}
+{# Host and runtime dependencies are declared in host_deps.yml and run_deps.yml, also
+   used by developers. permit_undefined_jinja=False: fail if a file is missing. #}
+{% set host_deps = load_file_data('host_deps.yml', from_recipe_dir=True, permit_undefined_jinja=False).get('dependencies', []) %}
+{% set run_deps = load_file_data('run_deps.yml', from_recipe_dir=True, permit_undefined_jinja=False).get('dependencies', []) %}
 
 package:
   name: openalea.plantgl
@@ -23,24 +27,12 @@ build:
 requirements:
   host:
     - python
-    - pip
-    - setuptools-scm
-    - scikit-build-core
-    - numpy
-    - qt-main
-    - pyqt
-    - gmp
-    - mpfr
-    - libpng
-    - libjpeg-turbo
-    - zlib
-    - cgal-cpp
-    - ann
-    # eigen: CGAL Eigen3 support (principal_curvatures); qhull: convex hull fitting
-    - eigen
-    - qhull
-    - libboost-devel
-    - libboost-python-devel
+    # conda/host_deps.yml
+    {% for dep in host_deps %}
+    - {{ dep }}
+    {% endfor %}
+    # OpenGL::GL and OpenGL::GLU. X11 headers (included by GL/glx.h) and xcb come with
+    # them and with qt-main; nothing links X11, xcb or Xfixes directly.
     - libgl-devel                        # [linux]
     - libglu                             # [linux]
 
@@ -52,15 +44,17 @@ requirements:
     - pkg-config                        # [linux]
     - bison                             # [unix]
     - flex                              # [unix]
+    # win_bison / win_flex on Windows, found by CMake
     - winflexbison                      # [win]
 
   run:
     # ABI pins of the libraries linked (qt-main, pyqt, numpy, boost, png, jpeg, zlib,
     # gmp, mpfr, ann, GL) are added by the run_exports of the host packages.
     - python
-    - numpy
-    - pyopengl
-    - pyqglviewer
+    # conda/run_deps.yml
+    {% for dep in run_deps %}
+    - {{ dep }}
+    {% endfor %}
 
   run_constrained:
     # MinGW (m2w64-*, msys2 based) libraries break PlantGL on Windows: their bin
@@ -72,6 +66,7 @@ requirements:
 test:
    requires:
      - pytest
+     # dependencies used by the tests
      - matplotlib-base
      - pandas
    imports:

@@ -68,28 +68,60 @@ ipython
 
 ## Compiling
 
-The simplest way to build PlantGL is to use conda (see below).
+The simplest way to build PlantGL is to use conda, with mamba 2 (it combines several
+environment files). The dependencies are split into:
 
-Then, setup your Conda environment with all required dependencies:
+- `build-util/plantgl-devel-<os>.yaml`: compilers and build tools of your system;
+- `conda/host_deps.yml`: libraries PlantGL is compiled against (also used by `conda/meta.yaml`);
+- `conda/run_deps.yml`: runtime dependencies (also used by `conda/meta.yaml`);
+- `doc/doc_deps.yml`: documentation tools, only needed to build the documentation.
+
+Setup your environment with all required dependencies (on Windows, Visual Studio 2022 with
+the C++ tools is required; on macOS, the Xcode Command Line Tools):
 
 ```bash
 # Linux
-conda env create -f build-util/plantgl-devel-linux.yaml
+mamba create -n plantgl-devel -f build-util/plantgl-devel-linux.yaml -f conda/host_deps.yml -f conda/run_deps.yml -f doc/doc_deps.yml
 
 # Macos
-conda env create -f build-util/plantgl-devel-macos.yaml
+mamba create -n plantgl-devel -f build-util/plantgl-devel-macos.yaml -f conda/host_deps.yml -f conda/run_deps.yml -f doc/doc_deps.yml
 
 # Windows
-conda env create -f build-util/plantgl-devel-win.yaml
+mamba create -n plantgl-devel -f build-util/plantgl-devel-win.yaml -f conda/host_deps.yml -f conda/run_deps.yml -f doc/doc_deps.yml
 
-conda activate plantgl-devel
+mamba activate plantgl-devel
 ```
 
-Now, you can build, then install PlantGL:
+`-f doc/doc_deps.yml` can be left out if you do not build the documentation.
+
+Now, you can build, then install PlantGL with its test and optional dependencies:
 
 ```bash
-pip install -e ".[doc,test,light,algo]" --no-build-isolation
+pip install -e ".[dev,test,light,algo]" --no-build-isolation -v
 ```
+
+In editable mode (`-e`), changes to the Python files are used directly. After a change in
+the C++ code (`src/cpp`, `src/wrapper`), run the same command again: the build directory
+`build/` is reused, so only what changed is recompiled.
+
+Run the tests:
+
+```bash
+cd test
+pytest -v
+```
+
+Build the documentation (PlantGL must be installed: the documentation reads its version
+and docstrings from the installed package):
+
+```bash
+cd doc
+make html
+```
+
+Then open `doc/_build/html/index.html`. On Windows, in PowerShell, type `.\make html`.
+`make rtdhtml` uses the settings of Read the Docs (warnings become errors), `make clean`
+removes the built documentation.
 
 You're done!
 
